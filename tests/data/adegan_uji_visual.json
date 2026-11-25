@@ -99,7 +99,7 @@
           {"jenis": "motor", "x": 650, "y": 1580, "s": 0.82, "depan": true}
         ],
         "boneka": [
-          {"id": 1, "x": 490, "y": 1710, "s": 1.0, "arah": 0.65, "gaya": "umum", "kulit": "#c99a72", "rambut": "pendek", "pakaian": {"jenis": "kaus", "warna": "#3f7890", "bawah": "celana", "bawah_warna": "#34445a"}, "pose": "berdiri", "lengan": "angkat_bahu", "wajah": "lelah"},
+          {"id": 1, "x": 490, "y": 1710, "s": 1.0, "arah": 0.65, "gaya": "umum", "kulit": "#c99a72", "rambut": "pendek", "pakaian": {"jenis": "kaus", "warna": "#3f7890", "bawah": "celana", "bawah_warna": "#34445a"}, "pose": "angkat_bahu", "wajah": "lelah"},
           {"id": 2, "x": 760, "y": 1710, "s": 0.95, "arah": -0.65, "gaya": "umum", "kulit": "#e9c6a2", "rambut": "keriting", "pakaian": {"jenis": "kaus", "warna": "#c87942", "bawah": "celana", "bawah_warna": "#4b5545"}, "pose": "condong", "wajah": "lega"}
         ],
         "teks": [{"at": 0.1, "teks": "MULAI MENOLONG", "y": 350, "ukuran": 92, "warna": "#ffffff"}]
