@@ -44,6 +44,8 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install -e '.[render]'
           python -m playwright install --with-deps chromium
+      - name: Pasang pytest
+        run: python -m pip install pytest
       - name: Uji adapter karakter
         working-directory: mesin-video/papan
         run: python -m pytest karakter/test_karakter.py -v
@@ -53,7 +55,7 @@ jobs:
         run: |
           newmotion render mesin-video/papan/kisah/yajuj2_visual3_gabungan.json -o yajuj2-visual3-gabungan.mp4
       - name: Verifikasi video dan audio
-        if: always()
+        if: success()
         run: |
           FILE=hasil/yajuj2-visual3-gabungan.mp4
           test -s "$FILE"

@@ -4,6 +4,7 @@ from __future__ import annotations
 import math
 
 from . import gerak as G
+from .tokoh import orang
 
 
 WAJAH_JS = {
@@ -93,8 +94,10 @@ def _terapkan_tampilan(boneka, karakter):
     janggut = karakter.get("janggut", "pendek" if jenis == "pria" else "tanpa")
     if janggut == "tanpa" or jenis == "wanita":
         boneka["janggut"] = False
+        boneka["janggut_model"] = "tanpa"
     elif janggut in {"tipis", "pendek", "panjang"}:
         boneka["janggut"] = karakter.get("warna_janggut", True)
+        boneka["janggut_model"] = janggut
     else:
         raise ValueError("karakter.janggut harus tanpa, tipis, pendek, atau panjang")
     usia = karakter.get("usia", "dewasa")
@@ -125,6 +128,14 @@ def integrasikan_tokoh(boneka, karakter, durasi, fps=15):
         alat = "beliung" if "gali" in nama_gerak else ("palu" if "palu" in nama_gerak else None)
     if alat not in (None, "beliung", "palu"):
         raise ValueError("karakter.alat harus beliung atau palu")
+    # Validasi parameter melalui renderer SVG Python: kontrak visual dan gerak harus sah di kedua jalur.
+    orang(0, 0, s=0.01, gerak=gerak, mode=karakter.get("mode", "pakaian"),
+          kepala=karakter.get("kepala"), jenis=karakter.get("jenis", "pria"),
+          wajah=karakter.get("wajah", "datar"), alat=alat, usia=karakter.get("usia", "dewasa"),
+          warna_kulit=karakter.get("warna_kulit"), warna_baju=karakter.get("warna_baju"),
+          warna_aksen=karakter.get("warna_aksen"), model_rambut=karakter.get("model_rambut", "pendek"),
+          janggut=karakter.get("janggut", "pendek" if karakter.get("jenis", "pria") == "pria" else "tanpa"),
+          warna_janggut=karakter.get("warna_janggut"))
     lama = max(0.0, float(durasi))
     if lama > 120:
         raise ValueError("durasi gerak satu shot melebihi batas 120 detik")

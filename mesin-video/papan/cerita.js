@@ -1560,7 +1560,15 @@
         else if (rb === "rol") k += `<path d="M -76 0 C -84 -96, 82 -104, 76 0 C 66 -40, 40 -52, 0 -54 C -40 -52, -66 -40, -76 0 Z" fill="${RB}"/>` + [[-50, -70], [-16, -88], [20, -88], [54, -70]].map(([cx, cy], i) => `<rect x="${cx - 18}" y="${cy - 16}" width="36" height="32" rx="12" fill="${["#ff8fb1", "#7fd0ff", "#ffd36b", "#a7e08a"][i]}" stroke="${INK}" stroke-width="4"/><line x1="${cx - 10}" y1="${cy}" x2="${cx + 10}" y2="${cy}" stroke="${INK}" stroke-width="3" opacity=".5"/>`).join("");
         else if (rb === "kuncir") k += `<path d="M 60 -40 C 120 -40, 128 40, 96 90 C 110 30, 92 -10, 60 -20 Z" fill="${RB}" stroke="${INK}" stroke-width="4"/><path d="M -76 -4 C -84 -98, 82 -106, 76 -4 C 70 -50, 30 -70, -10 -66 C -40 -60, -66 -40, -76 -4 Z" fill="${RB}"/><circle cx="64" cy="-36" r="9" fill="${b.ikat || "#e03131"}"/>`;
         else if (rb === "belah") k += `<path d="M -76 -2 C -86 -96, 84 -104, 76 -2 C 70 -50, 30 -66, 8 -70 L 0 -40 L -8 -70 C -30 -66, -70 -50, -76 -2 Z" fill="${RB}"/>`;
-        if (b.janggut) k += `<path d="M -58 30 C -50 92, 50 92, 58 30 C 40 70, -40 70, -58 30 Z" fill="${b.janggut === true ? RB : b.janggut}"/>`;
+        if (b.janggut) {
+          const jb = b.janggut_model || "pendek";
+          const janggutD = jb === "tipis"
+            ? "M -58 30 Q 0 58 58 30 Q 36 54 0 52 Q -36 54 -58 30 Z"
+            : jb === "panjang"
+              ? "M -58 30 C -50 92, 50 92, 58 30 L 46 92 Q 0 138 -46 92 Z"
+              : "M -58 30 C -50 92, 50 92, 58 30 C 40 70, -40 70, -58 30 Z";
+          k += `<path d="${janggutD}" fill="${b.janggut === true ? RB : b.janggut}"/>`;
+        }
         if (b.keriput) k += `<path d="M -40 -46 q 10 -4 20 0 M 20 -46 q 10 -4 20 0 M -58 22 q 4 8 10 10 M 58 22 q -4 8 -10 10" fill="none" stroke="${INK}" stroke-width="3" opacity=".5"/>`;
       }
     } else if (gaya === "dajjal") { // hanya ciri dari hadits: muda, rambut sangat keriting, satu mata buta menonjol, tulisan ك ف ر di antara mata. Ekspresi: senyum licik.
