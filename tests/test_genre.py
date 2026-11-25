@@ -424,7 +424,11 @@ def test_sutradara_memisahkan_rencana_semantik_dan_mengaitkan_shot_ke_beat():
             "beat-001", "beat-002"
         ]
         assert papan["rencana_cerita"]["adegan"][1]["dialog"] == naskah["adegan"][1]["dialog"]
-        assert papan["rencana_cerita"]["adegan"][1]["peristiwa"] == naskah["adegan"][1]["peristiwa"]
+        peristiwa = papan["rencana_cerita"]["adegan"][1]["peristiwa"][0]
+        sumber = naskah["adegan"][1]["peristiwa"][0]
+        assert {k: peristiwa[k] for k in sumber} == sumber
+        assert peristiwa["aktor_id"] == "tokoh-penolong"
+        assert peristiwa["sasaran_tokoh_id"] == "tokoh-pengendara"
         assert [s["_beat_id"] for s in papan["cerita"]["shot"]] == [
             "beat-001", "beat-002"
         ]
