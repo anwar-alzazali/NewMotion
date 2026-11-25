@@ -33,7 +33,7 @@ tetap memilih kisah_islami untuk menjaga kompatibilitas aset dan alur lama.
 - [x] Kontrak paket genre dan registri pemuat dinamis tersedia di newmotion/domain/genre.py.
 - [x] Paket kisah_islami memiliki manifest tersendiri.
 - [x] Uji paket tiruan membuktikan paket baru dapat didaftarkan tanpa mengubah inti.
-- [ ] Hubungkan pemilihan paket ke validasi job.
+- [x] Hubungkan pemilihan paket ke validasi job.
 - [ ] Pindahkan aturan pengarah dan visual khas Kisah Islami dari jalur lama ke paket, satu modul per satu modul.
 - [ ] Pindahkan penjaga dalil dan tokoh suci ke paket dengan tes regresi.
 - [ ] Pindahkan komponen visual khusus genre ke mekanisme ekstensi renderer; jangan menghapus atau mengganti perilaku lama sebelum hasil bingkai dibandingkan.
