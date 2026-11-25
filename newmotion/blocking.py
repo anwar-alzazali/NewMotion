@@ -62,7 +62,8 @@ def periksa_blocking(cerita, jarak_interaksi=190.0, loncatan_maksimum=300.0):
             x, y = _posisi(tokoh)
             posisi_kini[identitas] = (x, y)
             gerak = tokoh.get("gerak", tokoh.get("pose", ""))
-            berjalan = gerak in {"jalan", "lari"} or tokoh.get("jalan", 0) > 0
+            nilai_jalan = tokoh.get("jalan", 0)
+            berjalan = gerak in {"jalan", "lari"} or (isinstance(nilai_jalan, (int, float)) and nilai_jalan > 0)
             lintasan = _titik_lintasan(tokoh)
             bergerak_nyata = len(lintasan) >= 2 and hypot(
                 lintasan[-1][0] - lintasan[0][0],
