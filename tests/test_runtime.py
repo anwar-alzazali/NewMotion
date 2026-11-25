@@ -132,3 +132,27 @@ def test_layanan_job_mencatat_kegagalan_renderer(tmp_path, monkeypatch):
     )
     assert job.status == StatusJob.GAGAL
     assert job.pesan_gagal == "render gagal"
+
+
+
+def test_cli_menerima_lokasi_keluaran_setelah_spesifikasi():
+    from newmotion.cli import buat_parser
+
+    args = buat_parser().parse_args([
+        "render", "mesin-video/papan/kisah/yajuj2_visual3_gabungan.json",
+        "-o", "yajuj2-visual3-gabungan.mp4",
+    ])
+    assert args.perintah == "render"
+    assert args.spesifikasi.endswith("yajuj2_visual3_gabungan.json")
+    assert args.keluaran == "yajuj2-visual3-gabungan.mp4"
+    assert args.tanpa_suara is False
+
+
+def test_cli_meneruskan_opsi_render_terbatas():
+    from newmotion.cli import buat_parser
+
+    args = buat_parser().parse_args([
+        "render", "spec.json", "--tanpa-suara", "-d", "12.5", "-o", "hasil.mp4",
+    ])
+    assert args.tanpa_suara is True
+    assert args.durasi == 12.5

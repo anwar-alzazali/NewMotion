@@ -20,7 +20,8 @@ def buat_parser():
     render = perintah.add_parser("render", help="Render spesifikasi melalui mesin-video lama")
     render.add_argument("spesifikasi", help="Berkas spesifikasi JSON")
     render.add_argument("-o", "--keluaran", required=True, help="Lokasi MP4 keluaran")
-    render.add_argument("argumen_tambahan", nargs=argparse.REMAINDER)
+    render.add_argument("--tanpa-suara", action="store_true", help="Jangan gabungkan trek efek suara")
+    render.add_argument("-d", "--durasi", type=float, help="Paksa durasi render dalam detik")
     return parser
 
 
@@ -43,7 +44,12 @@ def main(argv=None):
                 if not keluaran.is_absolute():
                     keluaran = konfigurasi.direktori_hasil / keluaran
                 layanan = LayananJalankanJob(konfigurasi, runtime.log)
-                job, hasil = layanan.jalankan_render(args.spesifikasi, keluaran, args.argumen_tambahan)
+                argumen_tambahan = []
+                if args.tanpa_suara:
+                    argumen_tambahan.append("--tanpa-suara")
+                if args.durasi is not None:
+                    argumen_tambahan.extend(["-d", str(args.durasi)])
+                job, hasil = layanan.jalankan_render(args.spesifikasi, keluaran, argumen_tambahan)
                 print(f"Job {job.id}: {job.status.value}")
                 print(hasil.stdout, end="")
                 if hasil.stderr:
