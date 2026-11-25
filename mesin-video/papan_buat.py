@@ -261,29 +261,48 @@ class SpekDitolak(SystemExit):
 def jaga_spek(spec):
     """GERBANG sebelum render; aturan khusus dijalankan hanya oleh paket genre pemiliknya."""
     sys.path.insert(0, os.path.dirname(HERE))
-    from newmotion.domain.genre import dari_rencana
+    from newmotion.domain.genre import (
+        ambil,
+        dari_rencana,
+        konteks_konten_untuk_naskah,
+        memakai_kebijakan_islami,
+    )
 
     try:
         paket = dari_rencana(spec)
+        konteks_konten = konteks_konten_untuk_naskah(spec, genre=paket.nama)
+        paket_kebijakan = [paket]
+        if memakai_kebijakan_islami(konteks_konten) and paket.nama != "kisah_islami":
+            # Genre penceritaan tetap milik paket utama; pagar Islami dipakai
+            # sebagai lapisan kebijakan lintas genre, bukan paket genre baru.
+            paket_kebijakan.append(ambil("kisah_islami"))
     except (ValueError, TypeError, ImportError) as galat:
-        print(f"GENRE TIDAK VALID: {galat}", file=sys.stderr)
+        print(f"GENRE/KONTEKS KONTEN TIDAK VALID: {galat}", file=sys.stderr)
         raise SpekDitolak(3) from galat
 
     pesan = []
     dalil = []
-    if paket.penjaga_tokoh is not None:
-        temuan_adab = paket.penjaga_tokoh(spec)
+    penjaga_tokoh = list(dict.fromkeys(
+        p.penjaga_tokoh for p in paket_kebijakan if p.penjaga_tokoh is not None
+    ))
+    penjaga_dalil = list(dict.fromkeys(
+        p.penjaga_dalil for p in paket_kebijakan if p.penjaga_dalil is not None
+    ))
+
+    for penjaga in penjaga_tokoh:
+        temuan_adab = penjaga(spec)
         if temuan_adab:
             rincian = "\n".join(f"[{item.kode}] {item.pesan}" for item in temuan_adab)
             pesan.append("Pelanggaran adab penggambaran tokoh:\n" + rincian)
 
-    if paket.penjaga_dalil is not None:
-        dalil = paket.penjaga_dalil(spec)
-        terblokir = [item for item in dalil if item.memblokir]
+    for penjaga in penjaga_dalil:
+        temuan_dalil = penjaga(spec)
+        dalil.extend(temuan_dalil)
+        terblokir = [item for item in temuan_dalil if item.memblokir]
         if terblokir:
             rincian = "\n".join(f"- {item}" for item in terblokir)
             pesan.append("Pelanggaran verifikasi dalil:\n" + rincian)
-        for item in dalil:
+        for item in temuan_dalil:
             if not item.memblokir:
                 print(
                     f"penjaga dalil: {item}"

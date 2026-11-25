@@ -44,9 +44,12 @@ python -m pip install -e '.[uji]'
 newmotion --version
 newmotion doctor
 newmotion render mesin-video/papan/kisah/yajuj2_visual3.json -o yajuj2_visual3.mp4
+# Untuk naskah berstruktur {judul, adegan:[{nama, teks}, ...]}:
+newmotion render naskah.json --naskah -o hasil.mp4
+# Mode --naskah menyimpan papan hasil pengarah sebagai hasil.papan.json
 ```
 
-Ekstra `render` menyediakan pustaka Python yang telah teridentifikasi pada jalur papan, tetapi pemasangan browser Playwright dan FFmpeg sistem tetap perlu disiapkan sesuai lingkungan. Perintah `render` meneruskan pekerjaan ke `mesin-video/papan_buat.py`; ini adapter kompatibilitas, belum pipeline job terpadu.
+Ekstra `render` menyediakan pustaka Python yang telah teridentifikasi pada jalur papan, tetapi pemasangan browser Playwright dan FFmpeg sistem tetap perlu disiapkan sesuai lingkungan. Perintah `render` tanpa `--naskah` meneruskan spesifikasi papan yang sudah jadi ke `mesin-video/papan_buat.py`. Dengan `--naskah`, NewMotion memilih pengarah dari manifest genre, menghasilkan spesifikasi papan, menyimpannya sebagai `<nama-keluaran>.papan.json`, lalu meneruskannya ke renderer lama. Renderer tetap menjadi adapter kompatibilitas; integrasi ini belum menggantikan mesin render.
 
 ## Dokumentasi
 
@@ -58,3 +61,44 @@ Ekstra `render` menyediakan pustaka Python yang telah teridentifikasi pada jalur
 ## Keamanan
 
 Jangan pernah memasukkan kredensial, kunci API, token akses, data pribadi pengguna, hasil produksi, atau berkas konfigurasi lokal ke repositori. Simpan rahasia melalui pengelola rahasia platform dan gunakan contoh data yang sudah disamarkan.
+
+
+### Render dari naskah dengan paket genre
+
+Tentukan genre pada metadata naskah (`"genre": "kisah_islami"`) atau secara eksplisit melalui CLI:
+
+```bash
+newmotion render naskah.json --naskah --genre kisah_islami -o hasil.mp4
+```
+
+Sutradara inti memilih paket, memvalidasi kontrak naskah, memanggil pengarah paket satu kali,
+dan memeriksa hasil shot sebelum meneruskannya ke renderer. Genre tidak ditebak secara
+diam-diam; naskah baru tanpa genre harus diberi pilihan eksplisit. Opsi `--genre`
+mengungguli metadata naskah. Papan hasil pengarahan disimpan sebagai
+`<nama-keluaran>.papan.json`. Render spesifikasi papan lama tetap mempertahankan
+perilaku kompatibilitas.
+
+
+### Genre dan konteks konten
+
+Pada mode `--naskah`, `genre` memilih strategi penceritaan, sedangkan
+`konteks_konten` memilih lapisan batasan isi. Keduanya tidak harus sama:
+
+```json
+{
+  "judul": "Kisah komedi kehidupan santri",
+  "genre": "komedi",
+  "konteks_konten": "islami",
+  "adegan": [
+    {"nama": "pembuka", "teks": "Dua santri bersiap untuk kegiatan pagi."}
+  ]
+}
+```
+
+Contoh di atas menunjukkan bentuk kontrak metadata; paket genre komedi belum
+disediakan pada tahap ini. Setelah paket komedi tersedia, genre komedi tetap
+menggunakan pengarah komedi. Konteks Islami mengaktifkan penjaga adab tokoh dan
+verifikasi dalil di gerbang renderer. Untuk naskah baru selain
+`kisah_islami`, kolom `konteks_konten` wajib diisi eksplisit; ini mencegah
+cerita bertema Islam dianggap umum hanya karena konteksnya terlupa. Nilai konteks
+yang didukung: `umum`, `islami`, `sejarah_islam`, dan `kehidupan_muslim`.

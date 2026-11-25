@@ -5,17 +5,21 @@ on:
     branches:
       - feature/pemisahan-genre-dari-inti
     paths:
-      - '.github/workflows/uji-mahsyar1.yml'
       - 'mesin-video/papan_buat.py'
-      - 'mesin-video/papan/**'
-      - 'newmotion/**'
+      - 'mesin-video/papan/cerita.js'
+      - 'mesin-video/papan/papan.js'
+      - 'mesin-video/papan/papan.css'
+      - 'mesin-video/papan/karakter/**'
+      - 'mesin-video/papan/font/**'
   pull_request:
     types: [opened, synchronize, reopened]
     paths:
-      - '.github/workflows/uji-mahsyar1.yml'
       - 'mesin-video/papan_buat.py'
-      - 'mesin-video/papan/**'
-      - 'newmotion/**'
+      - 'mesin-video/papan/cerita.js'
+      - 'mesin-video/papan/papan.js'
+      - 'mesin-video/papan/papan.css'
+      - 'mesin-video/papan/karakter/**'
+      - 'mesin-video/papan/font/**'
   workflow_dispatch:
 
 permissions:
@@ -23,6 +27,8 @@ permissions:
 
 jobs:
   render-mahsyar1:
+    # PR pemisahan paket/pengarah tidak mengubah visual; hindari render ulang Mahsyar 1 yang sudah disetujui.
+    if: github.event_name != 'pull_request' || github.head_ref != 'feature/pemisahan-pengarah-kisah-islami'
     runs-on: ubuntu-latest
     timeout-minutes: 45
     steps:
