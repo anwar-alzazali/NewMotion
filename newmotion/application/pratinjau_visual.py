@@ -18,8 +18,10 @@ AKAR = Path(__file__).resolve().parents[2]
 ANTREAN = AKAR / "antrean"
 
 
-def naskah_untuk_pengarah(naskah: dict) -> dict:
-    """Ubah beat antrean menjadi kontrak adegan sutradara tanpa mengubah narasi."""
+def naskah_untuk_pengarah(
+    naskah: dict, *, genre: str | None = None, konteks_konten: str | None = None
+) -> dict:
+    """Ubah beat menjadi kontrak adegan; genre dan konteks mengikuti metadata antrean."""
     beat = naskah.get("beat")
     if not isinstance(beat, list) or not beat:
         raise ValueError("Naskah tidak memiliki beat untuk diarahkan.")
@@ -46,10 +48,29 @@ def naskah_untuk_pengarah(naskah: dict) -> dict:
                 dalil_dipakai.append({
                     "surah": d["surah"], "ayat": d["ayat"], "di_adegan": nama,
                 })
+    from newmotion.application.pengklasifikasi_konten import klasifikasikan_konten
+
+    metadata = dict(naskah)
+    if genre is not None:
+        metadata["genre"] = genre
+    if konteks_konten is not None:
+        metadata["konteks_konten"] = konteks_konten
+    # Kompatibilitas antrean lama: sebelum metadata genre tersedia, seluruh
+    # antrean dibuat melalui jalur Kisah Islami.
+    if "genre" not in metadata:
+        metadata["genre"] = "kisah_islami"
+    if metadata["genre"] == "kisah_islami" and "konteks_konten" not in metadata:
+        metadata["konteks_konten"] = "islami"
+    hasil_klasifikasi = klasifikasikan_konten(metadata)
+    if hasil_klasifikasi["perlu_klarifikasi"]:
+        raise ValueError(
+            "Genre/konteks konten belum cukup jelas untuk pratinjau: "
+            + hasil_klasifikasi["keputusan"]
+        )
     return {
         "judul": str(naskah.get("judul") or "Pratinjau NewMotion"),
-        "genre": "kisah_islami",
-        "konteks_konten": "islami",
+        "genre": hasil_klasifikasi["genre"],
+        "konteks_konten": hasil_klasifikasi["konteks_konten"],
         "adegan": adegan,
         "dalil_dipakai": dalil_dipakai,
     }
@@ -72,11 +93,17 @@ def buat_pratinjau(id_: str, *, folder: Path = ANTREAN, keluaran: Path | None = 
     naskah = json.loads(naskah_path.read_text(encoding="utf-8"))
     from newmotion.application.pengarah_inti import arahkan_naskah
 
-    sumber = naskah_untuk_pengarah(naskah)
-    spek, nama_paket, jumlah_shot = arahkan_naskah(sumber, genre_pilihan="kisah_islami")
+    genre = status.get("genre") or naskah.get("genre")
+    konteks_konten = status.get("konteks_konten") or naskah.get("konteks_konten")
+    sumber = naskah_untuk_pengarah(
+        naskah, genre=genre, konteks_konten=konteks_konten
+    )
+    spek, nama_paket, jumlah_shot = arahkan_naskah(
+        sumber, genre_pilihan=sumber["genre"]
+    )
     spek["judul"] = sumber["judul"]
     spek["genre"] = nama_paket
-    spek["konteks_konten"] = "islami"
+    spek["konteks_konten"] = sumber["konteks_konten"]
     d.mkdir(parents=True, exist_ok=True)
     papan = d / "papan_pratinjau.json"
     papan.write_text(json.dumps(spek, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
