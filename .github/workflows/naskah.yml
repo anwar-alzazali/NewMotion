@@ -1,0 +1,81 @@
+name: naskah (antrean bot NewMotion)
+# Dipanggil bot Telegram melalui workflow_dispatch. Workflow ini memakai rahasia.
+on:
+  workflow_dispatch:
+    inputs:
+      id:
+        description: "id antrean (folder antrean/<id>)"
+        required: true
+      mode:
+        description: "ide | tempel | revisi"
+        required: true
+      cadangan:
+        description: "Pakai Claude (berbayar) bila Gemini gagal"
+        type: boolean
+        default: true
+permissions:
+  contents: write
+concurrency:
+  group: naskah-${{ inputs.id }}
+  cancel-in-progress: false
+jobs:
+  naskah:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Pasang NewMotion
+        run: python -m pip install -e .
+      - name: Cache dataset hadis
+        uses: actions/cache@v4
+        with:
+          path: data/hadis
+          key: hadis-${{ hashFiles('newmotion/paket_genre/kisah_islami/dalil/unduh_hadis.py') }}
+      - name: Unduh dataset hadis bila cache belum ada
+        run: test -f data/hadis/bukhari.json.gz || python -m newmotion.paket_genre.kisah_islami.dalil.unduh_hadis
+      - name: Proses naskah
+        env:
+          ID: ${{ inputs.id }}
+          MODE: ${{ inputs.mode }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          NASKAH_CADANGAN: ${{ inputs.cadangan == false && '0' || '1' }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          QURAN_FOUNDATION_CLIENT_ID: ${{ secrets.QURAN_FOUNDATION_CLIENT_ID }}
+          QURAN_FOUNDATION_CLIENT_SECRET: ${{ secrets.QURAN_FOUNDATION_CLIENT_SECRET }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          case "$MODE" in ide|tempel|revisi) ;; *) echo "::error::mode tidak sah"; exit 1;; esac
+          [[ "$ID" =~ ^[a-z0-9_-]{1,60}$ ]] || { echo "::error::id tidak sah"; exit 1; }
+          set +e
+          python -m newmotion.application.antrean_naskah "$ID" "$MODE" 2>&1 | tee -a "$GITHUB_STEP_SUMMARY"
+          status=${PIPESTATUS[0]}
+          set -e
+          echo "status_proses=$status" >> "$GITHUB_OUTPUT"
+          exit "$status"
+      - name: Simpan hasil antrean
+        if: always()
+        env:
+          ID: ${{ inputs.id }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          [[ "$ID" =~ ^[a-z0-9_-]{1,60}$ ]] || exit 1
+          git config user.name "github-actions[bot]"
+          git config user.email "41898333+github-actions[bot]@users.noreply.github.com"
+          git add "antrean/$ID"
+          if git diff --cached --quiet; then
+            echo "Tidak ada perubahan antrean."
+            exit 0
+          fi
+          git commit -m "Antrean $ID: naskah diproses (workflow #${{ github.run_number }})"
+          for i in 1 2 3; do
+            git pull --rebase -q origin main && git push -q origin HEAD:main && exit 0
+            sleep 5
+          done
+          exit 1
