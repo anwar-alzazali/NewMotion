@@ -112,6 +112,9 @@ def test_penjaga_dalil_paket_memverifikasi_kartu_tanpa_jaringan():
 
 
 def test_shim_papan_lama_meneruskan_implementasi_paket():
+    import sys
+    from pathlib import Path
+    sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "mesin-video"))
     from papan.penjaga_dalil import periksa_dalil as lama
     from newmotion.paket_genre.kisah_islami.penjaga_dalil import periksa_dalil as paket
     assert lama is paket
