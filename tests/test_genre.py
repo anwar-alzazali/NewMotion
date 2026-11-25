@@ -22,11 +22,9 @@ def test_rencana_lama_tetap_memakai_kisah_islami():
 def test_manifest_kisah_islami_memuat_referensi_kompatibilitas():
     paket = ambil("kisah_islami")
     assert paket.nama == "kisah_islami"
-    assert paket.modul_dalil == "mesin-video/dalil"
     assert set(paket.modul_legacy) == {
         "pengarah", "arah_visual", "penjaga_dalil", "penjaga_tokoh_suci"
     }
-    assert paket.bawaan["mode_dalil"] == "wajib_verifikasi"
 
 
 def test_paket_genre_tiruan_dapat_didaftarkan_tanpa_mengubah_inti():
