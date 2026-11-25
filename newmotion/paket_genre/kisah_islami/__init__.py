@@ -12,6 +12,7 @@ def buat_paket() -> PaketGenre:
     """Buat manifest genre tanpa membuat inti bergantung pada implementasinya."""
     return PaketGenre(
         nama="kisah_islami",
+        modul_dalil="newmotion.paket_genre.kisah_islami.dalil",
         modul_legacy={
             "pengarah": "mesin-video/papan/direktur.py",
             "arah_visual": "mesin-video/papan/arah_visual.py",
