@@ -13,8 +13,7 @@ on:
       - 'tests/test_blocking.py'
       - '.github/workflows/render-adegan-uji-visual.yml'
   pull_request:
-    branches:
-      - main
+    types: [opened, synchronize, reopened]
     paths:
       - 'tests/data/adegan_uji_visual.json'
       - 'tests/test_blocking.py'
