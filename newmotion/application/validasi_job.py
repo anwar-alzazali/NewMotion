@@ -3,6 +3,8 @@
 import json
 from pathlib import Path
 
+from newmotion.domain.genre import dari_rencana
+
 
 class GalatValidasiJob(ValueError):
     """Masukan job tidak memenuhi kontrak minimum."""
@@ -22,4 +24,8 @@ def validasi_job(spesifikasi, keluaran):
         raise GalatValidasiJob(f"Spesifikasi bukan JSON yang valid: {galat}") from galat
     if not isinstance(data, dict):
         raise GalatValidasiJob("Akar spesifikasi JSON harus berupa objek")
+    try:
+        dari_rencana(data)
+    except (ValueError, TypeError, ImportError) as galat:
+        raise GalatValidasiJob(f"Genre pada spesifikasi tidak valid: {galat}") from galat
     return sumber, tujuan
