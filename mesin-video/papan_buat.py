@@ -279,6 +279,13 @@ def jaga_spek(spec):
         print("\n\n".join(pesan) + "\nRENDER DIBATALKAN. Perbaiki spek sumber, jangan melewati gerbang.", file=sys.stderr)
         raise SpekDitolak(3)
     cerita = spec.get("cerita") or {}
+    if cerita.get("blocking_otomatis"):
+        # Perencanaan panggung opt-in: spek lama tidak berubah.
+        sys.path.insert(0, os.path.dirname(HERE))
+        from newmotion.blocking import rencanakan_blocking
+        for hasil in rencanakan_blocking(cerita):
+            print("blocking otomatis:", hasil, file=sys.stderr)
+        cerita["pemeriksaan_blocking"] = True
     if cerita.get("pemeriksaan_blocking"):
         # Pemeriksaan ini opsional agar spesifikasi lama tetap kompatibel.
         sys.path.insert(0, os.path.dirname(HERE))
