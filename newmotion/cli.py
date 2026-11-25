@@ -20,6 +20,8 @@ def buat_parser():
     render = perintah.add_parser("render", help="Render spesifikasi melalui mesin-video lama")
     render.add_argument("spesifikasi", help="Berkas spesifikasi JSON")
     render.add_argument("-o", "--keluaran", required=True, help="Lokasi MP4 keluaran")
+    render.add_argument("--naskah", action="store_true", help="Arahkan naskah menjadi papan kisah melalui sutradara inti sebelum render")
+    render.add_argument("--genre", help="Pilih paket genre secara eksplisit untuk mode --naskah")
     render.add_argument("--tanpa-suara", action="store_true", help="Jangan gabungkan trek efek suara")
     render.add_argument("-d", "--durasi", type=float, help="Paksa durasi render dalam detik")
     return parser
@@ -40,6 +42,8 @@ def main(argv=None):
                         gagal = True
                 return 1 if gagal else 0
             if args.perintah == "render":
+                if args.genre and not args.naskah:
+                    raise ValueError("--genre hanya dapat digunakan bersama --naskah")
                 keluaran = Path(args.keluaran)
                 if not keluaran.is_absolute():
                     keluaran = konfigurasi.direktori_hasil / keluaran
@@ -49,7 +53,9 @@ def main(argv=None):
                     argumen_tambahan.append("--tanpa-suara")
                 if args.durasi is not None:
                     argumen_tambahan.extend(["-d", str(args.durasi)])
-                job, hasil = layanan.jalankan_render(args.spesifikasi, keluaran, argumen_tambahan)
+                job, hasil = layanan.jalankan_render(
+                    args.spesifikasi, keluaran, argumen_tambahan, naskah=args.naskah, genre_pilihan=args.genre
+                )
                 print(f"Job {job.id}: {job.status.value}")
                 print(hasil.stdout, end="")
                 if hasil.stderr:

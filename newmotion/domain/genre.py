@@ -12,6 +12,9 @@ from types import MappingProxyType
 from typing import Any, Callable
 
 GENRE_BAWAAN = "kisah_islami"
+KONTEKS_KONTEN_BAWAAN = "umum"
+KONTEKS_KONTEN_ISLAMI = frozenset({"islami", "sejarah_islam", "kehidupan_muslim"})
+KONTEKS_KONTEN_DIKENAL = KONTEKS_KONTEN_ISLAMI | {KONTEKS_KONTEN_BAWAAN}
 _POLA_NAMA = re.compile(r"^[a-z][a-z0-9_]*$")
 _KUNCI = RLock()
 _PAKET: dict[str, "PaketGenre"] = {}
@@ -70,6 +73,8 @@ class PaketGenre:
             raise TypeError("penjaga_tokoh paket harus berupa fungsi")
         if self.penjaga_dalil is not None and not callable(self.penjaga_dalil):
             raise TypeError("penjaga_dalil paket harus berupa fungsi")
+        if self.pengarah_naskah is not None and not callable(self.pengarah_naskah):
+            raise TypeError("pengarah_naskah paket harus berupa fungsi")
         if not any((
             self.komponen_visual, self.validator, self.penjaga_tokoh, self.penjaga_dalil, self.pengarah_naskah,
             self.penyesuaian_adegan, self.skema_tambahan, self.bawaan,
@@ -132,6 +137,62 @@ def nama_dari_rencana(rencana: Mapping[str, Any]) -> str:
     if not isinstance(nama, str) or not _POLA_NAMA.fullmatch(nama):
         raise ValueError("kolom genre harus berupa nama paket yang sah")
     return nama
+
+
+def nama_genre_untuk_naskah(
+    naskah: Mapping[str, Any], *, pilihan: str | None = None
+) -> str:
+    """Resolve genre for a new script; never silently guess a genre.
+
+    Explicit CLI/user choice takes precedence over naskah metadata. If neither
+    exists, ask the caller to obtain a genre choice. Legacy board specifications
+    keep using nama_dari_rencana() and its Kisah Islami compatibility default.
+    """
+    if not isinstance(naskah, Mapping):
+        raise ValueError("naskah harus berupa objek")
+
+    nama = pilihan if pilihan is not None else naskah.get("genre")
+    if nama is None:
+        raise ValueError(
+            "Genre naskah belum ditentukan; isi kolom 'genre' atau gunakan --genre"
+        )
+    if not isinstance(nama, str) or not _POLA_NAMA.fullmatch(nama):
+        raise ValueError("genre harus berupa nama paket yang sah")
+    return nama
+
+
+def konteks_konten_untuk_naskah(
+    naskah: Mapping[str, Any], *, genre: str, wajib_eksplisit: bool = False
+) -> str:
+    """Resolve konteks isi secara terpisah dari genre penceritaan.
+
+    Kisah Islami selalu berada dalam konteks Islami. Genre lain dapat
+    menggunakan konteks umum maupun konteks Islami tanpa mengganti genre.
+    """
+    if not isinstance(naskah, Mapping):
+        raise ValueError("naskah harus berupa objek")
+    konteks = naskah.get("konteks_konten")
+    if konteks is None:
+        if genre == "kisah_islami":
+            konteks = "islami"
+        elif wajib_eksplisit:
+            raise ValueError(
+                "Konteks konten belum ditentukan; isi kolom 'konteks_konten' "
+                "dengan 'umum' atau konteks yang sesuai"
+            )
+        else:
+            konteks = KONTEKS_KONTEN_BAWAAN
+    if not isinstance(konteks, str) or konteks not in KONTEKS_KONTEN_DIKENAL:
+        pilihan = ", ".join(sorted(KONTEKS_KONTEN_DIKENAL))
+        raise ValueError(f"konteks_konten tidak dikenal; gunakan salah satu: {pilihan}")
+    if genre == "kisah_islami" and konteks not in KONTEKS_KONTEN_ISLAMI:
+        raise ValueError("genre kisah_islami wajib memakai konteks konten Islami")
+    return konteks
+
+
+def memakai_kebijakan_islami(konteks_konten: str) -> bool:
+    """Tentukan apakah konteks memerlukan pagar kebijakan Kisah Islami."""
+    return konteks_konten in KONTEKS_KONTEN_ISLAMI
 
 
 def dari_rencana(rencana: Mapping[str, Any]) -> PaketGenre:

@@ -9,14 +9,19 @@ pemeriksaan saat job diteruskan ke renderer melalui subprocess.
 import json
 from pathlib import Path
 
-from newmotion.domain.genre import dari_rencana
+from newmotion.domain.genre import (
+    ambil,
+    dari_rencana,
+    konteks_konten_untuk_naskah,
+    nama_genre_untuk_naskah,
+)
 
 
 class GalatValidasiJob(ValueError):
     """Masukan job tidak memenuhi kontrak minimum."""
 
 
-def validasi_job(spesifikasi, keluaran):
+def validasi_job(spesifikasi, keluaran, *, wajib_genre=False, genre_pilihan=None):
     sumber = Path(spesifikasi).resolve()
     tujuan = Path(keluaran).resolve()
     if not sumber.is_file():
@@ -31,7 +36,14 @@ def validasi_job(spesifikasi, keluaran):
     if not isinstance(data, dict):
         raise GalatValidasiJob("Akar spesifikasi JSON harus berupa objek")
     try:
-        dari_rencana(data)
+        if wajib_genre:
+            nama_genre = nama_genre_untuk_naskah(data, pilihan=genre_pilihan)
+            ambil(nama_genre)
+        else:
+            nama_genre = dari_rencana(data).nama
+        konteks_konten_untuk_naskah(
+            data, genre=nama_genre, wajib_eksplisit=wajib_genre
+        )
     except (ValueError, TypeError, ImportError) as galat:
         raise GalatValidasiJob(f"Genre pada spesifikasi tidak valid: {galat}") from galat
     return sumber, tujuan

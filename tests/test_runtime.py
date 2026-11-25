@@ -1,4 +1,5 @@
 import sys
+from pathlib import Path
 
 import pytest
 
@@ -146,6 +147,7 @@ def test_cli_menerima_lokasi_keluaran_setelah_spesifikasi():
     assert args.spesifikasi.endswith("yajuj2_visual3_gabungan.json")
     assert args.keluaran == "yajuj2-visual3-gabungan.mp4"
     assert args.tanpa_suara is False
+    assert args.naskah is False
 
 
 def test_cli_meneruskan_opsi_render_terbatas():
@@ -177,3 +179,79 @@ def test_validasi_job_hanya_memuat_kontrak_tanpa_menjalankan_penjaga(tmp_path, m
     sumber, keluaran = modul_validasi.validasi_job(spesifikasi, tmp_path / "hasil.mp4")
     assert sumber == spesifikasi.resolve()
     assert keluaran == (tmp_path / "hasil.mp4").resolve()
+
+
+
+def test_pengarah_naskah_dipanggil_sebelum_renderer_dan_menghasilkan_papan(tmp_path, monkeypatch):
+    from types import SimpleNamespace
+    from newmotion.application import jalankan_job as modul_job
+
+    naskah = tmp_path / "naskah.json"
+    naskah.write_text(
+        '{"judul":"Uji penyelamatan","genre":"kisah_islami","adegan":[{"nama":"awal","teks":"Seorang pengendara melintasi jembatan."}]}',
+        encoding="utf-8",
+    )
+    panggilan = []
+
+    def arahkan(data, genre_pilihan=None):
+        panggilan.append(data["judul"])
+        return (
+            {"genre": "kisah_islami", "konteks_konten": "islami", "cerita": {"shot": [{"at": 0, "benda": [], "boneka": []}]}},
+            "kisah_islami",
+            1,
+        )
+
+    monkeypatch.setattr(modul_job, "arahkan_naskah", arahkan)
+
+    class AdapterPalsu:
+        def __init__(self, *args):
+            pass
+
+        def render(self, spesifikasi, keluaran, argumen_tambahan):
+            import json
+            papan = json.loads(Path(spesifikasi).read_text(encoding="utf-8"))
+            assert papan["genre"] == "kisah_islami"
+            assert papan["konteks_konten"] == "islami"
+            assert len(papan["cerita"]["shot"]) == 1
+            return SimpleNamespace(kode_keluar=0, stdout="papan dirender", stderr="")
+
+    monkeypatch.setattr(modul_job, "AdapterPapanLama", AdapterPalsu)
+    konfigurasi = SimpleNamespace(akar_proyek=tmp_path, batas_waktu_subproses=10)
+    job, hasil = LayananJalankanJob(konfigurasi).jalankan_render(
+        naskah, tmp_path / "hasil.mp4", naskah=True
+    )
+
+    assert panggilan == ["Uji penyelamatan"]
+    assert (tmp_path / "hasil.papan.json").is_file()
+    assert job.status == StatusJob.BERHASIL
+    assert hasil.stdout == "papan dirender"
+
+
+def test_mode_naskah_menolak_naskah_tanpa_adegan(tmp_path):
+    naskah = tmp_path / "kosong.json"
+    naskah.write_text('{"judul":"Kosong","genre":"kisah_islami","adegan":[]}', encoding="utf-8")
+    konfigurasi = SimpleNamespace(akar_proyek=tmp_path, batas_waktu_subproses=10)
+    with pytest.raises(ValueError, match="daftar 'adegan'"):
+        LayananJalankanJob(konfigurasi).jalankan_render(
+            naskah, tmp_path / "hasil.mp4", naskah=True
+        )
+
+
+def test_cli_mengaktifkan_mode_pengarah_naskah():
+    from newmotion.cli import buat_parser
+
+    args = buat_parser().parse_args([
+        "render", "naskah.json", "--naskah", "-o", "hasil.mp4",
+    ])
+    assert args.naskah is True
+
+
+def test_cli_menerima_genre_eksplisit_untuk_naskah():
+    from newmotion.cli import buat_parser
+
+    args = buat_parser().parse_args([
+        "render", "naskah.json", "--naskah", "--genre", "kisah_islami",
+        "-o", "hasil.mp4",
+    ])
+    assert args.naskah is True
+    assert args.genre == "kisah_islami"
