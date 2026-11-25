@@ -282,7 +282,7 @@ async function ubahAntrean(env, q, t) {
   }
   st.tahap.tinjau = t.aksi === "nl" ? "selesai" : "gagal";
   st.ket = { ...(st.ket || {}), tinjau: t.aksi === "nl" ? "disetujui" : "dibatalkan" };
-  if (t.aksi === "nl") { st.tahap.sutradara = "tunggu"; st.ket.sutradara = "menunggu sutradara otomatis (Tahap D)"; }
+  if (t.aksi === "nl") { st.tahap.sutradara = "tunggu"; st.ket.sutradara = "menunggu integrasi pipeline pengarahan NewMotion; render belum dipicu"; }
   st.diperbarui = new Date().toISOString();
   await simpanStatus(env, st);
   await TG(env, "answerCallbackQuery", { callback_query_id: q.id, text: t.aksi === "nl" ? "Naskah disetujui" : "Dibatalkan" });
