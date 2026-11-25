@@ -107,6 +107,7 @@ def test_manifest_kisah_islami_mendaftarkan_kedua_penjaga():
     paket = ambil("kisah_islami")
     assert callable(paket.penjaga_tokoh)
     assert callable(paket.penjaga_dalil)
+    assert paket.penjaga_dalil({}) == []
 
 
 def test_kontrak_menolak_penjaga_dalil_yang_bukan_fungsi():
