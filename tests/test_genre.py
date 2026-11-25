@@ -119,7 +119,7 @@ def test_renderer_menjadi_satu_satunya_gerbang_penjaga_genre():
     akar = Path(__file__).resolve().parents[1]
     sumber = (akar / "mesin-video" / "papan_buat.py").read_text(encoding="utf-8")
     awal = sumber.index("def jaga_spek(spec):")
-    akhir = sumber.index("\\ndef buat_html", awal)
+    akhir = sumber.index("\ndef buat_html", awal)
     gerbang = sumber[awal:akhir]
     assert gerbang.count("paket.penjaga_tokoh(spec)") == 1
     assert gerbang.count("paket.penjaga_dalil(spec)") == 1
