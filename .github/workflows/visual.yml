@@ -49,21 +49,6 @@ jobs:
           set -euo pipefail
           [[ "$ID" =~ ^[a-z0-9_-]{1,60}$ ]] || { echo "::error::id tidak sah"; exit 1; }
           python -m newmotion.application.pratinjau_visual "$ID"
-      - name: Kirim pratinjau setelah status tersimpan
-        if: success()
-        env:
-          ID: ${{ inputs.id }}
-          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
-        run: python -m newmotion.application.pratinjau_visual "$ID" --kirim-saja
-      - name: Unggah bukti pratinjau
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: pratinjau-visual-${{ inputs.id }}
-          path: /tmp/newmotion-${{ inputs.id }}-pratinjau.mp4
-          if-no-files-found: warn
-          retention-days: 7
       - name: Simpan papan kisah dan status
         if: always()
         env:
@@ -83,3 +68,18 @@ jobs:
             sleep 5
           done
           exit 1
+      - name: Kirim pratinjau setelah status tersimpan
+        if: success()
+        env:
+          ID: ${{ inputs.id }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: python -m newmotion.application.pratinjau_visual "$ID" --kirim-saja
+      - name: Unggah bukti pratinjau
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pratinjau-visual-${{ inputs.id }}
+          path: /tmp/newmotion-${{ inputs.id }}-pratinjau.mp4
+          if-no-files-found: warn
+          retention-days: 7
