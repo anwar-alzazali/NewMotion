@@ -1,0 +1,164 @@
+{
+  "judul": "Uji Visual — Menolong Pengendara di Jembatan Desa",
+  "durasi": 40,
+  "musik": false,
+  "stempel": false,
+  "dekor": false,
+  "cerita": {
+    "hidup": true,
+    "shot": [
+      {
+        "at": 0,
+        "palet": "pagi",
+        "malam": 0,
+        "langit": 0.25,
+        "horizon": 1250,
+        "debu": 2,
+        "kamera": {"z": [1.0, 1.08], "x": 540, "y": 1040},
+        "benda": [
+          {"jenis": "rumah_kampung", "x": 160, "y": 1320, "s": 0.85, "belakang": true},
+          {"jenis": "pohon", "x": 900, "y": 1280, "s": 1.15, "belakang": true},
+          {"jenis": "jembatan", "x": 550, "y": 1420, "s": 1.0, "belakang": true},
+          {"jenis": "motor", "x": 670, "y": 1570, "s": 0.72}
+        ],
+        "boneka": [
+          {"id": 1, "x": 330, "y": 1710, "s": 0.92, "arah": 0.25, "gaya": "umum", "kulit": "#c99a72", "rambut": "pendek", "pakaian": {"jenis": "kaus", "warna": "#3f7890", "bawah": "celana", "bawah_warna": "#34445a"}, "pose": "berdiri", "wajah": "netral"},
+          {"id": 2, "x": 830, "y": 1710, "s": 0.92, "arah": -0.25, "gaya": "umum", "kulit": "#e9c6a2", "rambut": "keriting", "pakaian": {"jenis": "kaus", "warna": "#c87942", "bawah": "celana", "bawah_warna": "#4b5545"}, "pose": "berdiri", "wajah": "netral"}
+        ],
+        "teks": [{"at": 0.2, "teks": "JALAN DESA", "y": 340, "ukuran": 82, "warna": "#ffffff", "sampai": 3.5}]
+      },
+      {
+        "at": 5,
+        "palet": "mendung",
+        "malam": 0.05,
+        "langit": 0.12,
+        "horizon": 1250,
+        "debu": 0,
+        "kamera": {"z": [1.05, 1.18], "x": 540, "y": 1120},
+        "hujan": 0.8,
+        "benda": [
+          {"jenis": "rumah_kampung", "x": 160, "y": 1320, "s": 0.85, "belakang": true},
+          {"jenis": "pohon", "x": 900, "y": 1280, "s": 1.15, "belakang": true},
+          {"jenis": "jembatan", "x": 550, "y": 1420, "s": 1.0, "belakang": true},
+          {"jenis": "motor", "x": 650, "y": 1570, "s": 0.72}
+        ],
+        "boneka": [
+          {"id": 1, "x": 430, "y": 1710, "s": 0.92, "arah": 0.55, "gaya": "umum", "kulit": "#c99a72", "rambut": "pendek", "pakaian": {"jenis": "kaus", "warna": "#3f7890", "bawah": "celana", "bawah_warna": "#34445a"}, "pose": "mundur", "wajah": "kaget", "reaksi": [[0.2, "kaget"]]},
+          {"id": 2, "x": 820, "y": 1710, "s": 0.92, "arah": -0.25, "gaya": "umum", "kulit": "#e9c6a2", "rambut": "keriting", "pakaian": {"jenis": "kaus", "warna": "#c87942", "bawah": "celana", "bawah_warna": "#4b5545"}, "pose": "berdiri", "wajah": "takut"}
+        ],
+        "teks": [{"at": 0.1, "teks": "HUJAN DERAS", "y": 350, "ukuran": 94, "warna": "#ffffff", "sampai": 4.5}]
+      },
+      {
+        "at": 10,
+        "palet": "mendung",
+        "malam": 0.08,
+        "langit": 0.08,
+        "horizon": 1250,
+        "kamera": {"z": [1.35, 1.55], "x": 570, "y": 1290, "guncang": [[0.2, 8]]},
+        "hujan": 1,
+        "benda": [
+          {"jenis": "jembatan", "x": 550, "y": 1420, "s": 1.0, "belakang": true},
+          {"jenis": "motor", "x": 650, "y": 1580, "s": 0.82},
+          {"jenis": "batu", "x": 180, "y": 1770, "s": 0.8, "depan": true},
+          {"jenis": "batu", "x": 940, "y": 1790, "s": 0.9, "depan": true}
+        ],
+        "boneka": [
+          {"id": 1, "x": 500, "y": 1710, "s": 1.0, "arah": 0.7, "gaya": "umum", "kulit": "#c99a72", "rambut": "pendek", "pakaian": {"jenis": "kaus", "warna": "#3f7890", "bawah": "celana", "bawah_warna": "#34445a"}, "pose": "kaget", "wajah": "takut"},
+          {"id": 2, "x": 820, "y": 1710, "s": 0.92, "arah": -0.5, "gaya": "umum", "kulit": "#e9c6a2", "rambut": "keriting", "pakaian": {"jenis": "kaus", "warna": "#c87942", "bawah": "celana", "bawah_warna": "#4b5545"}, "pose": "tunjuk", "wajah": "kaget"}
+        ],
+        "teks": [{"at": 0.1, "teks": "MOTOR TERGELINCIR", "y": 340, "ukuran": 72, "warna": "#ffffff"}]
+      },
+      {
+        "at": 15,
+        "palet": "mendung",
+        "malam": 0.08,
+        "langit": 0.1,
+        "horizon": 1250,
+        "kamera": {"z": [1.15, 1.28], "x": 540, "y": 1200},
+        "hujan": 0.75,
+        "benda": [
+          {"jenis": "jembatan", "x": 550, "y": 1420, "s": 1.0, "belakang": true},
+          {"jenis": "motor", "x": 650, "y": 1580, "s": 0.82}
+        ],
+        "boneka": [
+          {"id": 1, "x": 480, "y": 1710, "s": 1.0, "arah": 0.65, "gaya": "umum", "kulit": "#c99a72", "rambut": "pendek", "pakaian": {"jenis": "kaus", "warna": "#3f7890", "bawah": "celana", "bawah_warna": "#34445a"}, "pose": "duduk", "wajah": "kesal"},
+          {"id": 2, "x": 850, "y": 1710, "s": 0.95, "arah": -0.65, "gaya": "umum", "kulit": "#e9c6a2", "rambut": "keriting", "pakaian": {"jenis": "kaus", "warna": "#c87942", "bawah": "celana", "bawah_warna": "#4b5545"}, "pose": "condong", "wajah": "takut"}
+        ],
+        "teks": [{"at": 0.1, "teks": "TERJEBAK", "y": 350, "ukuran": 110, "warna": "#ffffff"}]
+      },
+      {
+        "at": 20,
+        "palet": "mendung",
+        "malam": 0.05,
+        "langit": 0.12,
+        "horizon": 1250,
+        "kamera": {"z": [1.1, 1.22], "x": 540, "y": 1180},
+        "hujan": 0.55,
+        "benda": [
+          {"jenis": "jembatan", "x": 550, "y": 1420, "s": 1.0, "belakang": true},
+          {"jenis": "motor", "x": 650, "y": 1580, "s": 0.82, "depan": true}
+        ],
+        "boneka": [
+          {"id": 1, "x": 490, "y": 1710, "s": 1.0, "arah": 0.65, "gaya": "umum", "kulit": "#c99a72", "rambut": "pendek", "pakaian": {"jenis": "kaus", "warna": "#3f7890", "bawah": "celana", "bawah_warna": "#34445a"}, "pose": "berdiri", "lengan": "angkat_bahu", "wajah": "lelah"},
+          {"id": 2, "x": 760, "y": 1710, "s": 0.95, "arah": -0.65, "gaya": "umum", "kulit": "#e9c6a2", "rambut": "keriting", "pakaian": {"jenis": "kaus", "warna": "#c87942", "bawah": "celana", "bawah_warna": "#4b5545"}, "pose": "condong", "wajah": "lega"}
+        ],
+        "teks": [{"at": 0.1, "teks": "MULAI MENOLONG", "y": 350, "ukuran": 92, "warna": "#ffffff"}]
+      },
+      {
+        "at": 25,
+        "palet": "mendung",
+        "malam": 0.05,
+        "langit": 0.12,
+        "horizon": 1250,
+        "kamera": {"z": [1.35, 1.55], "x": 560, "y": 1320},
+        "hujan": 0.4,
+        "benda": [
+          {"jenis": "jembatan", "x": 550, "y": 1420, "s": 1.0, "belakang": true},
+          {"jenis": "motor", "x": 650, "y": 1580, "s": 0.82, "depan": true}
+        ],
+        "boneka": [
+          {"id": 1, "x": 490, "y": 1710, "s": 1.0, "arah": 0.65, "gaya": "umum", "kulit": "#c99a72", "rambut": "pendek", "pakaian": {"jenis": "kaus", "warna": "#3f7890", "bawah": "celana", "bawah_warna": "#34445a"}, "pose": "condong", "wajah": "lelah", "reaksi": [[0.2, "maju"]]},
+          {"id": 2, "x": 740, "y": 1710, "s": 0.95, "arah": -0.65, "gaya": "umum", "kulit": "#e9c6a2", "rambut": "keriting", "pakaian": {"jenis": "kaus", "warna": "#c87942", "bawah": "celana", "bawah_warna": "#4b5545"}, "pose": "condong", "wajah": "takut", "reaksi": [[0.2, "maju"]]}
+        ]
+      },
+      {
+        "at": 30,
+        "palet": "sore",
+        "malam": 0,
+        "langit": 0.35,
+        "horizon": 1250,
+        "kamera": {"z": [1.25, 1.12], "x": 540, "y": 1150},
+        "hujan": 0.08,
+        "benda": [
+          {"jenis": "jembatan", "x": 550, "y": 1420, "s": 1.0, "belakang": true},
+          {"jenis": "motor", "x": 650, "y": 1580, "s": 0.82}
+        ],
+        "boneka": [
+          {"id": 1, "x": 470, "y": 1710, "s": 1.0, "arah": 0.65, "gaya": "umum", "kulit": "#c99a72", "rambut": "pendek", "pakaian": {"jenis": "kaus", "warna": "#3f7890", "bawah": "celana", "bawah_warna": "#34445a"}, "pose": "berdiri", "wajah": "lega"},
+          {"id": 2, "x": 760, "y": 1710, "s": 0.95, "arah": -0.65, "gaya": "umum", "kulit": "#e9c6a2", "rambut": "keriting", "pakaian": {"jenis": "kaus", "warna": "#c87942", "bawah": "celana", "bawah_warna": "#4b5545"}, "pose": "lambai", "wajah": "senang"}
+        ],
+        "teks": [{"at": 0.1, "teks": "BERHASIL LEWAT", "y": 350, "ukuran": 100, "warna": "#ffffff"}]
+      },
+      {
+        "at": 35,
+        "palet": "sore",
+        "malam": 0,
+        "langit": 0.4,
+        "horizon": 1250,
+        "kamera": {"z": [1.2, 0.98], "x": 540, "y": 1050},
+        "hujan": 0,
+        "benda": [
+          {"jenis": "rumah_kampung", "x": 160, "y": 1320, "s": 0.85, "belakang": true},
+          {"jenis": "pohon", "x": 900, "y": 1280, "s": 1.15, "belakang": true},
+          {"jenis": "jembatan", "x": 550, "y": 1420, "s": 1.0, "belakang": true},
+          {"jenis": "motor", "x": 650, "y": 1570, "s": 0.72}
+        ],
+        "boneka": [
+          {"id": 1, "x": 450, "y": 1710, "s": 0.92, "arah": 0.25, "gaya": "umum", "kulit": "#c99a72", "rambut": "pendek", "pakaian": {"jenis": "kaus", "warna": "#3f7890", "bawah": "celana", "bawah_warna": "#34445a"}, "pose": "berdiri", "wajah": "lega"},
+          {"id": 2, "x": 760, "y": 1710, "s": 0.92, "arah": -0.25, "gaya": "umum", "kulit": "#e9c6a2", "rambut": "keriting", "pakaian": {"jenis": "kaus", "warna": "#c87942", "bawah": "celana", "bawah_warna": "#4b5545"}, "pose": "lambai", "wajah": "senang"}
+        ],
+        "teks": [{"at": 0.1, "teks": "SALING MENOLONG", "y": 350, "ukuran": 88, "warna": "#ffffff"}]
+      }
+    ]
+  }
+}
