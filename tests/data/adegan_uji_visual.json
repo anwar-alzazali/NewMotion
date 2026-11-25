@@ -156,7 +156,8 @@
                 0
               ]
             ],
-            "wajah": "netral"
+            "wajah": "netral",
+            "profil": "kanan"
           },
           {
             "id": 2,
@@ -280,7 +281,8 @@
             ],
             "kendaraan_id": "motor_1",
             "offset_kendaraan_y": -46,
-            "pose_motor": "mengendarai_motor"
+            "pose_motor": "mengendarai_motor",
+            "profil": "kanan"
           },
           {
             "id": 2,
@@ -490,7 +492,8 @@
             "wajah": "takut",
             "kendaraan_id": "motor_1",
             "offset_kendaraan_y": -46,
-            "lepas_kendaraan_at": 2.4
+            "lepas_kendaraan_at": 2.4,
+            "profil": "kanan"
           },
           {
             "id": 2,
