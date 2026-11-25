@@ -70,3 +70,18 @@ def test_proses_antrean_menggunakan_verifikasi_paket_kisah_islami(tmp_path, monk
     assert st["tahap"]["tinjau"] == "jalan"
     tersimpan = json.loads((antrean / "naskah.json").read_text(encoding="utf-8"))
     assert tersimpan["judul"] == "Uji antrean"
+
+
+def test_status_baru_menyimpan_genre_dan_konteks_eksplisit():
+    status = A.status_baru(
+        "uji-metadata", "Uji metadata", "ide",
+        genre="kisah_islami", konteks_konten="islami",
+    )
+    assert status["genre"] == "kisah_islami"
+    assert status["konteks_konten"] == "islami"
+
+
+def test_status_baru_mempertahankan_default_kompatibilitas_lama():
+    status = A.status_baru("uji-lama", "Uji lama", "ide")
+    assert status["genre"] == "kisah_islami"
+    assert status["konteks_konten"] == "islami"
