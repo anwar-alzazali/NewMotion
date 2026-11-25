@@ -64,6 +64,9 @@ def buat_pratinjau(id_: str, *, folder: Path = ANTREAN, keluaran: Path | None = 
     if not naskah_path.is_file() or not status_path.is_file():
         raise FileNotFoundError("Naskah atau status antrean tidak ditemukan.")
     status = json.loads(status_path.read_text(encoding="utf-8"))
+    tahap_visual = status.get("tahap", {}).get("tinjau_visual", "belum")
+    if tahap_visual in ("jalan", "selesai"):
+        raise ValueError("Pratinjau visual sudah dibuat dan sedang/selesai ditinjau; cegah render ganda.")
     if status.get("tahap", {}).get("tinjau") != "selesai":
         raise ValueError("Pratinjau visual hanya boleh dibuat setelah naskah disetujui.")
     naskah = json.loads(naskah_path.read_text(encoding="utf-8"))
