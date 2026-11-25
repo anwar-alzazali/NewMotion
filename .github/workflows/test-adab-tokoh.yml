@@ -1,0 +1,37 @@
+name: Uji adab penggambaran tokoh Kisah Islami
+
+on:
+  pull_request:
+    paths:
+      - 'newmotion/**'
+      - 'tests/test_adab_tokoh.py'
+      - 'pyproject.toml'
+      - '.github/workflows/test-adab-tokoh.yml'
+  push:
+    branches:
+      - 'feature/pemisahan-genre-dari-inti'
+    paths:
+      - 'newmotion/**'
+      - 'tests/test_adab_tokoh.py'
+      - 'pyproject.toml'
+      - '.github/workflows/test-adab-tokoh.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  adab-tokoh:
+    name: Tes aturan penggambaran tokoh
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Siapkan Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Pasang dependensi pengujian
+        run: python -m pip install -e '.[uji]'
+      - name: Jalankan tes adab tokoh
+        run: python -m pytest tests/test_adab_tokoh.py -v
