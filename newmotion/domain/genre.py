@@ -47,6 +47,7 @@ class PaketGenre:
     komponen_visual: Mapping[str, Callable[..., Any]] = field(default_factory=dict)
     validator: Callable[..., Any] | None = None
     penjaga_tokoh: Callable[..., Any] | None = None
+    penjaga_dalil: Callable[..., Any] | None = None
     pengarah_naskah: Callable[..., Any] | None = None
     penyesuaian_adegan: Callable[..., Any] | None = None
     skema_tambahan: Mapping[str, Any] = field(default_factory=dict)
@@ -67,8 +68,10 @@ class PaketGenre:
             raise TypeError("validator paket harus berupa fungsi")
         if self.penjaga_tokoh is not None and not callable(self.penjaga_tokoh):
             raise TypeError("penjaga_tokoh paket harus berupa fungsi")
+        if self.penjaga_dalil is not None and not callable(self.penjaga_dalil):
+            raise TypeError("penjaga_dalil paket harus berupa fungsi")
         if not any((
-            self.komponen_visual, self.validator, self.penjaga_tokoh, self.pengarah_naskah,
+            self.komponen_visual, self.validator, self.penjaga_tokoh, self.penjaga_dalil, self.pengarah_naskah,
             self.penyesuaian_adegan, self.skema_tambahan, self.bawaan,
             self.modul_dalil, self.panduan_gaya, self.resep, self.modul_legacy,
         )):
