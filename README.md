@@ -1,27 +1,44 @@
 # NewMotion
 
-NewMotion is being prepared as a clean, domain-neutral application foundation.
+NewMotion disiapkan sebagai fondasi aplikasi yang rapi, dengan batas domain yang jelas dan tidak mengunci pilihan teknologi terlalu dini.
 
-## Architecture direction
+## Arah arsitektur
 
-Start with a **modular monolith**: explicit domain boundaries, application use cases, replaceable infrastructure adapters, and thin interfaces. Split services only when scale, deployment, or ownership creates a concrete need.
+Mulai dengan **monolit modular**: pisahkan tanggung jawab domain, alur aplikasi, infrastruktur, dan antarmuka. Semua integrasi eksternal dibuat agar bisa diganti tanpa mengubah aturan inti aplikasi. Pecah menjadi layanan terpisah hanya jika kebutuhan skala, penerapan, keamanan, atau kepemilikan memang mengharuskannya.
 
-## Current status
+## Ketentuan bahasa dan penamaan
 
-- [x] Repository baseline inspected.
-- [x] Initial architecture and migration boundaries documented.
-- [ ] Product domain and primary user workflow confirmed.
-- [ ] Runtime, language, and deployment target selected.
-- [ ] First vertical slice implemented and tested.
+**Bahasa Indonesia adalah standar utama proyek ini, mengikuti gaya penulisan `mesin-video`.** Nama variabel, konstanta, fungsi, metode, kelas, modul, serta komentar dan docstring wajib menggunakan bahasa Indonesia yang jelas dan konsisten. Nama folder dan berkas juga gunakan bahasa Indonesia jika tidak berbenturan dengan kebiasaan alat atau kontrak teknis yang sudah ada.
 
-No application runtime or third-party dependency has been introduced yet. This is intentional: the source repository contains video-specific workflows and integrations that should not be copied into a product whose domain is not yet defined.
+Pengecualian hanya untuk sintaks bahasa pemrograman, nama bawaan framework atau pustaka, API eksternal, protokol, serta identifier yang memang diwajibkan sistem terkait. Jangan menerjemahkan identifier eksternal yang harus persis.
 
-## Documents
+Contoh:
 
-- [Architecture overview](docs/architecture/overview.md)
-- [Adoption map from mesin-video](docs/architecture/adoption-map.md)
-- [ADR 0001 — Modular monolith](docs/decisions/0001-modular-monolith.md)
+```python
+def buat_video(naskah, folder_hasil):
+    """Membuat video berdasarkan naskah dan menyimpan hasilnya."""
+    durasi_video = hitung_durasi(naskah)
+    return durasi_video
+```
 
-## Security
+Dokumentasi, pesan internal pengembang, panduan penggunaan, dan komentar konfigurasi juga ditulis dalam bahasa Indonesia. Istilah teknis boleh dipertahankan jika lebih tepat, tetapi penjelasannya tetap berbahasa Indonesia.
 
-Never commit credentials, API keys, access tokens, private user data, production exports, or local environment files. Use the target platform's secret manager and provide only sanitized examples in the repository.
+## Status saat ini
+
+- [x] Struktur awal repositori diperiksa.
+- [x] Batas arsitektur dan arah adaptasi awal didokumentasikan.
+- [ ] Domain produk dan alur utama pengguna dikonfirmasi.
+- [ ] Bahasa pemrograman, runtime, dan target penerapan dipilih.
+- [ ] Alur fitur pertama dibuat dan diuji.
+
+Belum ada runtime aplikasi atau dependensi pihak ketiga yang ditambahkan. Ini disengaja: repositori sumber memiliki alur kerja khusus produksi video yang tidak boleh disalin ke produk dengan domain yang belum dipastikan.
+
+## Dokumentasi
+
+- [Gambaran arsitektur](docs/architecture/overview.md)
+- [Peta adaptasi dari mesin-video](docs/architecture/adoption-map.md)
+- [ADR 0001 — Monolit modular](docs/decisions/0001-modular-monolith.md)
+
+## Keamanan
+
+Jangan pernah memasukkan kredensial, kunci API, token akses, data pribadi pengguna, hasil produksi, atau berkas konfigurasi lokal ke repositori. Simpan rahasia melalui pengelola rahasia platform dan gunakan contoh data yang sudah disamarkan.
