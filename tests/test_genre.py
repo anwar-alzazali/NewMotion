@@ -100,3 +100,22 @@ def test_validasi_job_menolak_genre_yang_tidak_tersedia(tmp_path):
     spesifikasi.write_text('{"genre": "genre_tidak_tersedia"}', encoding="utf-8")
     with pytest.raises(GalatValidasiJob, match="Genre pada spesifikasi tidak valid"):
         validasi_job(spesifikasi, tmp_path / "hasil.mp4")
+
+
+
+def test_manifest_kisah_islami_mendaftarkan_kedua_penjaga():
+    paket = ambil("kisah_islami")
+    assert callable(paket.penjaga_tokoh)
+    assert callable(paket.penjaga_dalil)
+
+
+def test_kontrak_menolak_penjaga_dalil_yang_bukan_fungsi():
+    with pytest.raises(TypeError, match="penjaga_dalil"):
+        PaketGenre(nama="genre_penjaga_salah_uji", penjaga_dalil="bukan-fungsi")
+
+
+def test_renderer_memanggil_penjaga_dari_kontrak_tanpa_cabang_nama_genre():
+    akar = Path(__file__).resolve().parents[1]
+    sumber = (akar / "mesin-video" / "papan_buat.py").read_text(encoding="utf-8")
+    assert "paket.penjaga_dalil(spec)" in sumber
+    assert 'if paket.nama == "kisah_islami"' not in sumber
