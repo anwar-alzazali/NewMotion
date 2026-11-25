@@ -168,5 +168,5 @@ def test_pengendara_menghadap_samping_dan_memegang_setang():
         pengendara = next(b for b in cerita["shot"][indeks]["boneka"] if b["id"] == 1)
         assert pengendara["profil"] == "kanan"
     assert 'b.profil === "kanan"' in sumber
-    assert "profilMotor: b.profil ===" in sumber
+    assert "profilMotor: (b.profil ===" in sumber
     assert "const H = o.profilMotor ? [218, -284 + nafas]" in sumber
