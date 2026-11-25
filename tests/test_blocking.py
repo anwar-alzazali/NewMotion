@@ -52,3 +52,29 @@ def test_tumpang_tindih_hanya_peringatan():
 def test_di_tempat_memerlukan_alasan():
     cerita = {"shot": [{"boneka": [{"id": 1, "jalan": 1, "di_tempat": True}]}]}
     assert any(x["kode"] == "alasan_di_tempat_kosong" for x in periksa_blocking(cerita))
+
+
+def test_keyframe_x_renderer_dianggap_perpindahan():
+    cerita = {"shot": [{"boneka": [{
+        "id": 1, "x": [[0, 100], [4, 360]], "y": 200, "jalan": 1,
+    }]}]}
+    temuan = periksa_blocking(cerita)
+    assert not any(x["kode"] == "jalan_tanpa_lintasan" for x in temuan)
+
+
+def test_keyframe_xy_renderer_dianggap_perpindahan():
+    cerita = {"shot": [{"boneka": [{
+        "id": 1, "x": [[0, 100], [2, 240], [4, 420]],
+        "y": [[0, 200], [4, 260]], "gerak": "jalan",
+    }]}]}
+    temuan = periksa_blocking(cerita)
+    assert not any(x["kode"] == "jalan_tanpa_lintasan" for x in temuan)
+
+
+def test_posisi_tetap_tetap_ditolak_meski_gerak_kaki_aktif():
+    cerita = {"shot": [{"boneka": [{
+        "id": 1, "x": [[0, 100], [4, 100]], "y": 200, "jalan": 1,
+    }]}]}
+    temuan = periksa_blocking(cerita)
+    assert any(x["kode"] == "jalan_tanpa_lintasan" and x["tingkat"] == "gagal"
+               for x in temuan)
