@@ -6,8 +6,8 @@ on:
       - 'test/yajuj2-visual3-characters'
     paths:
       - 'mesin-video/papan/karakter/**'
-      - 'newmotion/blocking.py'
-      - 'tests/test_blocking.py'
+      - 'newmotion/**'
+      - 'tests/**'
       - 'mesin-video/papan/cerita.js'
       - 'mesin-video/papan_buat.py'
       - 'mesin-video/papan/kisah/yajuj2_visual3_gabungan.json'
