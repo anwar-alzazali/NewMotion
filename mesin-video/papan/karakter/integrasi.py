@@ -123,6 +123,9 @@ def integrasikan_tokoh(boneka, karakter, durasi, fps=15):
     gerak = karakter.get("gerak", "berdiri")
     jadwal = _jadwal_gerak(gerak)
     nama_gerak = {nama for _, nama in jadwal}
+    # Pekerja menggali menghadap dinding; bila tidak ditentukan, tampilkan belakang kepala.
+    if "gali" in nama_gerak and karakter.get("arah") is None:
+        boneka["belakang"] = True
     alat = karakter.get("alat")
     if alat is None:
         alat = "beliung" if "gali" in nama_gerak else ("palu" if "palu" in nama_gerak else None)
