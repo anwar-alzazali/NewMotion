@@ -78,16 +78,16 @@
                 1510
               ],
               [
-                3.2,
+                2.2,
                 1510
               ],
               [
-                4,
-                1350
+                3.2,
+                1454
               ],
               [
                 5,
-                1350
+                1454
               ]
             ],
             "s": 0.92,
@@ -135,7 +135,7 @@
               ],
               [
                 3.5,
-                "duduk"
+                "mengendarai_motor"
               ]
             ],
             "jalan": [
@@ -240,7 +240,8 @@
               ]
             ],
             "y": 1500,
-            "s": 0.72
+            "s": 0.72,
+            "id": "motor_1"
           }
         ],
         "boneka": [
@@ -268,7 +269,7 @@
               "bawah": "celana",
               "bawah_warna": "#34445a"
             },
-            "pose": "duduk",
+            "pose": "mengendarai_motor",
             "jalan": 0,
             "wajah": "kaget",
             "reaksi": [
@@ -276,7 +277,10 @@
                 0.2,
                 "kaget"
               ]
-            ]
+            ],
+            "kendaraan_id": "motor_1",
+            "offset_kendaraan_y": -46,
+            "pose_motor": "mengendarai_motor"
           },
           {
             "id": 2,
@@ -375,7 +379,8 @@
                 1630
               ]
             ],
-            "s": 0.82
+            "s": 0.82,
+            "id": "motor_1"
           },
           {
             "jenis": "batu",
@@ -397,14 +402,6 @@
             "id": 1,
             "x": [
               [
-                0,
-                820
-              ],
-              [
-                1.2,
-                850
-              ],
-              [
                 2.4,
                 900
               ],
@@ -418,14 +415,6 @@
               ]
             ],
             "y": [
-              [
-                0,
-                1350
-              ],
-              [
-                1.2,
-                1350
-              ],
               [
                 2.4,
                 1450
@@ -472,7 +461,10 @@
               ]
             ],
             "jalan": 0,
-            "wajah": "takut"
+            "wajah": "takut",
+            "kendaraan_id": "motor_1",
+            "offset_kendaraan_y": -46,
+            "lepas_kendaraan_at": 2.4
           },
           {
             "id": 2,
