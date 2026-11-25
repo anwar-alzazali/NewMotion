@@ -1,0 +1,49 @@
+name: Uji pembuat karakter
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    paths:
+      - 'mesin-video/papan/karakter/**'
+      - 'mesin-video/papan/cerita.js'
+      - 'mesin-video/papan_buat.py'
+      - 'mesin-video/papan/kisah/yajuj2_visual3.json'
+      - 'tests/test_penataan_panggung.py'
+      - 'tests/data/adegan_uji_visual.json'
+      - '.github/workflows/test-karakter.yml'
+  push:
+    branches:
+      - 'feature/pembuat-karakter-gabungan'
+    paths:
+      - 'mesin-video/papan/karakter/**'
+      - 'mesin-video/papan/cerita.js'
+      - 'mesin-video/papan_buat.py'
+      - 'tests/test_penataan_panggung.py'
+      - 'tests/data/adegan_uji_visual.json'
+      - '.github/workflows/test-karakter.yml'
+
+jobs:
+  test-karakter:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Siapkan Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Periksa sintaks renderer adegan
+        run: node --check mesin-video/papan/cerita.js
+      - name: Validasi JSON Visual 3
+        run: python -m json.tool mesin-video/papan/kisah/yajuj2_visual3.json > /dev/null
+      - name: Siapkan Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Pasang pytest
+        run: python -m pip install pytest
+      - name: Jalankan tes renderer karakter
+        working-directory: mesin-video/papan
+        run: python -m pytest karakter/test_karakter.py -v
+      - name: Jalankan tes penataan panggung dan adegan motor
+        run: python -m pytest tests/test_penataan_panggung.py -v

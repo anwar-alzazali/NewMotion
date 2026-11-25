@@ -1,0 +1,33 @@
+# Rahasia dan konfigurasi lokal
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+secrets/
+credentials/
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Node.js
+node_modules/
+.npm/
+.pnpm-store/
+
+# Hasil proses pembangunan
+dist/
+build/
+coverage/
+*.log
+
+# Berkas lokal dan editor
+.DS_Store
+.idea/
+.vscode/

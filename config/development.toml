@@ -1,0 +1,4 @@
+[runtime]
+direktori_hasil = "hasil"
+tingkat_log = "DEBUG"
+batas_waktu_subproses = 3600

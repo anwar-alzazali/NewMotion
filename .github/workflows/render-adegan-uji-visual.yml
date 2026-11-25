@@ -1,0 +1,81 @@
+name: Uji visual adegan motor dan jembatan
+
+on:
+  push:
+    branches:
+      - feature/pembuat-karakter-gabungan
+    paths:
+      - 'tests/data/adegan_uji_visual.json'
+      - 'mesin-video/papan/cerita.js'
+      - 'mesin-video/papan/karakter/**'
+      - 'mesin-video/papan_buat.py'
+      - 'newmotion/**'
+      - 'tests/test_penataan_panggung.py'
+      - '.github/workflows/render-adegan-uji-visual.yml'
+  pull_request:
+    types: [opened, synchronize, reopened]
+    paths:
+      - 'tests/data/adegan_uji_visual.json'
+      - 'tests/test_penataan_panggung.py'
+      - 'newmotion/**'
+      - 'mesin-video/papan/cerita.js'
+      - 'mesin-video/papan/karakter/**'
+      - 'mesin-video/papan_buat.py'
+      - '.github/workflows/render-adegan-uji-visual.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  render-adegan-uji-visual:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Ambil kode
+        uses: actions/checkout@v4
+
+      - name: Pasang FFmpeg dan font
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq ffmpeg fonts-dejavu-core
+
+      - name: Pasang dependensi Python dan Chromium
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install pillow numpy playwright
+          python -m playwright install --with-deps chromium
+
+      - name: Pasang alat uji
+        run: python -m pip install 'pytest>=8,<9'
+
+      - name: Uji kontrak penataan panggung
+        run: python -m pytest tests/test_penataan_panggung.py -q
+
+      - name: Validasi spesifikasi adegan
+        run: python -m json.tool tests/data/adegan_uji_visual.json > /dev/null
+
+      - name: Render video uji
+        run: |
+          mkdir -p hasil-uji-visual
+          python mesin-video/papan_buat.py tests/data/adegan_uji_visual.json -o hasil-uji-visual/adegan-motor-jembatan.mp4
+
+      - name: Ambil frame pembanding
+        if: always()
+        run: |
+          if [ -f hasil-uji-visual/adegan-motor-jembatan.mp4 ]; then
+            for detik in 0 5 10 15 20 25 30 35; do
+              ffmpeg -y -ss "$detik" -i hasil-uji-visual/adegan-motor-jembatan.mp4 -frames:v 1 "hasil-uji-visual/frame-$detik.png"
+            done
+            ffprobe -v error -show_entries format=duration,size:stream=codec_name,width,height,r_frame_rate -of json hasil-uji-visual/adegan-motor-jembatan.mp4 | tee hasil-uji-visual/metadata.json
+            sha256sum hasil-uji-visual/adegan-motor-jembatan.mp4 | tee hasil-uji-visual/SHA256SUMS.txt
+          fi
+
+      - name: Simpan hasil uji visual
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: adegan-motor-jembatan-newmotion
+          path: hasil-uji-visual/
+          if-no-files-found: warn
+          retention-days: 14

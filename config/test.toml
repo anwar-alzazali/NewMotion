@@ -1,0 +1,4 @@
+[runtime]
+direktori_hasil = "hasil-uji"
+tingkat_log = "WARNING"
+batas_waktu_subproses = 120

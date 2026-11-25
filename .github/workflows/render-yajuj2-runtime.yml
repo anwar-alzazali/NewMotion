@@ -1,17 +1,11 @@
-name: Uji adegan visual baru melalui renderer NewMotion
+name: Uji runtime visual NewMotion (manual)
+
+# Workflow ini dipertahankan untuk pemeriksaan mendalam saat diminta.
+# Render otomatis adegan motor-jembatan dijalankan oleh render-adegan-uji-visual.yml
+# agar satu perubahan tidak memicu dua render video yang sama.
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - feature/pembuat-karakter-gabungan
-    paths:
-      - 'newmotion/**'
-      - 'tests/data/**'
-      - 'config/**'
-      - 'mesin-video/**'
-      - 'pyproject.toml'
-      - '.github/workflows/render-yajuj2-runtime.yml'
 
 permissions:
   contents: read
@@ -41,19 +35,17 @@ jobs:
           python -m pip install -e '.[render]'
           python -m playwright install --with-deps chromium
 
-      - name: Periksa renderer NewMotion dan input adegan uji
+      - name: Periksa renderer dan input adegan uji
         run: |
           test -f mesin-video/papan_buat.py
           test -f mesin-video/papan/cerita.js
           python - <<'PY'
           import json
           from pathlib import Path
-
           path = Path("tests/data/adegan_uji_visual.json")
           spec = json.loads(path.read_text(encoding="utf-8"))
           print(f"Spesifikasi adegan uji: {path}")
           print(f"Jumlah shot: {len(spec.get('cerita', {}).get('shot', []))}")
-          print("Renderer yang diuji: mesin-video/papan_buat.py dari branch NewMotion")
           PY
 
       - name: Periksa runtime NewMotion
@@ -61,43 +53,35 @@ jobs:
           newmotion --version
           newmotion doctor
 
-      - name: Render uji adegan visual baru melalui NewMotion
+      - name: Render dan verifikasi adegan uji
         run: |
           mkdir -p hasil
           set -o pipefail
-          # CLI menempatkan nama keluaran relatif di config/development.toml (hasil/).
-          # Jangan awali argumen -o dengan "hasil/" agar tidak menjadi hasil/hasil/.
           newmotion render tests/data/adegan_uji_visual.json -o adegan-uji-visual.mp4 2>&1 | tee hasil/render-adegan-uji.log
           test -s hasil/adegan-uji-visual.mp4
           ffprobe -v error -show_entries format=duration,size:stream=codec_name,codec_type,width,height,r_frame_rate -of json hasil/adegan-uji-visual.mp4 > hasil/metadata-adegan-uji.json
           python - <<'PY'
           import json
           from pathlib import Path
-
           metadata = json.loads(Path("hasil/metadata-adegan-uji.json").read_text())
           streams = metadata.get("streams", [])
           video = next((s for s in streams if s.get("codec_type") == "video"), None)
           audio = next((s for s in streams if s.get("codec_type") == "audio"), None)
           if video is None or audio is None:
               raise SystemExit("Stream video atau audio adegan uji tidak ditemukan.")
-          if video.get("codec_name") != "h264":
-              raise SystemExit(f"Codec video adegan uji bukan H.264: {video.get('codec_name')}")
-          if audio.get("codec_name") != "aac":
-              raise SystemExit(f"Codec audio adegan uji bukan AAC: {audio.get('codec_name')}")
+          if video.get("codec_name") != "h264" or audio.get("codec_name") != "aac":
+              raise SystemExit("Codec video/audio tidak sesuai kontrak.")
           durasi = float(metadata.get("format", {}).get("duration", 0))
           if not 35 <= durasi <= 45:
-              raise SystemExit(f"Durasi adegan uji di luar rentang 35–45 detik: {durasi:.2f}")
-          print(f"LOLOS: adegan uji H.264 + AAC, durasi {durasi:.2f} detik.")
+              raise SystemExit(f"Durasi di luar rentang 35–45 detik: {durasi:.2f}")
+          print(f"LOLOS: H.264 + AAC, durasi {durasi:.2f} detik.")
           PY
-          python mesin-video/papan_buat.py tests/data/adegan_uji_visual.json --html hasil/adegan-uji-visual.html
-          python mesin-video/papan_buat.py tests/data/adegan_uji_visual.json --pratinjau 2,7,12,17,22,27,32,37 -o hasil/frame-uji
-          sha256sum hasil/adegan-uji-visual.mp4 | tee hasil/SHA256-adegan-uji.txt
 
       - name: Simpan artefak pengujian
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: hasil-uji-adegan-visual-newmotion
+          name: hasil-uji-adegan-visual-newmotion-runtime
           path: hasil/
           if-no-files-found: warn
           retention-days: 14

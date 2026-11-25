@@ -1,0 +1,4 @@
+[runtime]
+direktori_hasil = "hasil-worker"
+tingkat_log = "INFO"
+batas_waktu_subproses = 7200
