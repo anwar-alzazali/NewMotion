@@ -63,7 +63,6 @@ def status_baru(
     }
 
 
-
 def kebijakan_naskah(status: dict, naskah: dict | None = None) -> dict:
     """Pastikan jalur antrean hanya memakai kebijakan yang benar-benar tersedia.
 
@@ -72,10 +71,20 @@ def kebijakan_naskah(status: dict, naskah: dict | None = None) -> dict:
     """
     from newmotion.application.pengklasifikasi_konten import klasifikasikan_konten
 
-    genre = status.get("genre") or (naskah or {}).get("genre") or "kisah_islami"
-    konteks = status.get("konteks_konten") or (naskah or {}).get("konteks_konten")
+    data_lama = naskah or {}
+    genre = status.get("genre") if status.get("genre") is not None else data_lama.get("genre")
+    konteks = (
+        status.get("konteks_konten")
+        if status.get("konteks_konten") is not None
+        else data_lama.get("konteks_konten")
+    )
+    genre = "kisah_islami" if genre is None else genre
+    if not isinstance(genre, str) or not genre.strip():
+        raise ValueError("Metadata genre kosong/tidak sah; antrean tidak boleh diproses.")
     if konteks is None and genre == "kisah_islami":
         konteks = "islami"
+    if not isinstance(konteks, str) or not konteks.strip():
+        raise ValueError("Metadata konteks_konten kosong/tidak sah; antrean tidak boleh diproses.")
 
     sumber = dict(naskah or {})
     sumber["genre"] = genre
