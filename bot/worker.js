@@ -276,6 +276,9 @@ async function ubahAntrean(env, q, t) {
   const st = await bacaJsonRepo(env, `antrean/${t.id}/status.json`);
   if (!st) return TG(env, "answerCallbackQuery", { callback_query_id: q.id, text: "Antrean tidak ditemukan" });
   st.pesan_kartu = q.message ? q.message.message_id : st.pesan_kartu;
+  if (t.aksi === "nl" && st.tahap.tinjau !== "jalan") {
+    return TG(env, "answerCallbackQuery", { callback_query_id: q.id, text: "Naskah ini sudah diproses; pratinjau tidak dibuat ulang." });
+  }
   if (t.aksi === "nr") {
     await TG(env, "answerCallbackQuery", { callback_query_id: q.id });
     return tanya(env, { chat_id: env.CHAT, text: `${PENANDA_REVISI} [${t.id}]\nBalas pesan ini dengan catatan perbaikannya (mis. "hook kurang kuat, mulai dari azabnya").`, reply_markup: { force_reply: true, input_field_placeholder: "catatan revisi" } });
