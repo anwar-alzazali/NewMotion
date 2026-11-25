@@ -70,3 +70,23 @@ def test_konteks_tidak_dikenal_ditolak():
         klasifikasikan_konten({
             "genre": "komedi", "konteks_konten": "campuran",
         })
+
+
+
+def test_sinyal_islami_di_dialog_juga_meminta_klarifikasi():
+    hasil = klasifikasikan_konten({
+        "genre": "komedi", "konteks_konten": "umum",
+        "beat": [{
+            "narasi": "Dua orang sedang berbincang.",
+            "dialog": [{
+                "pembicara": "Sahabat Umar",
+                "ucapan": "Malaikat Jibril menyampaikan wahyu.",
+                "penjawab": "Temannya",
+            }],
+        }],
+    })
+    assert hasil["genre"] == "komedi"
+    assert hasil["keputusan"] == "konflik_perlu_tinjauan"
+    assert hasil["perlu_klarifikasi"] is True
+    assert "malaikat" in hasil["sinyal_islami"]["entitas_dilindungi"]
+    assert "sahabat" in hasil["sinyal_islami"]["entitas_dilindungi"]
