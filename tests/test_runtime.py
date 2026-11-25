@@ -1,4 +1,3 @@
-from pathlib import Path
 import sys
 
 import pytest
@@ -11,7 +10,11 @@ from newmotion.infrastructure.proses.subprocess import PelaksanaProses
 def test_konfigurasi_profil_test(tmp_path):
     (tmp_path / "config").mkdir()
     (tmp_path / "config" / "test.toml").write_text(
-        '[runtime]\ndirektori_hasil = "keluaran"\ntingkat_log = "WARNING"\nbatas_waktu_subproses = 30\n',
+        """[runtime]
+direktori_hasil = "keluaran"
+tingkat_log = "WARNING"
+batas_waktu_subproses = 30
+""",
         encoding="utf-8",
     )
     konfigurasi = Konfigurasi.muat("test", tmp_path)
