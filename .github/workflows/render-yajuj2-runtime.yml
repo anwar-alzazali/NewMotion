@@ -41,9 +41,13 @@ jobs:
           python -m playwright install --with-deps chromium
 
       - name: Ganti salinan mesin-video dengan sumber resmi main
+        env:
+          MESIN_VIDEO_READ_TOKEN: ${{ secrets.MESIN_VIDEO_READ_TOKEN }}
         run: |
+          test -n "$MESIN_VIDEO_READ_TOKEN" || { echo "Secret MESIN_VIDEO_READ_TOKEN belum tersedia."; exit 1; }
           rm -rf mesin-video
-          git clone --depth 1 --branch main https://github.com/anwar-alzazali/mesin-video.git mesin-video
+          git -c http.extraheader="AUTHORIZATION: basic $(printf 'x-access-token:%s' "$MESIN_VIDEO_READ_TOKEN" | base64 -w0)" clone --depth 1 --branch main https://github.com/anwar-alzazali/mesin-video.git mesin-video
+          unset MESIN_VIDEO_READ_TOKEN
           echo "Sumber mesin-video commit: $(git -C mesin-video rev-parse HEAD)"
           test -f mesin-video/papan_buat.py
           test -f mesin-video/periksa.py
