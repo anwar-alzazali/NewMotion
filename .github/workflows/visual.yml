@@ -37,7 +37,7 @@ jobs:
           key: hadis-${{ hashFiles('newmotion/paket_genre/kisah_islami/dalil/unduh_hadis.py') }}
       - name: Unduh dataset hadis bila cache belum ada
         run: test -f data/hadis/bukhari.json.gz || python -m newmotion.paket_genre.kisah_islami.dalil.unduh_hadis
-      - name: Buat pratinjau visual tanpa TTS dan kirim ke Telegram
+      - name: Buat pratinjau visual tanpa TTS
         env:
           ID: ${{ inputs.id }}
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
