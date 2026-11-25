@@ -1,4 +1,6 @@
 """Uji asap renderer karakter NewMotion."""
+import math
+import pytest
 from karakter import orang
 
 
@@ -55,3 +57,23 @@ def test_integrasi_karakter_menolak_gerak_tidak_dikenal():
 
     with pytest.raises(ValueError, match="tidak dikenal"):
         integrasikan_tokoh({}, {"gerak": "terbang"}, 1.0)
+
+def test_ik_gerak_gali_sesuai_panjang_lengan_renderer():
+    from karakter.gerak import ik, LENGAN_A, LENGAN_B
+
+    assert (LENGAN_A, LENGAN_B) == (85, 80)
+    for target in [(-18, -105), (18, -62), (-10, 38), (22, 82)]:
+        a1, a2 = ik(*target)
+        x = math.sin(math.radians(a1)) * 85 + math.sin(math.radians(a2)) * 80
+        y = math.cos(math.radians(a1)) * 85 + math.cos(math.radians(a2)) * 80
+        assert x == pytest.approx(target[0], abs=1e-6)
+        assert y == pytest.approx(target[1], abs=1e-6)
+
+
+def test_gali_memiliki_pose_angkat_dan_bentur_dengan_dua_tangan():
+    from karakter.gerak import gali
+
+    angkat, bentur = gali(0.0), gali(0.60)
+    assert angkat["la_ka"] != bentur["la_ka"]
+    assert angkat["la_ki"] != bentur["la_ki"]
+    assert bentur["naik"] > angkat["naik"]
