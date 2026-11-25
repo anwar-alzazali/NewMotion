@@ -12,6 +12,17 @@ on:
       - 'newmotion/**'
       - 'tests/test_blocking.py'
       - '.github/workflows/render-adegan-uji-visual.yml'
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'tests/data/adegan_uji_visual.json'
+      - 'tests/test_blocking.py'
+      - 'newmotion/**'
+      - 'mesin-video/papan/cerita.js'
+      - 'mesin-video/papan/karakter/**'
+      - 'mesin-video/papan_buat.py'
+      - '.github/workflows/render-adegan-uji-visual.yml'
   workflow_dispatch:
 
 permissions:
