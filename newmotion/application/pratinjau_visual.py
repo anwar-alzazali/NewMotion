@@ -113,7 +113,7 @@ def kirim_ke_telegram(id_: str, video: Path) -> None:
     boundary = "----NewMotionVisualPreview"
     tombol = {"inline_keyboard": [[
         {"text": "✅ Setujui visual", "callback_data": f"va:{id_}"},
-        {"text": "🔁 Revisi visual", "callback_data": f"vr:{id_}"},
+        {"text": "❌ Tolak visual", "callback_data": f"vr:{id_}"},
     ]]}
     caption = (
         f"🎬 Pratinjau visual — {status.get('judul') or id_}\n"
