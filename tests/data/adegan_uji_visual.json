@@ -127,7 +127,31 @@
                   "mengendarai_motor"
                 ]
               ]
-            }
+            },
+            "pose": [
+              [
+                0,
+                "berdiri"
+              ],
+              [
+                2.2,
+                {
+                  "dari": "berdiri",
+                  "ra": [
+                    45,
+                    120
+                  ],
+                  "la": [
+                    25,
+                    -70
+                  ]
+                }
+              ],
+              [
+                3.5,
+                "mengendarai_motor"
+              ]
+            ]
           },
           {
             "id": 2,
@@ -152,7 +176,8 @@
                   "berdiri"
                 ]
               ]
-            }
+            },
+            "pose": "berdiri"
           }
         ],
         "teks": [
@@ -263,7 +288,9 @@
                   "mengendarai_motor"
                 ]
               ]
-            }
+            },
+            "pose": "mengendarai_motor",
+            "pose_motor": "mengendarai_motor"
           },
           {
             "id": 2,
@@ -288,7 +315,8 @@
                   "berdiri"
                 ]
               ]
-            }
+            },
+            "pose": "berdiri"
           }
         ],
         "teks": [
@@ -474,7 +502,28 @@
                   "rebahan"
                 ]
               ]
-            }
+            },
+            "pose": [
+              [
+                0,
+                "duduk"
+              ],
+              [
+                1.3,
+                "kaget"
+              ],
+              [
+                2.4,
+                {
+                  "dari": "condong",
+                  "guling": -35
+                }
+              ],
+              [
+                3.4,
+                "rebahan"
+              ]
+            ]
           },
           {
             "id": 2,
@@ -499,7 +548,8 @@
                   "tunjuk"
                 ]
               ]
-            }
+            },
+            "pose": "tunjuk"
           }
         ],
         "teks": [
@@ -566,7 +616,8 @@
                   "rebahan"
                 ]
               ]
-            }
+            },
+            "pose": "rebahan"
           },
           {
             "id": 2,
@@ -622,7 +673,32 @@
                   "menolong"
                 ]
               ]
-            }
+            },
+            "pose": [
+              [
+                0,
+                "berdiri"
+              ],
+              [
+                3.8,
+                {
+                  "dari": "condong",
+                  "ra": [
+                    55,
+                    130
+                  ],
+                  "la": [
+                    45,
+                    -90
+                  ]
+                }
+              ],
+              [
+                4.15,
+                "menolong"
+              ]
+            ],
+            "aksi": "menolong"
           }
         ],
         "teks": [
@@ -732,7 +808,21 @@
                   "bangkit"
                 ]
               ]
-            }
+            },
+            "pose": [
+              [
+                0,
+                "rebahan"
+              ],
+              [
+                1.2,
+                "duduk"
+              ],
+              [
+                3.8,
+                "berdiri"
+              ]
+            ]
           },
           {
             "id": 2,
@@ -762,7 +852,28 @@
                   "berdiri"
                 ]
               ]
-            }
+            },
+            "pose": [
+              [
+                0,
+                {
+                  "dari": "condong",
+                  "ra": [
+                    55,
+                    130
+                  ],
+                  "la": [
+                    45,
+                    -90
+                  ]
+                }
+              ],
+              [
+                3.8,
+                "berdiri"
+              ]
+            ],
+            "aksi": "menolong"
           }
         ],
         "teks": [
@@ -836,7 +947,8 @@
                   "berdiri"
                 ]
               ]
-            }
+            },
+            "pose": "berdiri"
           },
           {
             "id": 2,
@@ -868,7 +980,9 @@
                   "menenangkan"
                 ]
               ]
-            }
+            },
+            "pose": "berdiri",
+            "aksi": "menenangkan"
           }
         ],
         "teks": [
@@ -935,7 +1049,8 @@
                   "berdiri"
                 ]
               ]
-            }
+            },
+            "pose": "berdiri"
           },
           {
             "id": 2,
@@ -960,7 +1075,8 @@
                   "lambai"
                 ]
               ]
-            }
+            },
+            "pose": "lambai"
           }
         ],
         "teks": [
@@ -1041,7 +1157,8 @@
                   "berdiri"
                 ]
               ]
-            }
+            },
+            "pose": "berdiri"
           },
           {
             "id": 2,
@@ -1066,7 +1183,8 @@
                   "lambai"
                 ]
               ]
-            }
+            },
+            "pose": "lambai"
           }
         ],
         "teks": [
