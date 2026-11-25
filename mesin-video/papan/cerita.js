@@ -1244,6 +1244,8 @@
   const POSE = {
     berdiri: { turun: 0, badan: 0, kepala: 0, la: [8, 4], ra: [8, 4], lk: [0, 0], rk: [0, 0], pp: 1, pk: 1, pp_ka: 1, pp_ki: 1, pk_ka: 1, pk_ki: 1, geser: 0, toleh: 0, angguk: 0, guling: 0, depan: 0, lambai: 0 },
     duduk: { turun: 70, pp: 0.3, lk: [12, 3], rk: [12, 3], la: [6, -14], ra: [6, -14] },
+    // Pengendara duduk stabil, lutut menekuk dan kedua tangan menjangkau setang.
+    mengendarai_motor: { turun: 70, pp: 0.3, lk: [18, 34], rk: [18, 34], la: [88, 88], ra: [88, 88], badan: -3 },
     peluk_lutut: { turun: 70, pp: 0.3, lk: [8, 2], rk: [8, 2], la: [-4, -22], ra: [-4, -22], badan: 0 },
     tutup_wajah: { la: [136, -118], ra: [136, -118], depan: 1 },
     duduk_tutup_wajah: { turun: 70, pp: 0.3, lk: [12, 3], rk: [12, 3], la: [136, -118], ra: [136, -118], depan: 1 },
@@ -1853,7 +1855,22 @@
     if (S.resap) isi += resap(S.resap, tl, d, h);
     if (S.kerumunan) isi += kerumunan(S.kerumunan, h, tl);
     (S.benda || []).filter((o) => !(o.jenis === "bintang" || o.jenis === "bulan" || o.belakang) && !o.depan).forEach((o) => { isi += o.hias ? `<g data-hias="1">${benda(o, tl, d)}</g>` : benda(o, tl, d); });
-    (S.boneka || []).forEach((b, i) => { b.id = i; const bd = BADAN, by = BAYANG; if (CERAH && b.gaya === "siluet") { BADAN = ["#b98262", "#a7806e", "#c79a74", "#9c7a68"][i % 4]; BAYANG = "#d9b08a"; } if (b.gaya === "dajjal") BADAN = b.baju || "#201a26"; else if (PAL && (b.baju || C.baju)) BADAN = b.baju || C.baju; isi += boneka(b, tl, d); BADAN = bd; BAYANG = by; });
+    (S.boneka || []).forEach((b, i) => {
+      // Ikatan kendaraan membuat pengendara mengikuti posisi motor setiap frame.
+      // Setelah lepas_kendaraan_at, lintasan tubuh mengambil alih untuk adegan jatuh.
+      const motor = b.kendaraan_id == null || (b.lepas_kendaraan_at != null && tl >= b.lepas_kendaraan_at)
+        ? null : (S.benda || []).find((o) => o.jenis === "motor" && String(o.id) === String(b.kendaraan_id));
+      const tokoh = motor ? Object.assign({}, b, {
+        x: v(motor.x, tl, d, 540) + (b.offset_kendaraan_x || 0),
+        y: v(motor.y, tl, d, 1500) + (b.offset_kendaraan_y == null ? -46 : b.offset_kendaraan_y),
+        pose: b.pose_motor || "mengendarai_motor"
+      }) : b;
+      tokoh.id = i;
+      const bd = BADAN, by = BAYANG;
+      if (CERAH && tokoh.gaya === "siluet") { BADAN = ["#b98262", "#a7806e", "#c79a74", "#9c7a68"][i % 4]; BAYANG = "#d9b08a"; }
+      if (tokoh.gaya === "dajjal") BADAN = tokoh.baju || "#201a26"; else if (PAL && (tokoh.baju || C.baju)) BADAN = tokoh.baju || C.baju;
+      isi += boneka(tokoh, tl, d); BADAN = bd; BAYANG = by;
+    });
     (S.benda || []).filter((o) => o.depan).forEach((o) => { isi += o.hias ? `<g data-hias="1">${benda(o, tl, d)}</g>` : benda(o, tl, d); });
     const nDebu = S.debu == null ? 40 : S.debu === false ? 0 : Math.round(v(S.debu, tl, d, 40)); if (nDebu > 0) isi += debu(t, nDebu);
     const hj = v(S.hujan, tl, d, 0); if (hj > 0) { // hujan: tirai gelap tipis + garis air jatuh + percikan
