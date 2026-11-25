@@ -141,9 +141,13 @@ def integrasikan_tokoh(boneka, karakter, durasi, fps=15):
         raise ValueError("durasi gerak satu shot melebihi batas 120 detik")
     jumlah = max(1, int(math.ceil(lama * fps)))
     waktu = sorted(set(round(min(i / fps, lama), 4) for i in range(jumlah + 1)))
-    boneka["pose"] = [[t, _pose_renderer(G.pada(gerak, t), alat)] for t in waktu]
+    # Sebarkan fase gali antartokoh, tetapi gunakan offset yang sama untuk pose dan efek benturan.
+    identitas = boneka.get("npc", boneka.get("id", 0)) or 0
+    offset = (int(identitas) * 0.381) % 1.15 if "gali" in nama_gerak else 0.0
+    boneka["pose"] = [[t, _pose_renderer(G.pada(gerak, t + offset), alat)] for t in waktu]
     boneka["_gabungan"] = True
     if "gali" in nama_gerak:
+        boneka["_gerak_offset"] = offset
         boneka["aksi"] = "gali"
     elif "palu" in nama_gerak:
         boneka["aksi"] = "palu"
