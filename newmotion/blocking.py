@@ -108,9 +108,16 @@ def periksa_blocking(cerita, jarak_interaksi=190.0, loncatan_maksimum=300.0):
             posisi_kini[identitas] = (x, y)
             gerak = tokoh.get("gerak", "")
             nilai_jalan = tokoh.get("jalan", 0)
-            berjalan = (isinstance(gerak, str) and gerak in {"jalan", "lari"}) or (
-                isinstance(nilai_jalan, (int, float)) and nilai_jalan > 0
-            )
+            jalan_aktif = isinstance(nilai_jalan, (int, float)) and nilai_jalan > 0
+            if isinstance(nilai_jalan, list):
+                jalan_aktif = any(
+                    isinstance(kunci, (list, tuple))
+                    and len(kunci) >= 2
+                    and isinstance(kunci[-1], (int, float))
+                    and kunci[-1] > 0
+                    for kunci in nilai_jalan
+                )
+            berjalan = (isinstance(gerak, str) and gerak in {"jalan", "lari"}) or jalan_aktif
             lintasan = _titik_lintasan(tokoh)
             bergerak_nyata = len(lintasan) >= 2 and hypot(
                 lintasan[-1][0] - lintasan[0][0],
