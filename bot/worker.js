@@ -419,7 +419,7 @@ async function tanganiTombol(env, q) {
 const BANTUAN = `Mesin KONTEN (pribadi)
 • 📝 Naskah: tempel naskah jadi (atau kirim berkas .txt/.md berketerangan "naskah"). Dirapikan ke format mesin tanpa mengubah narasi, dalilnya diverifikasi, lalu dikirim balik untuk Anda cek.
 • 💡 Ide: tulis topik, AI menyusun naskah (Gemini gratis; bila gagal, Claude ±Rp500), dalil diverifikasi, Anda cek.
-• Kartu status menunjukkan tahap yang sedang dikerjakan; tombol ✅ Lanjut / ✏️ Revisi / ❌ Batal. /status = daftar antrean.
+• Setelah naskah disetujui, bot membuat pratinjau visual MP4 tanpa TTS. Tinjau blocking, aksi, tokoh, latar, dan kamera; pilih Setujui visual atau Revisi visual. TTS belum dimulai sebelum visual disetujui.
 • Video baru datang dengan tombol ✅ Setujui / ❌ Tolak. Tolak → pilih alasan (atau "Lainnya" lalu ketik). Berubah pikiran? Ketuk ↩️ Ubah. Keputusan tersimpan di repo (keputusan lama ikut tercatat) dan jadi bahan belajar mesin.
 • Balas komentar: kirim tangkapan layar komentar (tanpa keterangan, atau keterangan "k" + catatan, mis. "k jawab singkat").
 • Tanya apa saja: ketik pesan biasa. /reset = hapus riwayat obrolan.`;
