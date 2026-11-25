@@ -86,3 +86,49 @@ def test_validasi_job_menolak_ekstensi_keluaran_salah(tmp_path):
     spesifikasi.write_text("{}", encoding="utf-8")
     with pytest.raises(GalatValidasiJob):
         validasi_job(spesifikasi, tmp_path / "hasil.mov")
+
+
+from types import SimpleNamespace
+
+from newmotion.application import jalankan_job as modul_job
+from newmotion.application.jalankan_job import LayananJalankanJob
+
+
+def test_layanan_job_mengorkestrasi_render_berhasil(tmp_path, monkeypatch):
+    spesifikasi = tmp_path / "cerita.json"
+    spesifikasi.write_text("{}", encoding="utf-8")
+
+    class AdapterPalsu:
+        def __init__(self, *args):
+            pass
+
+        def render(self, *args):
+            return SimpleNamespace(kode_keluar=0, stdout="selesai", stderr="")
+
+    monkeypatch.setattr(modul_job, "AdapterPapanLama", AdapterPalsu)
+    konfigurasi = SimpleNamespace(akar_proyek=tmp_path, batas_waktu_subproses=10)
+    job, hasil = LayananJalankanJob(konfigurasi).jalankan_render(
+        spesifikasi, tmp_path / "hasil.mp4"
+    )
+    assert job.status == StatusJob.BERHASIL
+    assert hasil.stdout == "selesai"
+
+
+def test_layanan_job_mencatat_kegagalan_renderer(tmp_path, monkeypatch):
+    spesifikasi = tmp_path / "cerita.json"
+    spesifikasi.write_text("{}", encoding="utf-8")
+
+    class AdapterPalsu:
+        def __init__(self, *args):
+            pass
+
+        def render(self, *args):
+            return SimpleNamespace(kode_keluar=3, stdout="", stderr="render gagal")
+
+    monkeypatch.setattr(modul_job, "AdapterPapanLama", AdapterPalsu)
+    konfigurasi = SimpleNamespace(akar_proyek=tmp_path, batas_waktu_subproses=10)
+    job, _ = LayananJalankanJob(konfigurasi).jalankan_render(
+        spesifikasi, tmp_path / "hasil.mp4"
+    )
+    assert job.status == StatusJob.GAGAL
+    assert job.pesan_gagal == "render gagal"
