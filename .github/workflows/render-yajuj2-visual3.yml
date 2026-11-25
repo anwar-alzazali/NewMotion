@@ -3,7 +3,7 @@ name: Uji visual ketiga Yajuj2
 on:
   push:
     branches:
-      - test/yajuj2-visual-variant
+      - test/yajuj2-visual3-characters
   workflow_dispatch:
 
 permissions:
