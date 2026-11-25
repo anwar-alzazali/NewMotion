@@ -104,16 +104,17 @@ def test_penjaga_format_lama_menolak_siluet_sahabat_dan_pilar_malaikat():
     assert periksa_tokoh_suci(malaikat)
 
 
-def test_validasi_job_menolak_pelanggaran_adab_sebelum_render(tmp_path):
-    from newmotion.application.validasi_job import validasi_job, GalatValidasiJob
+def test_validasi_job_tidak_menggandakan_penjaga_adab_renderer(tmp_path):
+    from newmotion.application.validasi_job import validasi_job
 
     spec = tmp_path / "rencana.json"
     spec.write_text(json.dumps(_rencana(
         [{"id": "nabi", "nama": "Nabi Nuh", "kategori": "nabi", "tampil": "nur"}],
         {"tokoh": [{"peran": "nabi"}]},
     )), encoding="utf-8")
-    with pytest.raises(GalatValidasiJob, match="adab penggambaran"):
-        validasi_job(spec, tmp_path / "hasil.mp4")
+    # Validasi awal hanya memeriksa format dan pemilihan genre.
+    # Gerbang renderer adalah satu-satunya tempat penjaga tokoh/dalil dijalankan.
+    assert validasi_job(spec, tmp_path / "hasil.mp4")[0] == spec.resolve()
 
 
 def test_penjaga_adab_format_lama_dipanggil_melalui_kait_paket():
