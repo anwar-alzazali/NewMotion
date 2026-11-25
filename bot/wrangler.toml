@@ -8,5 +8,5 @@ GH_REPO = "anwar-alzazali/NewMotion"
 GH_BRANCH = "main"
 
 # Rahasia (isi di Cloudflare > Worker mesin-konten > Settings > Variables and Secrets, JANGAN di berkas ini):
-# TELEGRAM_BOT_TOKEN, TELEGRAM_CHAT_ID, WEBHOOK_SECRET, GH_TOKEN (fine-grained: repo ini saja, Contents RW),
+# TELEGRAM_BOT_TOKEN, TELEGRAM_CHAT_ID, WEBHOOK_SECRET, GH_TOKEN (fine-grained: repo ini saja, Contents RW + Actions RW),
 # ANTHROPIC_API_KEY, SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY. Opsional: MODEL_CHAT, KURS.
