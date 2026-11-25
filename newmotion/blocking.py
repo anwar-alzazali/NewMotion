@@ -1,4 +1,4 @@
-"""Pemeriksaan blocking panggung yang tidak bergantung pada genre atau renderer."""
+"""Blocking netral-genre; adaptasi geometri panggung dari Sutradara AI Studio."""
 from __future__ import annotations
 
 from math import hypot
@@ -269,7 +269,7 @@ def rencanakan_blocking(cerita):
         cx, cy = _posisi(visual)
         pelaku_ids = {str(x) for x in aturan.get("pelaku", [])}
         paksa = aturan.get("paksa") is True
-        sisi = -1 if aturan.get("sisi_pelaku", 1) < 0 else 1
+        sisi = -1 if _angka(aturan.get("sisi_pelaku"), 1.0) < 0 else 1
         jarak_pelaku = max(35.0, _angka(aturan.get("jarak_pelaku"), 70.0))
         jarak_lawan = max(jarak_pelaku + 40.0, _angka(aturan.get("jarak_lawan"), 260.0))
         jumlah_diatur = 0
