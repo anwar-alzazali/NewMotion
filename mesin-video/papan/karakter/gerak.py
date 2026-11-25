@@ -24,7 +24,7 @@ DASAR = dict(tubuh=0.0, kepala=0.0, naik=0.0, geser=0.0, toleh=0.0, angguk=0.0,
              pf_ka=1.0, pf_ki=1.0, bangku=0.0)
 
 
-LENGAN_A, LENGAN_B = 64, 58  # sama dengan gaya/tokoh.py
+LENGAN_A, LENGAN_B = 85, 80  # sama dengan ruas lengan pada rangka() di cerita.js
 
 
 def ik(tx: float, ty: float) -> tuple[float, float]:
@@ -106,13 +106,32 @@ def palu(t: float) -> dict:
 
 
 def gali(t: float) -> dict:
-    """Mengayun beliung dengan DUA tangan: terangkat di atas kepala -> menghantam ke bawah-depan (1,1 ayunan/dtk).
-    Tangan kiri memegang gagang di bawah tangan kanan (target IK menyeberang badan; bahu berjarak 80 px)."""
-    u = (math.sin(t * 2 * math.pi * 1.1) + 1) / 2  # 1 = terangkat, 0 = menghantam
-    kx, ky = 30 + (5 - 30) * u, 100 + (-105 - 100) * u          # tangan kanan relatif bahu kanan
-    sx, sy = 40 + kx + (-22 + 14 * u), ky + (-14 + 40 * u)       # tangan kiri di layar (relatif leher)
-    return _p(ka=(kx, ky), ki=(-40 - sx, sy), tubuh=6 * (1 - u) - 2, naik=10 * (1 - u),
-              ba_ka=-12 * (1 - u), ba_ki=-12 * (1 - u), angguk=0.4 * (1 - u))
+    """Satu siklus gali: angkat -> ayun turun -> bentur singkat -> tarik/pulih.
+    Kedua target tangan berada pada satu gagang; koordinat IK mengikuti panjang ruas renderer."""
+    fase = (t % 1.15) / 1.15
+    # (fase, tangan kanan x/y, tangan kiri x/y, badan, turun)
+    kunci = [
+        (0.00, -18, -105, 18, -62, -5, -2),
+        (0.30, -18, -105, 18, -62, -5, -2),
+        (0.52, -10, 38, 22, 82, 9, 13),
+        (0.61, -10, 38, 22, 82, 11, 17),  # jeda benturan
+        (0.80, -14, -24, 20, 16, 4, 5),
+        (1.00, -18, -105, 18, -62, -5, -2),
+    ]
+    for i in range(1, len(kunci)):
+        if fase <= kunci[i][0]:
+            a, b = kunci[i - 1], kunci[i]
+            u = (fase - a[0]) / (b[0] - a[0])
+            u = u * u * (3 - 2 * u)
+            q = [a[j] + (b[j] - a[j]) * u for j in range(1, 7)]
+            break
+    else:
+        q = list(kunci[-1][1:])
+    kx, ky, lx, ly, badan, turun = q
+    return _p(ka=(kx, ky), ki=(lx, ly), tubuh=badan, naik=turun,
+              pa_ka=8, pa_ki=8, ba_ka=-8 if fase > 0.45 and fase < 0.72 else 2,
+              ba_ki=-8 if fase > 0.45 and fase < 0.72 else 2,
+              angguk=0.25 if fase > 0.45 and fase < 0.72 else 0.0)
 
 
 # Detik (waktu tokoh) saat gerak berulang MENGENAI sesuatu -> dipakai suara/campur.py untuk efek yang terikat aksi.
