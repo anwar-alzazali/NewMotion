@@ -8,6 +8,8 @@ import copy
 from collections.abc import Mapping
 from typing import Any
 
+from newmotion.penataan_panggung import susun_rencana_blocking
+
 from newmotion.domain.genre import (
     ambil,
     konteks_konten_untuk_naskah,
@@ -173,6 +175,9 @@ def arahkan_naskah(
     # Rencana semantik disimpan terpisah dari instruksi visual renderer.
     # Renderer tetap menerima cerita.shot; lapisan blocking berikutnya memakai rencana_cerita.
     spesifikasi["rencana_cerita"] = _rencana_cerita(naskah, shot)
+    spesifikasi["rencana_blocking"] = susun_rencana_blocking(
+        spesifikasi["rencana_cerita"], cerita
+    )
 
     # Genre menjadi metadata otoritatif untuk gerbang penjaga pada renderer.
     spesifikasi["genre"] = paket.nama
