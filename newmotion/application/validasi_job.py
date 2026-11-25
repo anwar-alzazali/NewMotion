@@ -1,4 +1,10 @@
-"""Validasi masukan job sebelum proses render."""
+"""Validasi awal job tanpa menjalankan penjaga genre.
+
+Penjaga tokoh dan dalil dijalankan satu kali oleh gerbang renderer
+(mesin-video/papan_buat.py::jaga_spek), yang memiliki spesifikasi lengkap
+sebelum aset disematkan. Menjalankannya di sini juga akan menggandakan
+pemeriksaan saat job diteruskan ke renderer melalui subprocess.
+"""
 
 import json
 from pathlib import Path
@@ -25,15 +31,7 @@ def validasi_job(spesifikasi, keluaran):
     if not isinstance(data, dict):
         raise GalatValidasiJob("Akar spesifikasi JSON harus berupa objek")
     try:
-        paket = dari_rencana(data)
+        dari_rencana(data)
     except (ValueError, TypeError, ImportError) as galat:
         raise GalatValidasiJob(f"Genre pada spesifikasi tidak valid: {galat}") from galat
-    if paket.penjaga_tokoh is not None:
-        try:
-            temuan = paket.penjaga_tokoh(data)
-        except Exception as galat:
-            raise GalatValidasiJob(f"Penjaga adab tokoh gagal dijalankan: {galat}") from galat
-        if temuan:
-            rincian = "\n".join(f"[{item.kode}] {item.pesan}" for item in temuan)
-            raise GalatValidasiJob(f"Rencana melanggar adab penggambaran tokoh:\n{rincian}")
     return sumber, tujuan

@@ -115,8 +115,16 @@ def test_kontrak_menolak_penjaga_dalil_yang_bukan_fungsi():
         PaketGenre(nama="genre_penjaga_salah_uji", penjaga_dalil="bukan-fungsi")
 
 
-def test_renderer_memanggil_penjaga_dari_kontrak_tanpa_cabang_nama_genre():
+def test_renderer_menjadi_satu_satunya_gerbang_penjaga_genre():
     akar = Path(__file__).resolve().parents[1]
     sumber = (akar / "mesin-video" / "papan_buat.py").read_text(encoding="utf-8")
-    assert "paket.penjaga_dalil(spec)" in sumber
-    assert 'if paket.nama == "kisah_islami"' not in sumber
+    awal = sumber.index("def jaga_spek(spec):")
+    akhir = sumber.index("\ndef buat_html", awal)
+    gerbang = sumber[awal:akhir]
+    assert gerbang.count("paket.penjaga_tokoh(spec)") == 1
+    assert gerbang.count("paket.penjaga_dalil(spec)") == 1
+    assert 'if paket.nama == "kisah_islami"' not in gerbang
+
+    validasi = (akar / "newmotion" / "application" / "validasi_job.py").read_text(encoding="utf-8")
+    assert "paket.penjaga_tokoh(" not in validasi
+    assert "paket.penjaga_dalil(" not in validasi

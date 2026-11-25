@@ -75,3 +75,98 @@ def test_secret_quran_tidak_dicetak(monkeypatch):
     assert hasil["teks_arab"] == "بِسْمِ اللَّهِ"
     assert "secret-rahasia" not in repr(hasil)
     monkeypatch.setattr(sumber, "_KLIEN_QURAN", None)
+
+
+def test_manifest_menggunakan_penjaga_dalil_yang_dimiliki_paket():
+    from newmotion.paket_genre.kisah_islami import buat_paket
+    from newmotion.paket_genre.kisah_islami.penjaga_dalil import periksa_dalil
+
+    paket = buat_paket()
+    assert paket.penjaga_dalil is periksa_dalil
+    assert paket.penjaga_dalil({}) == []
+
+
+def test_penjaga_dalil_paket_memverifikasi_kartu_tanpa_jaringan():
+    from newmotion.paket_genre.kisah_islami.penjaga_dalil import periksa_dalil
+
+    class SumberPalsu:
+        def teks_ayat(self, surah, ayat):
+            assert (surah, ayat) == (1, 1)
+            return "بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ"
+
+        def teks_hadis(self, kitab, nomor):
+            raise AssertionError("sumber hadis tidak boleh dipanggil")
+
+    spek = {"isi": [{
+        "jenis": "kartu_dalil",
+        "kitab": "QS 1:1",
+        "no": "1",
+        "arab": "بسم الله الرحمن الرحيم",
+        "teks": "Dengan nama Allah Yang Maha Pengasih",
+    }]}
+    hasil = periksa_dalil(spek, sumber=SumberPalsu())
+    assert len(hasil) == 1
+    assert hasil[0].status == "lulus"
+    assert not hasil[0].memblokir
+
+
+
+def test_shim_papan_lama_meneruskan_implementasi_paket():
+    import sys
+    from pathlib import Path
+    sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "mesin-video"))
+    from papan.penjaga_dalil import periksa_dalil as lama
+    from newmotion.paket_genre.kisah_islami.penjaga_dalil import periksa_dalil as paket
+    assert lama is paket
+
+
+def test_penjaga_mengeluarkan_periksa_untuk_perbedaan_derajat_dan_bukan_marfu():
+    from newmotion.paket_genre.kisah_islami.penjaga_dalil import periksa_dalil
+
+    class SumberHadis:
+        def detail_hadis(self, kitab, nomor):
+            assert (kitab, nomor) == ("abudawud", 10)
+            return {
+                "teks_arab": "إِنَّمَا الأَعْمَالُ بِالنِّيَّاتِ",
+                "penilaian_berbeda": ["Penilai lain"],
+                "bukan_marfu": True,
+            }
+
+        def teks_ayat(self, surah, ayat):
+            raise AssertionError("bukan sumber Quran")
+
+        def teks_hadis(self, kitab, nomor):
+            raise AssertionError("detail_hadis harus digunakan")
+
+    spek = {"isi": [{
+        "jenis": "kartu_dalil",
+        "kitab": "HR. Abu Dawud",
+        "no": "10",
+        "arab": "إِنَّمَا الأَعْمَالُ بِالنِّيَّاتِ",
+    }]}
+    hasil = periksa_dalil(spek, sumber=SumberHadis())
+    assert hasil[0].status == "lulus"
+    assert any("DERAJAT_DIPERSELISIHKAN" in x for x in hasil[0].peringatan)
+    assert any("BUKAN_MARFU" in x for x in hasil[0].peringatan)
+
+
+def test_penjaga_mempertahankan_sufiks_nomor_hadis_sunnah_com():
+    from newmotion.paket_genre.kisah_islami.penjaga_dalil import urai_rujukan, periksa_dalil
+
+    rujukan = urai_rujukan("HR. Muslim", "2934b")
+    assert rujukan is not None
+    assert rujukan.nomor == "2934b"
+
+    class SumberHadis:
+        def detail_hadis(self, kitab, nomor):
+            assert (kitab, nomor) == ("muslim", "2934b")
+            return {"teks_arab": "إِنَّمَا الأَعْمَالُ بِالنِّيَّاتِ"}
+
+    spek = {"isi": [{
+        "jenis": "kartu_dalil",
+        "kitab": "HR. Muslim",
+        "no": "2934b",
+        "arab": "إِنَّمَا الأَعْمَالُ بِالنِّيَّاتِ",
+    }]}
+    hasil = periksa_dalil(spek, sumber=SumberHadis())
+    assert hasil[0].status == "lulus"

@@ -5,7 +5,7 @@ Aturan adab tokoh dan dalil berada di paket ini; inti hanya memanggil kait kontr
 
 from newmotion.domain.genre import PaketGenre
 from .penjaga_tokoh import periksa_adab_tokoh
-from .penjaga_dalil import periksa_dalil_legacy
+from .penjaga_dalil import periksa_dalil
 
 
 def buat_paket() -> PaketGenre:
@@ -13,7 +13,7 @@ def buat_paket() -> PaketGenre:
     return PaketGenre(
         nama="kisah_islami",
         penjaga_tokoh=periksa_adab_tokoh,
-        penjaga_dalil=periksa_dalil_legacy,
+        penjaga_dalil=periksa_dalil,
         panduan_gaya="newmotion.paket_genre.kisah_islami.PANDUAN_GAYA.md",
         modul_dalil="newmotion.paket_genre.kisah_islami.dalil",
         modul_legacy={

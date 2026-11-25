@@ -49,6 +49,7 @@ def ambil_hadis(kitab: str, nomor: int | str) -> dict:
         "nomor": entri.nomor + entri.sub,
         "derajat": derajat,
         "penilaian_berbeda": berbeda,
+        "bukan_marfu": hadis.bukan_marfu(entri.penilaian),
         "rujukan": entri.tautan,
     }
 
@@ -59,5 +60,9 @@ class SumberDalilResmi:
     def teks_ayat(self, surah: int, ayat: int) -> str:
         return ambil_ayat(surah, ayat)["teks_arab"]
 
+    def detail_hadis(self, kitab: str, nomor: int) -> dict:
+        """Metadata hadis agar penjaga dapat memberi PERIKSA seperti Sutradara AI."""
+        return ambil_hadis(kitab, nomor)
+
     def teks_hadis(self, kitab: str, nomor: int) -> str:
-        return ambil_hadis(kitab, nomor)["teks_arab"]
+        return self.detail_hadis(kitab, nomor)["teks_arab"]
