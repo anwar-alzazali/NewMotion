@@ -1574,7 +1574,7 @@
     const tangan = (x2, y2) => (P ? `<circle cx="${x2}" cy="${y2}" r="19" fill="${KLB}" stroke="${INK}" stroke-width="4"/>` : "");
     const lenganKiri = `<line x1="${-SH}" y1="${-360 + nafas}" x2="${-SH - 22 - ayun * 0.3}" y2="${-200 + nafas}" stroke="${BD}" stroke-width="36" stroke-linecap="round"/>` + tangan(-SH - 22 - ayun * 0.3, -192 + nafas);
     g += lenganKiri;
-    let RG = null; if (RIG) { RG = rangka(RIG, { P, BD, WC, KLB, nafas, ayun, bawahP, t: HD ? ta : t, gm: GM, aksi: b.aksi, id: b.npc != null ? b.npc : b.id, offset: b._gerak_offset, profilMotor: b.profil === "kanan" || b.profil === true }); g = RG.g; }
+    let RG = null; if (RIG) { RG = rangka(RIG, { P, BD, WC, KLB, nafas, ayun, bawahP, t: HD ? ta : t, gm: GM, aksi: b.aksi, id: b.npc != null ? b.npc : b.id, offset: b._gerak_offset, profilMotor: (b.profil === "kanan" || b.profil === true) && RIG && RIG.turun >= 50 }); g = RG.g; }
     let lenganKanan = RIG ? "" : `<line x1="${SH}" y1="${-360 + nafas}" x2="${SH + 22 + ayun * 0.3}" y2="${-200 + nafas}" stroke="${BD}" stroke-width="36" stroke-linecap="round"/>` + tangan(SH + 22 + ayun * 0.3, -192 + nafas);
     // kepala
     const hx = arah * 10, hy = -492 - (KB - 1) * 96 + nafas + tunduk * 14 + (H ? H.ky : 0), ex = arah * 24, ey = tunduk * 14 + (mata === "atas" ? -8 : mata === "bawah" ? 8 : 0);
