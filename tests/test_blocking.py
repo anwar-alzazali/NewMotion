@@ -158,3 +158,15 @@ def test_renderer_mendukung_pengendara_terikat_dan_lepas_saat_jatuh():
     assert "b.kendaraan_id" in sumber
     assert "b.lepas_kendaraan_at" in sumber
     assert "mengendarai_motor:" in sumber
+
+
+def test_pengendara_menghadap_samping_dan_memegang_setang():
+    akar = Path(__file__).resolve().parents[1]
+    cerita = __import__("json").loads((akar / "tests/data/adegan_uji_visual.json").read_text())
+    sumber = (akar / "mesin-video/papan/cerita.js").read_text()
+    for indeks in (0, 1, 2):
+        pengendara = next(b for b in cerita["shot"][indeks]["boneka"] if b["id"] == 1)
+        assert pengendara["profil"] == "kanan"
+    assert 'b.profil === "kanan"' in sumber
+    assert "profilMotor: b.profil ===" in sumber
+    assert "const H = o.profilMotor ? [218, -284 + nafas]" in sumber
