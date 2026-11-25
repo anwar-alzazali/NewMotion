@@ -13,6 +13,7 @@ test("tombol persetujuan dapat dibaca balik dan muat batas 64 byte Telegram", ()
   assert.deepEqual(bacaTombol(`al:${id}:hook`), { aksi: "al", id, alasan: "hook" });
   assert.deepEqual(bacaTombol(`va:${id}`), { aksi: "va", id, alasan: null });
   assert.deepEqual(bacaTombol(`vr:${id}`), { aksi: "vr", id, alasan: null });
+  assert.deepEqual(bacaTombol(`nu:${id}`), { aksi: "nu", id, alasan: null });
 });
 
 test("data tombol asing atau berbahaya ditolak", () => {
@@ -81,4 +82,11 @@ test("model Gemini: dua flash terbaru lalu satu lite", () => {
 test("label biaya menandai penyedia", () => {
   assert.equal(labelBiaya({ idr: 0, model: "gemini-2.5-flash" }), "Rp0 · Gemini");
   assert.equal(labelBiaya({ idr: 12, model: "claude-sonnet-4-5" }), "≈Rp12 · Claude");
+});
+
+test("pratinjau gagal menampilkan tombol ulang, tetapi status jalan/selesai tidak", () => {
+  const dasar = { id: "uji-pratinjau", tahap: { tinjau: "selesai", sutradara: "gagal", tinjau_visual: "belum", dalil: "selesai" }, ket: {} };
+  assert.equal(tombolKartu(dasar)[0][0].callback_data, "nu:uji-pratinjau");
+  assert.equal(tombolKartu({ ...dasar, tahap: { ...dasar.tahap, tinjau_visual: "jalan" } })[0][0].callback_data, "menu");
+  assert.equal(tombolKartu({ ...dasar, tahap: { ...dasar.tahap, tinjau_visual: "selesai" } })[0][0].callback_data, "menu");
 });
