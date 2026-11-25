@@ -20,3 +20,16 @@ wajib_lolos_penataan_panggung(spec.get("cerita", {}))
 ```
 
 Temuan `gagal` menunjukkan kontrak penataan panggung yang wajib diperbaiki. Temuan `peringatan` membantu audit visual, tetapi tidak otomatis menghentikan render. Pemeriksaan tumpang-tindih adalah heuristik berbasis posisi dan skala, bukan deteksi siluet piksel.
+## Kontrak blocking dari rencana cerita
+
+`newmotion.penataan_panggung.susun_rencana_blocking` menyusun `rencana_blocking`
+dari `rencana_cerita` dan `cerita.shot`. Sutradara inti menjalankannya
+setelah setiap shot ditautkan ke ID beat.
+
+Kontrak ini:
+- Mengikat peristiwa ke shot melalui `_beat_id`, tanpa menyalin atau menebak isi narasi.
+- Membawa `aktor_id`, aksi, sasaran tokoh/benda, tujuan, dan perubahan keadaan.
+- Mencatat peristiwa yang belum memiliki aktor atau aksi terpetakan, serta beat yang belum memiliki shot.
+- Tidak membuat `boneka`, koordinat, lintasan, pose, kendaraan, atau keyframe. Semua itu tetap tanggung jawab pengarah visual/paket genre.
+
+Dengan demikian, `rencana_blocking` adalah kontrak semantik untuk tahap blocking berikutnya, bukan bukti bahwa gerakan sudah terbentuk atau siap dirender.
