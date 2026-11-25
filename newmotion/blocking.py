@@ -11,22 +11,67 @@ def _angka(nilai, bawaan=0.0):
         return bawaan
 
 
-def _titik_lintasan(tokoh):
-    """Baca lintasan sebagai daftar {x,y} atau pasangan [x,y]."""
-    lintasan = tokoh.get("lintasan") or tokoh.get("tujuan")
-    if not isinstance(lintasan, list):
+def _nilai_posisi_kunci(nilai):
+    """Ubah format keyframe renderer menjadi pasangan waktu-nilai."""
+    if not isinstance(nilai, list) or not nilai:
         return []
-    hasil = []
-    for titik in lintasan:
-        if isinstance(titik, dict) and "x" in titik and "y" in titik:
-            hasil.append((_angka(titik["x"]), _angka(titik["y"])))
-        elif isinstance(titik, (list, tuple)) and len(titik) >= 2:
-            # Bentuk [detik, x, y] atau [x, y].
-            if len(titik) >= 3:
-                hasil.append((_angka(titik[1]), _angka(titik[2])))
-            else:
-                hasil.append((_angka(titik[0]), _angka(titik[1])))
-    return hasil
+    if isinstance(nilai[0], (list, tuple)) and len(nilai[0]) >= 2:
+        hasil = []
+        for pasangan in nilai:
+            if len(pasangan) >= 2:
+                try:
+                    hasil.append((float(pasangan[0]), float(pasangan[1])))
+                except (TypeError, ValueError):
+                    continue
+        return hasil
+    if len(nilai) >= 2:
+        return [(0.0, _angka(nilai[0])), (1.0, _angka(nilai[1]))]
+    return []
+
+
+def _nilai_pada(kunci, waktu, bawaan):
+    if not kunci:
+        return bawaan
+    if waktu <= kunci[0][0]:
+        return kunci[0][1]
+    for i in range(1, len(kunci)):
+        t1, v1 = kunci[i]
+        t0, v0 = kunci[i - 1]
+        if waktu <= t1:
+            if t1 == t0:
+                return v1
+            p = (waktu - t0) / (t1 - t0)
+            return v0 + (v1 - v0) * p
+    return kunci[-1][1]
+
+
+def _titik_lintasan(tokoh):
+    """Baca lintasan eksplisit atau keyframe x/y yang dipakai cerita.js."""
+    lintasan = tokoh.get("lintasan") or tokoh.get("tujuan")
+    if isinstance(lintasan, list):
+        hasil = []
+        for titik in lintasan:
+            if isinstance(titik, dict) and "x" in titik and "y" in titik:
+                hasil.append((_angka(titik["x"]), _angka(titik["y"])))
+            elif isinstance(titik, (list, tuple)) and len(titik) >= 2:
+                # Bentuk [detik, x, y] atau [x, y].
+                if len(titik) >= 3:
+                    hasil.append((_angka(titik[1]), _angka(titik[2])))
+                else:
+                    hasil.append((_angka(titik[0]), _angka(titik[1])))
+        if hasil:
+            return hasil
+
+    # cerita.js menerima x/y sebagai [awal, akhir] atau [[detik, nilai], ...].
+    kunci_x = _nilai_posisi_kunci(tokoh.get("x"))
+    kunci_y = _nilai_posisi_kunci(tokoh.get("y"))
+    waktu = sorted({t for t, _ in kunci_x + kunci_y})
+    if len(waktu) < 2:
+        return []
+    x_awal = _angka(tokoh.get("x")) if not kunci_x else kunci_x[0][1]
+    y_awal = _angka(tokoh.get("y")) if not kunci_y else kunci_y[0][1]
+    return [(_nilai_pada(kunci_x, t, x_awal),
+             _nilai_pada(kunci_y, t, y_awal)) for t in waktu]
 
 
 def _posisi(tokoh):
