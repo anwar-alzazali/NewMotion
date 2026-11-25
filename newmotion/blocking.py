@@ -101,6 +101,7 @@ def periksa_blocking(cerita, jarak_interaksi=190.0, loncatan_maksimum=300.0):
     temuan = []
     daftar_shot = (cerita or {}).get("shot") or []
     posisi_lalu = {}
+    arah_lalu = {}
 
     def lapor(tingkat, kode, indeks, identitas, pesan):
         temuan.append({"tingkat": tingkat, "kode": kode, "shot": indeks,
@@ -173,6 +174,57 @@ def periksa_blocking(cerita, jarak_interaksi=190.0, loncatan_maksimum=300.0):
                           str(kiri.get("id", "")),
                           f"Tokoh {kiri.get('id')} dan {kanan.get('id')} berpotensi bertumpuk.")
 
+
+        # Pemeriksaan kedekatan pelaku ke visual inti, mengikuti pemeriksaan
+        # geometri netral-genre pada Sutradara AI Studio.
+        aturan = shot.get("blocking") or {}
+        if isinstance(aturan, dict) and aturan.get("otomatis") is True:
+            visual_id = aturan.get("visual_id")
+            visual = next((o for o in (shot.get("benda") or [])
+                           if str(o.get("id")) == str(visual_id)), None)
+            pelaku_ids = {str(x) for x in aturan.get("pelaku", [])}
+            if visual is None:
+                lapor("peringatan", "visual_blocking_tidak_ditemukan", indeks, "",
+                      f"Visual inti {visual_id!r} tidak ditemukan; blocking otomatis tidak dapat diperiksa.")
+            else:
+                vx, vy = _posisi(visual)
+                ambang = _angka(aturan.get("jarak_maks_visual"), 180.0)
+                jauh = []
+                for tokoh in boneka:
+                    if str(tokoh.get("id")) not in pelaku_ids:
+                        continue
+                    tx, ty = _posisi(tokoh)
+                    jarak = hypot(tx - vx, ty - vy)
+                    if jarak > ambang:
+                        jauh.append(str(tokoh.get("id", "")))
+                if jauh:
+                    lapor("peringatan", "pelaku_jauh_dari_visual", indeks, ",".join(jauh),
+                          "Pelaku aksi terlalu jauh dari visual inti; tinjau posisi panggung.")
+
+        # Arah lintasan yang berubah antarsyot perlu putar balik yang diceritakan.
+        for tokoh in boneka:
+            identitas = str(tokoh.get("id", ""))
+            arah = _arah_lintasan(tokoh)
+            if arah and identitas in arah_lalu and arah_lalu[identitas] != arah:
+                if not tokoh.get("berbalik_sesuai_cerita"):
+                    lapor("peringatan", "arah_lintasan_berubah", indeks, identitas,
+                          "Arah perjalanan berubah dari shot sebelumnya tanpa penanda putar balik cerita.")
+            if arah:
+                arah_lalu[identitas] = arah
+
+        # Dalam interaksi, dua tokoh tidak semestinya sama-sama memakai profil depan
+        # kecuali pilihan itu dijelaskan secara artistik.
+        for tokoh in boneka:
+            sasaran = tokoh.get("sasaran_id", tokoh.get("target_id"))
+            if sasaran is None or not tokoh.get("aksi"):
+                continue
+            target = menurut_id.get(str(sasaran))
+            if target and tokoh.get("profil") == "depan" and target.get("profil") == "depan":
+                alasan = tokoh.get("alasan_arah") or target.get("alasan_arah")
+                if not (isinstance(alasan, str) and alasan.strip()):
+                    lapor("peringatan", "interaksi_menghadap_kamera", indeks, str(tokoh.get("id", "")),
+                          "Pelaku dan sasaran sama-sama menghadap kamera; arahkan profil ke lawan atau jelaskan alasannya.")
+
         posisi_lalu = posisi_kini
 
     return temuan
@@ -187,3 +239,63 @@ def wajib_lolos_blocking(cerita):
                               for item in gagal)
         raise ValueError("Blocking tidak valid: " + ringkasan)
     return temuan
+
+
+def rencanakan_blocking(cerita):
+    """Tempatkan pelaku dekat visual inti dan susun pihak lawan secara deterministik.
+
+    Meniru prinsip penataan panggung Sutradara AI Studio: pelaku berada di sisi
+    kerja objek, pihak lawan di sisi seberang. Koordinat eksplisit tidak ditimpa
+    kecuali aturan shot menyatakan paksa=True.
+    Format shot.blocking:
+      {"otomatis": true, "visual_id": "objek", "pelaku": [1],
+       "sisi_pelaku": 1, "jarak_pelaku": 70, "jarak_lawan": 260,
+       "paksa": false}
+    """
+    perubahan = []
+    for indeks, shot in enumerate((cerita or {}).get("shot") or []):
+        aturan = shot.get("blocking")
+        if not isinstance(aturan, dict) or aturan.get("otomatis") is not True:
+            continue
+        boneka = shot.setdefault("boneka", [])
+        benda = shot.get("benda") or []
+        visual_id = aturan.get("visual_id")
+        visual = next((o for o in benda if str(o.get("id")) == str(visual_id)), None) if visual_id is not None else None
+        if visual is None:
+            perubahan.append({"shot": indeks, "status": "lewati",
+                              "alasan": "visual_id tidak ditemukan"})
+            continue
+
+        cx, cy = _posisi(visual)
+        pelaku_ids = {str(x) for x in aturan.get("pelaku", [])}
+        paksa = aturan.get("paksa") is True
+        sisi = -1 if aturan.get("sisi_pelaku", 1) < 0 else 1
+        jarak_pelaku = max(35.0, _angka(aturan.get("jarak_pelaku"), 70.0))
+        jarak_lawan = max(jarak_pelaku + 40.0, _angka(aturan.get("jarak_lawan"), 260.0))
+        jumlah_diatur = 0
+
+        for nomor, aktor in enumerate(boneka):
+            identitas = str(aktor.get("id", nomor))
+            if identitas in pelaku_ids:
+                target_x = max(80.0, min(1000.0, cx + sisi * jarak_pelaku))
+            else:
+                target_x = max(80.0, min(1000.0, cx - sisi * jarak_lawan))
+            if paksa or "x" not in aktor:
+                aktor["x"] = target_x
+                jumlah_diatur += 1
+            if paksa or "y" not in aktor:
+                aktor["y"] = cy + _angka(aturan.get("offset_y"), 0.0)
+
+        perubahan.append({"shot": indeks, "status": "diterapkan",
+                          "jumlah_tokoh_diatur": jumlah_diatur,
+                          "visual_id": visual_id})
+    return perubahan
+
+
+def _arah_lintasan(tokoh):
+    """Arah mendatar lintasan, 1 ke kanan, -1 ke kiri, 0 tidak bergerak."""
+    lintasan = _titik_lintasan(tokoh)
+    if len(lintasan) < 2:
+        return 0
+    dx = lintasan[-1][0] - lintasan[0][0]
+    return (dx > 0) - (dx < 0)
