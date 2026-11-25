@@ -180,10 +180,12 @@ def urai_rujukan(kitab: Any, no: Any) -> Rujukan | None:
     hadis = re.search(r"\bh\.?\s?r\b|hadi[ts]|riwayat", kl)
     for pola, kunci in KITAB_HADIS:
         if re.search(pola, kl):
-            m = re.search(r"\d+", n) or re.search(r"\d+", k)
+            # Pertahankan sufiks Sunnah.com (mis. 2934b); jangan mengubahnya menjadi int.
+            m = re.search(r"\\d+[a-z]?", n, re.I) or re.search(r"\\d+[a-z]?", k, re.I)
             if not m:
                 raise RujukanTidakValid(f"nomor hadis tidak ada untuk {k!r} -- nomor wajib dicek")
-            return Rujukan("hadis", kitab=kunci, nomor=int(m.group(0)))
+            nomor = m.group(0).lower()
+            return Rujukan("hadis", kitab=kunci, nomor=nomor if nomor[-1:].isalpha() else int(nomor))
     if hadis:
         raise RujukanTidakValid(f"kitab hadis {k!r} tidak ada di sumber verifikasi "
                                 f"(tersedia: Bukhari, Muslim, Abu Dawud, Tirmidzi, Nasa'i, Ibnu Majah, Malik)")
