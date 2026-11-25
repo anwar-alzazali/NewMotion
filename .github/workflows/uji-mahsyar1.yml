@@ -35,7 +35,7 @@ jobs:
           repository: anwar-alzazali/mesin-video
           ref: main
           path: sumber-mesin-video
-          token: ${{ secrets.MESIN_VIDEO_TOKEN }}
+          token: ${{ secrets.MESIN_VIDEO_READ_TOKEN }}
 
       - name: Siapkan runtime render
         run: |
