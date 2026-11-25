@@ -8,7 +8,7 @@ Pekerjaan berat ada di sini (Python, teruji):
 lalu: validasi format, tolak huruf Arab di narasi, verifikasi dalil (Quran Foundation + dataset hadis),
 tulis `naskah.json` + `status.json`, perbarui kartu status di Telegram, kirim naskah untuk ditinjau.
 
-FORMAT NASKAH (dipakai bot NewMotion; konversi ke kontrak adegan NewMotion dilakukan pada tahap integrasi pengarahan berikutnya; subset dari rencana tanpa `shot`):
+FORMAT NASKAH (dipakai bot NewMotion; setelah pemilik menyetujui naskah, `pratinjau_visual.py` mengubah beat menjadi kontrak adegan, menjalankan pengarah Kisah Islami, dan membuat MP4 storyboard tanpa TTS):
 {
   "judul": "Nabi Hud dan Kaum 'Ad",
   "inti": "satu kalimat inti cerita",
