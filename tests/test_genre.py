@@ -244,7 +244,7 @@ def test_validasi_mode_naskah_menerima_pilihan_genre_cli(tmp_path):
 
     naskah = tmp_path / "naskah.json"
     naskah.write_text(
-        '{"judul":"Pilihan CLI","konteks_konten":"umum","adegan":[{"teks":"Tokoh berjalan."}]}',
+        '{"judul":"Pilihan CLI","konteks_konten":"islami","adegan":[{"teks":"Tokoh berjalan."}]}',
         encoding="utf-8",
     )
     validasi_job(
