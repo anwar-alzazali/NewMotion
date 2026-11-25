@@ -148,3 +148,25 @@ def test_penjaga_mengeluarkan_periksa_untuk_perbedaan_derajat_dan_bukan_marfu():
     assert hasil[0].status == "lulus"
     assert any("DERAJAT_DIPERSELISIHKAN" in x for x in hasil[0].peringatan)
     assert any("BUKAN_MARFU" in x for x in hasil[0].peringatan)
+
+
+def test_penjaga_mempertahankan_sufiks_nomor_hadis_sunnah_com():
+    from newmotion.paket_genre.kisah_islami.penjaga_dalil import urai_rujukan, periksa_dalil
+
+    rujukan = urai_rujukan("HR. Muslim", "2934b")
+    assert rujukan is not None
+    assert rujukan.nomor == "2934b"
+
+    class SumberHadis:
+        def detail_hadis(self, kitab, nomor):
+            assert (kitab, nomor) == ("muslim", "2934b")
+            return {"teks_arab": "إِنَّمَا الأَعْمَالُ بِالنِّيَّاتِ"}
+
+    spek = {"isi": [{
+        "jenis": "kartu_dalil",
+        "kitab": "HR. Muslim",
+        "no": "2934b",
+        "arab": "إِنَّمَا الأَعْمَالُ بِالنِّيَّاتِ",
+    }]}
+    hasil = periksa_dalil(spek, sumber=SumberHadis())
+    assert hasil[0].status == "lulus"
