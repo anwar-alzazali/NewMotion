@@ -281,7 +281,20 @@ def periksa_kartu(kartu: dict, lokasi: str, sumber: SumberDalil) -> HasilKartu:
         if ruj.jenis == "quran":
             sumber_teks = "".join(sumber.teks_ayat(ruj.surah, a) for a in ruj.ayat)
         else:
-            sumber_teks = sumber.teks_hadis(ruj.kitab, ruj.nomor)
+            if callable(getattr(sumber, "detail_hadis", None)):
+                detail = sumber.detail_hadis(ruj.kitab, ruj.nomor)
+                sumber_teks = detail["teks_arab"]
+                if detail.get("penilaian_berbeda"):
+                    h.peringatan.append(
+                        "DERAJAT_DIPERSELISIHKAN: dinilai daif oleh "
+                        + ", ".join(detail["penilaian_berbeda"])
+                    )
+                if detail.get("bukan_marfu"):
+                    h.peringatan.append(
+                        "BUKAN_MARFU: riwayat mauquf/maqtu; jangan disebut sebagai sabda Nabi ﷺ"
+                    )
+            else:
+                sumber_teks = sumber.teks_hadis(ruj.kitab, ruj.nomor)
     except SumberTidakTersedia as e:
         h.status, h.alasan = "tidak_terverifikasi", f"{ruj}: sumber tidak bisa memastikan -- {e}"
         return h
