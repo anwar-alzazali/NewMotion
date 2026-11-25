@@ -128,14 +128,13 @@ class TokohSuciDigambarError(ValueError):
 def _kategori_nur(nama: str) -> str | None:
     """Bedakan nabi, malaikat, dan sahabat pada format lama yang belum punya tipe cahaya lengkap."""
     n = _normal(nama)
-    if re.search(r"\\b(malaikat|jibril|jibrail|mikail|mikael|israfil|izrail|azrail|munkar|nakir|raqib|atid|harut|marut)\\b", n):
+    if re.search(r"\b(malaikat|jibril|jibrail|mikail|mikael|israfil|izrail|azrail|munkar|nakir|raqib|atid|harut|marut)\b", n):
         return "malaikat"
     if _RE_SAHABAT.search(n):
         return "sahabat"
-    if n in _PROPHETS or re.search(r"\\b(nabi|nabiyullah|rasul|rasulullah)\\b", n):
+    if n in _PROPHETS or re.search(r"\b(nabi|nabiyullah|rasul|rasulullah)\b", n):
         return "nabi"
     return None
-
 
 def _identitas(obj: dict) -> Iterator[tuple[str, str, int]]:
     for f in FIELD_IDENTITAS:
