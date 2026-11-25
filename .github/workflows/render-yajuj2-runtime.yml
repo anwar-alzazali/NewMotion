@@ -49,19 +49,45 @@ jobs:
       - name: Render JSON asli melalui runtime NewMotion
         run: |
           mkdir -p hasil
+          set -o pipefail
           newmotion render mesin-video/papan/kisah/yajuj2.json -o yajuj2-runtime.mp4 2>&1 | tee hasil/render-runtime.log
 
       - name: Validasi dan catat metadata MP4
         if: always()
         run: |
-          if [ -f hasil/yajuj2-runtime.mp4 ]; then
-            ffprobe -v error -show_entries format=duration,size:stream=codec_name,width,height,r_frame_rate -of json hasil/yajuj2-runtime.mp4 | tee hasil/metadata-runtime.json
-            sha256sum hasil/yajuj2-runtime.mp4 | tee hasil/SHA256-runtime.txt
-            test "$(ffprobe -v error -select_streams v:0 -show_entries stream=codec_name -of csv=p=0 hasil/yajuj2-runtime.mp4)" = "h264"
-          else
+          if [ ! -f hasil/yajuj2-runtime.mp4 ]; then
             echo "MP4 tidak dihasilkan oleh runtime NewMotion." | tee hasil/validasi-gagal.txt
             exit 1
           fi
+
+          ffprobe -v error -show_entries format=duration,size:stream=codec_name,codec_type,width,height,r_frame_rate -of json hasil/yajuj2-runtime.mp4 > hasil/metadata-runtime.json
+
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          metadata = json.loads(Path("hasil/metadata-runtime.json").read_text())
+          streams = metadata.get("streams", [])
+          video = next((s for s in streams if s.get("codec_type") == "video"), None)
+          audio = next((s for s in streams if s.get("codec_type") == "audio"), None)
+
+          if video is None:
+              raise SystemExit("Validasi gagal: stream video tidak ditemukan.")
+          if video.get("codec_name") != "h264":
+              raise SystemExit(f"Validasi gagal: codec video {video.get('codec_name')!r}, diharapkan 'h264'.")
+          if (video.get("width"), video.get("height")) != (1080, 1920):
+              raise SystemExit(f"Validasi gagal: resolusi {video.get('width')}x{video.get('height')}, diharapkan 1080x1920.")
+          if video.get("r_frame_rate") != "30/1":
+              raise SystemExit(f"Validasi gagal: frame rate {video.get('r_frame_rate')!r}, diharapkan '30/1'.")
+          if audio is None:
+              raise SystemExit("Validasi gagal: stream audio tidak ditemukan.")
+
+          print("Validasi MP4 berhasil: H.264, 1080x1920, 30 FPS, dengan stream audio.")
+          print("Durasi:", metadata.get("format", {}).get("duration"), "detik")
+          print("Ukuran:", metadata.get("format", {}).get("size"), "byte")
+          PY
+
+          sha256sum hasil/yajuj2-runtime.mp4 | tee hasil/SHA256-runtime.txt
 
       - name: Simpan artefak runtime
         if: always()
