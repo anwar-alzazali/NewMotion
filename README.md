@@ -52,6 +52,7 @@ Ekstra `render` menyediakan pustaka Python yang telah teridentifikasi pada jalur
 
 - [Gambaran arsitektur](docs/architecture/overview.md)
 - [Peta adaptasi dari mesin-video](docs/architecture/adoption-map.md)
+- [Pemisahan inti dan paket genre](docs/architecture/pemisahan-genre.md)
 - [ADR 0001 — Monolit modular](docs/decisions/0001-modular-monolith.md)
 
 ## Keamanan

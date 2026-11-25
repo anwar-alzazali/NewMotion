@@ -1,0 +1,46 @@
+# Uji ulang setelah kredensial Quran Foundation dikonfigurasi di GitHub Actions Secrets.
+name: Uji verifikasi dalil Kisah Islami
+
+on:
+  pull_request:
+    paths:
+      - 'newmotion/paket_genre/kisah_islami/dalil/**'
+      - 'newmotion/paket_genre/kisah_islami/__init__.py'
+      - 'tests/test_verifikasi_dalil.py'
+      - '.github/workflows/verifikasi-dalil.yml'
+  push:
+    branches:
+      - 'feature/pemisahan-genre-dari-inti'
+    paths:
+      - 'newmotion/paket_genre/kisah_islami/dalil/**'
+      - 'newmotion/paket_genre/kisah_islami/__init__.py'
+      - 'tests/test_verifikasi_dalil.py'
+      - '.github/workflows/verifikasi-dalil.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verifikasi-dalil:
+    runs-on: ubuntu-latest
+    env:
+      QURAN_FOUNDATION_CLIENT_ID: ${{ secrets.QURAN_FOUNDATION_CLIENT_ID }}
+      QURAN_FOUNDATION_CLIENT_SECRET: ${{ secrets.QURAN_FOUNDATION_CLIENT_SECRET }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Pasang alat uji
+        run: python -m pip install -e '.[uji]'
+      - name: Unduh dataset hadis bersumber dari Sunnah.com
+        run: python -m newmotion.paket_genre.kisah_islami.dalil.unduh_hadis
+      - name: Periksa sintaks
+        run: python -m compileall -q newmotion tests
+      - name: Uji kontrak verifikasi dalil
+        run: python -m pytest tests/test_verifikasi_dalil.py tests/test_genre.py
+      - name: Uji akses langsung Quran Foundation
+        if: ${{ env.QURAN_FOUNDATION_CLIENT_ID != '' && env.QURAN_FOUNDATION_CLIENT_SECRET != '' }}
+        run: |
+          python -c 'from newmotion.paket_genre.kisah_islami.dalil.quran import QuranFoundation; a=QuranFoundation(cache=None).ayat(1, 1); assert a and a.ar; print("Quran Foundation berhasil mengambil ayat 1:1")'

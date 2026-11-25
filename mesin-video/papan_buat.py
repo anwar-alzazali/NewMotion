@@ -259,36 +259,51 @@ class SpekDitolak(SystemExit):
 
 
 def jaga_spek(spec):
-    """GERBANG WAJIB sebelum render apa pun (HTML, pratinjau, video): penjaga tokoh suci + penjaga dalil.
-    Gagal = SpekDitolak (keluar kode 3) dengan pesan jelas; spek tidak pernah diperbaiki diam-diam.
-    Tidak ada opsi CLI untuk melewati gerbang ini."""
-    sys.path.insert(0, HERE)
-    from papan.penjaga_tokoh_suci import periksa_tokoh_suci, TokohSuciDigambarError
-    from papan.penjaga_dalil import periksa_dalil, DalilTidakTerverifikasiError
+    """GERBANG sebelum render; aturan khusus dijalankan hanya oleh paket genre pemiliknya."""
+    sys.path.insert(0, os.path.dirname(HERE))
+    from newmotion.domain.genre import dari_rencana
+
+    try:
+        paket = dari_rencana(spec)
+    except (ValueError, TypeError, ImportError) as galat:
+        print(f"GENRE TIDAK VALID: {galat}", file=sys.stderr)
+        raise SpekDitolak(3) from galat
+
     pesan = []
-    suci = periksa_tokoh_suci(spec)
-    if suci:
-        pesan.append(str(TokohSuciDigambarError(suci)))
-    dalil = periksa_dalil(spec)
-    if any(h.memblokir for h in dalil):
-        pesan.append(str(DalilTidakTerverifikasiError(dalil)))
-    for h in dalil:
-        if not h.memblokir:
-            print(f"penjaga dalil: {h}" + "".join(f"\n    peringatan: {w}" for w in h.peringatan), file=sys.stderr)
+    dalil = []
+    if paket.penjaga_tokoh is not None:
+        temuan_adab = paket.penjaga_tokoh(spec)
+        if temuan_adab:
+            rincian = "\n".join(f"[{item.kode}] {item.pesan}" for item in temuan_adab)
+            pesan.append("Pelanggaran adab penggambaran tokoh:\n" + rincian)
+
+    if paket.penjaga_dalil is not None:
+        dalil = paket.penjaga_dalil(spec)
+        terblokir = [item for item in dalil if item.memblokir]
+        if terblokir:
+            rincian = "\n".join(f"- {item}" for item in terblokir)
+            pesan.append("Pelanggaran verifikasi dalil:\n" + rincian)
+        for item in dalil:
+            if not item.memblokir:
+                print(
+                    f"penjaga dalil: {item}"
+                    + "".join(f"\n    peringatan: {w}" for w in item.peringatan),
+                    file=sys.stderr,
+                )
+
     if pesan:
         print("\n\n".join(pesan) + "\nRENDER DIBATALKAN. Perbaiki spek sumber, jangan melewati gerbang.", file=sys.stderr)
         raise SpekDitolak(3)
+
     cerita = spec.get("cerita") or {}
     if cerita.get("penataan_panggung_otomatis"):
         # Perencanaan panggung opt-in: spek lama tidak berubah.
-        sys.path.insert(0, os.path.dirname(HERE))
         from newmotion.penataan_panggung import rencanakan_penataan_panggung
         for hasil in rencanakan_penataan_panggung(cerita):
             print("penataan panggung otomatis:", hasil, file=sys.stderr)
         cerita["pemeriksaan_penataan_panggung"] = True
     if cerita.get("pemeriksaan_penataan_panggung"):
         # Pemeriksaan ini opsional agar spesifikasi lama tetap kompatibel.
-        sys.path.insert(0, os.path.dirname(HERE))
         from newmotion.penataan_panggung import periksa_penataan_panggung
         temuan = periksa_penataan_panggung(cerita)
         for item in temuan:

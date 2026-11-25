@@ -1,0 +1,93 @@
+name: Uji render naskah Mahsyar 1
+
+on:
+  push:
+    branches:
+      - feature/pemisahan-genre-dari-inti
+    paths:
+      - '.github/workflows/uji-mahsyar1.yml'
+      - 'mesin-video/papan_buat.py'
+      - 'mesin-video/papan/**'
+      - 'newmotion/**'
+  pull_request:
+    types: [opened, synchronize, reopened]
+    paths:
+      - '.github/workflows/uji-mahsyar1.yml'
+      - 'mesin-video/papan_buat.py'
+      - 'mesin-video/papan/**'
+      - 'newmotion/**'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  render-mahsyar1:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Ambil NewMotion
+        uses: actions/checkout@v4
+
+      - name: Ambil sumber naskah, audio, dan aset asli mesin-video
+        uses: actions/checkout@v4
+        with:
+          repository: anwar-alzazali/mesin-video
+          ref: main
+          path: sumber-mesin-video
+          token: ${{ secrets.MESIN_VIDEO_READ_TOKEN }}
+
+      - name: Siapkan runtime render
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq ffmpeg fonts-dejavu-core
+          python -m pip install --upgrade pip
+          python -m pip install -e '.[render]'
+          python -m playwright install --with-deps chromium
+
+      - name: Pasang naskah dan aset referensi Mahsyar 1
+        run: |
+          test -s sumber-mesin-video/naskah/mahsyar1.txt
+          test -s sumber-mesin-video/papan/kisah/mahsyar1.json
+          mkdir -p mesin-video/papan/kisah mesin-video/audio_manual/mahsyar1_ozhy mesin-video/aset
+          cp sumber-mesin-video/papan/kisah/mahsyar1.json mesin-video/papan/kisah/mahsyar1.json
+          cp sumber-mesin-video/audio_manual/mahsyar1_ozhy/narasi.mp3 mesin-video/audio_manual/mahsyar1_ozhy/
+          cp sumber-mesin-video/audio_manual/mahsyar1_ozhy/narasi.waktu.json mesin-video/audio_manual/mahsyar1_ozhy/
+          cp -a sumber-mesin-video/aset/suara mesin-video/aset/
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p = Path("mesin-video/papan/kisah/mahsyar1.json")
+          spec = json.loads(p.read_text(encoding="utf-8"))
+          assert spec.get("cerita", {}).get("shot"), "Shot Mahsyar 1 kosong"
+          assert (Path("mesin-video/audio_manual/mahsyar1_ozhy/narasi.mp3")).stat().st_size > 0
+          print(f"Input siap: {len(spec['cerita']['shot'])} shot")
+          print(f"Naskah: {Path('sumber-mesin-video/naskah/mahsyar1.txt').read_text(encoding='utf-8').splitlines()[0]}")
+          PY
+
+      - name: Render naskah Mahsyar 1 dengan renderer NewMotion
+        run: |
+          mkdir -p hasil-uji-mahsyar1
+          set -o pipefail
+          python mesin-video/papan_buat.py mesin-video/papan/kisah/mahsyar1.json -o hasil-uji-mahsyar1/mahsyar1-newmotion.mp4 2>&1 | tee hasil-uji-mahsyar1/render.log
+          test -s hasil-uji-mahsyar1/mahsyar1-newmotion.mp4
+
+      - name: Verifikasi video dan ambil frame
+        if: always()
+        run: |
+          if [ -s hasil-uji-mahsyar1/mahsyar1-newmotion.mp4 ]; then
+            ffprobe -v error -show_entries format=duration,size:stream=codec_name,codec_type,width,height,r_frame_rate -of json hasil-uji-mahsyar1/mahsyar1-newmotion.mp4 | tee hasil-uji-mahsyar1/metadata.json
+            for detik in 0 10 20 30 40 50 60 70 80 90; do
+              ffmpeg -y -ss "$detik" -i hasil-uji-mahsyar1/mahsyar1-newmotion.mp4 -frames:v 1 "hasil-uji-mahsyar1/frame-$detik.png" 2>/dev/null || true
+            done
+            sha256sum hasil-uji-mahsyar1/mahsyar1-newmotion.mp4 | tee hasil-uji-mahsyar1/SHA256SUMS.txt
+          fi
+
+      - name: Simpan hasil render dan bukti
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: hasil-uji-render-mahsyar1-newmotion
+          path: hasil-uji-mahsyar1/
+          if-no-files-found: warn
+          retention-days: 14
