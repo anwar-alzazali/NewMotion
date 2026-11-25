@@ -632,3 +632,43 @@ def test_rencana_semantik_menolak_peristiwa_non_objek():
     finally:
         from newmotion.domain import genre as modul_genre
         modul_genre._PAKET.pop(nama, None)
+
+def test_sutradara_meneruskan_peristiwa_semantik_ke_rencana_blocking():
+    from newmotion.application.pengarah_inti import arahkan_naskah
+
+    nama = "sutradara_blocking_semantik_uji"
+    paket = PaketGenre(
+        nama=nama,
+        pengarah_naskah=lambda data: {
+            "cerita": {"shot": [{"at": 0, "_adegan": 0, "boneka": [], "benda": []}]}
+        },
+    )
+    daftarkan(paket)
+    try:
+        papan, _, _ = arahkan_naskah({
+            "judul": "Penolong",
+            "genre": nama,
+            "konteks_konten": "umum",
+            "tokoh": [{"id": "tokoh-a", "nama": "Penolong"}],
+            "adegan": [{
+                "id": "beat-001",
+                "teks": "Penolong menghampiri korban.",
+                "peristiwa": [{
+                    "id": "peristiwa-1",
+                    "aktor": "Penolong",
+                    "aksi": "menghampiri",
+                    "sasaran": "motor",
+                }],
+            }],
+        })
+        rencana = papan["rencana_blocking"]
+        assert rencana["tahap"] == "kontrak_semantik"
+        assert rencana["peristiwa"][0]["aktor_id"] == "tokoh-a"
+        assert rencana["peristiwa"][0]["sasaran"] == "motor"
+        assert rencana["shot"][0]["beat_id"] == "beat-001"
+        assert rencana["shot"][0]["peristiwa_ids"] == ["peristiwa-1"]
+        assert papan["cerita"]["shot"][0]["boneka"] == []
+    finally:
+        from newmotion.domain import genre as modul_genre
+        modul_genre._PAKET.pop(nama, None)
+
