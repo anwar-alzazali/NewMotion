@@ -364,3 +364,125 @@ def test_naskah_baru_dari_genre_non_islami_wajib_menyatakan_konteks():
         konteks_konten_untuk_naskah(
             {"genre": "komedi"}, genre="komedi", wajib_eksplisit=True
         )
+
+
+def test_sutradara_memisahkan_rencana_semantik_dan_mengaitkan_shot_ke_beat():
+    from newmotion.application.pengarah_inti import arahkan_naskah
+
+    nama = "sutradara_rencana_semantik_uji"
+
+    def pengarah(data):
+        return {
+            "cerita": {
+                "shot": [
+                    {"at": 0, "_adegan": 0, "boneka": [], "benda": []},
+                    {"at": 5, "_adegan": 1, "boneka": [], "benda": []},
+                ]
+            }
+        }
+
+    paket = PaketGenre(nama=nama, pengarah_naskah=pengarah)
+    daftarkan(paket)
+    naskah = {
+        "judul": "Penolong",
+        "genre": nama,
+        "konteks_konten": "umum",
+        "tokoh": [
+            {"id": "tokoh-penolong", "nama": "Penolong"},
+            {"id": "tokoh-pengendara", "nama": "Pengendara"},
+        ],
+        "adegan": [
+            {
+                "id": "beat-001",
+                "teks": "Pengendara kehilangan keseimbangan.",
+                "peran": ["Pengendara", "Penolong"],
+                "tokoh_ids": ["tokoh-pengendara", "tokoh-penolong"],
+                "dialog": [],
+            },
+            {
+                "id": "beat-002",
+                "teks": "Penolong menghampiri pengendara.",
+                "peran": ["Penolong", "Pengendara"],
+                "tokoh_ids": ["tokoh-penolong", "tokoh-pengendara"],
+                "dialog": [
+                    {"pembicara": "Penolong", "ucapan": "Saya bantu.", "penjawab": "Pengendara"}
+                ],
+                "peristiwa": [{
+                    "id": "peristiwa-1",
+                    "aktor": "Penolong",
+                    "aksi": "menghampiri",
+                    "sasaran": "Pengendara",
+                    "tujuan": "menolong",
+                }],
+            },
+        ],
+    }
+    try:
+        papan, _, _ = arahkan_naskah(naskah)
+        assert papan["rencana_cerita"]["tokoh"] == naskah["tokoh"]
+        assert [a["id"] for a in papan["rencana_cerita"]["adegan"]] == [
+            "beat-001", "beat-002"
+        ]
+        assert papan["rencana_cerita"]["adegan"][1]["dialog"] == naskah["adegan"][1]["dialog"]
+        assert papan["rencana_cerita"]["adegan"][1]["peristiwa"] == naskah["adegan"][1]["peristiwa"]
+        assert [s["_beat_id"] for s in papan["cerita"]["shot"]] == [
+            "beat-001", "beat-002"
+        ]
+        # Instruksi render tetap terpisah; tidak menyisipkan boneka tokoh secara otomatis.
+        assert all("boneka" in s and s["boneka"] == [] for s in papan["cerita"]["shot"])
+    finally:
+        from newmotion.domain import genre as modul_genre
+        modul_genre._PAKET.pop(nama, None)
+
+
+def test_sutradara_menolak_rujukan_tokoh_yang_tidak_terdaftar():
+    from newmotion.application.pengarah_inti import GalatPengarahan, arahkan_naskah
+
+    nama = "sutradara_tokoh_tidak_terdaftar_uji"
+    paket = PaketGenre(
+        nama=nama,
+        pengarah_naskah=lambda data: {
+            "cerita": {"shot": [{"at": 0, "_adegan": 0}]}
+        },
+    )
+    daftarkan(paket)
+    try:
+        with pytest.raises(GalatPengarahan, match="ID tokoh yang tidak terdaftar"):
+            arahkan_naskah({
+                "judul": "Rujukan salah",
+                "genre": nama,
+                "konteks_konten": "umum",
+                "tokoh": [],
+                "adegan": [{
+                    "id": "beat-001",
+                    "teks": "Tokoh hadir.",
+                    "tokoh_ids": ["tokoh-hilang"],
+                }],
+            })
+    finally:
+        from newmotion.domain import genre as modul_genre
+        modul_genre._PAKET.pop(nama, None)
+
+
+def test_sutradara_menolak_indeks_adegan_shot_di_luar_rencana():
+    from newmotion.application.pengarah_inti import GalatPengarahan, arahkan_naskah
+
+    nama = "sutradara_indeks_adegan_salah_uji"
+    paket = PaketGenre(
+        nama=nama,
+        pengarah_naskah=lambda data: {
+            "cerita": {"shot": [{"at": 0, "_adegan": 4}]}
+        },
+    )
+    daftarkan(paket)
+    try:
+        with pytest.raises(GalatPengarahan, match="indeks _adegan di luar daftar beat"):
+            arahkan_naskah({
+                "judul": "Indeks salah",
+                "genre": nama,
+                "konteks_konten": "umum",
+                "adegan": [{"id": "beat-001", "teks": "Adegan tunggal."}],
+            })
+    finally:
+        from newmotion.domain import genre as modul_genre
+        modul_genre._PAKET.pop(nama, None)
