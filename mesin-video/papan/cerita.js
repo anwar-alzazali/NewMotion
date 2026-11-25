@@ -1390,7 +1390,7 @@
   }
 
   function rangka(J, o) {
-    const { P, BD, WC, KLB, nafas, ayun, bawahP, t } = o, GM = o.gm || 0, R = Math.PI / 180, hy0 = -200 + J.turun;
+    const { P, BD, WC, KLB, nafas, ayun, bawahP, t, aksi, id } = o, GM = o.gm || 0, R = Math.PI / 180, hy0 = -200 + J.turun;
     const pakaiP = !!P, wKaki = !P ? 44 : bawahP === "celana" ? 46 : bawahP === "gamis" ? 72 : 64, wnK = !P ? BADAN : bawahP === "gamis" ? BD : WC;
     const titik = [];
     let kaki = "";
@@ -1437,6 +1437,21 @@
       </g>
       <circle cx="${L.H[0]}" cy="${L.H[1]}" r="17" fill="${KLB}" stroke="#34333a" stroke-width="4"/>
       <circle cx="${Rk.H[0]}" cy="${Rk.H[1]}" r="17" fill="${KLB}" stroke="#34333a" stroke-width="4"/>`;
+      // Efek benturan mengikuti siklus gali Python (1,15 dtk), tepat saat beliung menyentuh dinding.
+      if (aksi === "gali") {
+        const fase = ((t + (id || 0) * 0.381) % 1.15 + 1.15) % 1.15 / 1.15;
+        if (fase >= 0.52 && fase <= 0.72) {
+          const q = (fase - 0.52) / 0.20, R2 = rng((id || 0) * 97 + Math.floor(t / 1.15) * 31 + 7);
+          const rr = 34 + 72 * q, op = 1 - q;
+          barang += `<circle cx="${hx}" cy="${hy}" r="${rr}" fill="none" stroke="#ffd27a" stroke-width="${10 * op + 2}" opacity="${0.62 * op}"/>`;
+          barang += `<circle cx="${hx}" cy="${hy}" r="${18 * (1 - q) + 3}" fill="#fff6cf" opacity="${0.7 * op}"/>`;
+          for (let i = 0; i < 14; i++) {
+            const a = R2() * Math.PI * 2, sp = 38 + R2() * 125, sz = 5 + R2() * 7;
+            const px = hx + Math.cos(a) * sp * q, py = hy + Math.sin(a) * sp * q + 68 * q * q;
+            barang += `<circle cx="${px}" cy="${py}" r="${sz * (1 - 0.45 * q)}" fill="${i % 3 ? "#ffd27a" : "#fff"}" opacity="${op}"/>`;
+          }
+        }
+      }
     }
     if (J.pegang === "palu") {
       const sudut = J.ra[1] * 0.45 - 10;
@@ -1537,7 +1552,7 @@
     const tangan = (x2, y2) => (P ? `<circle cx="${x2}" cy="${y2}" r="19" fill="${KLB}" stroke="${INK}" stroke-width="4"/>` : "");
     const lenganKiri = `<line x1="${-SH}" y1="${-360 + nafas}" x2="${-SH - 22 - ayun * 0.3}" y2="${-200 + nafas}" stroke="${BD}" stroke-width="36" stroke-linecap="round"/>` + tangan(-SH - 22 - ayun * 0.3, -192 + nafas);
     g += lenganKiri;
-    let RG = null; if (RIG) { RG = rangka(RIG, { P, BD, WC, KLB, nafas, ayun, bawahP, t, gm: GM }); g = RG.g; }
+    let RG = null; if (RIG) { RG = rangka(RIG, { P, BD, WC, KLB, nafas, ayun, bawahP, t: HD ? ta : t, gm: GM, aksi: b.aksi, id: b.npc != null ? b.npc : b.id }); g = RG.g; }
     let lenganKanan = RIG ? "" : `<line x1="${SH}" y1="${-360 + nafas}" x2="${SH + 22 + ayun * 0.3}" y2="${-200 + nafas}" stroke="${BD}" stroke-width="36" stroke-linecap="round"/>` + tangan(SH + 22 + ayun * 0.3, -192 + nafas);
     // kepala
     const hx = arah * 10, hy = -492 - (KB - 1) * 96 + nafas + tunduk * 14 + (H ? H.ky : 0), ex = arah * 24, ey = tunduk * 14 + (mata === "atas" ? -8 : mata === "bawah" ? 8 : 0);
