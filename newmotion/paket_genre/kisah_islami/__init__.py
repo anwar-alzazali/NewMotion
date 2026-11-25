@@ -19,7 +19,7 @@ def buat_paket() -> PaketGenre:
         modul_legacy={
             "pengarah": "mesin-video/papan/direktur.py",
             "arah_visual": "mesin-video/papan/arah_visual.py",
-            "penjaga_dalil_kompatibilitas": "mesin-video/papan/penjaga_dalil.py",
+            "penjaga_dalil": "mesin-video/papan/penjaga_dalil.py",
             "penjaga_tokoh_suci": "newmotion/paket_genre/kisah_islami/penjaga_tokoh_legacy.py",
         },
     )
