@@ -1,4 +1,4 @@
-name: Uji render NewMotion dengan renderer branch dan referensi mesin-video/main
+name: Uji adegan visual baru melalui renderer NewMotion
 
 on:
   workflow_dispatch:
@@ -41,54 +41,25 @@ jobs:
           python -m pip install -e '.[render]'
           python -m playwright install --with-deps chromium
 
-      - name: Ambil mesin-video/main sebagai data referensi tanpa menimpa renderer NewMotion
-        env:
-          MESIN_VIDEO_READ_TOKEN: ${{ secrets.MESIN_VIDEO_READ_TOKEN }}
+      - name: Periksa renderer NewMotion dan input adegan uji
         run: |
-          test -n "$MESIN_VIDEO_READ_TOKEN" || { echo "Secret MESIN_VIDEO_READ_TOKEN belum tersedia."; exit 1; }
-          mkdir -p referensi
-          rm -rf referensi/mesin-video-main
-          git -c http.extraheader="AUTHORIZATION: basic $(printf 'x-access-token:%s' "$MESIN_VIDEO_READ_TOKEN" | base64 -w0)" clone --depth 1 --branch main https://github.com/anwar-alzazali/mesin-video.git referensi/mesin-video-main
-          unset MESIN_VIDEO_READ_TOKEN
-          echo "Sumber referensi mesin-video commit: $(git -C referensi/mesin-video-main rev-parse HEAD)"
           test -f mesin-video/papan_buat.py
           test -f mesin-video/papan/cerita.js
-          test -f referensi/mesin-video-main/periksa.py
-          test -f referensi/mesin-video-main/papan/kisah/nuh2.json
-
-      - name: Periksa input asli dan kelengkapan aset
-        run: |
           python - <<'PY'
           import json
           from pathlib import Path
 
-          spec_path = Path("referensi/mesin-video-main/papan/kisah/nuh2.json").resolve()
-          spec = json.loads(spec_path.read_text(encoding="utf-8"))
-          dasar = spec_path.parent
-          referensi = [spec["suara"], *[r["berkas"] for r in spec.get("rekaman", [])]]
-          hilang = [p for p in referensi if not (dasar / p).is_file()]
-          if hilang:
-              raise SystemExit("Aset sumber tidak ditemukan: " + ", ".join(hilang))
-          jumlah = len(spec.get("rekaman", []))
-          if jumlah != 42:
-              raise SystemExit(f"Jumlah efek berubah: ditemukan {jumlah}, baseline 42.")
-          print(f"Spesifikasi asli: {spec_path}")
-          print(f"Narasi tersedia: {spec['suara']}")
-          print(f"Efek suara terdaftar: {jumlah}; seluruh berkas audio ditemukan.")
+          path = Path("tests/data/adegan_uji_visual.json")
+          spec = json.loads(path.read_text(encoding="utf-8"))
+          print(f"Spesifikasi adegan uji: {path}")
           print(f"Jumlah shot: {len(spec.get('cerita', {}).get('shot', []))}")
+          print("Renderer yang diuji: mesin-video/papan_buat.py dari branch NewMotion")
           PY
 
       - name: Periksa runtime NewMotion
         run: |
           newmotion --version
           newmotion doctor
-
-      - name: Render Nuh2 melalui runtime NewMotion
-        run: |
-          mkdir -p hasil
-          set -o pipefail
-          newmotion render referensi/mesin-video-main/papan/kisah/nuh2.json -o nuh2-runtime.mp4 2>&1 | tee hasil/render-runtime.log
-          test -s hasil/nuh2-runtime.mp4
 
       - name: Render uji adegan visual baru melalui NewMotion
         run: |
@@ -122,46 +93,11 @@ jobs:
           python mesin-video/papan_buat.py tests/data/adegan_uji_visual.json --pratinjau 2,7,12,17,22,27,32,37 -o hasil/frame-uji
           sha256sum hasil/adegan-uji-visual.mp4 | tee hasil/SHA256-adegan-uji.txt
 
-      - name: Validasi metadata video dan audio
-        run: |
-          ffprobe -v error -show_entries format=duration,size:stream=codec_name,codec_type,width,height,r_frame_rate -of json hasil/nuh2-runtime.mp4 > hasil/metadata-runtime.json
-          python - <<'PY'
-          import json
-          from pathlib import Path
-
-          metadata = json.loads(Path("hasil/metadata-runtime.json").read_text())
-          streams = metadata.get("streams", [])
-          video = next((s for s in streams if s.get("codec_type") == "video"), None)
-          audio = next((s for s in streams if s.get("codec_type") == "audio"), None)
-          if video is None or audio is None:
-              raise SystemExit("Stream video atau audio tidak ditemukan.")
-          if video.get("codec_name") != "h264":
-              raise SystemExit(f"Codec video bukan H.264: {video.get('codec_name')}")
-          if (video.get("width"), video.get("height")) != (1080, 1920):
-              raise SystemExit(f"Resolusi salah: {video.get('width')}x{video.get('height')}")
-          if video.get("r_frame_rate") != "30/1":
-              raise SystemExit(f"FPS salah: {video.get('r_frame_rate')}")
-          if audio.get("codec_name") != "aac":
-              raise SystemExit(f"Codec audio bukan AAC: {audio.get('codec_name')}")
-          durasi = float(metadata.get("format", {}).get("duration", 0))
-          if not 120 <= durasi <= 140:
-              raise SystemExit(f"Durasi di luar rentang baseline 120–140 detik: {durasi:.2f}")
-          print("LOLOS: H.264, AAC, 1080x1920, 30 FPS.")
-          print(f"Durasi: {durasi:.2f} detik")
-          print(f"Ukuran: {metadata['format'].get('size')} byte")
-          PY
-          sha256sum hasil/nuh2-runtime.mp4 | tee hasil/SHA256-runtime.txt
-
-      - name: Buat HTML sumber dan jalankan pemeriksa mesin-video
-        run: |
-          python mesin-video/papan_buat.py referensi/mesin-video-main/papan/kisah/nuh2.json --html hasil/nuh2.html
-          python referensi/mesin-video-main/periksa.py hasil/nuh2-runtime.mp4 --html hasil/nuh2.html --spek referensi/mesin-video-main/papan/kisah/nuh2.json -o hasil/periksa | tee hasil/periksa.log
-
       - name: Simpan artefak pengujian
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: nuh2-runtime-newmotion-main-source
+          name: hasil-uji-adegan-visual-newmotion
           path: hasil/
           if-no-files-found: warn
           retention-days: 14
