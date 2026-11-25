@@ -108,7 +108,7 @@ def test_kebijakan_naskah_mempertahankan_pagar_islami_dari_metadata_status():
     assert hasil["kebijakan"]["aktifkan_kebijakan_islami"] is True
 
 
-def test_proses_menyimpan_metadata_kebijakan_ke_naskah(tmp_path):
+def test_proses_menyimpan_metadata_kebijakan_ke_naskah(tmp_path, monkeypatch):
     folder = tmp_path / "antrean"
     antrean = folder / "uji-metadata-hasil"
     antrean.mkdir(parents=True)
@@ -120,16 +120,12 @@ def test_proses_menyimpan_metadata_kebijakan_ke_naskah(tmp_path):
         hasil = json.loads(json.dumps(naskah))
         return hasil, ["uji"]
 
-    monkeypatch = __import__("pytest").MonkeyPatch()
     monkeypatch.setattr("newmotion.paket_genre.kisah_islami.dalil.verifikasi.verifikasi", verifikasi)
-    try:
-        hasil = A.proses(
-            "uji-metadata-hasil", "ide", folder=folder,
-            tanya=lambda *args, **kwargs: (json.dumps(NASKAH), 5),
-            kirim_tg=False,
-        )
-    finally:
-        monkeypatch.undo()
+    hasil = A.proses(
+        "uji-metadata-hasil", "ide", folder=folder,
+        tanya=lambda *args, **kwargs: (json.dumps(NASKAH), 5),
+        kirim_tg=False,
+    )
     tersimpan = json.loads((antrean / "naskah.json").read_text(encoding="utf-8"))
     assert hasil["tahap"]["diterima"] == "selesai"
     assert tersimpan["genre"] == "kisah_islami"
