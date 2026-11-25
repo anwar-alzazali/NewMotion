@@ -1424,13 +1424,19 @@
     else if (J.pegang === "buku") barang = `<g transform="translate(${Rk.H[0] - 20} ${Rk.H[1] - 20})"><rect x="-40" y="-50" width="80" height="96" rx="6" fill="#7b2a20" stroke="${INK}" stroke-width="4"/><rect x="-32" y="-42" width="64" height="80" fill="#fbf2dc"/></g>`;
     else if (J.pegang === "gelas") barang = `<g transform="translate(${Rk.H[0]} ${Rk.H[1] - 26})"><path d="M -20 -30 L 20 -30 L 16 30 L -16 30 Z" fill="#dff3ff" stroke="${INK}" stroke-width="4" opacity=".9"/></g>`;
     else if (J.pegang === "beliung") {
-      const sudut = J.ra[1] * 0.72 - 18;
-      barang = `<g transform="translate(${Rk.H[0]} ${Rk.H[1]}) rotate(${sudut})">
-        <path d="M 0 48 Q -4 -18 0 -104" stroke="#76502f" stroke-width="15" fill="none" stroke-linecap="round"/>
-        <path d="M -4 -82 Q -42 -112 -66 -96 Q -48 -70 -8 -66 Q 20 -62 54 -88 Q 30 -108 -4 -82 Z" fill="#aeb8c2" stroke="#34333a" stroke-width="7" stroke-linejoin="round"/>
-        <path d="M -50 -91 Q -26 -82 -8 -78" stroke="#eef3f5" stroke-width="5" fill="none" stroke-linecap="round"/>
-        <path d="M -8 34 L 8 34" stroke="#4c3322" stroke-width="5" stroke-linecap="round"/>
-      </g>`;
+      // Satu gagang mengikuti kedua titik genggam, bukan menempel pada satu tangan.
+      const dx = Rk.H[0] - L.H[0], dy = Rk.H[1] - L.H[1];
+      const len = Math.max(1, Math.hypot(dx, dy)), ux = dx / len, uy = dy / len;
+      const hx = Rk.H[0] + ux * 112, hy = Rk.H[1] + uy * 112;
+      const sudut = Math.atan2(ux, -uy) * 180 / Math.PI;
+      barang = `<g transform="translate(${hx} ${hy}) rotate(${sudut})">
+        <path d="M 0 0 L 0 ${len + 126}" stroke="#4c3322" stroke-width="22" stroke-linecap="round"/>
+        <path d="M 0 0 L 0 ${len + 126}" stroke="#9a6b3e" stroke-width="14" stroke-linecap="round"/>
+        <path d="M -76 -8 Q -42 -24 0 -9 Q 42 -24 76 -8 L 68 12 Q 0 0 -68 12 Z" fill="#aeb8c2" stroke="#34333a" stroke-width="7" stroke-linejoin="round"/>
+        <path d="M -60 -7 Q -30 -14 -8 -7" stroke="#eef3f5" stroke-width="5" fill="none" stroke-linecap="round"/>
+      </g>
+      <circle cx="${L.H[0]}" cy="${L.H[1]}" r="17" fill="#b98262" stroke="#34333a" stroke-width="4"/>
+      <circle cx="${Rk.H[0]}" cy="${Rk.H[1]}" r="17" fill="#b98262" stroke="#34333a" stroke-width="4"/>`;
     }
     if (J.pegang === "palu") {
       const sudut = J.ra[1] * 0.45 - 10;
