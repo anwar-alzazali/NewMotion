@@ -31,7 +31,7 @@ Workflow hanya dipicu manual/API melalui `workflow_dispatch`, sesuai aturan repo
 1. Setelah naskah dan dalil diverifikasi, pemilik meninjau naskah di Telegram.
 2. Tombol **Lanjut** memicu `.github/workflows/visual.yml`.
 3. Pengarah Kisah Islami mengubah beat menjadi adegan, lalu renderer membuat MP4 pratinjau **tanpa TTS dan tanpa trek narasi**.
-4. Pratinjau dikirim ke Telegram dengan tombol **Setujui visual** atau **Revisi visual**.
+4. Pratinjau dikirim ke Telegram dengan tombol **Setujui visual** atau **Tolak visual**. Penolakan menghentikan alur; revisi otomatis berdasarkan catatan visual belum tersedia.
 5. Jika visual ditolak, tahap TTS tetap diblokir. Jika disetujui, status membuka tahap TTS; produksi TTS dan render final masih merupakan integrasi berikutnya.
 
 Pratinjau visual menggunakan renderer yang sudah ada. Artefak MP4 disimpan sementara sebagai GitHub Actions artifact selama 7 hari; papan JSON dan status tinjauan disimpan di antrean. Workflow membutuhkan dependensi `.[render]`, Chromium Playwright, FFmpeg, serta secrets Telegram dan Quran Foundation.
