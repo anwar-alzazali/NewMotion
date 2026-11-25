@@ -109,6 +109,7 @@ def test_adegan_motor_jembatan_memenuhi_kontrak_blocking():
     korban_tergelincir = next(b for b in shot_tergelincir["boneka"] if b["id"] == 1)
     assert korban_tergelincir["kendaraan_id"] == motor_tergelincir["id"]
     assert korban_tergelincir["lepas_kendaraan_at"] == 2.4
+    assert motor_tergelincir["miring"][-1][1] <= -60
     assert korban_tergelincir["pose"][-1][1] == "rebahan"
 
     shot_bantu = cerita["shot"][3]
@@ -116,6 +117,7 @@ def test_adegan_motor_jembatan_memenuhi_kontrak_blocking():
     korban = next(b for b in shot_bantu["boneka"] if b["id"] == 1)
     assert penolong.get("aksi") == "menolong"
     assert penolong.get("sasaran_id") == korban["id"]
+    assert penolong["pose"][-1][1] == "menolong"
     assert penolong["x"][-1][1] < penolong["x"][0][1]
 
 
