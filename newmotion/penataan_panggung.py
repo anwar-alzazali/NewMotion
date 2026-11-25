@@ -299,3 +299,102 @@ def _arah_lintasan(tokoh):
         return 0
     dx = lintasan[-1][0] - lintasan[0][0]
     return (dx > 0) - (dx < 0)
+
+def susun_rencana_blocking(rencana_cerita, cerita):
+    """Bangun kontrak aksi panggung dari peristiwa semantik tanpa mengarang geometri.
+
+    Rencana ini menjembatani ID tokoh/peristiwa ke shot. Posisi, lintasan,
+    pose, kendaraan, dan gerak tetap harus ditentukan oleh pengarah visual.
+    """
+    rencana_cerita = rencana_cerita if isinstance(rencana_cerita, dict) else {}
+    cerita = cerita if isinstance(cerita, dict) else {}
+    adegan = rencana_cerita.get("adegan") or []
+    daftar_shot = cerita.get("shot") or []
+
+    peristiwa_berdasarkan_beat = {}
+    daftar_peristiwa = []
+    diagnostik = []
+    for nomor_adegan, beat in enumerate(adegan, start=1):
+        if not isinstance(beat, dict):
+            continue
+        beat_id = beat.get("id")
+        peristiwa = beat.get("peristiwa") or []
+        if not isinstance(peristiwa, list):
+            diagnostik.append({
+                "kode": "daftar_peristiwa_tidak_valid",
+                "beat_id": beat_id,
+            })
+            continue
+        ids = []
+        for nomor, item in enumerate(peristiwa, start=1):
+            if not isinstance(item, dict):
+                continue
+            id_peristiwa = item.get("id")
+            if not isinstance(id_peristiwa, str) or not id_peristiwa.strip():
+                id_peristiwa = f"{beat_id or f'beat-{nomor_adegan:03d}'}-peristiwa-{nomor:03d}"
+            aktor_id = item.get("aktor_id")
+            aksi = item.get("aksi")
+            sasaran_tokoh_id = item.get("sasaran_tokoh_id")
+            siap_dipetakan = (
+                isinstance(aktor_id, str) and bool(aktor_id.strip())
+                and isinstance(aksi, str) and bool(aksi.strip())
+            )
+            butir = {
+                "id": id_peristiwa,
+                "beat_id": beat_id,
+                "aktor_id": aktor_id,
+                "aksi": aksi,
+                "sasaran": item.get("sasaran"),
+                "sasaran_tokoh_id": sasaran_tokoh_id,
+                "tujuan": item.get("tujuan"),
+                "perubahan_keadaan": item.get("perubahan_keadaan"),
+                "status": "siap_dipetakan_ke_visual" if siap_dipetakan else "perlu_pelengkapan_semantik",
+            }
+            daftar_peristiwa.append(butir)
+            ids.append(id_peristiwa)
+            if not siap_dipetakan:
+                diagnostik.append({
+                    "kode": "peristiwa_belum_lengkap_untuk_blocking",
+                    "beat_id": beat_id,
+                    "peristiwa_id": id_peristiwa,
+                    "aktor_id": aktor_id,
+                    "aksi": aksi,
+                })
+        if beat_id is not None:
+            peristiwa_berdasarkan_beat[str(beat_id)] = ids
+
+    tautan_shot = []
+    beat_terpakai = set()
+    for indeks, shot in enumerate(daftar_shot):
+        if not isinstance(shot, dict):
+            continue
+        beat_id = shot.get("_beat_id")
+        ids = peristiwa_berdasarkan_beat.get(str(beat_id), []) if beat_id is not None else []
+        if beat_id is not None:
+            beat_terpakai.add(str(beat_id))
+        tautan_shot.append({
+            "indeks": indeks,
+            "beat_id": beat_id,
+            "peristiwa_ids": list(ids),
+        })
+
+    for beat_id, ids in peristiwa_berdasarkan_beat.items():
+        if ids and beat_id not in beat_terpakai:
+            diagnostik.append({
+                "kode": "beat_peristiwa_tidak_memiliki_shot",
+                "beat_id": beat_id,
+                "peristiwa_ids": list(ids),
+            })
+
+    return {
+        "versi": 1,
+        "tahap": "kontrak_semantik",
+        "catatan": (
+            "Belum berisi koordinat, lintasan, pose, atau gerak. "
+            "Pengarah visual harus memetakannya ke boneka dan benda renderer."
+        ),
+        "peristiwa": daftar_peristiwa,
+        "shot": tautan_shot,
+        "diagnostik": diagnostik,
+    }
+
