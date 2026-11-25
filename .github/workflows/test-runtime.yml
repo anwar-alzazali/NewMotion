@@ -26,6 +26,11 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
+      - name: Pasang FFmpeg untuk doctor
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq ffmpeg
+
       - name: Pasang paket dan alat uji
         run: python -m pip install -e '.[uji]'
       - name: Periksa sintaks Python
