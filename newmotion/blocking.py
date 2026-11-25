@@ -74,13 +74,22 @@ def _titik_lintasan(tokoh):
              _nilai_pada(kunci_y, t, y_awal)) for t in waktu]
 
 
-def _posisi(tokoh):
-    x, y = tokoh.get("x", 0), tokoh.get("y", 0)
-    if isinstance(x, list) and x:
-        x = x[-1][-1] if isinstance(x[-1], (list, tuple)) else x[-1]
-    if isinstance(y, list) and y:
-        y = y[-1][-1] if isinstance(y[-1], (list, tuple)) else y[-1]
-    return _angka(x), _angka(y)
+def _komponen_posisi(nilai, awal=False):
+    """Ambil posisi awal/akhir dari angka, rentang, atau keyframe renderer."""
+    if not isinstance(nilai, list) or not nilai:
+        return _angka(nilai)
+    butir = nilai[0] if awal else nilai[-1]
+    if isinstance(butir, (list, tuple)):
+        if len(butir) >= 2:
+            return _angka(butir[1] if len(butir) >= 2 else butir[0])
+        return _angka(butir[0]) if butir else 0.0
+    return _angka(butir)
+
+
+def _posisi(tokoh, awal=False):
+    """Posisi ujung lintasan; kontinuitas membandingkan awal shot dengan akhir shot sebelumnya."""
+    return (_komponen_posisi(tokoh.get("x", 0), awal),
+            _komponen_posisi(tokoh.get("y", 0), awal))
 
 
 def periksa_blocking(cerita, jarak_interaksi=190.0, loncatan_maksimum=300.0):
@@ -135,9 +144,10 @@ def periksa_blocking(cerita, jarak_interaksi=190.0, loncatan_maksimum=300.0):
 
             if identitas in posisi_lalu:
                 px, py = posisi_lalu[identitas]
-                if hypot(x - px, y - py) > loncatan_maksimum and not tokoh.get("perubahan_posisi_dijelaskan"):
+                x_awal, y_awal = _posisi(tokoh, awal=True)
+                if hypot(x_awal - px, y_awal - py) > loncatan_maksimum and not tokoh.get("perubahan_posisi_dijelaskan"):
                     lapor("peringatan", "loncatan_posisi", indeks, identitas,
-                          "Posisi tokoh berubah jauh dari shot sebelumnya tanpa penjelasan.")
+                          "Awal posisi tokoh pada shot ini meloncat dari akhir shot sebelumnya tanpa penjelasan.")
 
             sasaran = tokoh.get("sasaran_id", tokoh.get("target_id"))
             aksi = tokoh.get("aksi")
