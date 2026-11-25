@@ -2,6 +2,7 @@ name: Uji pembuat karakter
 
 on:
   pull_request:
+    types: [opened, synchronize, reopened]
     paths:
       - 'mesin-video/papan/karakter/**'
       - 'mesin-video/papan/cerita.js'
