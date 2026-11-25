@@ -78,3 +78,34 @@ def test_posisi_tetap_tetap_ditolak_meski_gerak_kaki_aktif():
     temuan = periksa_blocking(cerita)
     assert any(x["kode"] == "jalan_tanpa_lintasan" and x["tingkat"] == "gagal"
                for x in temuan)
+
+
+def test_adegan_motor_jembatan_memenuhi_kontrak_blocking():
+    import json
+    from pathlib import Path
+
+    spec = json.loads(
+        (Path(__file__).parent / "data" / "adegan_uji_visual.json").read_text(encoding="utf-8")
+    )
+    cerita = spec["cerita"]
+    assert cerita.get("pemeriksaan_blocking") is True
+    gagal = [item for item in periksa_blocking(cerita) if item["tingkat"] == "gagal"]
+    assert gagal == [], gagal
+
+    shot_naik = cerita["shot"][0]
+    motor_naik = next(b for b in shot_naik["benda"] if b["jenis"] == "motor")
+    pengendara = next(b for b in shot_naik["boneka"] if b["id"] == 1)
+    assert isinstance(pengendara["x"], list) and isinstance(pengendara["pose"], list)
+
+    shot_jalan = cerita["shot"][1]
+    motor_jalan = next(b for b in shot_jalan["benda"] if b["jenis"] == "motor")
+    rider_jalan = next(b for b in shot_jalan["boneka"] if b["id"] == 1)
+    assert motor_jalan["x"][-1][1] > motor_jalan["x"][0][1]
+    assert rider_jalan["x"][-1][1] == motor_jalan["x"][-1][1]
+
+    shot_bantu = cerita["shot"][3]
+    penolong = next(b for b in shot_bantu["boneka"] if b["id"] == 2)
+    korban = next(b for b in shot_bantu["boneka"] if b["id"] == 1)
+    assert penolong.get("aksi") == "menolong"
+    assert penolong.get("sasaran_id") == korban["id"]
+    assert penolong["x"][-1][1] < penolong["x"][0][1]
