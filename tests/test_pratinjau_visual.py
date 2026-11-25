@@ -63,3 +63,42 @@ def test_pratinjau_tidak_dirender_ulang_saat_sedang_ditinjau(tmp_path):
     )
     with pytest.raises(ValueError, match="sudah dibuat"):
         buat_pratinjau("cerita", folder=tmp_path)
+
+
+
+def test_metadata_genre_dan_konteks_dipertahankan_sampai_kontrak_adegan():
+    naskah = {
+        "judul": "Komedi berlatar kehidupan sahabat",
+        "genre": "komedi",
+        "konteks_konten": "islami",
+        "dalil": [],
+        "beat": [{"narasi": "Sahabat Abu Bakar tersenyum.", "kata_kunci": ["percakapan"]}],
+    }
+    hasil = naskah_untuk_pengarah(naskah)
+    assert hasil["genre"] == "komedi"
+    assert hasil["konteks_konten"] == "islami"
+
+
+def test_konteks_umum_tidak_diubah_menjadi_islami():
+    naskah = {
+        "judul": "Komedi umum",
+        "genre": "komedi",
+        "konteks_konten": "umum",
+        "dalil": [],
+        "beat": [{"narasi": "Dua teman terlambat datang.", "kata_kunci": ["teman"]}],
+    }
+    hasil = naskah_untuk_pengarah(naskah)
+    assert hasil["genre"] == "komedi"
+    assert hasil["konteks_konten"] == "umum"
+
+
+def test_konteks_ambigu_diblokir_sebelum_pengarah():
+    import pytest
+    naskah = {
+        "judul": "Komedi",
+        "genre": "komedi",
+        "dalil": [],
+        "beat": [{"narasi": "Dua teman bercanda.", "kata_kunci": ["teman"]}],
+    }
+    with pytest.raises(ValueError, match="belum cukup jelas"):
+        naskah_untuk_pengarah(naskah)
