@@ -13,6 +13,9 @@ Fondasi awal runtime ditambahkan sebagai lapisan orkestrasi di atas implementasi
 - `newmotion.runtime.lingkungan`: pemeriksaan alat eksternal dan modul render.
 - `newmotion.infrastructure.proses.subprocess`: pelaksana proses dengan timeout dan hasil terstruktur.
 - `newmotion.infrastructure.render.papan_lama`: adapter ke `mesin-video/papan_buat.py`.
+- `newmotion.domain`: entitas job dan aturan transisi status.
+- `newmotion.application.validasi_job`: validasi file JSON dan ekstensi keluaran.
+- `newmotion.application.jalankan_job`: orkestrasi job render lokal dan pencatatan status akhir.
 
 ## Instalasi dan penggunaan
 
@@ -32,7 +35,7 @@ python -m playwright install chromium
 newmotion render mesin-video/papan/kisah/yajuj2_visual3.json -o yajuj2_visual3.mp4
 ```
 
-Perintah render adalah adapter kompatibilitas. Belum ada kontrak job/domain, antrean, penyimpanan artefak terpadu, atau jaminan render E2E.
+Perintah render kini melewati kontrak job dan layanan aplikasi lokal, lalu memanggil adapter kompatibilitas. Belum ada antrean persisten, penyimpanan artefak terpadu, retry, cancellation proses aktif, atau jaminan render E2E.
 
 ## Konfigurasi
 
@@ -51,7 +54,7 @@ Integrasi lama dapat memakai variabel seperti Supabase, ElevenLabs, dan Cloudfla
 
 1. Daftar ekstra `render` adalah inventaris awal, bukan manifest lengkap semua impor transitif `mesin-video`.
 2. Playwright memerlukan instalasi browser terpisah; FFmpeg/FFprobe adalah dependensi sistem.
-3. Adapter saat ini meneruskan stdout/stderr dan kode keluar. Pelacakan job, pembatalan, retry, dan cleanup terstandar belum diterapkan.
+3. Job saat ini berjalan sinkron di proses CLI. Status job bersifat in-memory; belum ada antrean persisten, pembatalan proses aktif, retry, atau cleanup terstandar.
 4. Path konfigurasi ditentukan dari akar proyek saat ini; pemilihan akar eksplisit dapat dilakukan melalui `NEWMOTION_ROOT`.
 5. Modul `dalil.quran_foundation` yang terdeteksi pada audit masih perlu diselesaikan sebelum seluruh jalur direktur dinyatakan siap.
 
@@ -59,6 +62,6 @@ Integrasi lama dapat memakai variabel seperti Supabase, ElevenLabs, dan Cloudfla
 
 1. Lengkapi inventaris dependensi Python dan Node serta uji instalasi bersih.
 2. Tetapkan lockfile dan versi runtime yang konsisten untuk CI.
-3. Tambahkan kontrak job, validasi input, status lifecycle, dan correlation ID.
+3. Perkuat kontrak job dengan correlation ID, pencatatan status terstruktur, dan penanganan pembatalan.
 4. Tambahkan layanan render terpadu, adapter FFmpeg/browser, serta penyimpanan artefak.
 5. Tambahkan tes integrasi dan render E2E dengan artefak bukti.
