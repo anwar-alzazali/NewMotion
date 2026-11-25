@@ -5,6 +5,9 @@ on:
     paths:
       - 'bot/**'
       - 'newmotion/application/antrean_naskah.py'
+      - 'newmotion/application/pratinjau_visual.py'
+      - 'tests/test_pratinjau_visual.py'
+      - '.github/workflows/visual.yml'
       - 'newmotion/paket_genre/kisah_islami/dalil/**'
       - 'tests/test_antrean_naskah.py'
       - 'tests/data/kartu_status.json'
@@ -15,6 +18,9 @@ on:
     paths:
       - 'bot/**'
       - 'newmotion/application/antrean_naskah.py'
+      - 'newmotion/application/pratinjau_visual.py'
+      - 'tests/test_pratinjau_visual.py'
+      - '.github/workflows/visual.yml'
       - 'newmotion/paket_genre/kisah_islami/dalil/**'
       - 'tests/test_antrean_naskah.py'
       - 'tests/data/kartu_status.json'
@@ -38,5 +44,5 @@ jobs:
         run: node --test bot/worker.test.mjs
       - name: Pasang NewMotion
         run: python -m pip install -e '.[uji]'
-      - name: Uji antrean naskah
-        run: python -m pytest tests/test_antrean_naskah.py -q
+      - name: Uji antrean dan pratinjau visual
+        run: python -m pytest tests/test_antrean_naskah.py tests/test_pratinjau_visual.py -q
