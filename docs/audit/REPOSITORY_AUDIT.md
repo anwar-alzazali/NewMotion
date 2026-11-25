@@ -266,3 +266,25 @@ Fondasi runtime siap untuk tahap P1 jika:
 
 ---
 Audit ini tidak menyatakan NewMotion telah memenuhi Definition of Done. Belum dilakukan instalasi environment bersih, eksekusi runtime/doctor, render MP4 pada commit audit, atau E2E audio-video.
+
+
+## 13. Tindak lanjut setelah persetujuan fondasi runtime
+
+Bagian audit awal di atas merekam kondisi sebelum implementasi runtime. Setelah struktur runtime disetujui, fondasi tahap awal ditambahkan pada branch kerja:
+
+- `pyproject.toml`: metadata paket, target Python 3.11+, entry point CLI, serta ekstra opsional `uji` dan `render`.
+- `newmotion/`: paket runtime, konfigurasi TOML, lifecycle, logging, pemeriksaan lingkungan, pelaksana subprocess, adapter renderer papan lama, dan CLI.
+- `config/`: profil development, test, production, dan worker.
+- `tests/test_runtime.py`: tes konfigurasi, pemeriksaan lingkungan, hasil proses, dan timeout.
+- `.github/workflows/test-runtime.yml`: workflow uji paket dan CLI.
+- `.env.example` dan `docs/runtime/FOUNDATION.md`: panduan konfigurasi dan penggunaan.
+
+### Status verifikasi
+
+- Berkas implementasi telah ditulis ke branch dan diperiksa ulang melalui pembacaan GitHub.
+- Format profil TOML dan fixture pengujian diperbaiki setelah pemeriksaan isi.
+- Eksekusi pytest, instalasi bersih, serta workflow CI untuk commit terbaru belum dikonfirmasi dalam audit tindak lanjut ini.
+- Tidak ada klaim bahwa render MP4 end-to-end sudah berhasil.
+- Ekstra `render` masih inventaris awal: belum menggantikan inventaris impor lengkap seluruh skrip `mesin-video/`, belum menyediakan lockfile, dan belum mengatasi dependensi `dalil.quran_foundation` yang hilang pada audit awal.
+
+Tahap ini adalah fondasi bootstrap dan adapter pertama, bukan penyelesaian seluruh P0/P1. Kontrak job, validasi job, orkestrasi lifecycle job, penyimpanan artefak, pipeline render terpadu, retry/cancellation, correlation ID, serta bukti render E2E tetap menjadi pekerjaan lanjutan.
