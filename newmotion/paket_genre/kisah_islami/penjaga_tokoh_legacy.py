@@ -125,6 +125,18 @@ class TokohSuciDigambarError(ValueError):
         )
 
 
+def _kategori_nur(nama: str) -> str | None:
+    """Bedakan nabi, malaikat, dan sahabat pada format lama yang belum punya tipe cahaya lengkap."""
+    n = _normal(nama)
+    if re.search(r"\\b(malaikat|jibril|jibrail|mikail|mikael|israfil|izrail|azrail|munkar|nakir|raqib|atid|harut|marut)\\b", n):
+        return "malaikat"
+    if _RE_SAHABAT.search(n):
+        return "sahabat"
+    if n in _PROPHETS or re.search(r"\\b(nabi|nabiyullah|rasul|rasulullah)\\b", n):
+        return "nabi"
+    return None
+
+
 def _identitas(obj: dict) -> Iterator[tuple[str, str, int]]:
     for f in FIELD_IDENTITAS:
         t = tingkat_suci(obj.get(f))
@@ -168,7 +180,12 @@ def _cek_benda(o: dict, lok: str, out: list[Pelanggaran]) -> None:
     if jenis in BENDA_CAHAYA:
         for f, nama, t in _identitas(o):
             if t == ALLAH:
-                out.append(Pelanggaran(f"{lok}.{f}", nama, t, "Allah tidak boleh diwakili sosok, termasuk cahaya `nur`"))
+                alasan = "Allah tidak boleh diwakili sosok, termasuk cahaya `nur`"
+            elif _kategori_nur(nama) != "nabi":
+                alasan = "format renderer lama hanya mendukung pilar nur untuk nabi; malaikat dan sahabat memerlukan bentuk visual tersendiri"
+            else:
+                continue
+            out.append(Pelanggaran(f"{lok}.{f}", nama, t, alasan))
         return
     if jenis in BENDA_SOSOK:
         for f, nama, t in _identitas(o):
