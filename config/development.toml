@@ -1,0 +1,1 @@
+[runtime]\ndirektori_hasil = "hasil"\ntingkat_log = "DEBUG"\nbatas_waktu_subproses = 3600\n
