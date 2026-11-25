@@ -31,3 +31,7 @@ coverage/
 .DS_Store
 .idea/
 .vscode/
+
+# Dataset dan cache dalil dibangun di GitHub Actions/lokal, bukan disimpan di Git
+/data/hadis/
+/data/cache/quran/
