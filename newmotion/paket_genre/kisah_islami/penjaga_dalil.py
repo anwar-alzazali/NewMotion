@@ -25,10 +25,8 @@ Dimiliki sepenuhnya oleh paket genre Kisah Islami; renderer memanggilnya melalui
 from __future__ import annotations
 
 import re
-import sys
 import unicodedata
 from dataclasses import dataclass, field
-from pathlib import Path
 from typing import Any, Protocol
 
 # ---------------------------------------------------------------------------
@@ -42,7 +40,7 @@ class SumberTidakTersedia(RuntimeError):
 
 class SumberDalil(Protocol):
     def teks_ayat(self, surah: int, ayat: int) -> str: ...
-    def teks_hadis(self, kitab: str, nomor: int) -> str: ...
+    def teks_hadis(self, kitab: str, nomor: int | str) -> str: ...
 
 
 class SumberResmi:
@@ -55,14 +53,14 @@ class SumberResmi:
         except Exception as e:  # Jaringan, secret, izin, atau ayat tidak tersedia -> gagal tertutup
             raise SumberTidakTersedia(f"Quran Foundation: {type(e).__name__}: {str(e)[:200]}") from e
 
-    def detail_hadis(self, kitab: str, nomor: int) -> dict:
+    def detail_hadis(self, kitab: str, nomor: int | str) -> dict:
         from newmotion.paket_genre.kisah_islami.dalil import ambil_hadis
         try:
             return ambil_hadis(kitab, nomor)
         except Exception as e:  # Dataset tidak tersedia atau hadis tidak lolos -> gagal tertutup
             raise SumberTidakTersedia(f"dataset hadis Sunnah.com: {type(e).__name__}: {str(e)[:200]}") from e
 
-    def teks_hadis(self, kitab: str, nomor: int) -> str:
+    def teks_hadis(self, kitab: str, nomor: int | str) -> str:
         return self.detail_hadis(kitab, nomor)["teks_arab"]
 
 
@@ -131,7 +129,7 @@ class Rujukan:
     kitab: str = ""  # kunci dataset hadis
     surah: int = 0
     ayat: tuple[int, ...] = ()
-    nomor: int = 0
+    nomor: int | str = 0
 
     def __str__(self) -> str:
         if self.jenis == "quran":
