@@ -119,3 +119,23 @@ def test_keyframe_jalan_tanpa_perpindahan_ditolak():
     temuan = periksa_blocking(cerita)
     assert any(x["kode"] == "jalan_tanpa_lintasan" and x["tingkat"] == "gagal"
                for x in temuan)
+
+def test_kontinuitas_memeriksa_awal_lintasan_shot_berikutnya():
+    cerita = {"shot": [
+        {"boneka": [{"id": 1, "x": [[0, 100], [4, 200]], "y": 200}]},
+        {"boneka": [{"id": 1, "x": [[0, 650], [4, 700]], "y": 200}]},
+    ]}
+    temuan = periksa_blocking(cerita)
+    assert any(
+        x["kode"] == "loncatan_posisi" and x["shot"] == 1 and x["tokoh"] == "1"
+        for x in temuan
+    )
+
+
+def test_kontinuitas_lolos_bila_awal_shot_menyambung_akhir_sebelumnya():
+    cerita = {"shot": [
+        {"boneka": [{"id": 1, "x": [[0, 100], [4, 200]], "y": 200}]},
+        {"boneka": [{"id": 1, "x": [[0, 200], [4, 280]], "y": 200}]},
+    ]}
+    temuan = periksa_blocking(cerita)
+    assert not any(x["kode"] == "loncatan_posisi" for x in temuan)
