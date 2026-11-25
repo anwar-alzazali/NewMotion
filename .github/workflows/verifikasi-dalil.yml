@@ -7,6 +7,14 @@ on:
       - 'newmotion/paket_genre/kisah_islami/__init__.py'
       - 'tests/test_verifikasi_dalil.py'
       - '.github/workflows/verifikasi-dalil.yml'
+  push:
+    branches:
+      - 'feature/pemisahan-genre-dari-inti'
+    paths:
+      - 'newmotion/paket_genre/kisah_islami/dalil/**'
+      - 'newmotion/paket_genre/kisah_islami/__init__.py'
+      - 'tests/test_verifikasi_dalil.py'
+      - '.github/workflows/verifikasi-dalil.yml'
   workflow_dispatch:
 
 permissions:
