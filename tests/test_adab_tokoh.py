@@ -139,3 +139,10 @@ def test_kategori_nur_mengenali_nama_tokoh_dengan_batas_kata(nama, kategori):
     from newmotion.paket_genre.kisah_islami.penjaga_tokoh_legacy import _kategori_nur
 
     assert _kategori_nur(nama) == kategori
+
+
+def test_manifest_mengaktifkan_adapter_penjaga_dalil_legacy():
+    from newmotion.paket_genre.kisah_islami import buat_paket
+
+    paket = buat_paket()
+    assert paket.penjaga_dalil({}) == []
