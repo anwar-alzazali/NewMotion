@@ -149,9 +149,15 @@ def main() -> None:
     import argparse
     parser = argparse.ArgumentParser()
     parser.add_argument("id")
-    parser.add_argument("--kirim", action="store_true")
+    parser.add_argument("--kirim", action="store_true", help="kirim setelah render; untuk workflow gunakan --kirim-saja setelah status tersimpan")
+    parser.add_argument("--kirim-saja", action="store_true", help="kirim MP4 yang sudah dibuat tanpa render ulang")
     args = parser.parse_args()
-    _, video = buat_pratinjau(args.id)
+    video = Path(os.environ.get("RUNNER_TEMP", "/tmp")) / f"newmotion-{args.id}-pratinjau.mp4"
+    if args.kirim_saja:
+        kirim_ke_telegram(args.id, video)
+        print(f"Pratinjau visual dikirim: {video}")
+        return
+    _, video = buat_pratinjau(args.id, keluaran=video)
     if args.kirim:
         kirim_ke_telegram(args.id, video)
     print(f"Pratinjau visual selesai: {video}")
