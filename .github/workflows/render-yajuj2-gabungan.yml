@@ -14,9 +14,7 @@ on:
     paths:
       - 'mesin-video/papan/karakter/**'
       - 'mesin-video/papan/cerita.js'
-      - 'mesin-video/papan_buat.py'
       - 'mesin-video/papan/kisah/yajuj2_visual3_gabungan.json'
-      - '.github/workflows/render-yajuj2-gabungan.yml'
   workflow_dispatch:
 
 permissions:
