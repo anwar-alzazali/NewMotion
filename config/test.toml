@@ -1,1 +1,4 @@
-[runtime]\ndirektori_hasil = "hasil-uji"\ntingkat_log = "WARNING"\nbatas_waktu_subproses = 120\n
+[runtime]
+direktori_hasil = "hasil-uji"
+tingkat_log = "WARNING"
+batas_waktu_subproses = 120
