@@ -11,6 +11,8 @@ test("tombol persetujuan dapat dibaca balik dan muat batas 64 byte Telegram", ()
   }
   assert.deepEqual(bacaTombol(`st:${id}`), { aksi: "st", id, alasan: null });
   assert.deepEqual(bacaTombol(`al:${id}:hook`), { aksi: "al", id, alasan: "hook" });
+  assert.deepEqual(bacaTombol(`va:${id}`), { aksi: "va", id, alasan: null });
+  assert.deepEqual(bacaTombol(`vr:${id}`), { aksi: "vr", id, alasan: null });
 });
 
 test("data tombol asing atau berbahaya ditolak", () => {
@@ -52,7 +54,7 @@ test("kartu status bot identik dengan versi Python (fixture bersama)", () => {
 test("id antrean aman, pendek, dan tombolnya terbaca", () => {
   const id = idAntrean("Nabi Hud dan Kaum 'Ad — azab angin", new Date("2026-11-21T09:05:00Z"));
   assert.equal(id, "261121-1605-nabi-hud-dan-kaum");
-  for (const a of ["nl", "nr", "nb"]) assert.deepEqual(bacaTombol(`${a}:${id}`), { aksi: a, id, alasan: null });
+  for (const a of ["nl", "nr", "nb", "va", "vr"]) assert.deepEqual(bacaTombol(`${a}:${id}`), { aksi: a, id, alasan: null });
   const st = statusBaru(id, "x", "ide", 1);
   assert.equal(st.tahap.diterima, "jalan");
   assert.ok(tombolKartu(st).flat().every((b) => b.callback_data === "menu"));
