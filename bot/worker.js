@@ -282,11 +282,40 @@ async function ubahAntrean(env, q, t) {
   }
   st.tahap.tinjau = t.aksi === "nl" ? "selesai" : "gagal";
   st.ket = { ...(st.ket || {}), tinjau: t.aksi === "nl" ? "disetujui" : "dibatalkan" };
-  if (t.aksi === "nl") { st.tahap.sutradara = "tunggu"; st.ket.sutradara = "menunggu integrasi pipeline pengarahan NewMotion; render belum dipicu"; }
+  if (t.aksi === "nl") {
+    st.tahap.sutradara = "jalan";
+    st.ket.sutradara = "menyusun pratinjau visual tanpa TTS";
+  }
   st.diperbarui = new Date().toISOString();
   await simpanStatus(env, st);
-  await TG(env, "answerCallbackQuery", { callback_query_id: q.id, text: t.aksi === "nl" ? "Naskah disetujui" : "Dibatalkan" });
+  await TG(env, "answerCallbackQuery", { callback_query_id: q.id, text: t.aksi === "nl" ? "Naskah disetujui; pratinjau visual dimulai" : "Dibatalkan" });
+  if (t.aksi === "nl") {
+    try { await dispatch(env, "visual.yml", { id: t.id }); }
+    catch (e) { st.tahap.sutradara = "gagal"; st.ket.sutradara = "gagal memulai pratinjau: " + String(e.message || e).slice(0, 120); await simpanStatus(env, st); }
+  }
   return kirimKartu(env, st);
+}
+
+async function putuskanVisual(env, q, t) {
+  const st = await bacaJsonRepo(env, `antrean/${t.id}/status.json`);
+  if (!st || st.tahap?.tinjau_visual !== "jalan") {
+    return TG(env, "answerCallbackQuery", { callback_query_id: q.id, text: "Pratinjau visual tidak ditemukan atau sudah diputuskan." });
+  }
+  const setuju = t.aksi === "va";
+  st.tahap.tinjau_visual = setuju ? "selesai" : "gagal";
+  st.ket = { ...(st.ket || {}), tinjau_visual: setuju
+    ? "disetujui pemilik; TTS boleh dilanjutkan"
+    : "ditolak pemilik; TTS diblokir sampai visual direvisi" };
+  if (setuju) {
+    st.tahap.narasi = "tunggu";
+    st.ket.narasi = "menunggu integrasi produksi TTS setelah persetujuan visual";
+  }
+  st.diperbarui = new Date().toISOString();
+  await simpanStatus(env, st);
+  await TG(env, "answerCallbackQuery", { callback_query_id: q.id, text: setuju ? "Visual disetujui" : "Visual ditolak; TTS tetap diblokir" });
+  await kirimKartu(env, st);
+  if (!setuju) return kirim(env, `Visual ${t.id} perlu direvisi. TTS dan render final tidak dijalankan. Perbaiki naskah/arah adegan, lalu minta pratinjau baru.`);
+  return kirim(env, `Visual ${t.id} disetujui. Tahap TTS dapat dimulai berikutnya; belum ada TTS atau render final yang dijalankan oleh persetujuan ini.`);
 }
 
 async function revisiAntrean(env, id, catatan) {
@@ -358,6 +387,7 @@ async function tanganiTombol(env, q) {
   if (sederhana[q.data]) { await TG(env, "answerCallbackQuery", { callback_query_id: q.id }); return sederhana[q.data](); }
   const t = bacaTombol(q.data);
   if (t && ["nl", "nr", "nb"].includes(t.aksi)) return ubahAntrean(env, q, t);
+  if (t && ["va", "vr"].includes(t.aksi)) return putuskanVisual(env, q, t);
   if (!t) return TG(env, "answerCallbackQuery", { callback_query_id: q.id });
   if (t.aksi === "st") {
     await catatPersetujuan(env, t.id, "disetujui");
