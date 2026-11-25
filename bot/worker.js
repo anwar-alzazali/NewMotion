@@ -21,7 +21,7 @@ export const idAman = (s) => String(s || "").toLowerCase().replace(/[^a-z0-9_-]+
  *  Batas Telegram 64 byte. */
 export function bacaTombol(data) {
   const [aksi, id, kode] = String(data || "").split(":");
-  if (!["st", "tl", "al", "ub", "nl", "nr", "nb"].includes(aksi) || !idAman(id) || idAman(id) !== id) return null;
+  if (!["st", "tl", "al", "ub", "nl", "nr", "nb", "va", "vr"].includes(aksi) || !idAman(id) || idAman(id) !== id) return null;
   if (aksi === "al" && !ALASAN[kode]) return null;
   return { aksi, id, alasan: kode || null };
 }
