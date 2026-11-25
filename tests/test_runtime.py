@@ -171,6 +171,7 @@ def test_validasi_job_hanya_memuat_kontrak_tanpa_menjalankan_penjaga(tmp_path, m
         raise AssertionError("penjaga genre harus dijalankan satu kali di gerbang renderer")
 
     paket = SimpleNamespace(
+        nama="kisah_islami",
         penjaga_tokoh=penjaga_tidak_boleh_dijalankan,
         penjaga_dalil=penjaga_tidak_boleh_dijalankan,
     )
