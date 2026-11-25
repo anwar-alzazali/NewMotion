@@ -1,27 +1,7 @@
 name: Uji visual adegan motor dan jembatan
 
 on:
-  push:
-    branches:
-      - feature/pembuat-karakter-gabungan
-    paths:
-      - 'tests/data/adegan_uji_visual.json'
-      - 'mesin-video/papan/cerita.js'
-      - 'mesin-video/papan/karakter/**'
-      - 'mesin-video/papan_buat.py'
-      - 'newmotion/**'
-      - 'tests/test_penataan_panggung.py'
-      - '.github/workflows/render-adegan-uji-visual.yml'
-  pull_request:
-    types: [opened, synchronize, reopened]
-    paths:
-      - 'tests/data/adegan_uji_visual.json'
-      - 'tests/test_penataan_panggung.py'
-      - 'newmotion/**'
-      - 'mesin-video/papan/cerita.js'
-      - 'mesin-video/papan/karakter/**'
-      - 'mesin-video/papan_buat.py'
-      - '.github/workflows/render-adegan-uji-visual.yml'
+  # Render hanya dijalankan saat diminta secara manual.
   workflow_dispatch:
 
 permissions:
