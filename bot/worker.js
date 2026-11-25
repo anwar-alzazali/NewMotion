@@ -292,8 +292,10 @@ async function ubahAntrean(env, q, t) {
     await TG(env, "answerCallbackQuery", { callback_query_id: q.id });
     return tanya(env, { chat_id: env.CHAT, text: `${PENANDA_REVISI} [${t.id}]\nBalas pesan ini dengan catatan perbaikannya (mis. "hook kurang kuat, mulai dari azabnya").`, reply_markup: { force_reply: true, input_field_placeholder: "catatan revisi" } });
   }
-  st.tahap.tinjau = t.aksi === "nl" ? "selesai" : "gagal";
-  st.ket = { ...(st.ket || {}), tinjau: t.aksi === "nl" ? "disetujui" : "dibatalkan" };
+  if (t.aksi !== "nu") {
+    st.tahap.tinjau = t.aksi === "nl" ? "selesai" : "gagal";
+    st.ket = { ...(st.ket || {}), tinjau: t.aksi === "nl" ? "disetujui" : "dibatalkan" };
+  }
   if (t.aksi === "nl" || t.aksi === "nu") {
     st.tahap.sutradara = "jalan";
     st.tahap.tinjau_visual = "belum";
