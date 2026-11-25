@@ -114,3 +114,28 @@ def test_validasi_job_menolak_pelanggaran_adab_sebelum_render(tmp_path):
     )), encoding="utf-8")
     with pytest.raises(GalatValidasiJob, match="adab penggambaran"):
         validasi_job(spec, tmp_path / "hasil.mp4")
+
+
+def test_penjaga_adab_format_lama_dipanggil_melalui_kait_paket():
+    rencana_lama = {
+        "cerita": {"shot": [{"boneka": [{"nama": "Abu Bakar", "gaya": "siluet"}]}]}
+    }
+    temuan = periksa_adab_tokoh(rencana_lama)
+    assert temuan
+    assert all(item.kode == "TOKOH_SAKRAL_FORMAT_LAMA" for item in temuan)
+
+
+@pytest.mark.parametrize(
+    ("nama", "kategori"),
+    [
+        ("Malaikat Jibril", "malaikat"),
+        ("Jibril", "malaikat"),
+        ("Nabi Musa", "nabi"),
+        ("Rasulullah", "nabi"),
+        ("Musa", "nabi"),
+    ],
+)
+def test_kategori_nur_mengenali_nama_tokoh_dengan_batas_kata(nama, kategori):
+    from newmotion.paket_genre.kisah_islami.penjaga_tokoh_legacy import _kategori_nur
+
+    assert _kategori_nur(nama) == kategori
