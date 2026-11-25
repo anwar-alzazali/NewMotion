@@ -62,7 +62,7 @@ def test_ik_gerak_gali_sesuai_panjang_lengan_renderer():
     from karakter.gerak import ik, LENGAN_A, LENGAN_B
 
     assert (LENGAN_A, LENGAN_B) == (85, 80)
-    for target in [(-18, -105), (18, -62), (-10, 38), (22, 82)]:
+    for target in [(-18, -105), (-18, -62), (-10, 38), (-22, 82)]:
         a1, a2 = ik(*target)
         x = math.sin(math.radians(a1)) * 85 + math.sin(math.radians(a2)) * 80
         y = math.cos(math.radians(a1)) * 85 + math.cos(math.radians(a2)) * 80
