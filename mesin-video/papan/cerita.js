@@ -416,7 +416,7 @@
   }
   function benda(o, t, d) {
     const tl = t - (o.at || 0); if (tl < 0) return "";
-    const x = v(o.x, t, d, 540), y = v(o.y, t, d, 1000), sc = v(o.s, t, d, 1), op = (o.at ? clamp(tl / 0.4) : 1) * v(o.op, t, d, 1), j = o.jenis;
+    const x = v(o.x, t, d, 540), y = v(o.y, t, d, 1000), sc = v(o.s, t, d, 1), miring = v(o.miring, t, d, 0), op = (o.at ? clamp(tl / 0.4) : 1) * v(o.op, t, d, 1), j = o.jenis;
     let g = "";
     if (j === "ngarai") { // dinding besi-tembaga Zulkarnain di celah dua gunung (QS 18:93-97). x,y = kaki dinding; lubang 0-1 (galian, inti terang = hampir tembus), jebol 0-1, kilap = detik dinding "utuh kembali"
       const lb = v(o.lubang, t, d, 0), jb = v(o.jebol, t, d, 0), lx = o.lx || 0, ly = o.ly == null ? -190 : o.ly, R = rng(o.seed || 3), kil = o.kilap != null ? t - o.kilap : -1, H = 1500, BATU = o.gaya === "batu_kapur";
@@ -1234,7 +1234,7 @@
     } else if (j === "cahaya") { // berkas cahaya turun dari atas
       g = `<defs><linearGradient id="cb" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e8fbff" stop-opacity=".0"/><stop offset=".4" stop-color="#e8fbff" stop-opacity=".35"/><stop offset="1" stop-color="#bfefff" stop-opacity=".05"/></linearGradient></defs><path d="M -90 -1400 L 90 -1400 L 260 0 L -260 0 Z" fill="url(#cb)"/>`;
     }
-    return `<g opacity="${op}" transform="translate(${x} ${y}) scale(${sc})"${o.kabur ? ` filter="url(#kb${o.kabur === true ? 8 : o.kabur})"` : ""}>${g}</g>`;
+    return `<g opacity="${op}" transform="translate(${x} ${y}) rotate(${miring} 0 -62) scale(${sc})"${o.kabur ? ` filter="url(#kb${o.kabur === true ? 8 : o.kabur})"` : ""}>${g}</g>`;
   }
 
   // ---- RANGKA BERSENDI (6 Nov): boneka.pose = nama | {sendi...} | [[t, nama|{...}], ...] (relatif shot; transisi `lama` 0,45 dtk)
@@ -1246,6 +1246,8 @@
     duduk: { turun: 70, pp: 0.3, lk: [12, 3], rk: [12, 3], la: [6, -14], ra: [6, -14] },
     // Pengendara duduk stabil, lutut menekuk dan kedua tangan menjangkau setang.
     mengendarai_motor: { turun: 70, pp: 0.3, lk: [18, 34], rk: [18, 34], la: [88, 88], ra: [88, 88], badan: -3 },
+    // Penolong merendahkan pusat tubuh dan menjulurkan kedua lengan ke arah korban.
+    menolong: { turun: 28, badan: 16, kepala: 9, la: [118, 150], ra: [118, 150], depan: 1 },
     peluk_lutut: { turun: 70, pp: 0.3, lk: [8, 2], rk: [8, 2], la: [-4, -22], ra: [-4, -22], badan: 0 },
     tutup_wajah: { la: [136, -118], ra: [136, -118], depan: 1 },
     duduk_tutup_wajah: { turun: 70, pp: 0.3, lk: [12, 3], rk: [12, 3], la: [136, -118], ra: [136, -118], depan: 1 },
@@ -1858,7 +1860,8 @@
     (S.boneka || []).forEach((b, i) => {
       // Ikatan kendaraan membuat pengendara mengikuti posisi motor setiap frame.
       // Setelah lepas_kendaraan_at, lintasan tubuh mengambil alih untuk adegan jatuh.
-      const motor = b.kendaraan_id == null || (b.lepas_kendaraan_at != null && tl >= b.lepas_kendaraan_at)
+      const waktuLepas = b.lepas_kendaraan_at == null ? b.lepas : b.lepas_kendaraan_at;
+      const motor = b.kendaraan_id == null || (waktuLepas != null && tl >= waktuLepas)
         ? null : (S.benda || []).find((o) => o.jenis === "motor" && String(o.id) === String(b.kendaraan_id));
       const tokoh = motor ? Object.assign({}, b, {
         x: v(motor.x, tl, d, 540) + (b.offset_kendaraan_x || 0),
