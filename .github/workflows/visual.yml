@@ -1,0 +1,117 @@
+name: Pratinjau visual sebelum TTS
+
+on:
+  workflow_dispatch:
+    inputs:
+      id:
+        description: "ID antrean yang naskahnya sudah disetujui"
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+concurrency:
+  group: pratinjau-visual-${{ inputs.id }}
+  cancel-in-progress: false
+
+jobs:
+  pratinjau:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Pasang renderer dan dependensi
+        run: |
+          python -m pip install -e '.[render]'
+          python -m playwright install --with-deps chromium
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg fonts-noto-core
+      - name: Cache dataset hadis
+        uses: actions/cache@v4
+        with:
+          path: data/hadis
+          key: hadis-${{ hashFiles('newmotion/paket_genre/kisah_islami/dalil/unduh_hadis.py') }}
+      - name: Unduh dataset hadis bila cache belum ada
+        run: test -f data/hadis/bukhari.json.gz || python -m newmotion.paket_genre.kisah_islami.dalil.unduh_hadis
+      - name: Buat pratinjau visual tanpa TTS
+        env:
+          ID: ${{ inputs.id }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          QURAN_FOUNDATION_CLIENT_ID: ${{ secrets.QURAN_FOUNDATION_CLIENT_ID }}
+          QURAN_FOUNDATION_CLIENT_SECRET: ${{ secrets.QURAN_FOUNDATION_CLIENT_SECRET }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          [[ "$ID" =~ ^[a-z0-9_-]{1,60}$ ]] || { echo "::error::id tidak sah"; exit 1; }
+          python -m newmotion.application.pratinjau_visual "$ID"
+      - name: Simpan papan kisah dan status
+        if: always()
+        env:
+          ID: ${{ inputs.id }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          [[ "$ID" =~ ^[a-z0-9_-]{1,60}$ ]] || exit 1
+          git config user.name "github-actions[bot]"
+          git config user.email "41898333+github-actions[bot]@users.noreply.github.com"
+          git add "antrean/$ID/status.json"
+          if [[ -f "antrean/$ID/papan_pratinjau.json" ]]; then git add "antrean/$ID/papan_pratinjau.json"; fi
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m "Antrean $ID: simpan hasil pratinjau visual"
+          for i in 1 2 3; do
+            git pull --rebase -q origin main && git push -q origin HEAD:main && exit 0
+            sleep 5
+          done
+          exit 1
+      - name: Kirim pratinjau setelah status tersimpan
+        if: success()
+        env:
+          ID: ${{ inputs.id }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: python -m newmotion.application.pratinjau_visual "$ID" --kirim-saja
+      - name: Pulihkan status jika render atau pengiriman gagal
+        if: failure()
+        env:
+          ID: ${{ inputs.id }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          [[ "$ID" =~ ^[a-z0-9_-]{1,60}$ ]] || exit 1
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          p = Path("antrean") / os.environ["ID"] / "status.json"
+          if p.is_file():
+              s = json.loads(p.read_text(encoding="utf-8"))
+              s.setdefault("tahap", {})["sutradara"] = "gagal"
+              if s["tahap"].get("tinjau_visual") != "selesai":
+                  s["tahap"]["tinjau_visual"] = "belum"
+              s.setdefault("ket", {})["sutradara"] = "pratinjau gagal dibuat/dikirim; dapat dicoba ulang dari Telegram"
+              s["ket"]["tinjau_visual"] = "belum berhasil dikirim untuk ditinjau"
+              s["diperbarui"] = __import__("datetime").datetime.now(__import__("datetime").timezone.utc).isoformat()
+              p.write_text(json.dumps(s, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
+          PY
+          git config user.name "github-actions[bot]"
+          git config user.email "41898333+github-actions[bot]@users.noreply.github.com"
+          git add "antrean/$ID/status.json"
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m "Antrean $ID: tandai pratinjau gagal agar dapat dicoba ulang"
+          for i in 1 2 3; do
+            git pull --rebase -q origin main && git push -q origin HEAD:main && exit 0
+            sleep 5
+          done
+          exit 1
+      - name: Unggah bukti pratinjau
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pratinjau-visual-${{ inputs.id }}
+          path: /tmp/newmotion-${{ inputs.id }}-pratinjau.mp4
+          if-no-files-found: warn
+          retention-days: 7

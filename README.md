@@ -102,3 +102,16 @@ verifikasi dalil di gerbang renderer. Untuk naskah baru selain
 `kisah_islami`, kolom `konteks_konten` wajib diisi eksplisit; ini mencegah
 cerita bertema Islam dianggap umum hanya karena konteksnya terlupa. Nilai konteks
 yang didukung: `umum`, `islami`, `sejarah_islam`, dan `kehidupan_muslim`.
+
+
+### Gerbang pratinjau visual sebelum TTS
+
+Alur antrean bot Kisah Islami kini memisahkan persetujuan naskah dari persetujuan visual:
+
+1. Naskah dan dalil disusun/diverifikasi, lalu ditinjau pemilik.
+2. Tombol Lanjut memicu workflow `.github/workflows/visual.yml`.
+3. Pengarah Kisah Islami membentuk papan kisah; renderer membuat MP4 storyboard tanpa TTS.
+4. Pemilik meninjau pratinjau di Telegram. Penolakan visual memblokir TTS; persetujuan visual membuka tahap TTS.
+5. Produksi TTS dan render final belum otomatis dijalankan pada tahap migrasi ini.
+
+Pratinjau memakai renderer yang sudah ada, bukan renderer alternatif. Hasil MP4 diunggah sebagai artefak Actions selama tujuh hari, sedangkan papan JSON dan status tinjauan disimpan di folder antrean. Render pratinjau dilindungi agar tidak terpicu ulang ketika status masih menunggu tinjauan atau sudah disetujui.
