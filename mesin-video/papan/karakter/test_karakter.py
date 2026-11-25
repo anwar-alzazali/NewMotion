@@ -59,3 +59,37 @@ def test_integrasi_spec_mengabaikan_karakter_yang_sudah_diserialisasi():
         {"_gabungan": True, "pose": [[0, "berdiri"]], "karakter": {"gerak": "terbang"}}
     ]}]}}
     assert integrasikan_spec(spec) is spec
+
+
+def test_tampilan_karakter_hanya_mengubah_atribut_yang_diberikan():
+    tokoh = {"gaya": "umum", "rambut": "pendek", "pakaian": {"jenis": "kaus", "warna": "#123456"}}
+    hasil = integrasikan_tokoh(tokoh, {"gerak": "jalan"}, 2.0)
+    assert hasil["pakaian"] == {"jenis": "kaus", "warna": "#123456"}
+    assert hasil["rambut"] == "pendek"
+    assert hasil["pose"] == [[0.0, "jalan"]]
+
+
+def test_jadwal_gerak_menolak_waktu_tidak_terbatas():
+    with pytest.raises(ValueError, match="terbatas"):
+        jadwal_gerak([[float("inf"), "jalan"]])
+
+
+def test_integrasi_spec_mengirim_semua_aksi_uji_ke_renderer_tunggal():
+    import json
+    from pathlib import Path
+
+    akar = Path(__file__).resolve().parents[3]
+    spec = json.loads((akar / "tests/data/adegan_uji_visual.json").read_text(encoding="utf-8"))
+    integrasikan_spec(spec)
+
+    semua = [b for shot in spec["cerita"]["shot"] for b in shot.get("boneka", [])]
+    assert semua and all(b.get("_gabungan") is True for b in semua)
+    assert all(isinstance(langkah[1], str) for b in semua for langkah in b["pose"])
+    assert spec["cerita"]["shot"][2]["boneka"][0]["pose"] == [
+        [0.0, "mengendarai_motor"], [2.4, "tergelincir"], [3.4, "rebahan"]
+    ]
+    assert spec["cerita"]["shot"][3]["boneka"][1]["pose"] == [
+        [0.0, "jalan"], [3.8, "menolong"]
+    ]
+    assert spec["cerita"]["shot"][4]["boneka"][0]["pose"][-1] == [3.8, "bangkit"]
+    assert spec["cerita"]["shot"][0]["boneka"][0]["pakaian"]["warna"] == "#3f7890"

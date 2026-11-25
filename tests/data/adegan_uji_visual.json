@@ -114,50 +114,20 @@
               "bawah": "celana",
               "bawah_warna": "#34445a"
             },
-            "pose": [
-              [
-                0,
-                "berdiri"
-              ],
-              [
-                2.2,
-                {
-                  "dari": "berdiri",
-                  "ra": [
-                    45,
-                    120
-                  ],
-                  "la": [
-                    25,
-                    -70
-                  ]
-                }
-              ],
-              [
-                3.5,
-                "mengendarai_motor"
-              ]
-            ],
-            "jalan": [
-              [
-                0,
-                0.65
-              ],
-              [
-                3.2,
-                0.65
-              ],
-              [
-                3.5,
-                0
-              ],
-              [
-                5,
-                0
-              ]
-            ],
             "wajah": "netral",
-            "profil": "kanan"
+            "profil": "kanan",
+            "karakter": {
+              "gerak": [
+                [
+                  0,
+                  "jalan"
+                ],
+                [
+                  3.5,
+                  "mengendarai_motor"
+                ]
+              ]
+            }
           },
           {
             "id": 2,
@@ -174,9 +144,15 @@
               "bawah": "celana",
               "bawah_warna": "#4b5545"
             },
-            "pose": "berdiri",
-            "jalan": 0,
-            "wajah": "netral"
+            "wajah": "netral",
+            "karakter": {
+              "gerak": [
+                [
+                  0,
+                  "berdiri"
+                ]
+              ]
+            }
           }
         ],
         "teks": [
@@ -270,8 +246,6 @@
               "bawah": "celana",
               "bawah_warna": "#34445a"
             },
-            "pose": "mengendarai_motor",
-            "jalan": 0,
             "wajah": "kaget",
             "reaksi": [
               [
@@ -281,8 +255,15 @@
             ],
             "kendaraan_id": "motor_1",
             "offset_kendaraan_y": -46,
-            "pose_motor": "mengendarai_motor",
-            "profil": "kanan"
+            "profil": "kanan",
+            "karakter": {
+              "gerak": [
+                [
+                  0,
+                  "mengendarai_motor"
+                ]
+              ]
+            }
           },
           {
             "id": 2,
@@ -299,9 +280,15 @@
               "bawah": "celana",
               "bawah_warna": "#4b5545"
             },
-            "pose": "berdiri",
-            "jalan": 0,
-            "wajah": "takut"
+            "wajah": "takut",
+            "karakter": {
+              "gerak": [
+                [
+                  0,
+                  "berdiri"
+                ]
+              ]
+            }
           }
         ],
         "teks": [
@@ -467,33 +454,27 @@
               "bawah": "celana",
               "bawah_warna": "#34445a"
             },
-            "pose": [
-              [
-                0,
-                "duduk"
-              ],
-              [
-                1.3,
-                "kaget"
-              ],
-              [
-                2.4,
-                {
-                  "dari": "condong",
-                  "guling": -35
-                }
-              ],
-              [
-                3.4,
-                "rebahan"
-              ]
-            ],
-            "jalan": 0,
             "wajah": "takut",
             "kendaraan_id": "motor_1",
             "offset_kendaraan_y": -46,
             "lepas_kendaraan_at": 2.4,
-            "profil": "kanan"
+            "profil": "kanan",
+            "karakter": {
+              "gerak": [
+                [
+                  0,
+                  "mengendarai_motor"
+                ],
+                [
+                  2.4,
+                  "tergelincir"
+                ],
+                [
+                  3.4,
+                  "rebahan"
+                ]
+              ]
+            }
           },
           {
             "id": 2,
@@ -510,9 +491,15 @@
               "bawah": "celana",
               "bawah_warna": "#4b5545"
             },
-            "pose": "tunjuk",
-            "jalan": 0,
-            "wajah": "kaget"
+            "wajah": "kaget",
+            "karakter": {
+              "gerak": [
+                [
+                  0,
+                  "tunjuk"
+                ]
+              ]
+            }
           }
         ],
         "teks": [
@@ -571,9 +558,15 @@
               "bawah": "celana",
               "bawah_warna": "#34445a"
             },
-            "pose": "rebahan",
             "wajah": "kesal",
-            "jalan": 0
+            "karakter": {
+              "gerak": [
+                [
+                  0,
+                  "rebahan"
+                ]
+              ]
+            }
           },
           {
             "id": 2,
@@ -616,51 +609,20 @@
               "bawah": "celana",
               "bawah_warna": "#4b5545"
             },
-            "pose": [
-              [
-                0,
-                "berdiri"
-              ],
-              [
-                3.8,
-                {
-                  "dari": "condong",
-                  "ra": [
-                    55,
-                    130
-                  ],
-                  "la": [
-                    45,
-                    -90
-                  ]
-                }
-              ],
-              [
-                4.15,
-                "menolong"
-              ]
-            ],
-            "jalan": [
-              [
-                0,
-                0.7
-              ],
-              [
-                4.3,
-                0.7
-              ],
-              [
-                4.8,
-                0
-              ],
-              [
-                5,
-                0
-              ]
-            ],
             "wajah": "takut",
-            "aksi": "menolong",
-            "sasaran_id": 1
+            "sasaran_id": 1,
+            "karakter": {
+              "gerak": [
+                [
+                  0,
+                  "jalan"
+                ],
+                [
+                  3.8,
+                  "menolong"
+                ]
+              ]
+            }
           }
         ],
         "teks": [
@@ -754,22 +716,23 @@
               "bawah": "celana",
               "bawah_warna": "#34445a"
             },
-            "pose": [
-              [
-                0,
-                "rebahan"
-              ],
-              [
-                1.2,
-                "duduk"
-              ],
-              [
-                3.8,
-                "berdiri"
-              ]
-            ],
             "wajah": "lelah",
-            "jalan": 0
+            "karakter": {
+              "gerak": [
+                [
+                  0,
+                  "rebahan"
+                ],
+                [
+                  1.2,
+                  "duduk"
+                ],
+                [
+                  3.8,
+                  "bangkit"
+                ]
+              ]
+            }
           },
           {
             "id": 2,
@@ -786,30 +749,20 @@
               "bawah": "celana",
               "bawah_warna": "#4b5545"
             },
-            "pose": [
-              [
-                0,
-                {
-                  "dari": "condong",
-                  "ra": [
-                    55,
-                    130
-                  ],
-                  "la": [
-                    45,
-                    -90
-                  ]
-                }
-              ],
-              [
-                3.8,
-                "berdiri"
-              ]
-            ],
-            "jalan": 0,
             "wajah": "lega",
-            "aksi": "menolong",
-            "sasaran_id": 1
+            "sasaran_id": 1,
+            "karakter": {
+              "gerak": [
+                [
+                  0,
+                  "menolong"
+                ],
+                [
+                  3.8,
+                  "berdiri"
+                ]
+              ]
+            }
           }
         ],
         "teks": [
@@ -869,15 +822,21 @@
               "bawah": "celana",
               "bawah_warna": "#34445a"
             },
-            "pose": "berdiri",
-            "jalan": 0,
             "wajah": "lelah",
             "reaksi": [
               [
                 0.2,
                 "maju"
               ]
-            ]
+            ],
+            "karakter": {
+              "gerak": [
+                [
+                  0,
+                  "berdiri"
+                ]
+              ]
+            }
           },
           {
             "id": 2,
@@ -894,8 +853,6 @@
               "bawah": "celana",
               "bawah_warna": "#4b5545"
             },
-            "pose": "berdiri",
-            "jalan": 0,
             "wajah": "takut",
             "reaksi": [
               [
@@ -903,8 +860,15 @@
                 "maju"
               ]
             ],
-            "aksi": "menenangkan",
-            "sasaran_id": 1
+            "sasaran_id": 1,
+            "karakter": {
+              "gerak": [
+                [
+                  0,
+                  "menenangkan"
+                ]
+              ]
+            }
           }
         ],
         "teks": [
@@ -963,9 +927,15 @@
               "bawah": "celana",
               "bawah_warna": "#34445a"
             },
-            "pose": "berdiri",
             "wajah": "lega",
-            "jalan": 0
+            "karakter": {
+              "gerak": [
+                [
+                  0,
+                  "berdiri"
+                ]
+              ]
+            }
           },
           {
             "id": 2,
@@ -982,9 +952,15 @@
               "bawah": "celana",
               "bawah_warna": "#4b5545"
             },
-            "pose": "lambai",
             "wajah": "senang",
-            "jalan": 0
+            "karakter": {
+              "gerak": [
+                [
+                  0,
+                  "lambai"
+                ]
+              ]
+            }
           }
         ],
         "teks": [
@@ -1057,9 +1033,15 @@
               "bawah": "celana",
               "bawah_warna": "#34445a"
             },
-            "pose": "berdiri",
             "wajah": "lega",
-            "jalan": 0
+            "karakter": {
+              "gerak": [
+                [
+                  0,
+                  "berdiri"
+                ]
+              ]
+            }
           },
           {
             "id": 2,
@@ -1076,9 +1058,15 @@
               "bawah": "celana",
               "bawah_warna": "#4b5545"
             },
-            "pose": "lambai",
             "wajah": "senang",
-            "jalan": 0
+            "karakter": {
+              "gerak": [
+                [
+                  0,
+                  "lambai"
+                ]
+              ]
+            }
           }
         ],
         "teks": [

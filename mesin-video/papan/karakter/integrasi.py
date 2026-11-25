@@ -21,51 +21,72 @@ def _wajah(nilai):
 
 
 def _terapkan_tampilan(boneka, karakter):
-    jenis = karakter.get("jenis", "pria")
-    if jenis not in {"pria", "wanita"}:
+    """Terapkan atribut visual yang memang diberikan; jangan menimpa tampilan lama."""
+    jenis = karakter.get("jenis")
+    if jenis is not None and jenis not in {"pria", "wanita"}:
         raise ValueError("karakter.jenis harus pria atau wanita")
-    mode = karakter.get("mode", "pakaian")
-    if mode not in {"pakaian", "siluet"}:
-        raise ValueError("karakter.mode harus pakaian atau siluet")
-    kepala = karakter.get("kepala", "kerudung" if jenis == "wanita" else "imamah")
-    if kepala not in KEPALA_VALID:
-        raise ValueError(f"karakter.kepala tidak dikenal: {kepala}")
-    boneka["gaya"] = "siluet" if mode == "siluet" else "umum"
-    boneka["hidup"] = bool(karakter.get("hidup", True))
-    boneka["rambut"] = "kerudung" if jenis == "wanita" or kepala == "kerudung" else RAMBUT_JS.get(karakter.get("model_rambut", "pendek"), "pendek")
-    boneka["penutup_kepala"] = kepala
-    boneka["warna_penutup"] = karakter.get("warna_penutup", karakter.get("warna_aksen", "#e8dcc4"))
-    if karakter.get("warna_kulit"):
-        boneka["kulit"] = karakter["warna_kulit"]
-    if karakter.get("warna_rambut"):
-        boneka["warna_rambut"] = karakter["warna_rambut"]
+
+    mode = karakter.get("mode")
+    if mode is not None:
+        if mode not in {"pakaian", "siluet"}:
+            raise ValueError("karakter.mode harus pakaian atau siluet")
+        boneka["gaya"] = "siluet" if mode == "siluet" else "umum"
+    if "hidup" in karakter:
+        boneka["hidup"] = bool(karakter["hidup"])
+
+    kepala = karakter.get("kepala")
+    if kepala is not None:
+        if kepala not in KEPALA_VALID:
+            raise ValueError(f"karakter.kepala tidak dikenal: {kepala}")
+        boneka["penutup_kepala"] = kepala
+        boneka["warna_penutup"] = karakter.get("warna_penutup", karakter.get("warna_aksen", "#e8dcc4"))
+
     if jenis == "wanita":
-        boneka["kerudung"] = karakter.get("warna_penutup", karakter.get("warna_baju", "#5a3a5e"))
-    pakaian = dict(boneka.get("pakaian") or {})
-    pakaian["jenis"] = karakter.get("jenis_pakaian", "gamis" if jenis == "wanita" else "koko")
-    if pakaian["jenis"] not in PAKAIAN_VALID:
-        raise ValueError(f"jenis pakaian tidak dikenal: {pakaian['jenis']}")
-    for sumber, tujuan in (("warna_baju", "warna"), ("warna_aksen", "aksen"),
-                           ("warna_bawah", "bawah_warna"), ("bawah", "bawah")):
-        if karakter.get(sumber) is not None:
-            pakaian[tujuan] = karakter[sumber]
-    pakaian.setdefault("bawah", "gamis" if jenis == "wanita" else "celana")
-    boneka["pakaian"] = pakaian
-    janggut = karakter.get("janggut", "pendek" if jenis == "pria" else "tanpa")
-    if janggut == "tanpa" or jenis == "wanita":
-        boneka["janggut"] = False
-        boneka["janggut_model"] = "tanpa"
-    elif janggut in {"tipis", "pendek", "panjang"}:
-        boneka["janggut"] = karakter.get("warna_janggut", True)
-        boneka["janggut_model"] = janggut
-    else:
-        raise ValueError("karakter.janggut harus tanpa, tipis, pendek, atau panjang")
-    usia = karakter.get("usia", "dewasa")
-    if usia not in {"anak", "dewasa", "lansia"}:
-        raise ValueError("karakter.usia harus anak, dewasa, atau lansia")
-    boneka["skala_usia"] = {"anak": 0.78, "dewasa": 1.0, "lansia": 1.04}[usia]
+        boneka["rambut"] = "kerudung"
+        if karakter.get("warna_penutup") or karakter.get("warna_baju"):
+            boneka["kerudung"] = karakter.get("warna_penutup", karakter.get("warna_baju"))
+    elif jenis == "pria" and karakter.get("model_rambut") is not None:
+        boneka["rambut"] = RAMBUT_JS.get(karakter["model_rambut"], "pendek")
+
+    if karakter.get("warna_kulit") is not None:
+        boneka["kulit"] = karakter["warna_kulit"]
+    if karakter.get("warna_rambut") is not None:
+        boneka["warna_rambut"] = karakter["warna_rambut"]
+
+    kunci_pakaian = {"jenis_pakaian", "warna_baju", "warna_aksen", "warna_bawah", "bawah"}
+    if kunci_pakaian.intersection(karakter):
+        pakaian = dict(boneka.get("pakaian") or {})
+        if karakter.get("jenis_pakaian") is not None:
+            pakaian["jenis"] = karakter["jenis_pakaian"]
+        elif "jenis" not in pakaian:
+            pakaian["jenis"] = "gamis" if jenis == "wanita" else "koko"
+        if pakaian["jenis"] not in PAKAIAN_VALID:
+            raise ValueError(f"jenis pakaian tidak dikenal: {pakaian['jenis']}")
+        for sumber, tujuan in (("warna_baju", "warna"), ("warna_aksen", "aksen"),
+                               ("warna_bawah", "bawah_warna"), ("bawah", "bawah")):
+            if karakter.get(sumber) is not None:
+                pakaian[tujuan] = karakter[sumber]
+        boneka["pakaian"] = pakaian
+
+    if "janggut" in karakter or jenis == "wanita":
+        janggut = karakter.get("janggut", "tanpa" if jenis == "wanita" else "pendek")
+        if janggut == "tanpa" or jenis == "wanita":
+            boneka["janggut"] = False
+            boneka["janggut_model"] = "tanpa"
+        elif janggut in {"tipis", "pendek", "panjang"}:
+            boneka["janggut"] = karakter.get("warna_janggut", True)
+            boneka["janggut_model"] = janggut
+        else:
+            raise ValueError("karakter.janggut harus tanpa, tipis, pendek, atau panjang")
+
+    if karakter.get("usia") is not None:
+        usia = karakter["usia"]
+        if usia not in {"anak", "dewasa", "lansia"}:
+            raise ValueError("karakter.usia harus anak, dewasa, atau lansia")
+        boneka["skala_usia"] = {"anak": 0.78, "dewasa": 1.0, "lansia": 1.04}[usia]
     if karakter.get("wajah") is not None:
         boneka["wajah"] = _wajah(karakter["wajah"])
+
     arah = karakter.get("arah")
     if arah == "belakang":
         boneka["belakang"] = True

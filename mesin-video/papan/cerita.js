@@ -1368,6 +1368,21 @@
   // seluruh sudut rangka dihitung di sini agar tidak ada solver sendi kedua.
   function poseGerak(nama, t) {
     const f = 2 * Math.PI * t, s = Math.sin(f), c = Math.cos(f);
+    if (nama === "tergelincir") {
+      const u = clamp(t / 0.85);
+      return { guling: -78 * u, turun: 8 * Math.sin(Math.PI * u), badan: 10 * u,
+        pp: 1 - 0.18 * u, ra: [28 + 32 * u, 42 + 48 * u], la: [28 + 32 * u, -42 - 48 * u] };
+    }
+    if (nama === "bangkit") {
+      const u = clamp(t / 1.0);
+      return { guling: -78 * (1 - u), turun: 70 * (1 - u), pp: 0.3 + 0.7 * u,
+        lk: [12 * (1 - u), 3 * (1 - u)], rk: [12 * (1 - u), 3 * (1 - u)],
+        ra: [145 * (1 - u) + 8, 165 * (1 - u) + 4],
+        la: [145 * (1 - u) + 8, -165 * (1 - u) - 4] };
+    }
+    if (nama === "menenangkan") {
+      return { badan: -4, kepala: 5, ra: [74, 94], la: [18, 22], depan: 1 };
+    }
     if (nama === "jalan") { const ka = Math.max(0, s), ki = Math.max(0, -s);
       return { turun: -4 * Math.abs(c), badan: 1.5 * s, kepala: -1.5 * s,
         pp_ka: 1 - .3 * ka, pp_ki: 1 - .3 * ki, rk: [4 + 3 * ka, -18 * ka + 2], lk: [4 + 3 * ki, -18 * ki + 2],
