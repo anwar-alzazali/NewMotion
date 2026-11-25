@@ -1,0 +1,29 @@
+name: Uji pembuat karakter
+
+on:
+  pull_request:
+    paths:
+      - 'mesin-video/papan/karakter/**'
+      - '.github/workflows/test-karakter.yml'
+  push:
+    branches:
+      - 'feature/pembuat-karakter-gabungan'
+    paths:
+      - 'mesin-video/papan/karakter/**'
+      - '.github/workflows/test-karakter.yml'
+
+jobs:
+  test-karakter:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Siapkan Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Pasang pytest
+        run: python -m pip install pytest
+      - name: Jalankan tes renderer karakter
+        working-directory: mesin-video/papan
+        run: python -m pytest karakter/test_karakter.py -v
