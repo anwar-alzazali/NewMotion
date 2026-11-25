@@ -1393,6 +1393,15 @@
     if (nama === "palu") { const u = (Math.sin(t * 2 * Math.PI * 1.4) + 1) / 2;
       return { ra: [40 + 85 * u, 60 + 115 * u], badan: -3 + 4 * u, turun: 2 * (1 - u), la: [20, -30], pegang: "palu" }; }
     if (nama === "gali") return { ra: [40, 80], la: [20, 40], pegang: "beliung" };
+    if (nama === "ulurkan") return { ra: [82, 24], kepala: 1 };
+    if (nama === "angkat") return { ra: [165, 178] };
+    if (nama === "tutup") return { ra: [-36, -32], kepala: -4 };
+    if (nama === "tutup_telinga") return { ra: [-4, -50], la: [-4, -50] };
+    if (nama === "berdoa") return { ra: [-14, 40], la: [-14, 40], kepala: -6, angguk: .4 };
+    if (nama === "menengadah") return { ra: [26, -46], la: [26, -46], kepala: -10, angguk: -.6 };
+    if (nama === "pinggang") return { ra: [-6, 96], la: [-6, 96] };
+    if (nama === "dagu") return { ra: [-30, -18], la: [-50, 52], kepala: 6 };
+    if (nama === "kepala") return { ra: [-10, -78], kepala: -6 };
     return null;
   }
   function isiPose(p, t = 0) {

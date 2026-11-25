@@ -1,11 +1,7 @@
 """Serializer kontrak karakter Python ke renderer JavaScript tunggal."""
 from __future__ import annotations
 
-import math
-
-from . import gerak as G
-from .tokoh import orang
-
+from .gerak import jadwal_gerak
 
 WAJAH_JS = {
     "datar": "netral", "senyum": "senang", "tertawa": "tawa", "ejek": "sinis",
