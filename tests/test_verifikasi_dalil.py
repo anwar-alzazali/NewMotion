@@ -75,3 +75,37 @@ def test_secret_quran_tidak_dicetak(monkeypatch):
     assert hasil["teks_arab"] == "بِسْمِ اللَّهِ"
     assert "secret-rahasia" not in repr(hasil)
     monkeypatch.setattr(sumber, "_KLIEN_QURAN", None)
+
+
+def test_manifest_menggunakan_penjaga_dalil_yang_dimiliki_paket():
+    from newmotion.paket_genre.kisah_islami import buat_paket
+    from newmotion.paket_genre.kisah_islami.penjaga_dalil import periksa_dalil
+
+    paket = buat_paket()
+    assert paket.penjaga_dalil is periksa_dalil
+    assert paket.penjaga_dalil({}) == []
+
+
+def test_penjaga_dalil_paket_memverifikasi_kartu_tanpa_jaringan():
+    from newmotion.paket_genre.kisah_islami.penjaga_dalil import periksa_dalil
+
+    class SumberPalsu:
+        def teks_ayat(self, surah, ayat):
+            assert (surah, ayat) == (1, 1)
+            return "بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ"
+
+        def teks_hadis(self, kitab, nomor):
+            raise AssertionError("sumber hadis tidak boleh dipanggil")
+
+    spek = {"isi": [{
+        "jenis": "kartu_dalil",
+        "kitab": "QS 1:1",
+        "no": "1",
+        "arab": "بسم الله الرحمن الرحيم",
+        "teks": "Dengan nama Allah Yang Maha Pengasih",
+    }]}
+    hasil = periksa_dalil(spek, sumber=SumberPalsu())
+    assert len(hasil) == 1
+    assert hasil[0].status == "lulus"
+    assert not hasil[0].memblokir
+
