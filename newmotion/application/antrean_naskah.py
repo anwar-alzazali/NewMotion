@@ -63,6 +63,44 @@ def status_baru(
     }
 
 
+
+def kebijakan_naskah(status: dict, naskah: dict | None = None) -> dict:
+    """Pastikan jalur antrean hanya memakai kebijakan yang benar-benar tersedia.
+
+    Metadata status adalah sumber otoritatif; metadata naskah hanya menjadi
+    cadangan untuk antrean lama. Paket genre selain Kisah Islami belum aktif.
+    """
+    from newmotion.application.pengklasifikasi_konten import klasifikasikan_konten
+
+    genre = status.get("genre") or (naskah or {}).get("genre") or "kisah_islami"
+    konteks = status.get("konteks_konten") or (naskah or {}).get("konteks_konten")
+    if konteks is None and genre == "kisah_islami":
+        konteks = "islami"
+
+    sumber = dict(naskah or {})
+    sumber["genre"] = genre
+    if konteks is not None:
+        sumber["konteks_konten"] = konteks
+    hasil = klasifikasikan_konten(sumber)
+    if hasil["perlu_klarifikasi"]:
+        raise ValueError(
+            "Genre/konteks naskah perlu diklarifikasi sebelum dibuat: "
+            + hasil["keputusan"]
+        )
+    if genre != "kisah_islami":
+        raise ValueError(
+            f"Paket genre '{genre}' belum tersedia pada jalur antrean naskah; "
+            "untuk saat ini hanya Kisah Islami yang dapat diproses."
+        )
+    if not hasil["kebijakan"]["aktifkan_kebijakan_islami"]:
+        raise ValueError("Jalur Kisah Islami wajib mengaktifkan kebijakan konten Islami.")
+    return {
+        "genre": hasil["genre"],
+        "konteks_konten": hasil["konteks_konten"],
+        "kebijakan": hasil["kebijakan"],
+    }
+
+
 def kartu(st: dict) -> str:
     """Teks kartu status. HARUS identik dengan kartuStatus() di bot/worker.js (tests/data/kartu_status.json)."""
     baris = [f"🎬 {st.get('judul') or st['id']}"]
@@ -519,8 +557,11 @@ def proses(id_: str, mode: str, *, folder: Path = ANTREAN, tanya=None, quran=Non
         atur(st, k, "belum")
     _tulis(d, st, None, kirim_tg)
     try:
+        metadata = kebijakan_naskah(st, lama)
         n, token = buat_naskah(mode, masukan, lama, tanya=tanya)
         n = normalisasi(n)
+        n["genre"] = metadata["genre"]
+        n["konteks_konten"] = metadata["konteks_konten"]
         galat = validasi(n)
         if mode == "tempel" and not galat:
             galat = narasi_utuh(n, masukan)
