@@ -79,14 +79,29 @@ def test_bentuk_cahaya_khusus_tidak_boleh_dipakai_manusia_biasa():
     assert "PILAR_NUR_BUKAN_NABI" in kode
 
 
-def test_genre_lain_tidak_menerapkan_penjaga_tokoh_kisah_islami():
+def test_genre_lain_tidak_menerapkan_penjaga_tokoh_kisah_islami(tmp_path):
     from newmotion.domain.genre import PaketGenre, daftarkan
-    from newmotion.application.validasi_job import validasi_job, GalatValidasiJob
+    from newmotion.application.validasi_job import validasi_job
 
     nama = "genre_adab_uji"
     daftarkan(PaketGenre(nama=nama, bawaan={"uji": True}))
-    # Hook penjaga tidak terpasang pada paket tiruan; validasi job tidak boleh menerapkan aturan Islami.
-    assert PaketGenre(nama="genre_adab_uji_lain", bawaan={"uji": True}).penjaga_tokoh is None
+    spec = tmp_path / "rencana.json"
+    # Data yang ditolak pada Kisah Islami boleh diproses genre lain yang tidak memasang penjaga tersebut.
+    spec.write_text(json.dumps({
+        "genre": nama,
+        "peran": [{"id": "nabi", "nama": "Nabi Nuh", "kategori": "nabi", "tampil": "pakaian"}],
+        "beat": [{"shot": [{"tokoh": [{"peran": "nabi"}]}]}],
+    }), encoding="utf-8")
+    assert validasi_job(spec, tmp_path / "hasil.mp4")[0] == spec.resolve()
+
+
+def test_penjaga_format_lama_menolak_siluet_sahabat_dan_pilar_malaikat():
+    from newmotion.paket_genre.kisah_islami.penjaga_tokoh_legacy import periksa_tokoh_suci
+
+    sahabat = {"cerita": {"shot": [{"boneka": [{"nama": "Abu Bakar", "gaya": "siluet"}]}]}}
+    malaikat = {"isi": [{"jenis": "nur", "nama": "Malaikat Jibril"}]}
+    assert periksa_tokoh_suci(sahabat)
+    assert periksa_tokoh_suci(malaikat)
 
 
 def test_validasi_job_menolak_pelanggaran_adab_sebelum_render(tmp_path):
