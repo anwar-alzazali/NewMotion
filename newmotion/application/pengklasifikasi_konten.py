@@ -63,6 +63,14 @@ def _teks_naskah(naskah: Mapping[str, Any]) -> str:
                         bagian.append(v)
                     elif isinstance(v, list):
                         bagian.extend(x for x in v if isinstance(x, str))
+                dialog = item.get("dialog")
+                if isinstance(dialog, list):
+                    for giliran in dialog:
+                        if isinstance(giliran, Mapping):
+                            for kolom in ("pembicara", "ucapan", "penjawab"):
+                                v = giliran.get(kolom)
+                                if isinstance(v, str):
+                                    bagian.append(v)
     return "\n".join(bagian)
 
 
