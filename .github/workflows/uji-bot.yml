@@ -5,6 +5,8 @@ on:
     paths:
       - 'bot/**'
       - 'newmotion/application/antrean_naskah.py'
+      - 'newmotion/application/pratinjau_suara.py'
+      - '.github/workflows/suara.yml'
       - 'newmotion/paket_genre/kisah_islami/dalil/**'
       - 'tests/test_antrean_naskah.py'
       - 'tests/data/kartu_status.json'
