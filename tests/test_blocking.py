@@ -109,3 +109,13 @@ def test_adegan_motor_jembatan_memenuhi_kontrak_blocking():
     assert penolong.get("aksi") == "menolong"
     assert penolong.get("sasaran_id") == korban["id"]
     assert penolong["x"][-1][1] < penolong["x"][0][1]
+
+
+def test_keyframe_jalan_tanpa_perpindahan_ditolak():
+    cerita = {"shot": [{"boneka": [{
+        "id": 1, "x": [[0, 100], [4, 100]], "y": 200,
+        "jalan": [[0, 0.7], [3, 0.7], [4, 0]],
+    }]}]}
+    temuan = periksa_blocking(cerita)
+    assert any(x["kode"] == "jalan_tanpa_lintasan" and x["tingkat"] == "gagal"
+               for x in temuan)
