@@ -634,6 +634,21 @@
       g += `<path d="M -230 0 L -230 -430 Q -230 -690 0 -710 Q 230 -690 230 -430 L 230 0 L 170 0 L 170 -420 Q 170 -620 0 -640 Q -170 -620 -170 -420 L -170 0 Z" fill="#e8c56a" stroke="${INK}" stroke-width="8"/>`;
       for (let i = 0; i < 7; i++) { const a = Math.PI * (1.08 + i * 0.14); g += `<circle cx="${Math.cos(a) * 200}" cy="${-430 + Math.sin(a) * 240}" r="9" fill="#fff4cf"/>`; }
       if (o.nama) { const w2 = o.nama.length * 25 + 60; g += `<g font-family="DejaVu Sans, Arial, sans-serif" font-weight="800" text-anchor="middle"><rect x="${-w2 / 2}" y="30" width="${w2}" height="74" rx="37" fill="#1d1520" opacity=".78"/><text y="80" font-size="44" fill="#ffe6a0">${esc(o.nama)}</text></g>`; }
+    } else if (j === "jembatan_desa") { // jembatan desa: badan jembatan kayu/beton melintasi sungai, dengan pagar dan tiang penyangga
+      const dek = o.warna || "#8a7257", pagar = o.warna_pagar || "#66513f", air = o.air || "#5b9aa0";
+      const lebar = o.lebar || 1050, bentang = lebar / 2;
+      // Sungai di bawah bentang; bentuk dan tepi jembatan tetap terlihat di atas tanah.
+      g = `<path d="M ${-bentang - 120} 220 Q 0 130 ${bentang + 120} 220 L ${bentang + 120} 650 L ${-bentang - 120} 650 Z" fill="${air}" opacity=".92"/>
+        <path d="M ${-bentang} 80 L ${bentang} 80 L ${bentang + 70} 170 L ${-bentang - 70} 170 Z" fill="${dek}" stroke="${INK}" stroke-width="10"/>
+        <path d="M ${-bentang - 70} 170 L ${bentang + 70} 170" stroke="#4d4035" stroke-width="18"/>
+        <path d="M ${-bentang} 70 L ${bentang} 70" stroke="${pagar}" stroke-width="22"/>
+        <path d="M ${-bentang} 70 L ${-bentang} -115 M ${bentang} 70 L ${bentang} -115" stroke="${pagar}" stroke-width="18"/>
+        <path d="M ${-bentang} -115 Q 0 -65 ${bentang} -115" stroke="${pagar}" stroke-width="18" fill="none"/>
+        <path d="M ${-bentang} -25 L ${bentang} -25" stroke="${pagar}" stroke-width="14"/>
+        <path d="M ${-bentang} 70 L ${-bentang} -115 M ${-bentang / 2} 70 L ${-bentang / 2} -90 M 0 70 L 0 -78 M ${bentang / 2} 70 L ${bentang / 2} -90 M ${bentang} 70 L ${bentang} -115" stroke="${pagar}" stroke-width="12"/>
+        <path d="M ${-bentang - 35} 170 L ${-bentang - 35} 360 M ${bentang + 35} 170 L ${bentang + 35} 360" stroke="#625345" stroke-width="34"/>
+        <path d="M ${-bentang - 80} 360 L ${bentang + 80} 360" stroke="#625345" stroke-width="28"/> `;
+      for (let i = -4; i <= 4; i++) g += `<path d="M ${i * 115} 83 L ${i * 115 + 18} 166" stroke="#594938" stroke-width="7" opacity=".7"/>`;
     } else if (j === "jembatan") { // shirath: jembatan sangat tipis di atas jurang api
       let f = ""; for (let i = 0; i < 9; i++) { const ph = t * 5 + i * 1.3, h = 160 + 60 * Math.sin(ph), dx = (i - 4) * 120 + 20 * Math.sin(ph * 0.6); f += `<path d="M ${dx - 80} 260 Q ${dx - 40} ${260 - h * 0.6} ${dx} ${260 - h} Q ${dx + 40} ${260 - h * 0.6} ${dx + 80} 260 Z" fill="${["#ff5a1a", "#ff8a2a", "#ffb347"][i % 3]}" opacity=".85"/>`; }
       g = `<rect x="-700" y="40" width="1400" height="900" fill="#2a0a08"/><ellipse cx="0" cy="260" rx="760" ry="200" fill="#ff5a1a" opacity="${0.35 + 0.08 * Math.sin(t * 6)}"/>` + f +
