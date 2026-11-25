@@ -85,3 +85,52 @@ def test_status_baru_mempertahankan_default_kompatibilitas_lama():
     status = A.status_baru("uji-lama", "Uji lama", "ide")
     assert status["genre"] == "kisah_islami"
     assert status["konteks_konten"] == "islami"
+
+
+def test_kebijakan_naskah_menolak_genre_yang_paketnya_belum_tersedia():
+    status = A.status_baru(
+        "uji-komedi", "Uji komedi", "ide",
+        genre="komedi", konteks_konten="umum",
+    )
+    try:
+        A.kebijakan_naskah(status)
+    except ValueError as galat:
+        assert "belum tersedia" in str(galat)
+    else:
+        raise AssertionError("Genre tanpa paket tidak boleh diproses")
+
+
+def test_kebijakan_naskah_mempertahankan_pagar_islami_dari_metadata_status():
+    status = A.status_baru("uji-islami", "Uji Islami", "ide")
+    hasil = A.kebijakan_naskah(status, {"judul": "Uji", "beat": []})
+    assert hasil["genre"] == "kisah_islami"
+    assert hasil["konteks_konten"] == "islami"
+    assert hasil["kebijakan"]["aktifkan_kebijakan_islami"] is True
+
+
+def test_proses_menyimpan_metadata_kebijakan_ke_naskah(tmp_path):
+    folder = tmp_path / "antrean"
+    antrean = folder / "uji-metadata-hasil"
+    antrean.mkdir(parents=True)
+    status = A.status_baru("uji-metadata-hasil", "Uji metadata", "ide")
+    (antrean / "status.json").write_text(json.dumps(status), encoding="utf-8")
+    (antrean / "masukan.txt").write_text("Ide cerita uji", encoding="utf-8")
+
+    def verifikasi(naskah, *, quran=None):
+        hasil = json.loads(json.dumps(naskah))
+        return hasil, ["uji"]
+
+    monkeypatch = __import__("pytest").MonkeyPatch()
+    monkeypatch.setattr("newmotion.paket_genre.kisah_islami.dalil.verifikasi.verifikasi", verifikasi)
+    try:
+        hasil = A.proses(
+            "uji-metadata-hasil", "ide", folder=folder,
+            tanya=lambda *args, **kwargs: (json.dumps(NASKAH), 5),
+            kirim_tg=False,
+        )
+    finally:
+        monkeypatch.undo()
+    tersimpan = json.loads((antrean / "naskah.json").read_text(encoding="utf-8"))
+    assert hasil["tahap"]["diterima"] == "selesai"
+    assert tersimpan["genre"] == "kisah_islami"
+    assert tersimpan["konteks_konten"] == "islami"
