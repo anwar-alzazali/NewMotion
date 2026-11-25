@@ -279,22 +279,22 @@ def jaga_spek(spec):
         print("\n\n".join(pesan) + "\nRENDER DIBATALKAN. Perbaiki spek sumber, jangan melewati gerbang.", file=sys.stderr)
         raise SpekDitolak(3)
     cerita = spec.get("cerita") or {}
-    if cerita.get("blocking_otomatis"):
+    if cerita.get("penataan_panggung_otomatis"):
         # Perencanaan panggung opt-in: spek lama tidak berubah.
         sys.path.insert(0, os.path.dirname(HERE))
-        from newmotion.blocking import rencanakan_blocking
-        for hasil in rencanakan_blocking(cerita):
-            print("blocking otomatis:", hasil, file=sys.stderr)
-        cerita["pemeriksaan_blocking"] = True
-    if cerita.get("pemeriksaan_blocking"):
+        from newmotion.penataan_panggung import rencanakan_penataan_panggung
+        for hasil in rencanakan_penataan_panggung(cerita):
+            print("penataan panggung otomatis:", hasil, file=sys.stderr)
+        cerita["pemeriksaan_penataan_panggung"] = True
+    if cerita.get("pemeriksaan_penataan_panggung"):
         # Pemeriksaan ini opsional agar spesifikasi lama tetap kompatibel.
         sys.path.insert(0, os.path.dirname(HERE))
-        from newmotion.blocking import periksa_blocking
-        temuan = periksa_blocking(cerita)
+        from newmotion.penataan_panggung import periksa_penataan_panggung
+        temuan = periksa_penataan_panggung(cerita)
         for item in temuan:
             print("blocking [{}] {}: {}".format(item["tingkat"], item["kode"], item["pesan"]), file=sys.stderr)
         if any(item["tingkat"] == "gagal" for item in temuan):
-            print("RENDER DIBATALKAN: perbaiki kontrak blocking pada spesifikasi.", file=sys.stderr)
+            print("RENDER DIBATALKAN: perbaiki kontrak penataan panggung pada spesifikasi.", file=sys.stderr)
             raise SpekDitolak(3)
     return dalil
 
