@@ -46,6 +46,7 @@ def test_integrasi_karakter_menghasilkan_rangka_dari_gerak_python():
     assert tokoh["penutup_kepala"] == "imamah"
     assert tokoh["pakaian"]["warna"] == "#477b83"
     assert tokoh["aksi"] == "gali"
+    assert tokoh["belakang"] is True
     assert tokoh["pose"][0][1]["pegang"] == "beliung"
     assert len(tokoh["pose"]) >= 15
     assert tokoh["pose"][0][1]["ra"] != tokoh["pose"][9][1]["ra"]
