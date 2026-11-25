@@ -69,7 +69,7 @@ export function tombolKartu(st) {
 export function statusBaru(id, judul, sumber, chat) {
   const tahap = Object.fromEntries(TAHAP.map(([k]) => [k, "belum"]));
   tahap.diterima = "jalan";
-  return { id, judul, sumber, chat, tahap, ket: { diterima: "mengantre di GitHub Actions…" }, dibuat: new Date().toISOString() };
+  // Antrean lama tetap eksplisit memakai Kisah Islami sampai genre lain siap.\n  return { id, judul, sumber, chat, genre: "kisah_islami", konteks_konten: "islami", tahap, ket: { diterima: "mengantre di GitHub Actions…" }, dibuat: new Date().toISOString() };
 }
 export function idAntrean(teks, waktu = new Date()) {
   const w = new Date(waktu.getTime() + 7 * 3600e3).toISOString();  // WIB
