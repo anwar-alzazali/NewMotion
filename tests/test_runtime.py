@@ -156,3 +156,24 @@ def test_cli_meneruskan_opsi_render_terbatas():
     ])
     assert args.tanpa_suara is True
     assert args.durasi == 12.5
+
+
+def test_validasi_job_hanya_memuat_kontrak_tanpa_menjalankan_penjaga(tmp_path, monkeypatch):
+    from types import SimpleNamespace
+    from newmotion.application import validasi_job as modul_validasi
+
+    spesifikasi = tmp_path / "cerita.json"
+    spesifikasi.write_text('{"genre": "kisah_islami"}', encoding="utf-8")
+
+    def penjaga_tidak_boleh_dijalankan(*args, **kwargs):
+        raise AssertionError("penjaga genre harus dijalankan satu kali di gerbang renderer")
+
+    paket = SimpleNamespace(
+        penjaga_tokoh=penjaga_tidak_boleh_dijalankan,
+        penjaga_dalil=penjaga_tidak_boleh_dijalankan,
+    )
+    monkeypatch.setattr(modul_validasi, "dari_rencana", lambda data: paket)
+
+    sumber, keluaran = modul_validasi.validasi_job(spesifikasi, tmp_path / "hasil.mp4")
+    assert sumber == spesifikasi.resolve()
+    assert keluaran == (tmp_path / "hasil.mp4").resolve()
