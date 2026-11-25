@@ -1423,6 +1423,15 @@
     if (J.pegang === "hp") barang = `<g transform="translate(${Rk.H[0] - 14} ${Rk.H[1] - 30}) rotate(-8)"><rect x="-24" y="-44" width="48" height="84" rx="9" fill="#15121a" stroke="${INK}" stroke-width="4"/><rect x="-19" y="-38" width="38" height="70" rx="5" fill="#8fd0ff" opacity="${0.8 + 0.2 * Math.sin(t * 3)}"/></g>`;
     else if (J.pegang === "buku") barang = `<g transform="translate(${Rk.H[0] - 20} ${Rk.H[1] - 20})"><rect x="-40" y="-50" width="80" height="96" rx="6" fill="#7b2a20" stroke="${INK}" stroke-width="4"/><rect x="-32" y="-42" width="64" height="80" fill="#fbf2dc"/></g>`;
     else if (J.pegang === "gelas") barang = `<g transform="translate(${Rk.H[0]} ${Rk.H[1] - 26})"><path d="M -20 -30 L 20 -30 L 16 30 L -16 30 Z" fill="#dff3ff" stroke="${INK}" stroke-width="4" opacity=".9"/></g>`;
+    else if (J.pegang === "beliung") {
+      const sudut = J.ra[1] * 0.72 - 18;
+      barang = `<g transform="translate(${Rk.H[0]} ${Rk.H[1]}) rotate(${sudut})">
+        <path d="M 0 48 Q -4 -18 0 -104" stroke="#76502f" stroke-width="15" fill="none" stroke-linecap="round"/>
+        <path d="M -4 -82 Q -42 -112 -66 -96 Q -48 -70 -8 -66 Q 20 -62 54 -88 Q 30 -108 -4 -82 Z" fill="#aeb8c2" stroke="#34333a" stroke-width="7" stroke-linejoin="round"/>
+        <path d="M -50 -91 Q -26 -82 -8 -78" stroke="#eef3f5" stroke-width="5" fill="none" stroke-linecap="round"/>
+        <path d="M -8 34 L 8 34" stroke="#4c3322" stroke-width="5" stroke-linecap="round"/>
+      </g>`;
+    }
     const T = `translate(0 ${J.turun}) rotate(${J.badan} 0 -200)`;
     const g = kaki + `<g transform="${T}">${bdn}${L.ats}${Rk.ats}${J.depan > 0.5 ? "" : L.bwh + Rk.bwh + barang}</g>`;
     const depan = J.depan > 0.5 ? `<g transform="${T}">${L.bwh}${Rk.bwh}${barang}</g>` : "";
@@ -1482,6 +1491,19 @@
     const GM = v(b.gemuk, t, d, 0), SH = 62 + 26 * GM, KB = b.kepala_besar || 1;
     const kaki = (dx, a, w = BADAN, tb = 44) => `<line x1="${dx}" y1="-200" x2="${dx + Math.sin((a * Math.PI) / 180) * 200}" y2="${-200 + Math.cos((a * Math.PI) / 180) * 200}" stroke="${w}" stroke-width="${tb}" stroke-linecap="round"/>`;
     const RIG = b.pose != null || HD ? poseKini(b, HD ? ta : t, HD) : null;
+    // AKSI GALI: pose kerja adalah aksi berulang, bukan pose statis.
+    // Fase diberi offset per NPC agar pekerja tidak mengayun serempak.
+    if (RIG && (b.aksi === "gali" || b.pose === "kerja")) {
+      const fase = ((t * 1.35 + (((b.npc != null ? b.npc : b.id) || 0) * 0.381)) % 1 + 1) % 1;
+      const ayunGali = Math.sin(fase * Math.PI * 2);
+      const hantam = Math.pow(Math.max(0, Math.sin(fase * Math.PI * 2 + 0.35)), 5);
+      RIG.ra = [132 + 18 * ayunGali, 212 + 28 * ayunGali - 12 * hantam];
+      RIG.la = [112 + 12 * ayunGali, 198 + 18 * ayunGali];
+      RIG.badan = 5 + 8 * hantam - 3 * ayunGali;
+      RIG.turun = 3 + 9 * hantam;
+      RIG.lk = [4, 0]; RIG.rk = [-4, 0];
+      RIG.pegang = "beliung";
+    }
     if (RIG && HD) { const ph = (b.id || 0) * 1.37, q = ta - RIG._tk; RIG.badan += H.brot; RIG.kepala += H.krot; RIG.la = [RIG.la[0], RIG.la[1] + 2 * Math.sin(t * 1.1 + ph)]; RIG.ra = [RIG.ra[0], RIG.ra[1] - 2 * Math.sin(t * 1.3 + ph)];
       if (q >= 0 && q < 0.6) H.sq += 0.05 * Math.exp(-q * 8) * Math.sin(q * 24 - 0.6); } // squash & stretch kecil tiap ganti pose
     let g;
