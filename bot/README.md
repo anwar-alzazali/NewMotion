@@ -26,6 +26,16 @@ Worker memanggil workflow `.github/workflows/naskah.yml` melalui `workflow_dispa
 
 Workflow hanya dipicu manual/API melalui `workflow_dispatch`, sesuai aturan repo publik. Jangan menambahkan pemicu `push`, `issues`, `pull_request_target`, atau event dari fork pada workflow yang memakai rahasia.
 
+## Alur persetujuan sebelum produksi
+
+1. Setelah naskah dan dalil diverifikasi, pemilik meninjau naskah di Telegram.
+2. Tombol **Lanjut** memicu `.github/workflows/visual.yml`.
+3. Pengarah Kisah Islami mengubah beat menjadi adegan, lalu renderer membuat MP4 pratinjau **tanpa TTS dan tanpa trek narasi**.
+4. Pratinjau dikirim ke Telegram dengan tombol **Setujui visual** atau **Revisi visual**.
+5. Jika visual ditolak, tahap TTS tetap diblokir. Jika disetujui, status membuka tahap TTS; produksi TTS dan render final masih merupakan integrasi berikutnya.
+
+Pratinjau visual menggunakan renderer yang sudah ada. Artefak MP4 disimpan sementara sebagai GitHub Actions artifact selama 7 hari; papan JSON dan status tinjauan disimpan di antrean. Workflow membutuhkan dependensi `.[render]`, Chromium Playwright, FFmpeg, serta secrets Telegram dan Quran Foundation.
+
 ## Batas migrasi saat ini
 
-Tahap ini memindahkan antarmuka bot dan workflow penyusunan/verifikasi naskah. Tombol persetujuan naskah masih mencatat keputusan pemilik; kelanjutan otomatis dari naskah yang disetujui ke pipeline pengarahan, audio, render, dan pengiriman video merupakan integrasi tahap berikutnya. Tidak ada render otomatis yang dijalankan oleh migrasi ini.
+Tahap ini menghubungkan persetujuan naskah ke pratinjau visual tanpa suara dan menambahkan gerbang persetujuan visual sebelum TTS. Persetujuan visual belum memicu TTS atau render final secara otomatis; tahap tersebut tetap menunggu integrasi lanjutan.
