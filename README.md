@@ -29,9 +29,24 @@ Dokumentasi, pesan internal pengembang, panduan penggunaan, dan komentar konfigu
 - [x] Batas arsitektur dan arah adaptasi awal didokumentasikan.
 - [ ] Domain produk dan alur utama pengguna dikonfirmasi.
 - [ ] Bahasa pemrograman, runtime, dan target penerapan dipilih.
-- [ ] Alur fitur pertama dibuat dan diuji.
+- [x] Runtime bootstrap, konfigurasi profil, lifecycle, logging, CLI awal, dan adapter renderer lama ditambahkan.
+- [ ] Inventaris dependensi lengkap, lockfile, dan instalasi bersih diverifikasi.
+- [ ] Orkestrasi job, kontrak domain, dan pipeline render terpadu diselesaikan.
 
-Belum ada runtime aplikasi atau dependensi pihak ketiga yang ditambahkan. Ini disengaja: repositori sumber memiliki alur kerja khusus produksi video yang tidak boleh disalin ke produk dengan domain yang belum dipastikan.
+Fondasi runtime NewMotion kini tersedia pada branch kerja: paket Python `newmotion`, konfigurasi profil TOML, CLI, pemeriksaan lingkungan, serta adapter awal ke renderer lama. Dependensi renderer lama masih dipisahkan sebagai ekstra opsional dan belum dikunci sampai audit impor serta uji instalasi bersih selesai. Implementasi `mesin-video/` tetap dipertahankan.
+
+## Menjalankan runtime
+
+Gunakan Python 3.11 atau lebih baru:
+
+```bash
+python -m pip install -e '.[uji]'
+newmotion --version
+newmotion doctor
+newmotion render mesin-video/papan/kisah/yajuj2_visual3.json -o yajuj2_visual3.mp4
+```
+
+Ekstra `render` menyediakan pustaka Python yang telah teridentifikasi pada jalur papan, tetapi pemasangan browser Playwright dan FFmpeg sistem tetap perlu disiapkan sesuai lingkungan. Perintah `render` meneruskan pekerjaan ke `mesin-video/papan_buat.py`; ini adapter kompatibilitas, belum pipeline job terpadu.
 
 ## Dokumentasi
 
