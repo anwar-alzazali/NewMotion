@@ -287,6 +287,8 @@ def buat_html(spec, dasar=".", sudah_dijaga=False):
     css = open(os.path.join(HERE, "papan", "papan.css"), encoding="utf-8").read()
     js = open(os.path.join(HERE, "papan", "papan.js"), encoding="utf-8").read()
     if spec.get("cerita"):
+        from papan.karakter.integrasi import integrasikan_spec
+        integrasikan_spec(spec)
         js += "\n" + open(os.path.join(HERE, "papan", "cerita.js"), encoding="utf-8").read()
         fnt = os.path.join(HERE, "papan", "font", "caveat-700.woff2")  # tulisan tangan (OFL) untuk kitab
         if os.path.exists(fnt):

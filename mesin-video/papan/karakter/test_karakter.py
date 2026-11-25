@@ -19,3 +19,39 @@ def test_renderer_mendukung_wanita_dan_ekspresi_mikro():
 def test_renderer_mendukung_pose_dan_jadwal_gerak():
     svg = orang(540, 1700, gerak=[[0, "berdiri"], [1, "tunjuk"]], t=1.2)
     assert svg.count("<g") >= 1
+
+
+
+def test_integrasi_karakter_menghasilkan_rangka_dari_gerak_python():
+    from karakter.integrasi import integrasikan_spec
+
+    spesifikasi = {
+        "durasi": 1.0,
+        "cerita": {"shot": [{"at": 0, "boneka": [{
+            "x": 400, "y": 1400, "s": 0.7,
+            "karakter": {
+                "jenis": "pria", "mode": "pakaian", "kepala": "imamah",
+                "warna_kulit": "#a86a45", "warna_baju": "#477b83",
+                "warna_aksen": "#d6c08e", "jenis_pakaian": "koko",
+                "gerak": "gali", "alat": "beliung", "janggut": "pendek",
+            },
+        }]}]},
+    }
+    integrasikan_spec(spesifikasi)
+    tokoh = spesifikasi["cerita"]["shot"][0]["boneka"][0]
+    assert tokoh["_gabungan"] is True
+    assert tokoh["gaya"] == "umum"
+    assert tokoh["penutup_kepala"] == "imamah"
+    assert tokoh["pakaian"]["warna"] == "#477b83"
+    assert tokoh["aksi"] == "gali"
+    assert tokoh["pose"][0][1]["pegang"] == "beliung"
+    assert len(tokoh["pose"]) >= 15
+    assert tokoh["pose"][0][1]["ra"] != tokoh["pose"][3][1]["ra"]
+
+
+def test_integrasi_karakter_menolak_gerak_tidak_dikenal():
+    import pytest
+    from karakter.integrasi import integrasikan_tokoh
+
+    with pytest.raises(ValueError, match="tidak dikenal"):
+        integrasikan_tokoh({}, {"gerak": "terbang"}, 1.0)

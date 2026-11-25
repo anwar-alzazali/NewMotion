@@ -1227,7 +1227,7 @@
   // lk/rk = [paha, betis] (+ = keluar), pp/pk = panjang paha/betis (0-1; paha pendek = menghadap kamera saat duduk), guling (rebah, derajat), depan (tangan di depan wajah),
   // pegang (hp|buku|gelas di tangan kanan), lambai (0-1). Pose bebas: tulis sendi langsung, atau {dari:"duduk", ra:[..]}.
   const POSE = {
-    berdiri: { turun: 0, badan: 0, kepala: 0, la: [8, 4], ra: [8, 4], lk: [0, 0], rk: [0, 0], pp: 1, pk: 1, guling: 0, depan: 0, lambai: 0 },
+    berdiri: { turun: 0, badan: 0, kepala: 0, la: [8, 4], ra: [8, 4], lk: [0, 0], rk: [0, 0], pp: 1, pk: 1, pp_ka: 1, pp_ki: 1, pk_ka: 1, pk_ki: 1, geser: 0, toleh: 0, angguk: 0, guling: 0, depan: 0, lambai: 0 },
     duduk: { turun: 70, pp: 0.3, lk: [12, 3], rk: [12, 3], la: [6, -14], ra: [6, -14] },
     peluk_lutut: { turun: 70, pp: 0.3, lk: [8, 2], rk: [8, 2], la: [-4, -22], ra: [-4, -22], badan: 0 },
     tutup_wajah: { la: [136, -118], ra: [136, -118], depan: 1 },
@@ -1354,7 +1354,7 @@
   function poseKini(b, t, hd) { // hd (tokoh hidup): pindah pose 0,2 dtk dengan ancang-ancang + kebablasan, lalu ditahan
     let kf = b.pose == null ? "berdiri" : b.pose; if (!Array.isArray(kf) || !Array.isArray(kf[0])) kf = [[0, kf]];
     let cur = isiPose(kf[0][1]), tk0 = -9;
-    for (let i = 1; i < kf.length; i++) { const [tk, pk] = kf[i]; if (t < tk) break; const L = (pk && pk.lama) || (hd ? 0.2 : 0.45); cur = paduPose(cur, isiPose(pk), hd ? sentak((t - tk) / L) : halus((t - tk) / L)); tk0 = tk; }
+    for (let i = 1; i < kf.length; i++) { const [tk, pk] = kf[i]; if (t < tk) break; const L = (pk && pk.lama) || (hd && !b._gabungan ? 0.2 : 0.45); const f = hd && !b._gabungan ? sentak((t - tk) / L) : halus((t - tk) / L); cur = paduPose(cur, isiPose(pk), f); tk0 = tk; }
     cur._tk = tk0; return cur;
   }
   // gambar badan bersendi (kaki di tanah, badan + lengan dalam bingkai T). Mengembalikan {g, depan, T, kepala, guling}
@@ -1397,7 +1397,7 @@
     [-1, 1].forEach((sg) => {
       const s = sg < 0 ? J.lk : J.rk, sw = sg < 0 ? ayun : -ayun;
       const a1 = (sg * s[0] + sw) * R, a2 = (sg * s[1] + sw) * R;
-      const H = [sg * 26, hy0], K = [H[0] + Math.sin(a1) * 100 * J.pp, H[1] + Math.cos(a1) * 100 * J.pp], F = [K[0] + Math.sin(a2) * 100 * J.pk, K[1] + Math.cos(a2) * 100 * J.pk];
+      const pp = sg < 0 ? (J.pp_ki == null ? J.pp : J.pp_ki) : (J.pp_ka == null ? J.pp : J.pp_ka), pk = sg < 0 ? (J.pk_ki == null ? J.pk : J.pk_ki) : (J.pk_ka == null ? J.pk : J.pk_ka); const H = [sg * 26, hy0], K = [H[0] + Math.sin(a1) * 100 * pp, H[1] + Math.cos(a1) * 100 * pp], F = [K[0] + Math.sin(a2) * 100 * pk, K[1] + Math.cos(a2) * 100 * pk];
       titik.push([H, K, F]);
       kaki += `<polyline points="${H} ${K} ${F}" fill="none" stroke="${wnK}" stroke-width="${wKaki}" stroke-linecap="round" stroke-linejoin="round"/>`;
       if (pakaiP) kaki += `<ellipse cx="${F[0] + sg * 4}" cy="${F[1] - 6}" rx="30" ry="14" fill="#2a2024"/>`;
@@ -1432,6 +1432,10 @@
         <path d="M -8 34 L 8 34" stroke="#4c3322" stroke-width="5" stroke-linecap="round"/>
       </g>`;
     }
+    if (J.pegang === "palu") {
+      const sudut = J.ra[1] * 0.45 - 10;
+      barang = `<g transform="translate(${Rk.H[0]} ${Rk.H[1]}) rotate(${sudut})"><path d="M 0 42 L 0 -86" stroke="#76502f" stroke-width="15" stroke-linecap="round"/><path d="M -32 -86 L 32 -86 L 26 -58 L -26 -58 Z" fill="#7d8790" stroke="#34333a" stroke-width="6" stroke-linejoin="round"/></g>`;
+    }
     const T = `translate(0 ${J.turun}) rotate(${J.badan} 0 -200)`;
     const g = kaki + `<g transform="${T}">${bdn}${L.ats}${Rk.ats}${J.depan > 0.5 ? "" : L.bwh + Rk.bwh + barang}</g>`;
     const depan = J.depan > 0.5 ? `<g transform="${T}">${L.bwh}${Rk.bwh}${barang}</g>` : "";
@@ -1452,7 +1456,7 @@
     const HD = (b.hidup != null ? b.hidup : C.hidup) && b.gaya !== "siluet" && b.gaya !== "dajjal";
     const ta = HD && (b.dua != null ? b.dua : C.dua !== false) ? Math.floor(t * 15 + 0.001) / 15 : t; // akting "on twos" (15 fps): loncatan tegas; posisi & kamera tetap 30 fps
     const kunci = (x0) => Array.isArray(x0) && Array.isArray(x0[0]) && typeof x0[0][1] === "number";
-    let x = v(b.x, t, d, 540), y = v(b.y, t, d, 1500), s = v(b.s, t, d, 1); const naik = v(b.naik, t, d, 1);
+    let x = v(b.x, t, d, 540), y = v(b.y, t, d, 1500), s = v(b.s, t, d, 1) * (b.skala_usia || 1); const naik = v(b.naik, t, d, 1);
     let arah = HD && kunci(b.arah) ? vs(b.arah, ta, 0) : v(b.arah, t, d, 0), tunduk = HD && kunci(b.tunduk) ? vs(b.tunduk, ta, 0) : v(b.tunduk, t, d, 0);
     const wajah = v(b.wajah, HD ? ta : t, d, "netral"), mata = v(b.mata, HD ? ta : t, d, "buka"), lengan = v(b.lengan, t, d, "turun"), keringat = v(b.keringat, t, d, 0), jalan = v(b.jalan, t, d, 0);
     const ayun = jalan ? Math.sin(t * 7) * 22 * jalan : 0, nafas = Math.sin(t * 2.2) * 3;
@@ -1491,9 +1495,10 @@
     const GM = v(b.gemuk, t, d, 0), SH = 62 + 26 * GM, KB = b.kepala_besar || 1;
     const kaki = (dx, a, w = BADAN, tb = 44) => `<line x1="${dx}" y1="-200" x2="${dx + Math.sin((a * Math.PI) / 180) * 200}" y2="${-200 + Math.cos((a * Math.PI) / 180) * 200}" stroke="${w}" stroke-width="${tb}" stroke-linecap="round"/>`;
     const RIG = b.pose != null || HD ? poseKini(b, HD ? ta : t, HD) : null;
+    if (RIG && b._gabungan) { x += RIG.geser || 0; arah += (RIG.toleh || 0) * 4; tunduk += (RIG.angguk || 0) * 3; }
     // AKSI GALI: pose kerja adalah aksi berulang, bukan pose statis.
     // Fase diberi offset per NPC agar pekerja tidak mengayun serempak.
-    if (RIG && (b.aksi === "gali" || b.pose === "kerja")) {
+    if (RIG && !b._gabungan && (b.aksi === "gali" || b.pose === "kerja")) {
       const fase = ((t * 1.35 + (((b.npc != null ? b.npc : b.id) || 0) * 0.381)) % 1 + 1) % 1;
       const ayunGali = Math.sin(fase * Math.PI * 2);
       const hantam = Math.pow(Math.max(0, Math.sin(fase * Math.PI * 2 + 0.35)), 5);
@@ -1581,6 +1586,17 @@
       k += `<path d="M -72 -8 C -76 -40, -70 -62, -58 -70 L -54 -20 Z M 72 -8 C 76 -40, 70 -62, 58 -70 L 54 -20 Z" fill="#4a4048" opacity=".55"/>`; // samping tipis
       k += `<path d="M -62 -40 C -70 -100, 10 -118, 60 -92 C 78 -80, 76 -56, 66 -44 C 40 -64, 10 -70, -18 -58 C -34 -52, -50 -48, -62 -40 Z" fill="${INK}"/>`; // rambut atas disisir ke samping
       k += `<path d="M ${arah * 14 - 12} 62 Q ${arah * 14} 96 ${arah * 14 + 12} 62 Q ${arah * 14} 70 ${arah * 14 - 12} 62 Z" fill="${INK}"/>`; // jenggot dagu
+    }
+    // Penutup kepala dari kontrak karakter gabungan Python.
+    if (!belakang && gaya !== "siluet" && b.rambut !== "kerudung" && b.penutup_kepala && b.penutup_kepala !== "tanpa" && !(P && P.peci)) {
+      const WPK = b.warna_penutup || "#e8dcc4";
+      if (b.penutup_kepala === "imamah") {
+        k += `<path d="M -70 -42 Q -84 -92 -48 -112 Q 0 -138 48 -112 Q 84 -92 70 -42 Q 0 -58 -70 -42 Z" fill="${WPK}" stroke="${INK}" stroke-width="6"/><path d="M -64 -72 Q 0 -96 64 -72 M -58 -54 Q 0 -76 58 -54" fill="none" stroke="${warna(WPK, "#000000", 0.16)}" stroke-width="7" stroke-linecap="round"/>`;
+      } else if (b.penutup_kepala === "kain") {
+        k += `<path d="M -72 -42 Q -82 -98 -42 -116 Q 0 -132 42 -116 Q 82 -98 72 -42 Q 30 -58 0 -52 Q -34 -58 -72 -42 Z" fill="${WPK}" stroke="${INK}" stroke-width="6"/><path d="M 42 -96 Q 84 -54 66 20 L 48 34 Q 58 -28 30 -54" fill="${WPK}" stroke="${INK}" stroke-width="5"/>`;
+      } else if (b.penutup_kepala === "kopiah") {
+        k += `<path d="M -68 -48 Q 0 -68 68 -48 L 62 -88 Q 0 -110 -62 -88 Z" fill="${WPK}" stroke="${INK}" stroke-width="6"/><path d="M -58 -58 Q 0 -76 58 -58" stroke="${warna(WPK, "#000000", 0.18)}" stroke-width="5" fill="none"/>`;
+      }
     }
     const muka = ANW && !belakang && gaya !== "dajjal";
     if (muka && gaya !== "siluet") k += `<path d="M 18 -80 A 75 82 0 0 1 18 80 A 58 82 0 0 0 18 -80 Z" fill="#3a1f2a" opacity=".13"/>`; // bayangan separuh wajah
