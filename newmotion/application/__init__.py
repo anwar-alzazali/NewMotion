@@ -1,0 +1,1 @@
+"""Kasus penggunaan aplikasi NewMotion."""
