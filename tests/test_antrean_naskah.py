@@ -1,4 +1,5 @@
 """Uji antrean naskah Telegram yang sudah dipindahkan ke NewMotion."""
+# Tes ini berjalan tanpa secret dan tanpa memanggil layanan eksternal.
 import json
 from pathlib import Path
 
