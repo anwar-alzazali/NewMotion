@@ -6,6 +6,8 @@ on:
       - 'test/yajuj2-visual3-characters'
     paths:
       - 'mesin-video/papan/karakter/**'
+      - 'newmotion/**'
+      - 'tests/**'
       - 'mesin-video/papan/cerita.js'
       - 'mesin-video/papan_buat.py'
       - 'mesin-video/papan/kisah/yajuj2_visual3_gabungan.json'
@@ -51,6 +53,8 @@ jobs:
         run: python -m pytest karakter/test_karakter.py -v
       - name: Periksa prasyarat runtime
         run: newmotion doctor
+      - name: Uji kontrak runtime dan CLI
+        run: python -m pytest tests/test_runtime.py -v
       - name: Render naskah Yajuj2 dengan karakter gabungan
         run: |
           newmotion render mesin-video/papan/kisah/yajuj2_visual3_gabungan.json -o yajuj2-visual3-gabungan.mp4
