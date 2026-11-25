@@ -1,6 +1,14 @@
 name: Uji render naskah Mahsyar 1
 
 on:
+  push:
+    branches:
+      - feature/pemisahan-genre-dari-inti
+    paths:
+      - '.github/workflows/uji-mahsyar1.yml'
+      - 'mesin-video/papan_buat.py'
+      - 'mesin-video/papan/**'
+      - 'newmotion/**'
   pull_request:
     types: [opened, synchronize, reopened]
     paths:
