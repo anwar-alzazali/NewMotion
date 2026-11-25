@@ -1,0 +1,29 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "newmotion"
+version = "0.1.0"
+description = "Runtime modular untuk mengorkestrasi pipeline produksi video NewMotion."
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = []
+
+[project.optional-dependencies]
+uji = ["pytest>=8,<9"]
+render = [
+  "Pillow>=10,<13",
+  "numpy>=1.26,<3",
+  "playwright>=1.48,<2",
+]
+
+[project.scripts]
+newmotion = "newmotion.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["newmotion*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra"
