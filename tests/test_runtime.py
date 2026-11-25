@@ -48,3 +48,41 @@ def test_pelaksana_proses_menghormati_timeout(tmp_path):
         PelaksanaProses(0.05).jalankan(
             [sys.executable, "-c", "import time; time.sleep(1)"], tmp_path
         )
+
+
+from newmotion.application.validasi_job import GalatValidasiJob, validasi_job
+from newmotion.domain.job import Job
+from newmotion.domain.status_job import StatusJob
+
+
+def test_transisi_status_job_hanya_mengizinkan_alur_valid(tmp_path):
+    job = Job(tmp_path / "spec.json", tmp_path / "hasil.mp4")
+    job.ubah_status(StatusJob.BERJALAN)
+    job.ubah_status(StatusJob.BERHASIL)
+    assert job.status == StatusJob.BERHASIL
+    assert job.dimulai_pada is not None
+    assert job.selesai_pada is not None
+    with pytest.raises(ValueError):
+        job.ubah_status(StatusJob.BERJALAN)
+
+
+def test_validasi_job_menerima_json_objek_dan_mp4(tmp_path):
+    spesifikasi = tmp_path / "cerita.json"
+    spesifikasi.write_text('{"judul": "Uji", "adegan": []}', encoding="utf-8")
+    sumber, keluaran = validasi_job(spesifikasi, tmp_path / "hasil.mp4")
+    assert sumber == spesifikasi.resolve()
+    assert keluaran == (tmp_path / "hasil.mp4").resolve()
+
+
+def test_validasi_job_menolak_json_tidak_valid(tmp_path):
+    spesifikasi = tmp_path / "rusak.json"
+    spesifikasi.write_text("{bukan json}", encoding="utf-8")
+    with pytest.raises(GalatValidasiJob):
+        validasi_job(spesifikasi, tmp_path / "hasil.mp4")
+
+
+def test_validasi_job_menolak_ekstensi_keluaran_salah(tmp_path):
+    spesifikasi = tmp_path / "cerita.json"
+    spesifikasi.write_text("{}", encoding="utf-8")
+    with pytest.raises(GalatValidasiJob):
+        validasi_job(spesifikasi, tmp_path / "hasil.mov")
