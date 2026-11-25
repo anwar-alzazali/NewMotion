@@ -85,3 +85,20 @@ def test_inti_tidak_mengimpor_paket_kisah_islami_secara_langsung():
     sumber = (akar / "domain" / "genre.py").read_text(encoding="utf-8")
     assert "newmotion.paket_genre.kisah_islami" not in sumber
     assert "import newmotion.paket_genre.kisah_islami" not in sumber
+
+
+def test_validasi_job_memilih_genre_dari_spesifikasi(tmp_path):
+    from newmotion.application.validasi_job import validasi_job
+
+    spesifikasi = tmp_path / "cerita.json"
+    spesifikasi.write_text('{"genre": "kisah_islami"}', encoding="utf-8")
+    validasi_job(spesifikasi, tmp_path / "hasil.mp4")
+
+
+def test_validasi_job_menolak_genre_yang_tidak_tersedia(tmp_path):
+    from newmotion.application.validasi_job import GalatValidasiJob, validasi_job
+
+    spesifikasi = tmp_path / "cerita.json"
+    spesifikasi.write_text('{"genre": "genre_tidak_tersedia"}', encoding="utf-8")
+    with pytest.raises(GalatValidasiJob, match="Genre pada spesifikasi tidak valid"):
+        validasi_job(spesifikasi, tmp_path / "hasil.mp4")
