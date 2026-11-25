@@ -102,3 +102,103 @@ def test_konteks_ambigu_diblokir_sebelum_pengarah():
     }
     with pytest.raises(ValueError, match="belum cukup jelas"):
         naskah_untuk_pengarah(naskah)
+
+
+def test_peran_dialog_dan_identitas_beat_diteruskan_ke_pengarah():
+    naskah = {
+        "judul": "Penolong di jembatan",
+        "dalil": [],
+        "beat": [
+            {
+                "id": "awal",
+                "narasi": "Seorang pengendara kehilangan keseimbangan.",
+                "peran": ["Pengendara", "Penolong"],
+                "dialog": [],
+            },
+            {
+                "id": "pertolongan",
+                "narasi": "Penolong menghampiri pengendara.",
+                "peran": ["Penolong", "Pengendara"],
+                "dialog": [
+                    {"pembicara": "Penolong", "ucapan": "Pegang tangan saya.", "penjawab": "Pengendara"}
+                ],
+            },
+        ],
+    }
+
+    hasil = naskah_untuk_pengarah(naskah)
+
+    awal, pertolongan = hasil["adegan"]
+    assert awal["id"] == "awal"
+    assert pertolongan["id"] == "pertolongan"
+    assert awal["peran"] == ["Pengendara", "Penolong"]
+    assert pertolongan["dialog"] == naskah["beat"][1]["dialog"]
+    assert awal["tokoh_ids"][1] == pertolongan["tokoh_ids"][0]
+    assert awal["tokoh_ids"][0] == pertolongan["tokoh_ids"][1]
+    assert {tokoh["nama"] for tokoh in hasil["tokoh"]} == {"Pengendara", "Penolong"}
+
+
+def test_identitas_tokoh_stabil_meski_penulisan_spasi_dan_huruf_berbeda():
+    naskah = {
+        "judul": "Identitas",
+        "dalil": [],
+        "beat": [
+            {"narasi": "Tokoh hadir.", "peran": ["  Sahabat   Abu Bakar "]},
+            {"narasi": "Tokoh berbicara.", "peran": ["sahabat abu bakar"]},
+        ],
+    }
+
+    hasil = naskah_untuk_pengarah(naskah)
+
+    assert hasil["adegan"][0]["tokoh_ids"] == hasil["adegan"][1]["tokoh_ids"]
+    assert len(hasil["tokoh"]) == 1
+
+
+def test_data_peristiwa_eksplisit_diteruskan_tanpa_ditebak():
+    peristiwa = [{
+        "id": "peristiwa-1",
+        "aktor": "Penolong",
+        "aksi": "menghampiri",
+        "sasaran": "Pengendara",
+        "tujuan": "menolong",
+    }]
+    naskah = {
+        "judul": "Peristiwa",
+        "dalil": [],
+        "beat": [{"narasi": "Penolong menghampiri pengendara.", "peristiwa": peristiwa}],
+    }
+
+    hasil = naskah_untuk_pengarah(naskah)
+
+    assert hasil["adegan"][0]["peristiwa"] == peristiwa
+    assert hasil["adegan"][0]["peran"] == []
+    assert hasil["tokoh"] == []
+
+
+def test_id_beat_duplikat_ditolak():
+    import pytest
+
+    naskah = {
+        "judul": "ID ganda",
+        "dalil": [],
+        "beat": [
+            {"id": "sama", "narasi": "Adegan pertama."},
+            {"id": "sama", "narasi": "Adegan kedua."},
+        ],
+    }
+
+    with pytest.raises(ValueError, match="digunakan lebih dari sekali"):
+        naskah_untuk_pengarah(naskah)
+
+
+def test_dialog_dengan_bentuk_tidak_valid_ditolak():
+    import pytest
+
+    naskah = {
+        "judul": "Dialog salah",
+        "dalil": [],
+        "beat": [{"narasi": "Adegan.", "dialog": "bukan daftar"}],
+    }
+
+    with pytest.raises(ValueError, match="Dialog pada beat"):
+        naskah_untuk_pengarah(naskah)

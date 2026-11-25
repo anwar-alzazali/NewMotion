@@ -5,6 +5,8 @@ Tidak ada pemanggilan TTS pada modul ini.
 """
 from __future__ import annotations
 
+import copy
+import hashlib
 import json
 import os
 import re
@@ -26,6 +28,8 @@ def naskah_untuk_pengarah(
     if not isinstance(beat, list) or not beat:
         raise ValueError("Naskah tidak memiliki beat untuk diarahkan.")
     adegan = []
+    tokoh_berdasarkan_nama: dict[str, dict[str, str]] = {}
+    ids_beat: set[str] = set()
     ids_quran = {
         d.get("id"): d for d in naskah.get("dalil", [])
         if isinstance(d, dict) and d.get("jenis") == "quran"
@@ -40,8 +44,47 @@ def naskah_untuk_pengarah(
         if not isinstance(narasi, str) or not narasi.strip():
             raise ValueError(f"Beat {i} tidak memiliki narasi.")
         nama = str(b.get("nama") or f"adegan_{i}")
-        adegan.append({"nama": nama, "teks": narasi.strip(),
-                       "kunci": [str(x) for x in b.get("kata_kunci", []) if isinstance(x, str)]})
+        id_beat = b.get("id")
+        if not isinstance(id_beat, str) or not id_beat.strip():
+            id_beat = f"beat-{i:03d}"
+        else:
+            id_beat = id_beat.strip()
+        if id_beat in ids_beat:
+            raise ValueError(f"ID beat {id_beat!r} digunakan lebih dari sekali.")
+        ids_beat.add(id_beat)
+
+        peran = b.get("peran", [])
+        if not isinstance(peran, list) or any(not isinstance(x, str) or not x.strip() for x in peran):
+            raise ValueError(f"Peran pada beat {i} harus berupa daftar nama yang tidak kosong.")
+        peran_ids = []
+        for nama_peran in peran:
+            label = " ".join(nama_peran.split())
+            kunci_peran = label.casefold()
+            if kunci_peran not in tokoh_berdasarkan_nama:
+                sidik = hashlib.sha256(kunci_peran.encode("utf-8")).hexdigest()[:12]
+                tokoh_berdasarkan_nama[kunci_peran] = {
+                    "id": f"tokoh-{sidik}", "nama": label,
+                }
+            peran_ids.append(tokoh_berdasarkan_nama[kunci_peran]["id"])
+
+        dialog = b.get("dialog", [])
+        if not isinstance(dialog, list) or any(not isinstance(x, dict) for x in dialog):
+            raise ValueError(f"Dialog pada beat {i} harus berupa daftar objek.")
+        adegan_item = {
+            "id": id_beat,
+            "nama": nama,
+            "teks": narasi.strip(),
+            "kunci": [str(x) for x in b.get("kata_kunci", []) if isinstance(x, str)],
+            "peran": list(peran),
+            "tokoh_ids": peran_ids,
+            "dialog": copy.deepcopy(dialog),
+        }
+        # Data peristiwa hanya diteruskan bila memang disediakan naskah.
+        # Tahap ini tidak menebak pelaku, sasaran, aksi, atau perubahan keadaan.
+        for kunci in ("peristiwa", "aksi", "sasaran", "tujuan", "perubahan_keadaan"):
+            if kunci in b:
+                adegan_item[kunci] = copy.deepcopy(b[kunci])
+        adegan.append(adegan_item)
         for id_dalil in b.get("dalil", []):
             d = ids_quran.get(id_dalil)
             if d:
@@ -72,6 +115,7 @@ def naskah_untuk_pengarah(
         "genre": hasil_klasifikasi["genre"],
         "konteks_konten": hasil_klasifikasi["konteks_konten"],
         "adegan": adegan,
+        "tokoh": list(tokoh_berdasarkan_nama.values()),
         "dalil_dipakai": dalil_dipakai,
     }
 
