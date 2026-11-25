@@ -292,7 +292,7 @@ def jaga_spek(spec):
         from newmotion.penataan_panggung import periksa_penataan_panggung
         temuan = periksa_penataan_panggung(cerita)
         for item in temuan:
-            print("blocking [{}] {}: {}".format(item["tingkat"], item["kode"], item["pesan"]), file=sys.stderr)
+            print("penataan panggung [{}] {}: {}".format(item["tingkat"], item["kode"], item["pesan"]), file=sys.stderr)
         if any(item["tingkat"] == "gagal" for item in temuan):
             print("RENDER DIBATALKAN: perbaiki kontrak penataan panggung pada spesifikasi.", file=sys.stderr)
             raise SpekDitolak(3)
