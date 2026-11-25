@@ -1,3 +1,4 @@
+# Uji ulang setelah kredensial Quran Foundation dikonfigurasi di GitHub Actions Secrets.
 name: Uji verifikasi dalil Kisah Islami
 
 on:
