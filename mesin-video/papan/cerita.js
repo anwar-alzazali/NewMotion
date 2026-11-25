@@ -1863,7 +1863,7 @@
       const tokoh = motor ? Object.assign({}, b, {
         x: v(motor.x, tl, d, 540) + (b.offset_kendaraan_x || 0),
         y: v(motor.y, tl, d, 1500) + (b.offset_kendaraan_y == null ? -46 : b.offset_kendaraan_y),
-        pose: b.pose_motor || "mengendarai_motor"
+        pose: b.pose || b.pose_motor || "mengendarai_motor"
       }) : b;
       tokoh.id = i;
       const bd = BADAN, by = BAYANG;
