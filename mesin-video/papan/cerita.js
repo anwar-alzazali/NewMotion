@@ -1435,8 +1435,8 @@
         <path d="M -76 -8 Q -42 -24 0 -9 Q 42 -24 76 -8 L 68 12 Q 0 0 -68 12 Z" fill="#aeb8c2" stroke="#34333a" stroke-width="7" stroke-linejoin="round"/>
         <path d="M -60 -7 Q -30 -14 -8 -7" stroke="#eef3f5" stroke-width="5" fill="none" stroke-linecap="round"/>
       </g>
-      <circle cx="${L.H[0]}" cy="${L.H[1]}" r="17" fill="#b98262" stroke="#34333a" stroke-width="4"/>
-      <circle cx="${Rk.H[0]}" cy="${Rk.H[1]}" r="17" fill="#b98262" stroke="#34333a" stroke-width="4"/>`;
+      <circle cx="${L.H[0]}" cy="${L.H[1]}" r="17" fill="${KLB}" stroke="#34333a" stroke-width="4"/>
+      <circle cx="${Rk.H[0]}" cy="${Rk.H[1]}" r="17" fill="${KLB}" stroke="#34333a" stroke-width="4"/>`;
     }
     if (J.pegang === "palu") {
       const sudut = J.ra[1] * 0.45 - 10;
