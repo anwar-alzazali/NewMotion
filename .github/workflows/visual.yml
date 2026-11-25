@@ -48,7 +48,14 @@ jobs:
         run: |
           set -euo pipefail
           [[ "$ID" =~ ^[a-z0-9_-]{1,60}$ ]] || { echo "::error::id tidak sah"; exit 1; }
-          python -m newmotion.application.pratinjau_visual "$ID" --kirim
+          python -m newmotion.application.pratinjau_visual "$ID"
+      - name: Kirim pratinjau setelah status tersimpan
+        if: success()
+        env:
+          ID: ${{ inputs.id }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: python -m newmotion.application.pratinjau_visual "$ID" --kirim-saja
       - name: Unggah bukti pratinjau
         if: always()
         uses: actions/upload-artifact@v4
