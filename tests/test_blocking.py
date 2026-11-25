@@ -1,7 +1,9 @@
 """Uji pemeriksaan blocking NewMotion."""
+from pathlib import Path
+
 import pytest
 
-from newmotion.blocking import periksa_blocking, wajib_lolos_blocking
+from newmotion.blocking import periksa_blocking, rencanakan_blocking, wajib_lolos_blocking
 
 
 def test_jalan_di_tempat_ditolak():
@@ -170,3 +172,56 @@ def test_pengendara_menghadap_samping_dan_memegang_setang():
     assert 'b.profil === "kanan"' in sumber
     assert "profilMotor: (b.profil ===" in sumber
     assert "const H = o.profilMotor ? [218, -284 + nafas]" in sumber
+
+
+
+def test_perencanaan_panggung_menempatkan_pelaku_di_sisi_visual():
+    cerita = {"shot": [{
+        "benda": [{"id": "dinding_1", "x": 500, "y": 900}],
+        "boneka": [{"id": 1}, {"id": 2}, {"id": 3}],
+        "blocking": {"otomatis": True, "visual_id": "dinding_1", "pelaku": [1, 2],
+                     "sisi_pelaku": 1, "jarak_pelaku": 60, "jarak_lawan": 240}
+    }]}
+    hasil = rencanakan_blocking(cerita)
+    assert hasil[0]["status"] == "diterapkan"
+    assert cerita["shot"][0]["boneka"][0]["x"] == 560
+    assert cerita["shot"][0]["boneka"][1]["x"] == 560
+    assert cerita["shot"][0]["boneka"][2]["x"] == 260
+    assert all(x["y"] == 900 for x in cerita["shot"][0]["boneka"])
+
+
+def test_perencanaan_panggung_menghormati_posisi_manual():
+    cerita = {"shot": [{
+        "benda": [{"id": "objek", "x": 500, "y": 900}],
+        "boneka": [{"id": 1, "x": 123, "y": 456}],
+        "blocking": {"otomatis": True, "visual_id": "objek", "pelaku": [1]}
+    }]}
+    rencanakan_blocking(cerita)
+    assert cerita["shot"][0]["boneka"][0]["x"] == 123
+    assert cerita["shot"][0]["boneka"][0]["y"] == 456
+
+
+def test_perencanaan_panggung_dapat_mengganti_posisi_manual_dengan_paksa():
+    cerita = {"shot": [{
+        "benda": [{"id": "objek", "x": 500, "y": 900}],
+        "boneka": [{"id": 1, "x": 123, "y": 456}],
+        "blocking": {"otomatis": True, "visual_id": "objek", "pelaku": [1], "paksa": True}
+    }]}
+    rencanakan_blocking(cerita)
+    assert cerita["shot"][0]["boneka"][0]["x"] == 570
+    assert cerita["shot"][0]["boneka"][0]["y"] == 900
+
+
+def test_periksa_blocking_mendeteksi_perubahan_arah_tanpa_putar_balik():
+    cerita = {"shot": [
+        {"boneka": [{"id": 1, "x": [[0, 100], [4, 300]], "y": 200, "gerak": "jalan"}]},
+        {"boneka": [{"id": 1, "x": [[0, 300], [4, 100]], "y": 200, "gerak": "jalan"}]},
+    ]}
+    temuan = periksa_blocking(cerita)
+    assert any(x["kode"] == "arah_lintasan_berubah" and x["shot"] == 1 for x in temuan)
+
+
+def test_papan_buat_mengintegrasikan_blocking_otomatis():
+    sumber = (Path(__file__).parents[1] / "mesin-video" / "papan_buat.py").read_text(encoding="utf-8")
+    assert "rencanakan_blocking(cerita)" in sumber
+    assert 'if cerita.get("blocking_otomatis")' in sumber
