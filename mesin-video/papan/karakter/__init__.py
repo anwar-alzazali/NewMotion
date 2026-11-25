@@ -1,7 +1,8 @@
-"""Pembuat karakter NewMotion: renderer SVG ber-rangka dan ekspresi.
+"""Kontrak karakter NewMotion.
 
-API utama: orang(...), WAJAH, KEPALA, POSE. Penjaga peran/adab tetap milik pipeline NewMotion.
+Python menyediakan nama aksi dan validasi data. cerita.js memiliki satu-satunya
+implementasi rangka, pose, interpolasi, dan penggambaran karakter.
 """
-from .tokoh import orang, WAJAH, WAJAH_DASAR, EKSPRESI_DETAIL, KEPALA, POSE
+from .gerak import GERAK_BERULANG, GERAK_STATIS, SEMUA, jadwal_gerak
 
-__all__ = ["orang", "WAJAH", "WAJAH_DASAR", "EKSPRESI_DETAIL", "KEPALA", "POSE"]
+__all__ = ["GERAK_BERULANG", "GERAK_STATIS", "SEMUA", "jadwal_gerak"]

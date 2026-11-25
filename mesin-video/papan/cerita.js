@@ -1364,7 +1364,42 @@
       else if (jn === "kejut") s += `<g ${T}><path d="M -26 10 L -8 2 M -6 -30 L 0 -10 M 28 -20 L 12 -6" stroke="${INK}" stroke-width="8" stroke-linecap="round"/></g>`; });
     return s;
   }
-  function isiPose(p) { const q = typeof p === "string" ? POSE[p] || {} : p.dari || p.pakai ? Object.assign({}, POSE[p.dari], p, POSE[p.pakai]) : p; return Object.assign({}, POSE.berdiri, q); } // {dari:"duduk", ..., pakai:"tunjuk"} = gestur bernama di atas pose dasar (gestur menang)
+  // Evaluator gerak karakter tunggal. Python hanya mengirim nama aksi dan jadwal;
+  // seluruh sudut rangka dihitung di sini agar tidak ada solver sendi kedua.
+  function poseGerak(nama, t) {
+    const f = 2 * Math.PI * t, s = Math.sin(f), c = Math.cos(f);
+    if (nama === "jalan") { const ka = Math.max(0, s), ki = Math.max(0, -s);
+      return { turun: -4 * Math.abs(c), badan: 1.5 * s, kepala: -1.5 * s,
+        pp_ka: 1 - .3 * ka, pp_ki: 1 - .3 * ki, rk: [4 + 3 * ka, -18 * ka + 2], lk: [4 + 3 * ki, -18 * ki + 2],
+        ra: [10 + 8 * ki, 6 + 30 * ki], la: [10 + 8 * ka, 6 + 30 * ka] };
+    }
+    if (nama === "lari") { const ka = Math.max(0, s), ki = Math.max(0, -s);
+      return { turun: -10 * Math.abs(c) - 4, badan: 3 * s, kepala: -2 * s,
+        pp_ka: 1 - .5 * ka, pp_ki: 1 - .5 * ki, rk: [6 + 6 * ka, -40 * ka + 4], lk: [6 + 6 * ki, -40 * ki + 4],
+        ra: [22 + 20 * ki, 70 + 40 * ki], la: [22 + 20 * ka, 70 + 40 * ka] };
+    }
+    if (nama === "joget") return { geser: 12 * s, badan: -6 * s, kepala: 6 * Math.sin(f + .6), turun: -6 * Math.abs(s),
+      ra: [140 + 25 * s, 165 + 20 * Math.sin(f + 1)], la: [140 - 25 * s, 165 - 20 * Math.sin(f + 1)],
+      rk: [8 + 4 * s, -6 * Math.max(0, s)], lk: [8 - 4 * s, -6 * Math.max(0, -s)] };
+    if (nama === "lompat") { const u = ((t % 1.2) + 1.2) % 1.2 / 1.2;
+      if (u < .2) { const k = Math.sin(Math.PI * u / .4); return { turun: 22 * k, pp: 1 - .25 * k, rk: [8, -10 * k], lk: [8, -10 * k] }; }
+      if (u < .75) { const k = (u - .2) / .55; return { turun: -120 * Math.sin(Math.PI * k), pp: .75, rk: [10, -25], lk: [10, -25], ra: [150, 170], la: [150, 170] }; }
+      const k = 1 - (u - .75) / .25; return { turun: 18 * k, pp: 1 - .2 * k, rk: [8, -8 * k], lk: [8, -8 * k] };
+    }
+    if (nama === "melambai") return { ra: [150, 160 + 25 * Math.sin(t * 2 * Math.PI * 1.6)], kepala: 4 };
+    if (nama === "menggeleng") return { toleh: .8 * Math.sin(t * 2 * Math.PI * 1.6) };
+    if (nama === "mengangguk") return { angguk: .8 * Math.max(0, Math.sin(t * 2 * Math.PI * 1.2)) };
+    if (nama === "tertawa") return { turun: -3 * Math.abs(Math.sin(t * 7)), badan: 2 * Math.sin(t * 7), kepala: -8, ra: [8, 4], la: [8, 4] };
+    if (nama === "palu") { const u = (Math.sin(t * 2 * Math.PI * 1.4) + 1) / 2;
+      return { ra: [40 + 85 * u, 60 + 115 * u], badan: -3 + 4 * u, turun: 2 * (1 - u), la: [20, -30], pegang: "palu" }; }
+    if (nama === "gali") return { ra: [40, 80], la: [20, 40], pegang: "beliung" };
+    return null;
+  }
+  function isiPose(p, t = 0) {
+    const q = typeof p === "string" ? (poseGerak(p, t) || POSE[p] || {})
+      : p.dari || p.pakai ? Object.assign({}, POSE[p.dari], p, POSE[p.pakai]) : p;
+    return Object.assign({}, POSE.berdiri, q);
+  } // pose aksi dievaluasi oleh renderer JS, bukan dikirim sebagai sudut dari Python
   function paduPose(a, b, f) {
     const r = {}; for (const k in b) { const A = a[k], B = b[k];
       r[k] = typeof B === "number" ? mix(typeof A === "number" ? A : B, B, f) : Array.isArray(B) ? B.map((x, i) => mix(A ? A[i] : x, x, f)) : f > 0.5 ? B : A; }
@@ -1372,9 +1407,9 @@
   }
   function poseKini(b, t, hd) { // hd (tokoh hidup): pindah pose 0,2 dtk dengan ancang-ancang + kebablasan, lalu ditahan
     let kf = b.pose == null ? "berdiri" : b.pose; if (!Array.isArray(kf) || !Array.isArray(kf[0])) kf = [[0, kf]];
-    let cur = isiPose(kf[0][1]), tk0 = -9;
-    for (let i = 1; i < kf.length; i++) { const [tk, pk] = kf[i]; if (t < tk) break; const L = (pk && pk.lama) || (hd && !b._gabungan ? 0.2 : 0.45); const f = hd && !b._gabungan ? sentak((t - tk) / L) : halus((t - tk) / L); cur = paduPose(cur, isiPose(pk), f); tk0 = tk; }
-    cur._tk = tk0; return cur;
+    let cur = isiPose(kf[0][1], t - kf[0][0]), tk0 = -9, aksiKini = kf[0][1];
+    for (let i = 1; i < kf.length; i++) { const [tk, pk] = kf[i]; if (t < tk) break; aksiKini = pk; const L = (pk && pk.lama) || (hd && !b._gabungan ? 0.2 : 0.45); const f = hd && !b._gabungan ? sentak((t - tk) / L) : halus((t - tk) / L); cur = paduPose(cur, isiPose(pk, t - tk), f); tk0 = tk; }
+    cur._tk = tk0; cur._aksi = typeof aksiKini === "string" ? aksiKini : null; return cur;
   }
   // gambar badan bersendi (kaki di tanah, badan + lengan dalam bingkai T). Mengembalikan {g, depan, T, kepala, guling}
   // detail baju (7 Nov, akun komedi): kaus|koko|gamis|jaket{logo,aksen}|kemeja{motif batik}|daster|hoodie|blazer + handuk leher; gm = gemuk 0-1
@@ -1550,7 +1585,7 @@
     if (RIG && b._gabungan) { x += RIG.geser || 0; arah += (RIG.toleh || 0) * 4; tunduk += (RIG.angguk || 0) * 3; }
     // AKSI GALI: pose kerja adalah aksi berulang, bukan pose statis.
     // Fase diberi offset per NPC agar pekerja tidak mengayun serempak.
-    if (RIG && !b._gabungan && (b.aksi === "gali" || b.pose === "kerja")) {
+    if (RIG && (RIG._aksi === "gali" || (!b._gabungan && (b.aksi === "gali" || b.pose === "kerja")))) {
       const fase = ((t * 1.35 + (((b.npc != null ? b.npc : b.id) || 0) * 0.381)) % 1 + 1) % 1;
       const ayunGali = Math.sin(fase * Math.PI * 2);
       const hantam = Math.pow(Math.max(0, Math.sin(fase * Math.PI * 2 + 0.35)), 5);
@@ -1583,7 +1618,7 @@
     const tangan = (x2, y2) => (P ? `<circle cx="${x2}" cy="${y2}" r="19" fill="${KLB}" stroke="${INK}" stroke-width="4"/>` : "");
     const lenganKiri = `<line x1="${-SH}" y1="${-360 + nafas}" x2="${-SH - 22 - ayun * 0.3}" y2="${-200 + nafas}" stroke="${BD}" stroke-width="36" stroke-linecap="round"/>` + tangan(-SH - 22 - ayun * 0.3, -192 + nafas);
     g += lenganKiri;
-    let RG = null; if (RIG) { RG = rangka(RIG, { P, BD, WC, KLB, nafas, ayun, bawahP, t: HD ? ta : t, gm: GM, aksi: b.aksi, id: b.npc != null ? b.npc : b.id, offset: b._gerak_offset, profilMotor: (b.profil === "kanan" || b.profil === true) && RIG && RIG.turun >= 50 }); g = RG.g; }
+    let RG = null; if (RIG) { RG = rangka(RIG, { P, BD, WC, KLB, nafas, ayun, bawahP, t: HD ? ta : t, gm: GM, aksi: RIG && RIG._aksi || b.aksi, id: b.npc != null ? b.npc : b.id, offset: b._gerak_offset, profilMotor: (b.profil === "kanan" || b.profil === true) && RIG && RIG.turun >= 50 }); g = RG.g; }
     let lenganKanan = RIG ? "" : `<line x1="${SH}" y1="${-360 + nafas}" x2="${SH + 22 + ayun * 0.3}" y2="${-200 + nafas}" stroke="${BD}" stroke-width="36" stroke-linecap="round"/>` + tangan(SH + 22 + ayun * 0.3, -192 + nafas);
     // kepala
     const hx = arah * 10, hy = -492 - (KB - 1) * 96 + nafas + tunduk * 14 + (H ? H.ky : 0), ex = arah * 24, ey = tunduk * 14 + (mata === "atas" ? -8 : mata === "bawah" ? 8 : 0);
