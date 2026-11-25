@@ -21,7 +21,7 @@ export const idAman = (s) => String(s || "").toLowerCase().replace(/[^a-z0-9_-]+
  *  Batas Telegram 64 byte. */
 export function bacaTombol(data) {
   const [aksi, id, kode] = String(data || "").split(":");
-  if (!["st", "tl", "al", "ub", "nl", "nr", "nb", "va", "vr"].includes(aksi) || !idAman(id) || idAman(id) !== id) return null;
+  if (!["st", "tl", "al", "ub", "nl", "nr", "nb", "nu", "va", "vr"].includes(aksi) || !idAman(id) || idAman(id) !== id) return null;
   if (aksi === "al" && !ALASAN[kode]) return null;
   return { aksi, id, alasan: kode || null };
 }
@@ -56,6 +56,11 @@ export function kartuStatus(st) {
 }
 export function tombolKartu(st) {
   const i = st.id;
+  if (st.tahap.tinjau === "selesai" && st.tahap.sutradara === "gagal"
+      && !["jalan", "selesai"].includes(st.tahap.tinjau_visual)) {
+    return [[{ text: "🔁 Ulangi pratinjau visual", callback_data: `nu:${i}` }],
+            [{ text: "🏠 Menu", callback_data: "menu" }]];
+  }
   if (["belum", "jalan"].includes(st.tahap.tinjau) && ["selesai", "gagal"].includes(st.tahap.dalil))
     return [[{ text: "✅ Lanjut", callback_data: `nl:${i}` }, { text: "✏️ Revisi", callback_data: `nr:${i}` }],
             [{ text: "❌ Batal", callback_data: `nb:${i}` }, { text: "🏠 Menu", callback_data: "menu" }]];
@@ -276,6 +281,10 @@ async function ubahAntrean(env, q, t) {
   const st = await bacaJsonRepo(env, `antrean/${t.id}/status.json`);
   if (!st) return TG(env, "answerCallbackQuery", { callback_query_id: q.id, text: "Antrean tidak ditemukan" });
   st.pesan_kartu = q.message ? q.message.message_id : st.pesan_kartu;
+  if (t.aksi === "nu" && !(st.tahap.tinjau === "selesai" && st.tahap.sutradara === "gagal"
+      && !["jalan", "selesai"].includes(st.tahap.tinjau_visual))) {
+    return TG(env, "answerCallbackQuery", { callback_query_id: q.id, text: "Pratinjau belum berstatus gagal atau sudah selesai; tidak diulang." });
+  }
   if (t.aksi === "nl" && st.tahap.tinjau !== "jalan") {
     return TG(env, "answerCallbackQuery", { callback_query_id: q.id, text: "Naskah ini sudah diproses; pratinjau tidak dibuat ulang." });
   }
@@ -285,14 +294,15 @@ async function ubahAntrean(env, q, t) {
   }
   st.tahap.tinjau = t.aksi === "nl" ? "selesai" : "gagal";
   st.ket = { ...(st.ket || {}), tinjau: t.aksi === "nl" ? "disetujui" : "dibatalkan" };
-  if (t.aksi === "nl") {
+  if (t.aksi === "nl" || t.aksi === "nu") {
     st.tahap.sutradara = "jalan";
-    st.ket.sutradara = "menyusun pratinjau visual tanpa TTS";
+    st.tahap.tinjau_visual = "belum";
+    st.ket.sutradara = t.aksi === "nu" ? "mengulangi pratinjau setelah kegagalan sebelumnya" : "menyusun pratinjau visual tanpa TTS";
   }
   st.diperbarui = new Date().toISOString();
   await simpanStatus(env, st);
-  await TG(env, "answerCallbackQuery", { callback_query_id: q.id, text: t.aksi === "nl" ? "Naskah disetujui; pratinjau visual dimulai" : "Dibatalkan" });
-  if (t.aksi === "nl") {
+  await TG(env, "answerCallbackQuery", { callback_query_id: q.id, text: t.aksi === "nl" ? "Naskah disetujui; pratinjau visual dimulai" : t.aksi === "nu" ? "Pratinjau visual dicoba ulang" : "Dibatalkan" });
+  if (t.aksi === "nl" || t.aksi === "nu") {
     try { await dispatch(env, "visual.yml", { id: t.id }); }
     catch (e) { st.tahap.sutradara = "gagal"; st.ket.sutradara = "gagal memulai pratinjau: " + String(e.message || e).slice(0, 120); await simpanStatus(env, st); }
   }
@@ -389,7 +399,7 @@ async function tanganiTombol(env, q) {
                       ms: () => daftarStatus(env), mb: () => kirim(env, BANTUAN, MENU) };
   if (sederhana[q.data]) { await TG(env, "answerCallbackQuery", { callback_query_id: q.id }); return sederhana[q.data](); }
   const t = bacaTombol(q.data);
-  if (t && ["nl", "nr", "nb"].includes(t.aksi)) return ubahAntrean(env, q, t);
+  if (t && ["nl", "nr", "nb", "nu"].includes(t.aksi)) return ubahAntrean(env, q, t);
   if (t && ["va", "vr"].includes(t.aksi)) return putuskanVisual(env, q, t);
   if (!t) return TG(env, "answerCallbackQuery", { callback_query_id: q.id });
   if (t.aksi === "st") {
