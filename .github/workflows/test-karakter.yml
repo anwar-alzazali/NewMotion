@@ -4,6 +4,8 @@ on:
   pull_request:
     paths:
       - 'mesin-video/papan/karakter/**'
+      - 'mesin-video/papan/cerita.js'
+      - 'mesin-video/papan/kisah/yajuj2_visual3.json'
       - '.github/workflows/test-karakter.yml'
   push:
     branches:
@@ -18,6 +20,14 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+      - name: Siapkan Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Periksa sintaks renderer adegan
+        run: node --check mesin-video/papan/cerita.js
+      - name: Validasi JSON Visual 3
+        run: python -m json.tool mesin-video/papan/kisah/yajuj2_visual3.json > /dev/null
       - name: Siapkan Python
         uses: actions/setup-python@v5
         with:
