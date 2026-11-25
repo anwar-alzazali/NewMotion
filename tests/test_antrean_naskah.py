@@ -130,3 +130,24 @@ def test_proses_menyimpan_metadata_kebijakan_ke_naskah(tmp_path, monkeypatch):
     assert hasil["tahap"]["diterima"] == "selesai"
     assert tersimpan["genre"] == "kisah_islami"
     assert tersimpan["konteks_konten"] == "islami"
+
+
+
+def test_metadata_kosong_tidak_ditutup_dengan_nilai_cadangan():
+    status = A.status_baru("uji-kosong", "Uji kosong", "ide")
+    status["genre"] = ""
+    try:
+        A.kebijakan_naskah(status, {"genre": "kisah_islami", "konteks_konten": "islami"})
+    except ValueError as galat:
+        assert "genre kosong" in str(galat)
+    else:
+        raise AssertionError("Genre kosong tidak boleh diam-diam memakai metadata cadangan")
+
+    status = A.status_baru("uji-konteks-kosong", "Uji konteks kosong", "ide")
+    status["konteks_konten"] = ""
+    try:
+        A.kebijakan_naskah(status, {"konteks_konten": "islami"})
+    except ValueError as galat:
+        assert "konteks_konten kosong" in str(galat)
+    else:
+        raise AssertionError("Konteks kosong tidak boleh diam-diam memakai metadata cadangan")
