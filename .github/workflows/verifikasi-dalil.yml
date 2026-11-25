@@ -31,6 +31,6 @@ jobs:
         run: python -m compileall -q newmotion tests
       - name: Uji kontrak verifikasi dalil
         run: python -m pytest tests/test_verifikasi_dalil.py tests/test_genre.py
-      - name: Catat konfigurasi Quran Foundation
+      - name: Uji akses langsung Quran Foundation
         if: ${{ env.QURAN_FOUNDATION_CLIENT_ID != '' && env.QURAN_FOUNDATION_CLIENT_SECRET != '' }}
-        run: echo "Secret Quran Foundation tersedia; pengujian API langsung dapat dijalankan pada tahap smoke test terpisah."
+        run: python -c "from newmotion.paket_genre.kisah_islami.dalil.quran import QuranFoundation; a=QuranFoundation(cache=None).ayat(1, 1); assert a and a.ar; print('Quran Foundation: ayat 1:1 berhasil diambil')"
