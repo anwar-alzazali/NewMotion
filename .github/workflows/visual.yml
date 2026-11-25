@@ -95,7 +95,7 @@ jobs:
               s.setdefault("ket", {})["sutradara"] = "pratinjau gagal dibuat/dikirim; dapat dicoba ulang dari Telegram"
               s["ket"]["tinjau_visual"] = "belum berhasil dikirim untuk ditinjau"
               s["diperbarui"] = __import__("datetime").datetime.now(__import__("datetime").timezone.utc).isoformat()
-              p.write_text(json.dumps(s, ensure_ascii=False, indent=1) + "\\n", encoding="utf-8")
+              p.write_text(json.dumps(s, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
           PY
           git config user.name "github-actions[bot]"
           git config user.email "41898333+github-actions[bot]@users.noreply.github.com"
