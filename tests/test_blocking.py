@@ -101,7 +101,15 @@ def test_adegan_motor_jembatan_memenuhi_kontrak_blocking():
     motor_jalan = next(b for b in shot_jalan["benda"] if b["jenis"] == "motor")
     rider_jalan = next(b for b in shot_jalan["boneka"] if b["id"] == 1)
     assert motor_jalan["x"][-1][1] > motor_jalan["x"][0][1]
-    assert rider_jalan["x"][-1][1] == motor_jalan["x"][-1][1]
+    assert rider_jalan["kendaraan_id"] == motor_jalan["id"] == "motor_1"
+    assert rider_jalan["pose_motor"] == "mengendarai_motor"
+
+    shot_tergelincir = cerita["shot"][2]
+    motor_tergelincir = next(b for b in shot_tergelincir["benda"] if b["jenis"] == "motor")
+    korban_tergelincir = next(b for b in shot_tergelincir["boneka"] if b["id"] == 1)
+    assert korban_tergelincir["kendaraan_id"] == motor_tergelincir["id"]
+    assert korban_tergelincir["lepas_kendaraan_at"] == 2.4
+    assert korban_tergelincir["pose"][-1][1] == "rebahan"
 
     shot_bantu = cerita["shot"][3]
     penolong = next(b for b in shot_bantu["boneka"] if b["id"] == 2)
@@ -139,3 +147,12 @@ def test_kontinuitas_lolos_bila_awal_shot_menyambung_akhir_sebelumnya():
     ]}
     temuan = periksa_blocking(cerita)
     assert not any(x["kode"] == "loncatan_posisi" for x in temuan)
+
+
+def test_renderer_mendukung_pengendara_terikat_dan_lepas_saat_jatuh():
+    from pathlib import Path
+
+    sumber = (Path(__file__).parents[1] / "mesin-video" / "papan" / "cerita.js").read_text(encoding="utf-8")
+    assert "b.kendaraan_id" in sumber
+    assert "b.lepas_kendaraan_at" in sumber
+    assert "mengendarai_motor:" in sumber
