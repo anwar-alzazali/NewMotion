@@ -1,4 +1,4 @@
-name: Uji render Nuh2 melalui runtime NewMotion dengan sumber mesin-video/main
+name: Uji render NewMotion dengan renderer branch dan referensi mesin-video/main
 
 on:
   workflow_dispatch:
@@ -41,18 +41,20 @@ jobs:
           python -m pip install -e '.[render]'
           python -m playwright install --with-deps chromium
 
-      - name: Ganti salinan mesin-video dengan sumber resmi main
+      - name: Ambil mesin-video/main sebagai data referensi tanpa menimpa renderer NewMotion
         env:
           MESIN_VIDEO_READ_TOKEN: ${{ secrets.MESIN_VIDEO_READ_TOKEN }}
         run: |
           test -n "$MESIN_VIDEO_READ_TOKEN" || { echo "Secret MESIN_VIDEO_READ_TOKEN belum tersedia."; exit 1; }
-          rm -rf mesin-video
-          git -c http.extraheader="AUTHORIZATION: basic $(printf 'x-access-token:%s' "$MESIN_VIDEO_READ_TOKEN" | base64 -w0)" clone --depth 1 --branch main https://github.com/anwar-alzazali/mesin-video.git mesin-video
+          mkdir -p referensi
+          rm -rf referensi/mesin-video-main
+          git -c http.extraheader="AUTHORIZATION: basic $(printf 'x-access-token:%s' "$MESIN_VIDEO_READ_TOKEN" | base64 -w0)" clone --depth 1 --branch main https://github.com/anwar-alzazali/mesin-video.git referensi/mesin-video-main
           unset MESIN_VIDEO_READ_TOKEN
-          echo "Sumber mesin-video commit: $(git -C mesin-video rev-parse HEAD)"
+          echo "Sumber referensi mesin-video commit: $(git -C referensi/mesin-video-main rev-parse HEAD)"
           test -f mesin-video/papan_buat.py
-          test -f mesin-video/periksa.py
-          test -f mesin-video/papan/kisah/nuh2.json
+          test -f mesin-video/papan/cerita.js
+          test -f referensi/mesin-video-main/periksa.py
+          test -f referensi/mesin-video-main/papan/kisah/nuh2.json
 
       - name: Periksa input asli dan kelengkapan aset
         run: |
@@ -60,7 +62,7 @@ jobs:
           import json
           from pathlib import Path
 
-          spec_path = Path("mesin-video/papan/kisah/nuh2.json").resolve()
+          spec_path = Path("referensi/mesin-video-main/papan/kisah/nuh2.json").resolve()
           spec = json.loads(spec_path.read_text(encoding="utf-8"))
           dasar = spec_path.parent
           referensi = [spec["suara"], *[r["berkas"] for r in spec.get("rekaman", [])]]
@@ -85,7 +87,7 @@ jobs:
         run: |
           mkdir -p hasil
           set -o pipefail
-          newmotion render mesin-video/papan/kisah/nuh2.json -o nuh2-runtime.mp4 2>&1 | tee hasil/render-runtime.log
+          newmotion render referensi/mesin-video-main/papan/kisah/nuh2.json -o nuh2-runtime.mp4 2>&1 | tee hasil/render-runtime.log
           test -s hasil/nuh2-runtime.mp4
 
       - name: Render uji adegan visual baru melalui NewMotion
@@ -152,8 +154,8 @@ jobs:
 
       - name: Buat HTML sumber dan jalankan pemeriksa mesin-video
         run: |
-          python mesin-video/papan_buat.py mesin-video/papan/kisah/nuh2.json --html hasil/nuh2.html
-          python mesin-video/periksa.py hasil/nuh2-runtime.mp4 --html hasil/nuh2.html --spek mesin-video/papan/kisah/nuh2.json -o hasil/periksa | tee hasil/periksa.log
+          python mesin-video/papan_buat.py referensi/mesin-video-main/papan/kisah/nuh2.json --html hasil/nuh2.html
+          python referensi/mesin-video-main/periksa.py hasil/nuh2-runtime.mp4 --html hasil/nuh2.html --spek referensi/mesin-video-main/papan/kisah/nuh2.json -o hasil/periksa | tee hasil/periksa.log
 
       - name: Simpan artefak pengujian
         if: always()
