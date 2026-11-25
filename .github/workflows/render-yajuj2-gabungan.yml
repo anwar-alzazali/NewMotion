@@ -1,0 +1,77 @@
+name: Render Yajuj2 dengan karakter gabungan
+
+on:
+  pull_request:
+    branches:
+      - 'test/yajuj2-visual3-characters'
+    paths:
+      - 'mesin-video/papan/karakter/**'
+      - 'newmotion/blocking.py'
+      - 'tests/test_blocking.py'
+      - 'mesin-video/papan/cerita.js'
+      - 'mesin-video/papan_buat.py'
+      - 'mesin-video/papan/kisah/yajuj2_visual3_gabungan.json'
+      - '.github/workflows/render-yajuj2-gabungan.yml'
+  push:
+    branches:
+      - 'feature/pembuat-karakter-gabungan'
+    paths:
+      - 'mesin-video/papan/karakter/**'
+      - 'mesin-video/papan/cerita.js'
+      - 'mesin-video/papan_buat.py'
+      - 'mesin-video/papan/kisah/yajuj2_visual3_gabungan.json'
+      - '.github/workflows/render-yajuj2-gabungan.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  render-yajuj2-gabungan:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Ambil kode
+        uses: actions/checkout@v4
+      - name: Siapkan Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Pasang FFmpeg dan font
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq ffmpeg fonts-dejavu-core
+      - name: Pasang runtime dan browser
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -e '.[render]'
+          python -m playwright install --with-deps chromium
+      - name: Pasang pytest
+        run: python -m pip install pytest
+      - name: Uji adapter karakter
+        working-directory: mesin-video/papan
+        run: python -m pytest karakter/test_karakter.py -v
+      - name: Periksa prasyarat runtime
+        run: newmotion doctor
+      - name: Uji kontrak runtime dan CLI
+        run: python -m pytest tests/test_runtime.py -v
+      - name: Render naskah Yajuj2 dengan karakter gabungan
+        run: |
+          newmotion render mesin-video/papan/kisah/yajuj2_visual3_gabungan.json -o yajuj2-visual3-gabungan.mp4
+      - name: Verifikasi video dan audio
+        if: success()
+        run: |
+          FILE=hasil/yajuj2-visual3-gabungan.mp4
+          test -s "$FILE"
+          ffprobe -v error -select_streams v:0 -show_entries stream=codec_name,width,height,r_frame_rate -of json "$FILE" | tee hasil/metadata-video.json
+          ffprobe -v error -select_streams a:0 -show_entries stream=codec_name,sample_rate,channels -of json "$FILE" | tee hasil/metadata-audio.json
+          ffprobe -v error -show_entries format=duration,size -of json "$FILE" | tee hasil/metadata-format.json
+          sha256sum "$FILE" | tee hasil/SHA256SUMS.txt
+      - name: Simpan hasil render dan metadata
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: yajuj2-visual3-karakter-gabungan
+          path: hasil/
+          if-no-files-found: warn
+          retention-days: 14
