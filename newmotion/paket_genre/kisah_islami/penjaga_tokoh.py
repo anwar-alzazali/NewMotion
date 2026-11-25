@@ -45,8 +45,13 @@ def periksa_adab_tokoh(rencana: Any) -> list[TemuanAdab]:
         return []
     peran_list = _daftar(rencana.get("peran"))
     if not peran_list:
-        # Spek lama dijaga oleh adapter kompatibilitas mesin-video.
-        return []
+        # Format papan lama tetap dijaga oleh adapter paket, bukan oleh inti renderer.
+        from .penjaga_tokoh_legacy import periksa_tokoh_suci
+
+        return [
+            TemuanAdab("GAGAL", "TOKOH_SAKRAL_FORMAT_LAMA", str(item))
+            for item in periksa_tokoh_suci(rencana)
+        ]
 
     temuan: list[TemuanAdab] = []
     peran = {
