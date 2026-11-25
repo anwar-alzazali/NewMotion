@@ -1,5 +1,6 @@
 name: Render ulang Yajuj2
 
+# Uji render dari salinan mesin-video; tidak membuat ulang TTS.
 on:
   push:
     branches:
