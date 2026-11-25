@@ -184,7 +184,7 @@ def periksa_penataan_panggung(cerita, jarak_interaksi=190.0, loncatan_maksimum=3
                            if str(o.get("id")) == str(visual_id)), None)
             pelaku_ids = {str(x) for x in aturan.get("pelaku", [])}
             if visual is None:
-                lapor("peringatan", "visual_blocking_tidak_ditemukan", indeks, "",
+                lapor("peringatan", "visual_penataan_panggung_tidak_ditemukan", indeks, "",
                       f"Visual inti {visual_id!r} tidak ditemukan; penataan panggung otomatis tidak dapat diperiksa.")
             else:
                 vx, vy = _posisi(visual)
