@@ -55,12 +55,15 @@ class SumberResmi:
         except Exception as e:  # Jaringan, secret, izin, atau ayat tidak tersedia -> gagal tertutup
             raise SumberTidakTersedia(f"Quran Foundation: {type(e).__name__}: {str(e)[:200]}") from e
 
-    def teks_hadis(self, kitab: str, nomor: int) -> str:
+    def detail_hadis(self, kitab: str, nomor: int) -> dict:
         from newmotion.paket_genre.kisah_islami.dalil import ambil_hadis
         try:
-            return ambil_hadis(kitab, nomor)["teks_arab"]
+            return ambil_hadis(kitab, nomor)
         except Exception as e:  # Dataset tidak tersedia atau hadis tidak lolos -> gagal tertutup
             raise SumberTidakTersedia(f"dataset hadis Sunnah.com: {type(e).__name__}: {str(e)[:200]}") from e
+
+    def teks_hadis(self, kitab: str, nomor: int) -> str:
+        return self.detail_hadis(kitab, nomor)["teks_arab"]
 
 
 # ---------------------------------------------------------------------------
