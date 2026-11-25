@@ -1,0 +1,22 @@
+{
+ "id": "261126-0144-ide-uji-integrasi-newmotion",
+ "judul": "/ide Uji integrasi NewMotion: seorang pengendara motor melew",
+ "sumber": "ide",
+ "chat": 7576750901,
+ "tahap": {
+  "diterima": "jalan",
+  "dalil": "belum",
+  "tinjau": "belum",
+  "sutradara": "belum",
+  "tinjau_visual": "belum",
+  "narasi": "belum",
+  "render": "belum",
+  "periksa": "belum",
+  "kirim": "belum"
+ },
+ "ket": {
+  "diterima": "mengantre di GitHub Actions…"
+ },
+ "dibuat": "2026-11-25T18:44:53.237Z",
+ "pesan_kartu": 427
+}
