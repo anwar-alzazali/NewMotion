@@ -35,8 +35,8 @@ AKAR = Path(__file__).resolve().parents[2]
 ANTREAN = AKAR / "antrean"
 SUASANA = ["senja", "dhuha", "malam", "malam_merah", "fajar"]
 KITAB = ["bukhari", "muslim", "abudawud", "tirmidhi", "nasai", "ibnmajah"]
-TAHAP = [("diterima", "Naskah diterima"), ("dalil", "Dalil diverifikasi"), ("tinjau", "Naskah disetujui"),
-         ("sutradara", "Pratinjau visual"), ("tinjau_visual", "Visual disetujui"),
+TAHAP = [("diterima", "Naskah diterima"), ("dalil", "Dalil diverifikasi"), ("tinjau", "Tinjauan naskah"),
+         ("sutradara", "Pratinjau visual"), ("tinjau_visual", "Tinjauan visual"),
          ("narasi", "TTS/Narasi"), ("render", "Render final"), ("periksa", "Pemeriksaan"),
          ("kirim", "Dikirim untuk persetujuan")]
 IKON = {"selesai": "✅", "jalan": "⏳", "gagal": "❌", "tunggu": "⏸", "belum": "▫️"}
