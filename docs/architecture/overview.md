@@ -1,66 +1,71 @@
-# NewMotion architecture overview
+# Gambaran arsitektur NewMotion
 
 ## Status
 
-Proposed foundation only. The product domain, runtime, deployment target, and first user journey have not yet been confirmed. Do not treat the module names below as implemented code.
+Ini baru fondasi yang diusulkan. Domain produk, runtime, target penerapan, dan alur utama pengguna belum dikonfirmasi. Nama bagian di bawah merupakan batas tanggung jawab yang direncanakan, bukan klaim bahwa kode tersebut sudah tersedia.
 
-## Design goals
+## Prinsip perancangan
 
-1. Keep domain rules independent from frameworks and vendors.
-2. Make long-running work observable, resumable, and safe to retry.
-3. Validate external input at system boundaries.
-4. Keep provider, database, storage, and queue implementations replaceable.
-5. Minimize dependencies until a concrete vertical slice requires them.
-6. Make tests and operational behavior part of each feature, not a later phase.
+1. Aturan domain tidak bergantung pada framework atau penyedia layanan tertentu.
+2. Pekerjaan berdurasi panjang dapat dipantau, dilanjutkan, dan dicoba ulang dengan aman.
+3. Data dari luar divalidasi ketika memasuki sistem.
+4. Implementasi basis data, antrean, penyimpanan, dan penyedia layanan dapat diganti.
+5. Dependensi dijaga tetap sedikit sampai kebutuhan fitur benar-benar jelas.
+6. Pengujian dan kesiapan operasional menjadi bagian dari setiap fitur.
 
-## Proposed logical boundaries
+## Batas tanggung jawab yang direncanakan
 
-| Boundary | Responsibility | Dependency rule |
+| Bagian | Tanggung jawab | Aturan ketergantungan |
 |---|---|---|
-| `domain/` | Entities, value objects, invariants, domain events | Depends on no infrastructure |
-| `application/` | Use cases, orchestration, ports/interfaces | Depends on domain |
-| `infrastructure/` | Database, queue, storage, AI/provider adapters | Implements application ports |
-| `interfaces/` | HTTP/API, CLI, webhooks, user-facing entry points | Calls application use cases |
-| `workers/` | Background execution and scheduled/queued jobs | Calls application use cases |
-| `tests/` | Unit, integration, contract, and end-to-end tests | Verifies observable behavior |
-| `docs/` | Architecture decisions, runbooks, contracts | Explains actual behavior |
+| `domain/` | Entitas, objek nilai, aturan inti, dan peristiwa domain | Tidak bergantung pada infrastruktur |
+| `application/` | Kasus penggunaan, pengaturan alur, dan kontrak antarmuka | Bergantung pada domain |
+| `infrastructure/` | Basis data, antrean, penyimpanan, serta adapter AI/penyedia layanan | Menerapkan kontrak aplikasi |
+| `interfaces/` | HTTP/API, CLI, webhook, dan pintu masuk pengguna | Memanggil kasus penggunaan |
+| `workers/` | Pekerjaan latar belakang dan tugas terjadwal/antrean | Memanggil kasus penggunaan |
+| `tests/` | Pengujian unit, integrasi, kontrak, dan alur menyeluruh | Memastikan perilaku sistem |
+| `docs/` | Keputusan arsitektur, panduan operasional, dan kontrak | Menjelaskan perilaku yang benar-benar ada |
 
-A modular monolith may keep these boundaries in one deployable unit. Do not create separate services or databases for every module by default.
+Monolit modular tetap dapat berjalan sebagai satu aplikasi yang diterapkan bersama. Jangan membuat layanan atau basis data terpisah untuk setiap bagian tanpa alasan yang terukur.
 
-## Workflow pattern
+## Pola alur kerja
 
-For any workflow that performs multiple steps:
+Untuk alur yang terdiri dari beberapa tahap:
 
-1. Accept and validate a versioned input contract.
-2. Create a durable operation/task identity.
-3. Record state transitions and useful error context.
-4. Execute one step at a time through replaceable adapters.
-5. Make retry behavior explicit; use idempotency keys for external side effects when supported.
-6. Store outputs as artifacts with metadata and integrity checks where needed.
-7. Expose status and failure reasons to the caller/operator.
+1. Terima masukan dengan kontrak berversi, lalu validasi.
+2. Buat identitas operasi atau tugas yang tersimpan secara persisten.
+3. Catat perubahan status dan konteks kesalahan yang berguna.
+4. Jalankan tahap demi tahap melalui adapter yang dapat diganti.
+5. Tetapkan aturan percobaan ulang secara eksplisit. Gunakan kunci idempotensi untuk efek samping eksternal jika didukung.
+6. Simpan hasil sebagai artefak beserta metadata dan pemeriksaan integritas jika diperlukan.
+7. Sediakan status dan alasan kegagalan bagi pemanggil atau operator.
 
-Do not claim exactly-once execution. A timeout after a provider accepts a request can leave the outcome ambiguous. Reconcile with the provider or require an explicit operator decision before resubmitting an ambiguous side effect.
+Jangan menjanjikan eksekusi tepat satu kali. Jika waktu permintaan habis setelah penyedia layanan menerima pekerjaan, hasil akhirnya bisa tidak pasti. Periksa status ke penyedia layanan atau minta keputusan operator sebelum mengirim ulang efek samping yang hasilnya belum jelas.
 
-## Data and security boundaries
+## Batas data dan keamanan
 
-- Secrets belong in environment injection or a managed secret store, never source control.
-- Use least-privilege credentials per integration and environment.
-- Validate paths, identifiers, payload size, MIME type, and schema at ingress.
-- Keep personal data and production artifacts out of public repositories and logs.
-- Apply authorization at the application boundary; do not rely only on UI visibility.
-- Use private object storage and expiring URLs for private outputs when applicable.
-- Document retention, deletion, and backup behavior before storing user data.
+- Rahasia disediakan melalui lingkungan aplikasi atau pengelola rahasia, bukan disimpan di repositori.
+- Gunakan kredensial dengan hak minimum untuk setiap integrasi dan lingkungan.
+- Validasi jalur berkas, identifier, ukuran muatan, tipe MIME, dan skema saat data masuk.
+- Jangan masukkan data pribadi atau artefak produksi ke repositori publik maupun log.
+- Terapkan otorisasi pada lapisan aplikasi; jangan hanya mengandalkan tampilan antarmuka.
+- Gunakan penyimpanan objek privat dan tautan kedaluwarsa untuk hasil privat jika diperlukan.
+- Tetapkan aturan retensi, penghapusan, dan pencadangan sebelum menyimpan data pengguna.
 
-## Quality gates
+## Pemeriksaan mutu
 
-Every vertical slice should include:
-- deterministic unit tests for domain rules;
-- integration tests for persistence/provider boundaries;
-- contract tests for external payloads;
-- syntax/type/lint checks appropriate to the chosen stack;
-- a manual acceptance path for user-visible behavior;
-- explicit status when a check was not run.
+Setiap fitur utuh minimal mencakup:
 
-## Runtime and dependency policy
+- pengujian unit yang konsisten untuk aturan domain;
+- pengujian integrasi untuk batas penyimpanan dan penyedia layanan;
+- pengujian kontrak untuk muatan eksternal;
+- pemeriksaan sintaks, tipe, dan gaya kode sesuai teknologi yang dipilih;
+- langkah penerimaan manual untuk perilaku yang terlihat pengguna;
+- keterangan jujur jika ada pemeriksaan yang belum dijalankan.
 
-No language, framework, database, queue, or cloud vendor is selected yet. Select them after the product workflow and deployment constraints are confirmed. Prefer standard-library functionality and a small number of maintained dependencies over speculative platform scaffolding.
+## Kebijakan runtime dan dependensi
+
+Bahasa pemrograman, framework, basis data, antrean, dan penyedia cloud belum dipilih. Tentukan setelah alur produk dan batasan penerapan diketahui. Utamakan kemampuan bawaan bahasa dan sedikit dependensi yang terawat daripada menambah kerangka kerja yang belum dibutuhkan.
+
+## Standar penulisan kode
+
+Ikuti gaya bahasa Indonesia seperti pada repositori `mesin-video`. Nama variabel, konstanta, fungsi, metode, kelas, modul, komentar, dan docstring harus berbahasa Indonesia. Nama berkas dan folder juga diutamakan dalam bahasa Indonesia selama tidak melanggar kebutuhan teknis atau kompatibilitas. Identifier bawaan bahasa, framework, pustaka, API, dan protokol eksternal tetap menggunakan nama aslinya.
