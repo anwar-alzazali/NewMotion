@@ -35,3 +35,31 @@ def test_pratinjau_menolak_naskah_tanpa_beat():
     import pytest
     with pytest.raises(ValueError, match="tidak memiliki beat"):
         naskah_untuk_pengarah({"judul": "Kosong", "beat": []})
+
+
+def test_pratinjau_diblokir_jika_naskah_belum_disetujui(tmp_path):
+    import json
+    import pytest
+    from newmotion.application.pratinjau_visual import buat_pratinjau
+
+    antrean = tmp_path / "cerita"
+    antrean.mkdir()
+    (antrean / "naskah.json").write_text(json.dumps({"judul": "Cerita", "beat": []}), encoding="utf-8")
+    (antrean / "status.json").write_text(json.dumps({"tahap": {"tinjau": "jalan"}}), encoding="utf-8")
+    with pytest.raises(ValueError, match="hanya boleh dibuat setelah naskah disetujui"):
+        buat_pratinjau("cerita", folder=tmp_path)
+
+
+def test_pratinjau_tidak_dirender_ulang_saat_sedang_ditinjau(tmp_path):
+    import json
+    import pytest
+    from newmotion.application.pratinjau_visual import buat_pratinjau
+
+    antrean = tmp_path / "cerita"
+    antrean.mkdir()
+    (antrean / "naskah.json").write_text(json.dumps({"judul": "Cerita", "beat": []}), encoding="utf-8")
+    (antrean / "status.json").write_text(
+        json.dumps({"tahap": {"tinjau": "selesai", "tinjau_visual": "jalan"}}), encoding="utf-8"
+    )
+    with pytest.raises(ValueError, match="sudah dibuat"):
+        buat_pratinjau("cerita", folder=tmp_path)
