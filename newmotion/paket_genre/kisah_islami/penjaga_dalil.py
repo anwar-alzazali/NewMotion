@@ -181,7 +181,7 @@ def urai_rujukan(kitab: Any, no: Any) -> Rujukan | None:
     for pola, kunci in KITAB_HADIS:
         if re.search(pola, kl):
             # Pertahankan sufiks Sunnah.com (mis. 2934b); jangan mengubahnya menjadi int.
-            m = re.search(r"\\d+[a-z]?", n, re.I) or re.search(r"\\d+[a-z]?", k, re.I)
+            m = re.search(r"\d+[a-z]?", n, re.I) or re.search(r"\d+[a-z]?", k, re.I)
             if not m:
                 raise RujukanTidakValid(f"nomor hadis tidak ada untuk {k!r} -- nomor wajib dicek")
             nomor = m.group(0).lower()
