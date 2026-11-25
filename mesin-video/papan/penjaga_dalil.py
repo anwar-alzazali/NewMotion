@@ -46,26 +46,21 @@ class SumberDalil(Protocol):
 
 
 class SumberResmi:
-    """Jalur verifikasi repo: dalil/quran_foundation.py + dalil/hadis_dataset.py (cache dulu)."""
-
-    def __init__(self) -> None:
-        akar = str(Path(__file__).resolve().parent.parent)
-        if akar not in sys.path:
-            sys.path.insert(0, akar)
+    """Adapter ke sumber dalil milik paket genre Kisah Islami NewMotion."""
 
     def teks_ayat(self, surah: int, ayat: int) -> str:
-        from dalil.quran_foundation import ambil_ayat
+        from newmotion.paket_genre.kisah_islami.dalil import ambil_ayat
         try:
             return ambil_ayat(surah, ayat)["teks_arab"]
-        except Exception as e:  # GagalAmbilAyat, URLError (tanpa jaringan), dll -> gagal tertutup
+        except Exception as e:  # Jaringan, secret, izin, atau ayat tidak tersedia -> gagal tertutup
             raise SumberTidakTersedia(f"Quran Foundation: {type(e).__name__}: {str(e)[:200]}") from e
 
     def teks_hadis(self, kitab: str, nomor: int) -> str:
-        from dalil.hadis_dataset import ambil_hadis
+        from newmotion.paket_genre.kisah_islami.dalil import ambil_hadis
         try:
             return ambil_hadis(kitab, nomor)["teks_arab"]
-        except Exception as e:  # GagalAmbilHadis (termasuk dha'if), jaringan, dll
-            raise SumberTidakTersedia(f"dataset hadis: {type(e).__name__}: {str(e)[:200]}") from e
+        except Exception as e:  # Dataset tidak tersedia atau hadis tidak lolos -> gagal tertutup
+            raise SumberTidakTersedia(f"dataset hadis Sunnah.com: {type(e).__name__}: {str(e)[:200]}") from e
 
 
 # ---------------------------------------------------------------------------
