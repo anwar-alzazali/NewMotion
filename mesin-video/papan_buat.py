@@ -274,20 +274,20 @@ def jaga_spek(spec):
     if paket.penjaga_tokoh is not None:
         temuan_adab = paket.penjaga_tokoh(spec)
         if temuan_adab:
-            rincian = "\\n".join(f"[{item.kode}] {item.pesan}" for item in temuan_adab)
-            pesan.append("Pelanggaran adab penggambaran tokoh:\\n" + rincian)
+            rincian = "\n".join(f"[{item.kode}] {item.pesan}" for item in temuan_adab)
+            pesan.append("Pelanggaran adab penggambaran tokoh:\n" + rincian)
 
     if paket.penjaga_dalil is not None:
         dalil = paket.penjaga_dalil(spec)
         terblokir = [item for item in dalil if item.memblokir]
         if terblokir:
-            rincian = "\\n".join(f"- {item}" for item in terblokir)
-            pesan.append("Pelanggaran verifikasi dalil:\\n" + rincian)
+            rincian = "\n".join(f"- {item}" for item in terblokir)
+            pesan.append("Pelanggaran verifikasi dalil:\n" + rincian)
         for item in dalil:
             if not item.memblokir:
                 print(
                     f"penjaga dalil: {item}"
-                    + "".join(f"\\n    peringatan: {w}" for w in item.peringatan),
+                    + "".join(f"\n    peringatan: {w}" for w in item.peringatan),
                     file=sys.stderr,
                 )
 
