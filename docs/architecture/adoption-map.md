@@ -1,36 +1,36 @@
-# Adoption map: mesin-video → NewMotion
+# Peta adaptasi: mesin-video → NewMotion
 
-## Source and target observations
+## Kondisi repositori sumber dan tujuan
 
-- Source repository: `anwar-alzazali/mesin-video`, default branch `main`.
-- Target repository: `anwar-alzazali/NewMotion`, default branch `main`.
-- At the time of this baseline, NewMotion contained only its initial README.
-- The source repository is large and combines video production, rendering, automation, Telegram operations, provider integrations, and Supabase-backed status/billing paths. A full copy would import domain assumptions and operational coupling that may not belong in NewMotion.
+- Repositori sumber: `anwar-alzazali/mesin-video`, cabang utama `main`.
+- Repositori tujuan: `anwar-alzazali/NewMotion`, cabang utama `main`.
+- Saat pemeriksaan awal dilakukan, NewMotion baru berisi README awal.
+- Repositori sumber merupakan sistem besar yang menggabungkan produksi video, rendering, otomatisasi, operasi Telegram, integrasi penyedia layanan, serta pencatatan status dan biaya melalui Supabase. Menyalin seluruh isinya akan membawa asumsi domain dan keterikatan operasional yang belum tentu sesuai dengan NewMotion.
 
-## Reuse / adapt / defer
+## Pakai ulang, sesuaikan, atau tunda
 
-| Source area | Evidence observed on source `main` | Decision for NewMotion |
+| Bagian sumber | Temuan pada `main` | Keputusan untuk NewMotion |
 |---|---|---|
-| `otomatis.py` | Coordinates script → image → voice → assembly and supports skipping existing outputs on rerun | Reuse the resumable orchestration principle; do not copy video-specific implementation |
-| `papan_buat.py`, `rakit.py` | HTML/SVG or image composition, FFmpeg, Pillow, timed subtitles/audio | Defer until NewMotion is confirmed to need video/media rendering |
-| `bot/worker.js` | Telegram webhook, GitHub API, Supabase, Gemini-first/Claude-fallback path | Do not port wholesale; extract only a provider or webhook pattern if a confirmed use case needs it |
-| `.github/workflows/*.yml` | Several workflows are manually dispatched; workflows install tools and run scripts | Reuse explicit/manual job triggering where appropriate; avoid push-triggered expensive jobs until CI budget is known |
-| `CLAUDE.md` and `docs/ENGINEERING_AUDIT_LOG.md` | Product constraints, reuse-first guidance, audit and verification records | Reuse the discipline of recording decisions, evidence, and test status; do not copy product-specific rules |
-| Supabase tables and billing paths | Video-specific tables, storage paths, user credits, and cost logging | Defer; design NewMotion's data model from its own workflows and privacy requirements |
+| `otomatis.py` | Mengatur alur naskah → gambar → suara → perakitan dan dapat melewati hasil yang sudah tersedia saat dijalankan ulang | Terapkan prinsip alur yang dapat dilanjutkan; jangan salin implementasi khusus video |
+| `papan_buat.py`, `rakit.py` | Komposisi HTML/SVG atau gambar, FFmpeg, Pillow, subtitle dan audio bertiming | Tunda sampai NewMotion dipastikan membutuhkan rendering video/media |
+| `bot/worker.js` | Webhook Telegram, GitHub API, Supabase, serta alur Gemini utama dengan Claude sebagai cadangan | Jangan pindahkan seluruhnya; ambil pola provider atau webhook hanya jika ada kebutuhan nyata |
+| `.github/workflows/*.yml` | Beberapa alur dijalankan manual; memasang alat lalu menjalankan skrip | Gunakan pemicu pekerjaan yang eksplisit jika sesuai; hindari pekerjaan mahal setiap ada push sebelum anggaran CI diketahui |
+| `CLAUDE.md` dan `docs/ENGINEERING_AUDIT_LOG.md` | Batasan produk, arahan untuk memakai ulang, catatan audit dan verifikasi | Terapkan disiplin pencatatan keputusan, bukti, dan status pengujian; jangan salin aturan khusus produk |
+| Tabel Supabase dan alur biaya | Tabel khusus video, jalur penyimpanan, kredit pengguna, dan pencatatan biaya | Tunda; rancang model data NewMotion berdasarkan alur dan kebutuhan privasinya sendiri |
 
-## Important branch/snapshot caution
+## Catatan penting tentang cabang dan snapshot
 
-The source main tree inspected for this baseline does **not** contain the historical paths `papan/task_worker.py`, `papan/task_supervisor.py`, or `papan/sqlite_operation_ledger.py`. Some audit notes describe work from another branch/snapshot. Therefore those components are not considered verified current-main modules and must not be copied until their exact source branch and commit are confirmed.
+Pohon berkas `main` sumber yang diperiksa untuk fondasi ini **tidak memuat** jalur historis `papan/task_worker.py`, `papan/task_supervisor.py`, atau `papan/sqlite_operation_ledger.py`. Sejumlah catatan audit merujuk pekerjaan dari cabang atau snapshot lain. Karena itu, modul-modul tersebut belum dianggap sebagai bagian dari `main` saat ini dan tidak boleh disalin sebelum cabang serta commit sumbernya dipastikan.
 
-## Proposed first reusable capabilities
+## Kemampuan awal yang layak diadaptasi
 
-1. **Workflow contract** — versioned input/output schemas and boundary validation.
-2. **Orchestration** — explicit step state, progress reporting, and resumability.
-3. **Adapter ports** — provider, storage, persistence, and queue implementations behind interfaces.
-4. **Safe retries** — distinguish retryable failures from ambiguous external outcomes.
-5. **Artifact metadata** — checksum, content type, size, ownership, and retention metadata when files are part of the product.
-6. **Operational evidence** — logs with correlation IDs, tests, and honest verification status.
+1. **Kontrak alur kerja** — skema masukan/keluaran berversi dan validasi di batas sistem.
+2. **Pengaturan proses** — status setiap tahap, pelaporan kemajuan, dan kemampuan melanjutkan pekerjaan.
+3. **Lapisan adapter** — implementasi penyedia layanan, penyimpanan, persistensi, dan antrean di balik antarmuka.
+4. **Percobaan ulang yang aman** — bedakan kegagalan yang aman dicoba ulang dari hasil eksternal yang belum pasti.
+5. **Metadata artefak** — checksum, tipe konten, ukuran, kepemilikan, dan retensi jika produk menggunakan berkas.
+6. **Bukti operasional** — log dengan ID korelasi, pengujian, dan status verifikasi yang apa adanya.
 
-## Not copied
+## Yang tidak disalin
 
-No source code, user content, video assets, character assets, database dumps, credentials, environment values, private keys, or production configuration are copied in this foundation change.
+Perubahan fondasi ini tidak menyalin kode sumber, konten pengguna, aset video, aset karakter, dump basis data, kredensial, nilai lingkungan, kunci privat, maupun konfigurasi produksi.
