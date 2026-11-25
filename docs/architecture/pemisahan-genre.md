@@ -35,15 +35,18 @@ tetap memilih kisah_islami untuk menjaga kompatibilitas aset dan alur lama.
 - [x] Uji paket tiruan membuktikan paket baru dapat didaftarkan tanpa mengubah inti.
 - [x] Hubungkan pemilihan paket ke validasi job.
 - [ ] Pindahkan aturan pengarah dan visual khas Kisah Islami dari jalur lama ke paket, satu modul per satu modul.
-- [ ] Pindahkan penjaga dalil dan tokoh suci ke paket dengan tes regresi.
+- [x] Pindahkan penjaga adab tokoh ke paket Kisah Islami, pasang sebagai kait kontrak genre sebelum render, dan uji nabi, malaikat, sahabat, serta larangan visualisasi Allah.
+- [ ] Pindahkan penjaga dalil sepenuhnya ke paket; sumber verifikasinya sudah berada di paket, tetapi gerbang spek lama masih memakai adapter kompatibilitas.
 - [ ] Pindahkan komponen visual khusus genre ke mekanisme ekstensi renderer; jangan menghapus atau mengganti perilaku lama sebelum hasil bingkai dibandingkan.
 
 ## Kompatibilitas dan batas tahap ini
 
-Direktori mesin-video/ tetap dipertahankan sebagai jalur kompatibilitas renderer.
-Manifest Kisah Islami saat ini menunjuk ke modul lama; ini bukan klaim bahwa seluruh kode
-khusus genre sudah dipindahkan. Pemindahan fisik baru dilakukan setelah setiap modul
-mempunyai adapter dan uji regresi, agar hasil render lama tidak berubah diam-diam.
+Direktori mesin-video/ tetap dipertahankan sebagai jalur kompatibilitas renderer. Penjaga tokoh
+lama kini menjadi shim menuju implementasi di paket Kisah Islami. Validator rencana baru
+menolak representasi yang salah sebelum render. Renderer JavaScript lama belum mendukung
+wajah bercahaya sahabat dan berkas cahaya malaikat; spek lama yang memerlukan dua bentuk itu
+masih ditolak sampai komponen visualnya benar-benar tersedia. Modul khusus genre lainnya
+belum seluruhnya dipindahkan.
 
 Jangan membuat paket komedi atau edukasi pada tahap pemisahan ini. Paket tiruan dalam tes
 cukup untuk membuktikan bahwa kontraknya dapat diperluas.
