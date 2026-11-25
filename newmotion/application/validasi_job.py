@@ -34,6 +34,6 @@ def validasi_job(spesifikasi, keluaran):
         except Exception as galat:
             raise GalatValidasiJob(f"Penjaga adab tokoh gagal dijalankan: {galat}") from galat
         if temuan:
-            rincian = "\\n".join(f"[{item.kode}] {item.pesan}" for item in temuan)
+            rincian = "\n".join(f"[{item.kode}] {item.pesan}" for item in temuan)
             raise GalatValidasiJob(f"Rencana melanggar adab penggambaran tokoh:\\n{rincian}")
     return sumber, tujuan
