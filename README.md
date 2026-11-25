@@ -29,11 +29,11 @@ Dokumentasi, pesan internal pengembang, panduan penggunaan, dan komentar konfigu
 - [x] Batas arsitektur dan arah adaptasi awal didokumentasikan.
 - [ ] Domain produk dan alur utama pengguna dikonfirmasi.
 - [ ] Bahasa pemrograman, runtime, dan target penerapan dipilih.
-- [x] Runtime bootstrap, konfigurasi profil, lifecycle, logging, CLI awal, dan adapter renderer lama ditambahkan.
+- [x] Runtime bootstrap, konfigurasi profil, lifecycle, logging, CLI, kontrak job, validasi masukan, orkestrasi job lokal, dan adapter renderer lama ditambahkan.
 - [ ] Inventaris dependensi lengkap, lockfile, dan instalasi bersih diverifikasi.
 - [ ] Orkestrasi job, kontrak domain, dan pipeline render terpadu diselesaikan.
 
-Fondasi runtime NewMotion kini tersedia pada branch kerja: paket Python `newmotion`, konfigurasi profil TOML, CLI, pemeriksaan lingkungan, serta adapter awal ke renderer lama. Dependensi renderer lama masih dipisahkan sebagai ekstra opsional dan belum dikunci sampai audit impor serta uji instalasi bersih selesai. Implementasi `mesin-video/` tetap dipertahankan.
+Fondasi runtime NewMotion kini tersedia pada branch kerja: paket Python `newmotion`, konfigurasi profil TOML, CLI, pemeriksaan lingkungan, kontrak dan orkestrasi job render lokal, serta adapter ke renderer lama. Dependensi renderer lama masih dipisahkan sebagai ekstra opsional dan belum dikunci sampai audit impor serta uji instalasi bersih selesai. Implementasi `mesin-video/` tetap dipertahankan.
 
 ## Menjalankan runtime
 
