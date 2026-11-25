@@ -25,6 +25,7 @@ def _rencana_cerita(naskah: Mapping[str, Any], shot: list[dict]) -> dict[str, An
     if not isinstance(tokoh, list):
         raise GalatPengarahan("Daftar tokoh pada rencana cerita harus berupa daftar")
     id_tokoh = set()
+    tokoh_berdasarkan_nama: dict[str, list[str]] = {}
     for nomor, item in enumerate(tokoh, start=1):
         if not isinstance(item, Mapping):
             raise GalatPengarahan(f"Tokoh ke-{nomor} harus berupa objek")
@@ -36,7 +37,19 @@ def _rencana_cerita(naskah: Mapping[str, Any], shot: list[dict]) -> dict[str, An
         if identitas in id_tokoh:
             raise GalatPengarahan(f"ID tokoh {identitas!r} digunakan lebih dari sekali")
         id_tokoh.add(identitas)
+        kunci_nama = " ".join(nama.split()).casefold()
+        tokoh_berdasarkan_nama.setdefault(kunci_nama, []).append(identitas)
 
+    def cari_id_tokoh(nilai):
+        if not isinstance(nilai, str):
+            return None
+        if nilai in id_tokoh:
+            return nilai
+        kunci = " ".join(nilai.split()).casefold()
+        cocok = tokoh_berdasarkan_nama.get(kunci, [])
+        return cocok[0] if len(cocok) == 1 else None
+
+    diagnostik = []
     daftar_adegan = []
     id_adegan = set()
     for nomor, adegan in enumerate(naskah["adegan"], start=1):
@@ -48,7 +61,9 @@ def _rencana_cerita(naskah: Mapping[str, Any], shot: list[dict]) -> dict[str, An
         id_adegan.add(identitas)
 
         tokoh_ids = adegan.get("tokoh_ids", [])
-        if not isinstance(tokoh_ids, list) or any(x not in id_tokoh for x in tokoh_ids):
+        if not isinstance(tokoh_ids, list) or any(
+            not isinstance(x, str) or x not in id_tokoh for x in tokoh_ids
+        ):
             raise GalatPengarahan(
                 f"Beat {identitas!r} merujuk ID tokoh yang tidak terdaftar"
             )
@@ -63,6 +78,36 @@ def _rencana_cerita(naskah: Mapping[str, Any], shot: list[dict]) -> dict[str, An
         for kunci in ("peristiwa", "aksi", "sasaran", "tujuan", "perubahan_keadaan"):
             if kunci in adegan:
                 butir[kunci] = copy.deepcopy(adegan[kunci])
+
+        # Hubungkan nama aktor/sasaran dengan roster hanya jika cocokannya tunggal.
+        # Sasaran yang tidak cocok dengan tokoh bisa berupa benda/lingkungan.
+        peristiwa = butir.get("peristiwa")
+        if isinstance(peristiwa, list):
+            peristiwa_tertaut = []
+            for nomor_peristiwa, data_peristiwa in enumerate(peristiwa, start=1):
+                if not isinstance(data_peristiwa, Mapping):
+                    raise GalatPengarahan(
+                        f"Peristiwa ke-{nomor_peristiwa} pada beat {identitas!r} harus berupa objek"
+                    )
+                item_peristiwa = copy.deepcopy(dict(data_peristiwa))
+                aktor = item_peristiwa.get("aktor")
+                if isinstance(aktor, str):
+                    aktor_id = cari_id_tokoh(aktor)
+                    if aktor_id:
+                        item_peristiwa["aktor_id"] = aktor_id
+                    else:
+                        diagnostik.append({
+                            "kode": "aktor_belum_terpetakan",
+                            "beat_id": identitas,
+                            "peristiwa": item_peristiwa.get("id"),
+                            "nilai": aktor,
+                        })
+                sasaran = item_peristiwa.get("sasaran")
+                sasaran_id = cari_id_tokoh(sasaran)
+                if sasaran_id:
+                    item_peristiwa["sasaran_tokoh_id"] = sasaran_id
+                peristiwa_tertaut.append(item_peristiwa)
+            butir["peristiwa"] = peristiwa_tertaut
         daftar_adegan.append(butir)
 
     # Kaitkan shot ke ID beat stabil; indeks _adegan tetap dipakai untuk kompatibilitas lama.
@@ -79,6 +124,7 @@ def _rencana_cerita(naskah: Mapping[str, Any], shot: list[dict]) -> dict[str, An
     return {
         "tokoh": copy.deepcopy(tokoh),
         "adegan": daftar_adegan,
+        "diagnostik": diagnostik,
     }
 
 
