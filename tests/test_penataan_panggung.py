@@ -229,3 +229,71 @@ def test_papan_buat_mengintegrasikan_penataan_panggung_otomatis():
     sumber = (Path(__file__).parents[1] / "mesin-video" / "papan_buat.py").read_text(encoding="utf-8")
     assert "rencanakan_penataan_panggung(cerita)" in sumber
     assert 'if cerita.get("penataan_panggung_otomatis")' in sumber
+
+def test_rencana_blocking_mengaitkan_peristiwa_ke_shot_tanpa_mengarang_gerak():
+    from newmotion.penataan_panggung import susun_rencana_blocking
+
+    rencana = {
+        "adegan": [{
+            "id": "beat-001",
+            "peristiwa": [{
+                "id": "peristiwa-1",
+                "aktor_id": "tokoh-penolong",
+                "aksi": "menghampiri",
+                "sasaran": "Pengendara",
+                "sasaran_tokoh_id": "tokoh-pengendara",
+                "tujuan": "menolong",
+            }],
+        }]
+    }
+    cerita = {"shot": [
+        {"_beat_id": "beat-001", "boneka": [], "benda": []},
+        {"_beat_id": "beat-001", "boneka": [], "benda": []},
+    ]}
+
+    hasil = susun_rencana_blocking(rencana, cerita)
+
+    assert hasil["tahap"] == "kontrak_semantik"
+    assert hasil["peristiwa"][0]["aktor_id"] == "tokoh-penolong"
+    assert hasil["peristiwa"][0]["sasaran_tokoh_id"] == "tokoh-pengendara"
+    assert [s["peristiwa_ids"] for s in hasil["shot"]] == [
+        ["peristiwa-1"], ["peristiwa-1"]
+    ]
+    assert hasil["diagnostik"] == []
+    # Fungsi hanya membuat kontrak; spesifikasi geometri renderer tidak disentuh.
+    assert cerita["shot"][0]["boneka"] == []
+    assert "lintasan" not in hasil["peristiwa"][0]
+
+
+def test_rencana_blocking_tidak_mengarang_identitas_aktor_atau_aksi():
+    from newmotion.penataan_panggung import susun_rencana_blocking
+
+    hasil = susun_rencana_blocking(
+        {"adegan": [{
+            "id": "beat-002",
+            "peristiwa": [{"id": "peristiwa-2", "aktor": "Orang asing"}],
+        }]},
+        {"shot": [{"_beat_id": "beat-002"}]},
+    )
+
+    assert hasil["peristiwa"][0]["status"] == "perlu_pelengkapan_semantik"
+    assert hasil["peristiwa"][0]["aktor_id"] is None
+    assert hasil["diagnostik"][0]["kode"] == "peristiwa_belum_lengkap_untuk_blocking"
+
+
+def test_rencana_blocking_mencatat_peristiwa_tanpa_shot_tertaut():
+    from newmotion.penataan_panggung import susun_rencana_blocking
+
+    hasil = susun_rencana_blocking(
+        {"adegan": [{
+            "id": "beat-003",
+            "peristiwa": [{"id": "peristiwa-3", "aktor_id": "tokoh-a", "aksi": "berjalan"}],
+        }]},
+        {"shot": []},
+    )
+
+    assert any(
+        item["kode"] == "beat_peristiwa_tidak_memiliki_shot"
+        for item in hasil["diagnostik"]
+    )
+
