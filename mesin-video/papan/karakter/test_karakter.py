@@ -77,3 +77,15 @@ def test_gali_memiliki_pose_angkat_dan_bentur_dengan_dua_tangan():
     assert angkat["la_ka"] != bentur["la_ka"]
     assert angkat["la_ki"] != bentur["la_ki"]
     assert bentur["naik"] > angkat["naik"]
+
+def test_fase_gali_pekerja_berbeda_dan_offset_efek_tersimpan():
+    from karakter.integrasi import integrasikan_tokoh
+
+    karakter = {"gerak": "gali", "alat": "beliung"}
+    kiri = integrasikan_tokoh({"npc": 101}, karakter, 1.0)
+    kanan = integrasikan_tokoh({"npc": 102}, karakter, 1.0)
+
+    assert kiri["_gerak_offset"] == pytest.approx((101 * 0.381) % 1.15)
+    assert kanan["_gerak_offset"] == pytest.approx((102 * 0.381) % 1.15)
+    assert kiri["_gerak_offset"] != kanan["_gerak_offset"]
+    assert kiri["pose"][0][1]["ra"] != kanan["pose"][0][1]["ra"]
