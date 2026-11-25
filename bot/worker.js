@@ -42,8 +42,8 @@ export function catatanKeputusan(id, keputusan, alasan, catatan, waktu, lama = n
 }
 
 // ---------- antrean naskah (pekerjaan berat di workflow `naskah` -> newmotion/application/antrean_naskah.py) ----------
-export const TAHAP = [["diterima", "Naskah diterima"], ["dalil", "Dalil diverifikasi"], ["tinjau", "Disetujui pemilik"],
-  ["narasi", "Narasi"], ["sutradara", "Sutradara"], ["render", "Render"], ["periksa", "Pemeriksaan"], ["kirim", "Dikirim untuk persetujuan"]];
+export const TAHAP = [["diterima", "Naskah diterima"], ["dalil", "Dalil diverifikasi"], ["tinjau", "Naskah disetujui"],
+  ["sutradara", "Pratinjau visual"], ["tinjau_visual", "Visual disetujui"], ["narasi", "TTS/Narasi"], ["render", "Render final"], ["periksa", "Pemeriksaan"], ["kirim", "Dikirim untuk persetujuan"]];
 const IKON = { selesai: "✅", jalan: "⏳", gagal: "❌", tunggu: "⏸", belum: "▫️" };
 /** HARUS identik dengan newmotion/application/antrean_naskah.py kartu() (fixture tests/data/kartu_status.json). */
 export function kartuStatus(st) {
