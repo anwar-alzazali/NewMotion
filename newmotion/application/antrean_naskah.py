@@ -46,9 +46,21 @@ _ARAB = re.compile(r"[؀-ۿݐ-ݿࢠ-ࣿﭐ-﷿ﹰ-﻿]")
 
 
 # ---------------- status & kartu ----------------
-def status_baru(id_: str, judul: str, sumber: str) -> dict:
-    return {"id": id_, "judul": judul, "sumber": sumber, "tahap": {k: "belum" for k, _ in TAHAP}, "ket": {},
-            "dibuat": _sekarang(), "diperbarui": _sekarang()}
+def status_baru(
+    id_: str, judul: str, sumber: str, *,
+    genre: str = "kisah_islami", konteks_konten: str = "islami",
+) -> dict:
+    """Buat status antrean dengan metadata produksi eksplisit.
+
+    Nilai bawaan mempertahankan alur Telegram lama; genre lain tidak diaktifkan
+    sebelum paket pengarah, validator, dan kebijakan genre tersebut tersedia.
+    """
+    return {
+        "id": id_, "judul": judul, "sumber": sumber,
+        "genre": genre, "konteks_konten": konteks_konten,
+        "tahap": {k: "belum" for k, _ in TAHAP}, "ket": {},
+        "dibuat": _sekarang(), "diperbarui": _sekarang(),
+    }
 
 
 def kartu(st: dict) -> str:
