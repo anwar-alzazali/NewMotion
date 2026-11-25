@@ -5,7 +5,7 @@ from pathlib import Path
 import sys
 
 from newmotion import __version__
-from newmotion.infrastructure.render.papan_lama import AdapterPapanLama
+from newmotion.application.jalankan_job import LayananJalankanJob
 from newmotion.runtime.konfigurasi import Konfigurasi
 from newmotion.runtime.lingkungan import periksa_lingkungan
 from newmotion.runtime.lifecycle import Runtime
@@ -42,9 +42,9 @@ def main(argv=None):
                 keluaran = Path(args.keluaran)
                 if not keluaran.is_absolute():
                     keluaran = konfigurasi.direktori_hasil / keluaran
-                adapter = AdapterPapanLama(konfigurasi.akar_proyek,
-                                           konfigurasi.batas_waktu_subproses, runtime.log)
-                hasil = adapter.render(args.spesifikasi, keluaran, args.argumen_tambahan)
+                layanan = LayananJalankanJob(konfigurasi, runtime.log)
+                job, hasil = layanan.jalankan_render(args.spesifikasi, keluaran, args.argumen_tambahan)
+                print(f"Job {job.id}: {job.status.value}")
                 print(hasil.stdout, end="")
                 if hasil.stderr:
                     print(hasil.stderr, file=sys.stderr, end="")
