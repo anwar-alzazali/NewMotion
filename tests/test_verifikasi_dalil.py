@@ -118,3 +118,33 @@ def test_shim_papan_lama_meneruskan_implementasi_paket():
     from papan.penjaga_dalil import periksa_dalil as lama
     from newmotion.paket_genre.kisah_islami.penjaga_dalil import periksa_dalil as paket
     assert lama is paket
+
+
+def test_penjaga_mengeluarkan_periksa_untuk_perbedaan_derajat_dan_bukan_marfu():
+    from newmotion.paket_genre.kisah_islami.penjaga_dalil import periksa_dalil
+
+    class SumberHadis:
+        def detail_hadis(self, kitab, nomor):
+            assert (kitab, nomor) == ("abudawud", 10)
+            return {
+                "teks_arab": "إِنَّمَا الأَعْمَالُ بِالنِّيَّاتِ",
+                "penilaian_berbeda": ["Penilai lain"],
+                "bukan_marfu": True,
+            }
+
+        def teks_ayat(self, surah, ayat):
+            raise AssertionError("bukan sumber Quran")
+
+        def teks_hadis(self, kitab, nomor):
+            raise AssertionError("detail_hadis harus digunakan")
+
+    spek = {"isi": [{
+        "jenis": "kartu_dalil",
+        "kitab": "HR. Abu Dawud",
+        "no": "10",
+        "arab": "إِنَّمَا الأَعْمَالُ بِالنِّيَّاتِ",
+    }]}
+    hasil = periksa_dalil(spek, sumber=SumberHadis())
+    assert hasil[0].status == "lulus"
+    assert any("DERAJAT_DIPERSELISIHKAN" in x for x in hasil[0].peringatan)
+    assert any("BUKAN_MARFU" in x for x in hasil[0].peringatan)
