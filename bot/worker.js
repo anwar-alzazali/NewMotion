@@ -317,7 +317,7 @@ async function putuskanVisual(env, q, t) {
   await simpanStatus(env, st);
   await TG(env, "answerCallbackQuery", { callback_query_id: q.id, text: setuju ? "Visual disetujui" : "Visual ditolak; TTS tetap diblokir" });
   await kirimKartu(env, st);
-  if (!setuju) return kirim(env, `Visual ${t.id} perlu direvisi. TTS dan render final tidak dijalankan. Perbaiki naskah/arah adegan, lalu minta pratinjau baru.`);
+  if (!setuju) return kirim(env, `Visual ${t.id} ditolak. TTS dan render final diblokir. Perbaiki naskah atau adegan dalam antrean baru; regenerasi visual otomatis dari catatan penolakan belum tersedia.`);
   return kirim(env, `Visual ${t.id} disetujui. Tahap TTS dapat dimulai berikutnya; belum ada TTS atau render final yang dijalankan oleh persetujuan ini.`);
 }
 
