@@ -274,24 +274,22 @@ def jaga_spek(spec):
     if paket.penjaga_tokoh is not None:
         temuan_adab = paket.penjaga_tokoh(spec)
         if temuan_adab:
-            rincian = "\n".join(f"[{item.kode}] {item.pesan}" for item in temuan_adab)
-            pesan.append("Pelanggaran adab penggambaran tokoh:\n" + rincian)
+            rincian = "\\n".join(f"[{item.kode}] {item.pesan}" for item in temuan_adab)
+            pesan.append("Pelanggaran adab penggambaran tokoh:\\n" + rincian)
 
-    if paket.nama == "kisah_islami":
-        # Format papan lama tetap dijaga selama renderer bermigrasi ke kontrak visual baru.
-        sys.path.insert(0, HERE)
-        from papan.penjaga_tokoh_suci import periksa_tokoh_suci, TokohSuciDigambarError
-        from papan.penjaga_dalil import periksa_dalil, DalilTidakTerverifikasiError
-
-        suci = periksa_tokoh_suci(spec)
-        if suci:
-            pesan.append(str(TokohSuciDigambarError(suci)))
-        dalil = periksa_dalil(spec)
-        if any(h.memblokir for h in dalil):
-            pesan.append(str(DalilTidakTerverifikasiError(dalil)))
-        for h in dalil:
-            if not h.memblokir:
-                print(f"penjaga dalil: {h}" + "".join(f"\n    peringatan: {w}" for w in h.peringatan), file=sys.stderr)
+    if paket.penjaga_dalil is not None:
+        dalil = paket.penjaga_dalil(spec)
+        terblokir = [item for item in dalil if item.memblokir]
+        if terblokir:
+            rincian = "\\n".join(f"- {item}" for item in terblokir)
+            pesan.append("Pelanggaran verifikasi dalil:\\n" + rincian)
+        for item in dalil:
+            if not item.memblokir:
+                print(
+                    f"penjaga dalil: {item}"
+                    + "".join(f"\\n    peringatan: {w}" for w in item.peringatan),
+                    file=sys.stderr,
+                )
 
     if pesan:
         print("\n\n".join(pesan) + "\nRENDER DIBATALKAN. Perbaiki spek sumber, jangan melewati gerbang.", file=sys.stderr)
