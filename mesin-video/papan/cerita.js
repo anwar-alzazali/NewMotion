@@ -1433,7 +1433,10 @@
     // lengan
     const lengan = (sg, s) => {
       let a1 = s[0], a2 = s[1]; if (sg > 0 && J.lambai) a2 += Math.sin(t * 9) * 26 * J.lambai;
-      const sw = ayun * 0.6 * -sg; const S = [sg * (62 + 26 * GM), -360 + nafas], E = [S[0] + sg * Math.sin((a1 + sw) * R) * 85, S[1] + Math.cos((a1 + sw) * R) * 85], H = [E[0] + sg * Math.sin((a2 + sw) * R) * 80, E[1] + Math.cos((a2 + sw) * R) * 80];
+      const sw = ayun * 0.6 * -sg, S = [sg * (62 + 26 * GM), -360 + nafas];
+      // Dalam tampak samping, kedua tangan bertemu pada satu setang di depan badan.
+      const E = o.profilMotor ? [126 + sg * 12, -354 + nafas] : [S[0] + sg * Math.sin((a1 + sw) * R) * 85, S[1] + Math.cos((a1 + sw) * R) * 85];
+      const H = o.profilMotor ? [218, -330 + nafas] : [E[0] + sg * Math.sin((a2 + sw) * R) * 80, E[1] + Math.cos((a2 + sw) * R) * 80];
       return { ats: `<line x1="${S[0]}" y1="${S[1]}" x2="${E[0]}" y2="${E[1]}" stroke="${BD}" stroke-width="36" stroke-linecap="round"/>`,
                bwh: `<line x1="${E[0]}" y1="${E[1]}" x2="${H[0]}" y2="${H[1]}" stroke="${BD}" stroke-width="34" stroke-linecap="round"/><circle cx="${H[0]}" cy="${H[1]}" r="19" fill="${pakaiP ? KLB : BD}" stroke="${INK}" stroke-width="4"/>`, H };
     };
@@ -1571,7 +1574,7 @@
     const tangan = (x2, y2) => (P ? `<circle cx="${x2}" cy="${y2}" r="19" fill="${KLB}" stroke="${INK}" stroke-width="4"/>` : "");
     const lenganKiri = `<line x1="${-SH}" y1="${-360 + nafas}" x2="${-SH - 22 - ayun * 0.3}" y2="${-200 + nafas}" stroke="${BD}" stroke-width="36" stroke-linecap="round"/>` + tangan(-SH - 22 - ayun * 0.3, -192 + nafas);
     g += lenganKiri;
-    let RG = null; if (RIG) { RG = rangka(RIG, { P, BD, WC, KLB, nafas, ayun, bawahP, t: HD ? ta : t, gm: GM, aksi: b.aksi, id: b.npc != null ? b.npc : b.id, offset: b._gerak_offset }); g = RG.g; }
+    let RG = null; if (RIG) { RG = rangka(RIG, { P, BD, WC, KLB, nafas, ayun, bawahP, t: HD ? ta : t, gm: GM, aksi: b.aksi, id: b.npc != null ? b.npc : b.id, offset: b._gerak_offset, profilMotor: b.profil === "kanan" || b.profil === true }); g = RG.g; }
     let lenganKanan = RIG ? "" : `<line x1="${SH}" y1="${-360 + nafas}" x2="${SH + 22 + ayun * 0.3}" y2="${-200 + nafas}" stroke="${BD}" stroke-width="36" stroke-linecap="round"/>` + tangan(SH + 22 + ayun * 0.3, -192 + nafas);
     // kepala
     const hx = arah * 10, hy = -492 - (KB - 1) * 96 + nafas + tunduk * 14 + (H ? H.ky : 0), ex = arah * 24, ey = tunduk * 14 + (mata === "atas" ? -8 : mata === "bawah" ? 8 : 0);
@@ -1582,6 +1585,11 @@
       k += `<circle r="78" fill="${BAYANG}"/>`;
     } else if (belakang && b.rambut === "kerudung") { // perempuan dari belakang: kain kerudung menjuntai sampai bahu
       k += `<path d="M -92 20 C -100 -110, 100 -110, 92 20 C 104 90, 96 130, 70 150 L -70 150 C -96 130, -104 90, -92 20 Z" fill="${BAYANG}" stroke="${INK}" stroke-width="6"/><path d="M -60 -50 C -20 -80, 30 -78, 62 -44" stroke="#ffffff" stroke-width="5" fill="none" opacity=".18"/>`;
+    } else if (b.profil === "kanan" || b.profil === true) {
+      // Tampak samping: wajah mengarah ke depan perjalanan, bukan ke kamera.
+      k += `<path d="M -62 -54 Q -38 -94 8 -82 Q 48 -78 52 -40 L 54 -10 L 78 8 L 56 24 Q 60 58 34 76 Q 4 94 -34 70 Q -66 48 -62 -54 Z" fill="${b.kulit || KL}" stroke="${INK}" stroke-width="7"/>`;
+      k += `<path d="M -64 -44 Q -58 -108 8 -104 Q 62 -100 66 -48 Q 38 -68 10 -60 Q -24 -54 -64 -20 Z" fill="${b.warna_rambut || INK}" stroke="${INK}" stroke-width="6"/>`;
+      k += `<circle cx="30" cy="-18" r="8" fill="#fff" stroke="${INK}" stroke-width="3"/><circle cx="34" cy="-18" r="4.5" fill="${INK}"/><path d="M 50 42 Q 62 46 68 38" fill="none" stroke="${INK}" stroke-width="5" stroke-linecap="round"/>`;
     } else if (belakang) {
       k += `<circle cx="-76" cy="6" r="15" fill="${KL}" stroke="${INK}" stroke-width="6"/><circle cx="76" cy="6" r="15" fill="${KL}" stroke="${INK}" stroke-width="6"/><circle r="78" fill="${b.warna_rambut || INK}" stroke="${INK}" stroke-width="7"/><path d="M -60 50 Q 0 90 60 50 L 50 72 Q 0 96 -50 72 Z" fill="${KL}"/>`;
     } else if (gaya === "umum") {
@@ -1646,7 +1654,7 @@
         k += `<path d="M -68 -48 Q 0 -68 68 -48 L 62 -88 Q 0 -110 -62 -88 Z" fill="${WPK}" stroke="${INK}" stroke-width="6"/><path d="M -58 -58 Q 0 -76 58 -58" stroke="${warna(WPK, "#000000", 0.18)}" stroke-width="5" fill="none"/>`;
       }
     }
-    const muka = ANW && !belakang && gaya !== "dajjal";
+    const muka = ANW && !belakang && !b.profil && gaya !== "dajjal";
     if (muka && gaya !== "siluet") k += `<path d="M 18 -80 A 75 82 0 0 1 18 80 A 58 82 0 0 0 18 -80 Z" fill="#3a1f2a" opacity=".13"/>`; // bayangan separuh wajah
     if (muka && (wajah === "lelah" || wajah === "takut" || wajah === "marah" || wajah === "malu" || keringat > 0) && gaya !== "siluet") k += `<ellipse cx="${ex - 44}" cy="${30 + ey}" rx="16" ry="9" fill="#ff6b6b" opacity="${0.25 + 0.3 * PANAS}"/><ellipse cx="${ex + 44}" cy="${30 + ey}" rx="16" ry="9" fill="#ff6b6b" opacity="${0.25 + 0.3 * PANAS}"/>`; // pipi memerah
     if (muka) {
