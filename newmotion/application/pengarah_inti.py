@@ -202,6 +202,31 @@ def _rencana_cerita(naskah: Mapping[str, Any], shot: list[dict]) -> dict[str, An
                                 "sasaran_tokoh_id": sasaran_id,
                             })
 
+                perubahan = item_peristiwa.get("perubahan_keadaan")
+                if isinstance(perubahan, Mapping):
+                    perubahan = copy.deepcopy(dict(perubahan))
+                    entitas_nama = perubahan.pop("entitas", None)
+                    entitas_id = perubahan.get("entitas_id")
+                    if entitas_id is None and entitas_nama is not None:
+                        entitas_id = cari_id_tokoh(entitas_nama)
+                        if entitas_id is not None:
+                            perubahan["entitas_id"] = entitas_id
+                    if entitas_id is None:
+                        diagnostik.append({
+                            "kode": "entitas_perubahan_keadaan_belum_terpetakan",
+                            "beat_id": identitas,
+                            "peristiwa_id": id_peristiwa,
+                            "entitas": entitas_nama,
+                        })
+                    elif entitas_id not in (id_tokoh | id_benda):
+                        diagnostik.append({
+                            "kode": "entitas_perubahan_keadaan_tidak_terdaftar",
+                            "beat_id": identitas,
+                            "peristiwa_id": id_peristiwa,
+                            "entitas_id": entitas_id,
+                        })
+                    item_peristiwa["perubahan_keadaan"] = perubahan
+
                 bukti = item_peristiwa.get("bukti_teks")
                 if isinstance(bukti, str) and bukti.strip():
                     teks_sumber = " ".join(str(adegan["teks"]).split()).casefold()
