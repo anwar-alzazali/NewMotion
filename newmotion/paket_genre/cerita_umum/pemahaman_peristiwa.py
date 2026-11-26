@@ -96,7 +96,8 @@ def _posisi_benda(teks: str, benda: Sequence[Mapping]) -> list[tuple[int, int, s
 
 
 def _peristiwa_klausa(
-    klausa: str, peran: Sequence[str], nomor: int, aktor_default: str | None = None
+    klausa: str, peran: Sequence[str], nomor: int, aktor_default: str | None = None,
+    benda: Sequence[Mapping] = (),
 ) -> tuple[dict | None, str | None]:
     klausa = _normalisasi(klausa).strip(" ,;")
     if not klausa:
@@ -111,22 +112,29 @@ def _peristiwa_klausa(
     verba = aksi[0]
     subjek = _posisi_peran(klausa[:verba.start()], peran)
     objek = _posisi_peran(klausa[verba.end():], peran)
+    objek_benda = _posisi_benda(klausa[verba.end():], benda)
     bentuk = verba.group(1).casefold()
     pasif = bentuk.startswith("di")
     if pasif:
-        oleh = re.search(r"\boleh\b", klausa[verba.end():], re.I)
+        oleh = re.search(r"\\boleh\\b", klausa[verba.end():], re.I)
         if oleh:
             kandidat_aktor = _posisi_peran(klausa[verba.end() + oleh.end():], peran)
             kandidat_sasaran = subjek
+            kandidat_benda = []
         else:
             return None, "kalimat_pasif_tanpa_pelaku_eksplisit"
     else:
         kandidat_aktor = subjek
         kandidat_sasaran = objek
+        kandidat_benda = objek_benda
     if len(kandidat_aktor) > 1:
         return None, "aktor_tidak_tunggal_atau_tidak_ditemukan"
     if len(kandidat_sasaran) > 1:
         return None, "sasaran_tokoh_ambigu"
+    if len(kandidat_benda) > 1:
+        return None, "sasaran_benda_ambigu"
+    if kandidat_sasaran and kandidat_benda:
+        return None, "sasaran_tokoh_dan_benda_ambigu"
     if not kandidat_aktor and aktor_default and not pasif:
         aktor = aktor_default
     elif kandidat_aktor:
@@ -144,10 +152,13 @@ def _peristiwa_klausa(
     }
     if sasaran:
         hasil["sasaran"] = sasaran
+    if kandidat_benda:
+        hasil["sasaran_benda_id"] = kandidat_benda[0][2]
+        hasil["sasaran_benda"] = kandidat_benda[0][3]
     return hasil, None
 
 
-def uraikan_peristiwa(teks: str, peran: Sequence[str]) -> dict:
+def uraikan_peristiwa(\n    teks: str, peran: Sequence[str], benda: Sequence[Mapping] = ()\n) -> dict:
     """Urai pola narasi yang didukung; sisanya menjadi diagnostik, bukan tebakan."""
     if not isinstance(teks, str) or not teks.strip():
         raise ValueError("Teks narasi harus berupa string yang tidak kosong.")
