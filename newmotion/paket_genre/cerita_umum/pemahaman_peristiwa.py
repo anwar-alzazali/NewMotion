@@ -289,7 +289,7 @@ def uraikan_peristiwa(
                 aktor_sebelumnya = hasil_bagian[-1]["aktor"]
         return hasil_rangkaian
 
-    pemisah_sebab = re.compile(r"\\s+(karena|sehingga|akibatnya)\\s+", re.I)
+    pemisah_sebab = re.compile(r"\s+(karena|sehingga|akibatnya)\s+", re.I)
     for nomor_kalimat, kalimat_item in enumerate(kalimat, 1):
         pemisah = list(pemisah_sebab.finditer(kalimat_item))
         if len(pemisah) == 1:
