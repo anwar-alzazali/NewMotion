@@ -8,7 +8,7 @@ from __future__ import annotations
 
 import re
 import unicodedata
-from collections.abc import Sequence
+from collections.abc import Mapping, Sequence
 
 
 # Bentuk kata yang didukung dipetakan ke aksi semantik kanonis.
