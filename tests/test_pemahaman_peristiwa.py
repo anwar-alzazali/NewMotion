@@ -505,3 +505,85 @@ def test_tujuan_aksi_dapat_menautkan_benda_roster_tanpa_menganggapnya_terjadi():
         "sasaran_benda_id": "motor-01",
         "sasaran_benda": "motor",
     }
+
+
+
+def test_sebab_berupa_peristiwa_ditautkan_ke_id_penyebab():
+    hasil = uraikan_peristiwa(
+        "Penolong berjalan karena Tokoh jatuh.",
+        ["Penolong", "Tokoh"],
+    )
+
+    assert hasil["status"] == "siap"
+    akibat, sebab = hasil["peristiwa"]
+    assert akibat["aksi"] == "berjalan"
+    assert sebab["aksi"] == "jatuh"
+    assert akibat["hubungan_sebab_akibat"] == {
+        "jenis": "disebabkan_oleh",
+        "peristiwa_id": sebab["id"],
+    }
+
+
+def test_sehingga_menghubungkan_peristiwa_penyebab_ke_akibat():
+    hasil = uraikan_peristiwa(
+        "Tokoh jatuh sehingga Penolong menolong Tokoh.",
+        ["Tokoh", "Penolong"],
+    )
+
+    assert hasil["status"] == "siap"
+    sebab, akibat = hasil["peristiwa"]
+    assert sebab["aksi"] == "jatuh"
+    assert akibat["aksi"] == "menolong"
+    assert akibat["hubungan_sebab_akibat"] == {
+        "jenis": "disebabkan_oleh",
+        "peristiwa_id": sebab["id"],
+    }
+
+
+def test_sebab_keadaan_eksplisit_disimpan_sebagai_teks():
+    hasil = uraikan_peristiwa(
+        "Tokoh jatuh karena jalan licin.",
+        ["Tokoh"],
+    )
+
+    event = hasil["peristiwa"][0]
+    assert event["aksi"] == "jatuh"
+    assert event["sebab_teks"] == "jalan licin."
+    assert "hubungan_sebab_akibat" not in event
+    assert hasil["diagnostik"][0]["kode"] == "sebab_teks_tidak_dipetakan_ke_peristiwa"
+
+
+def test_klausa_akibat_yang_tidak_dikenali_tidak_dibuat_menjadi_event():
+    hasil = uraikan_peristiwa(
+        "Tokoh jatuh sehingga Penolong tertawa.",
+        ["Tokoh", "Penolong"],
+    )
+
+    assert len(hasil["peristiwa"]) == 1
+    assert hasil["peristiwa"][0]["aksi"] == "jatuh"
+    assert "hubungan_sebab_akibat" not in hasil["peristiwa"][0]
+    assert any(
+        item["kode"] == "hubungan_sebab_akibat_tidak_dapat_dipetakan"
+        for item in hasil["diagnostik"]
+    )
+
+
+def test_penghubung_sebab_akibat_ambigu_ditolak():
+    hasil = uraikan_peristiwa(
+        "Tokoh jatuh karena jalan licin sehingga Penolong datang.",
+        ["Tokoh", "Penolong"],
+    )
+
+    assert hasil["peristiwa"] == []
+    assert hasil["diagnostik"][0]["kode"] == "hubungan_sebab_akibat_ambigu"
+
+
+def test_sebab_akibat_tidak_disamakan_dengan_tujuan():
+    hasil = uraikan_peristiwa(
+        "Ibu berjalan untuk menolong Anak.",
+        ["Ibu", "Anak"],
+    )
+
+    assert len(hasil["peristiwa"]) == 1
+    assert "hubungan_sebab_akibat" not in hasil["peristiwa"][0]
+    assert hasil["peristiwa"][0]["tujuan"]["aksi"] == "menolong"
