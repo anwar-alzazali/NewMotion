@@ -237,7 +237,10 @@ def ukur(spek: Mapping, folder: Path | None = None) -> dict[str, Any]:
     semua_benda = [b for s in shot for b in (s.get("benda") or []) if isinstance(b, Mapping)]
     jenis_benda = {b.get("jenis") for b in semua_benda if b.get("jenis")}
     benda_animasi = sum(1 for b in semua_benda if _hitung_animasi(b))
-    benda_lapis = sum(1 for b in semua_benda if any(b.get(k) for k in KUNCI_LAPIS))
+    # Hiasan latar umum di lapis depan (batu kabur di sudut) tidak dihitung: kedalaman harus
+    # datang dari benda cerita, bukan resep yang ditempel di setiap shot.
+    benda_lapis = sum(1 for b in semua_benda if any(b.get(k) for k in KUNCI_LAPIS)
+                      and not (b.get("jenis") in LATAR_UMUM and b.get("depan")))
 
     semua_boneka = [b for s in shot for b in (s.get("boneka") or []) if isinstance(b, Mapping)]
     boneka_ekspresif = sum(1 for b in semua_boneka if any(k in b for k in KUNCI_EKSPRESI_TOKOH))

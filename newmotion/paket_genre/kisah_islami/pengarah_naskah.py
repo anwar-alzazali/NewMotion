@@ -276,14 +276,12 @@ def _lapisan_dasar(tema: str, palet: str | None, komposisi: list[dict], idx: int
     if tema in AV.TEMA_LANGIT_BINTANG and palet in (None, "malam", "gelap_malam", "subuh", "senja"):
         benda.append({"jenis": "bintang", "x": 540, "y": -1250, "s": 1, "seed": seed0 % 20, "tinggi": 1500, "n": 80})
     benda += [dict(b) for b in komposisi]
-    if tema not in ("gua", "kota", "kampung", "surga"):
-        benda.append(dict(BATU_KIRI if idx % 2 == 0 else BATU_KANAN))
+    # Tidak ada lagi batu kabur otomatis di sudut depan (27 Nov): resep dari satu video lama
+    # yang tidak bermakna di kebanyakan kisah. Lapis depan datang dari benda cerita
+    # (tempat depan_kiri/depan_kanan di rencana sutradara).
     return benda
 
 
-# Batu latar depan (kedalaman/parallax) -- diselang-seling kiri/kanan, sesuai dabbah2.json.
-BATU_KIRI = {"jenis": "batu", "x": 40, "y": 1990, "s": 1.35, "kabur": True, "depan": True}
-BATU_KANAN = {"jenis": "batu", "x": 1020, "y": 1990, "s": 1.2, "kabur": True, "depan": True}
 INDEKS_POSISI = {"hook": 0, "isi": 1, "klimaks": 2, "penutup": 3}
 DEBU_TEMA = {"kota": 0, "kampung": 0, "surga": 0, "laut": 10, "ibadah": 12, "gua": 20}
 
@@ -461,9 +459,6 @@ def _susun_ulang_untuk_subjek(benda: list[dict], subjek: list[dict], b: dict, ka
     # Kaki sedikit di bawah bingkai: "kamu" menjadi siluet saksi di latar paling depan,
     # di bawah garis kaki pelaku sehingga tidak menumpuk dengan mereka.
     letak = {"x": x_saksi, "y": 1980, "s": 0.55, "belakang": True}
-    # Batu kabur di sudut depan pindah ke sisi seberang agar tidak menutupi "kamu".
-    batu_seberang = BATU_KANAN if x_saksi < 540 else BATU_KIRI
-    benda = [dict(batu_seberang) if o.get("jenis") == "batu" and o.get("depan") else o for o in benda]
     b_baru, _ = _boneka_kamu(look, letak, wajah, pose, ds, tx, posisi, R, -1 if x_saksi > 540 else 1)
     for kunci in ("keringat", "genangan"):
         if kunci in b:
