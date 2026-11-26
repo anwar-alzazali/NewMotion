@@ -1,6 +1,7 @@
 """Lembar frame untuk diperiksa mata (manusia atau model vision), tanpa membuat MP4.
 
-Satu frame per shot, diambil pada 70% durasi shot (animasi awal->akhir sudah terlihat),
+Satu frame per shot, diambil pada 90% durasi shot (keadaan akhir rencana [awal, akhir] sudah
+tercapai di 85%, jadi yang diperiksa adalah keadaan yang dijanjikan narasi),
 diberi label nomor beat. Frame disusun menjadi beberapa lembar 4x2 agar tetap terbaca
 setelah diperkecil oleh API vision.
 """
@@ -24,7 +25,7 @@ def waktu_frame(spek: Mapping) -> list[tuple[int, float]]:
     keluar = []
     for i, (s, b) in enumerate(zip(shots, akhir)):
         a = float(s["at"])
-        t = min(a + 0.7 * (b - a), b - 0.25)
+        t = min(a + 0.9 * (b - a), b - 0.2)
         keluar.append((int(s.get("_adegan", i)) + 1, round(max(a, t), 2)))
     return keluar
 
