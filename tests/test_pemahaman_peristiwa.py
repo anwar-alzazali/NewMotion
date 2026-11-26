@@ -433,9 +433,11 @@ def test_tujuan_aksi_belum_dikenali_tidak_dianggap_sasaran_benda():
         benda,
     )
     # "menjaga" belum termasuk kamus aksi; frasa ini tidak boleh ditebak sebagai tujuan.
+    assert hasil["status"] == "sebagian"
     assert hasil["peristiwa"][0]["aksi"] == "berjalan"
     assert "tujuan" not in hasil["peristiwa"][0]
     assert "sasaran_benda_id" not in hasil["peristiwa"][0]
+    assert hasil["diagnostik"][0]["kode"] == "frasa_untuk_belum_diklasifikasikan"
 
 
 def test_tujuan_aksi_diteruskan_ke_rencana_semantik_dan_blocking():
