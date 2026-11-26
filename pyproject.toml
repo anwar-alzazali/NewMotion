@@ -25,7 +25,7 @@ newmotion = "newmotion.cli:main"
 include = ["newmotion*"]
 
 [tool.setuptools.package-data]
-newmotion = ["paket_genre/*/skill/*.md"]
+newmotion = ["paket_genre/*/skill/*.md", "application/data/*.json"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
