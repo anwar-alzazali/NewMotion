@@ -435,6 +435,7 @@ def test_tujuan_aksi_belum_dikenali_tidak_dianggap_sasaran_benda():
     # "menjaga" belum termasuk kamus aksi; frasa ini tidak boleh ditebak sebagai tujuan.
     assert hasil["peristiwa"][0]["aksi"] == "berjalan"
     assert "tujuan" not in hasil["peristiwa"][0]
+    assert "sasaran_benda_id" not in hasil["peristiwa"][0]
 
 
 def test_tujuan_aksi_diteruskan_ke_rencana_semantik_dan_blocking():
@@ -462,3 +463,19 @@ def test_tujuan_aksi_diteruskan_ke_rencana_semantik_dan_blocking():
         "sasaran": "Pengendara",
     }
     assert peristiwa_blocking["tujuan"] == peristiwa["tujuan"]
+
+
+
+def test_tujuan_aksi_pada_kalimat_pasif_tetap_mempertahankan_pelaku():
+    hasil = uraikan_peristiwa(
+        "Pengendara ditolong oleh Penolong untuk berdiri.",
+        ["Pengendara", "Penolong"],
+    )
+
+    assert hasil["status"] == "siap"
+    assert len(hasil["peristiwa"]) == 1
+    peristiwa = hasil["peristiwa"][0]
+    assert peristiwa["aktor"] == "Penolong"
+    assert peristiwa["sasaran"] == "Pengendara"
+    assert peristiwa["aksi"] == "menolong"
+    assert peristiwa["tujuan"] == {"aksi": "berdiri"}
