@@ -184,3 +184,10 @@ contoh kendaraan bukan acuan utama. Tidak ada render video pada tahap ini.
 - Dukungan ini terbatas pada rantai klausa eksplisit dalam satu kalimat.
   Sebab lintas kalimat, sebab implisit, sebab jamak, dan inferensi pengetahuan
   dunia tetap tidak dilakukan.
+
+
+## Integritas tautan kausal pada integrasi pratinjau (Tahap 21)
+
+Parser membuat ID peristiwa lokal, sedangkan integrasi pratinjau memberi prefiks ID beat agar ID unik di seluruh naskah. Referensi peristiwa_id pada hubungan_sebab_akibat harus ikut dipetakan dengan tabel ID lokal ke ID final. Jika target referensi tidak ada dalam kumpulan peristiwa beat, relasi dibuang dan diagnostik referensi_sebab_akibat_tidak_ditemukan dicatat. Ini mencegah JSON membawa referensi kausal yang menggantung setelah normalisasi ID.
+
+Tes integrasi memeriksa rantai tiga peristiwa dari narasi sampai keluaran naskah_untuk_pengarah; tidak ada render video.
