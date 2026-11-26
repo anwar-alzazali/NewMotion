@@ -16,16 +16,16 @@ def test_kapal_yang_berlayar_harus_tampak_dan_bergerak():
 
 
 def test_dinding_berkembang_dari_retak_ke_lubang_hingga_jebol():
-    retak = arahkan_subjek("Dinding mulai retak.", 4.0)["benda"][0]
-    lubang = arahkan_subjek("Lubang pada dinding semakin membesar.", 4.0)["benda"][0]
-    jebol = arahkan_subjek("Dinding itu akhirnya jebol.", 4.0)["benda"][0]
+    retak = arahkan_subjek("Dinding besi di celah dua gunung mulai retak.", 4.0)["benda"][0]
+    lubang = arahkan_subjek("Lubang pada dinding besi di celah dua gunung semakin membesar.", 4.0)["benda"][0]
+    jebol = arahkan_subjek("Dinding besi di celah dua gunung itu akhirnya jebol.", 4.0)["benda"][0]
     assert retak["jenis"] == lubang["jenis"] == jebol["jenis"] == "ngarai"
     assert retak["lubang"] < lubang["lubang"] < jebol["lubang"]
     assert jebol["jebol"] == 1
 
 
 def test_penggali_dan_pemimpin_ditampilkan_sebagai_subjek_terpisah():
-    jenis = _jenis("Para penggali bekerja, sementara pemimpin mereka mengangkat tangan.")
+    jenis = _jenis("Para penggali mengikis dinding besi di celah dua gunung. Pemimpin mereka mengangkat tangan.")
     assert {"penggali", "pemimpin"} <= jenis
 
 
@@ -58,7 +58,7 @@ def test_hasil_deterministik_tanpa_judul_cerita():
 
 
 def test_kata_kerja_menggali_memunculkan_penggali():
-    assert "penggali" in _jenis("Mereka menggali dinding setiap hari.")
+    assert "penggali" in _jenis("Mereka menggali dinding besi di celah dua gunung setiap hari.")
 
 
 def test_efek_keringat_resapan_dan_naungan_masuk_ke_shot():
@@ -85,5 +85,45 @@ def test_kata_angka_dalam_narasi_muncul_sebagai_teks_layar():
 
 
 def test_dinding_yang_digali_dan_kaum_dikenali_tanpa_judul_khusus():
-    jenis = _jenis("Dinding yang digali setiap hari dijaga oleh kaum itu.")
+    jenis = _jenis("Dinding besi di celah dua gunung digali setiap hari dan dijaga oleh kaum itu.")
     assert {"ngarai", "penggali", "kerumunan"} <= jenis
+
+
+def test_air_tidak_pernah_dipetakan_ke_kerumunan_berlari():
+    assert "arus" not in _jenis("Mereka meminum habis air.")
+    assert "arus" not in _jenis("Air mata mengalir di pipinya.")
+    assert "arus" not in _jenis("Mata air memancar dari bumi.")
+
+
+def test_mata_air_memakai_renderer_pancar_bukan_kerumunan():
+    jenis = _jenis("Mata air memancar dari bumi.")
+    assert "pancar" in jenis
+    assert "arus" not in jenis
+    assert "kerumunan" not in jenis
+
+
+def test_lubang_dan_dinding_kubur_tidak_memakai_dinding_zulkarnain():
+    assert "ngarai" not in _jenis("Lubang kubur itu sempit.")
+    assert "ngarai" not in _jenis("Dinding kubur menghimpitnya.")
+    assert "penggali" not in _jenis("Mereka menggali kubur.")
+
+
+def test_kabah_tidak_digambar_sebagai_rumah_biasa():
+    assert "rumah" not in _jenis("Rumah Allah, Ka'bah, menjadi arah kiblat.")
+
+
+def test_pemimpin_yang_merujuk_rasulullah_tidak_menjadi_sosok_manusia():
+    jenis = _jenis("Rasulullah, pemimpin umat ini, berdiri di depan para sahabat.")
+    assert "pemimpin" not in jenis
+    assert "kerumunan" not in jenis
+    assert "arus" not in jenis
+
+
+def test_sosok_pemuka_kaum_di_kalimat_terpisah_tetap_dapat_diarahkan():
+    jenis = _jenis("Nabi Nuh membuat kapal. Pemuka kaumnya lewat dan mengejek.")
+    assert "pemimpin" in jenis
+
+
+def test_dinding_generik_tanpa_konteks_besi_dua_gunung_tidak_ditebak():
+    assert "ngarai" not in _jenis("Dinding rumah itu mulai retak.")
+    assert "ngarai" not in _jenis("Lubang pada tembok itu membesar.")
