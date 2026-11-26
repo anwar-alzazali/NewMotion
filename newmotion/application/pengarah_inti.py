@@ -442,25 +442,44 @@ def arahkan_naskah(
                     "Rencana visual benda harus memiliki daftar shot dan diagnostik"
                 )
             spesifikasi["rencana_visual_benda"] = copy.deepcopy(dict(hasil_visual_benda))
-            visual_by_index = {
-                item.get("indeks"): item
-                for item in shot_visual
-                if isinstance(item, dict) and type(item.get("indeks")) is int
-            }
             for item_benda in daftar_shot_benda:
                 if not isinstance(item_benda, Mapping):
                     raise GalatPengarahan("Entri shot pada rencana visual benda harus berupa objek")
                 indeks_benda = item_benda.get("indeks")
                 if type(indeks_benda) is not int or not 0 <= indeks_benda < len(shot):
                     raise GalatPengarahan("Indeks shot pada rencana visual benda tidak valid")
-                target_visual = visual_by_index.get(indeks_benda)
-                if target_visual is None:
-                    target_visual = {"indeks": indeks_benda, "tokoh": [], "benda": []}
+                kandidat = [
+                    item for item in shot_visual
+                    if isinstance(item, dict) and item.get("indeks") == indeks_benda
+                ]
+                tahap_id_benda = item_benda.get("tahap_id")
+                if tahap_id_benda is not None:
+                    kandidat = [
+                        item for item in kandidat
+                        if item.get("tahap_id") == tahap_id_benda
+                    ]
+                elif item_benda.get("peristiwa_ids"):
+                    ids_benda = set(item_benda.get("peristiwa_ids", []))
+                    kandidat = [
+                        item for item in kandidat
+                        if ids_benda.intersection(item.get("peristiwa_ids", []))
+                    ]
+                if not kandidat:
+                    target_visual = {
+                        "indeks": indeks_benda,
+                        "tokoh": [],
+                        "benda": [],
+                    }
+                    if tahap_id_benda is not None:
+                        target_visual["tahap_id"] = tahap_id_benda
+                    if item_benda.get("peristiwa_ids"):
+                        target_visual["peristiwa_ids"] = list(item_benda["peristiwa_ids"])
                     shot_visual.append(target_visual)
-                    visual_by_index[indeks_benda] = target_visual
-                target_visual.setdefault("benda", []).extend(
-                    copy.deepcopy(item_benda.get("benda", []))
-                )
+                    kandidat = [target_visual]
+                for target_visual in kandidat:
+                    target_visual.setdefault("benda", []).extend(
+                        copy.deepcopy(item_benda.get("benda", []))
+                    )
             # Sinkronkan hasil gabungan; sebelumnya spesifikasi sudah menyalin rencana
             # tokoh sehingga perubahan pada daftar lokal tidak ikut terbawa.
             spesifikasi["rencana_visual_tokoh"]["shot"] = copy.deepcopy(shot_visual)
