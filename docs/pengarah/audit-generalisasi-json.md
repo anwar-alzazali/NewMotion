@@ -104,3 +104,17 @@ Status kamera berubah dari statis penuh menjadi **parsial**. Kamera belum melaca
 lintasan aktor secara otomatis dan belum memilih shot/reverse-shot berdasarkan geometri
 blocking. Lingkungan masih bergantung pada metadata eksplisit; inferensi konteks dari
 narasi bebas dan katalog objek/lingkungan umum tetap menjadi kesenjangan.
+
+
+## Pembaruan setelah Tahap 11 — kamera mengikuti panggung
+
+Paket cerita umum kini memiliki kait kamera opsional yang dijalankan setelah adapter
+visual. Pengarah mengambil keyframe posisi tokoh fokus dan membuat keyframe kamera
+x/y dari pusat bounding-box kelompok. Sumbu x/y yang dikunci naskah dipertahankan;
+sumbu lain boleh mengikuti panggung. Jika tidak ada lintasan dinamis, profil dasar
+tetap digunakan.
+
+Ini menutup kesenjangan kamera yang sebelumnya belum mengikuti lintasan aktor pada
+level dasar. Kamera masih belum mempertimbangkan kedalaman, occlusion, ruang kosong,
+lensa, atau shot/reverse-shot. Rincian integrasi dan batasnya dicatat pada
+`docs/pengarah/audit-kamera-mengikuti-panggung.md`.
