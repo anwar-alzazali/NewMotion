@@ -487,6 +487,11 @@ def arahkan_naskah(
             # Sinkronkan hasil gabungan; sebelumnya spesifikasi sudah menyalin rencana
             # tokoh sehingga perubahan pada daftar lokal tidak ikut terbawa.
             spesifikasi["rencana_visual_tokoh"]["shot"] = copy.deepcopy(shot_visual)
+            # Benda dapat tetap divisualkan meski aksi tokohnya belum didukung.
+            # Adapter yang sama menerapkan daftar benda; status siap hanya berarti
+            # kontrak visual memiliki sesuatu yang sah untuk diterjemahkan.
+            if daftar_shot_benda:
+                spesifikasi["rencana_visual_tokoh"]["status"] = "siap_diterjemahkan"
 
         # JSON keluaran sutradara sudah memuat instruksi renderer, bukan hanya rencana terpisah.
         try:
