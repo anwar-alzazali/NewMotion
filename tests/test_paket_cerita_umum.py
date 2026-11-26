@@ -58,3 +58,24 @@ def test_adapter_meneruskan_motor_jadwal_tergelincir_dan_aksi_menolong():
     assert motor["x"][0][1] == pengendara["x"][0][1]
     assert pengendara["lepas_kendaraan_at"] == 0.9
     assert pengendara["karakter"]["gerak"] == [[0, "mengendarai_motor"], [0.65, "tergelincir"]]
+
+
+def test_paket_cerita_umum_lolos_integrasi_html_tanpa_render():
+    import sys
+    from pathlib import Path
+
+    akar = Path(__file__).parents[1]
+    jalur_mesin = str(akar / "mesin-video")
+    if jalur_mesin not in sys.path:
+        sys.path.insert(0, jalur_mesin)
+    import papan_buat
+
+    spek, _, _ = arahkan_naskah(_naskah())
+    papan_buat.jaga_spek(spek)
+    html = papan_buat.buat_html(spek, dasar=str(akar), sudah_dijaga=True)
+
+    assert 'motor-beat-001' in html
+    assert 'mengendarai_motor' in html
+    assert 'tergelincir' in html
+    assert 'menolong' in html
+    assert '"sasaran_id": 1' in html
