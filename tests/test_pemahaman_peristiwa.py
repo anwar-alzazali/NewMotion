@@ -169,3 +169,70 @@ def test_aksi_simultan_dapat_mewarisi_subjek_yang_dihilangkan():
     assert [item["aktor"] for item in hasil["peristiwa"]] == ["Penolong", "Penolong"]
     assert all(item["hubungan_temporal"] == "simultan" for item in hasil["peristiwa"])
     assert hasil["status"] == "siap"
+
+
+def test_sasaran_benda_dipetakan_hanya_dari_roster_eksplisit():
+    benda = [{
+        "id": "motor-01",
+        "nama": "motor",
+        "jenis_renderer": "motor",
+        "posisi": {"x": 520, "y": 1500, "s": 0.8},
+    }]
+    hasil = uraikan_peristiwa("Pengendara menaiki motor.", ["Pengendara"], benda)
+
+    assert hasil["status"] == "siap"
+    assert hasil["peristiwa"][0]["aktor"] == "Pengendara"
+    assert hasil["peristiwa"][0]["aksi"] == "menaiki"
+    assert hasil["peristiwa"][0]["sasaran_benda_id"] == "motor-01"
+
+
+def test_benda_yang_tidak_terdaftar_tidak_ditebak_dari_kata_narasi():
+    hasil = uraikan_peristiwa("Pengendara menaiki motor.", ["Pengendara"])
+
+    assert hasil["status"] == "siap"
+    assert "sasaran_benda_id" not in hasil["peristiwa"][0]
+
+
+def test_sasaran_benda_ambigu_ditandai_tanpa_memilih_salah_satu():
+    benda = [
+        {"id": "motor-01", "nama": "motor"},
+        {"id": "motor-02", "nama": "motor"},
+    ]
+    hasil = uraikan_peristiwa("Pengendara menaiki motor.", ["Pengendara"], benda)
+
+    assert hasil["peristiwa"] == []
+    assert hasil["diagnostik"][0]["kode"] == "sasaran_benda_ambigu"
+
+
+def test_narasi_biasa_menghasilkan_tautan_benda_dan_objek_renderer():
+    from newmotion.application.pengarah_inti import arahkan_naskah
+
+    naskah = {
+        "judul": "Pengendara menaiki motor",
+        "genre": "cerita_umum",
+        "konteks_konten": "umum",
+        "dalil": [],
+        "benda": [{
+            "id": "motor-01",
+            "nama": "motor",
+            "jenis_renderer": "motor",
+            "posisi": {"x": 520, "y": 1500, "s": 0.8},
+        }],
+        "beat": [{
+            "id": "beat-motor",
+            "narasi": "Pengendara menaiki motor.",
+            "peran": ["Pengendara"],
+        }],
+    }
+    sumber = naskah_untuk_pengarah(naskah)
+    spek, genre, _ = arahkan_naskah(sumber, genre_pilihan="cerita_umum")
+    event = spek["rencana_cerita"]["adegan"][0]["peristiwa"][0]
+    motor = next(
+        item for item in spek["cerita"]["shot"][0]["benda"]
+        if item["id"] == "motor-01"
+    )
+
+    assert genre == "cerita_umum"
+    assert event["sasaran_benda_id"] == "motor-01"
+    assert motor["jenis"] == "motor"
+    assert motor["x"] == 520
