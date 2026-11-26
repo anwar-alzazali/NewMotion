@@ -115,3 +115,14 @@ CI kontrak pada head implementasi awal Tahap 12 lulus dengan 70 tes. Setelah
 penyelarasan katalog dan penambahan tes motor, hasil CI revisi terbaru masih harus
 menjadi gerbang penerimaan; keberhasilan run sebelumnya tidak otomatis membuktikan
 revisi baru lulus.
+
+
+## Koreksi audit: relasi benda harus melewati blocking
+
+Tes integrasi motor menemukan bahwa `sasaran_benda_id` sudah ada pada peristiwa
+semantik tetapi sebelumnya hilang saat `susun_rencana_blocking()` membentuk kontrak
+peristiwa blocking. Akibatnya pengarah tokoh menganggap motor belum dideklarasikan dan
+membuat fallback sintetis, sementara pengarah benda juga menambahkan entitas motor
+asli. Perbaikannya meneruskan `sasaran_benda_id` ke setiap entri peristiwa blocking.
+Pengujian kini memeriksa sekaligus bahwa pengendara memakai ID motor deklaratif dan
+hanya ada satu motor pada shot.
