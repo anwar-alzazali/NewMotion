@@ -43,6 +43,7 @@ ROOT = Path(__file__).resolve().parents[3]
 
 from .dalil import ambil_ayat
 from . import arah_visual as AV
+from .pengarah_subjek import PengarahSubjek
 
 # ---------------------------------------------------------------------------
 # Pagar keselamatan: deteksi frasa, bukan keputusan AI. (Lihat catatan sakral di atas --
@@ -365,6 +366,7 @@ def arahkan(naskah: dict, waktu_adegan: list[float] | None = None,
     sisi = R_vid.choice((-1, 1))
     varian0 = R_vid.randrange(12)
     shots = []
+    pengarah_subjek = PengarahSubjek()
     for idx, (a, (t0, dur)) in enumerate(zip(adegan, _waktu_adegan(adegan, waktu_adegan))):
         teks, nama = a.get("teks", ""), a.get("nama", f"s{idx}")
         posisi = _posisi(idx, total)
@@ -479,7 +481,19 @@ def arahkan(naskah: dict, waktu_adegan: list[float] | None = None,
                 benda += [x for x in aksen if x["jenis"] not in ada]
                 if pose == "doa":  # sajadah di kaki saat berdoa (bukan di ruang dalam yang berlantai)
                     benda.append({"jenis": "sajadah", "x": letak["x"], "y": letak["y"] + 14, "s": round(letak["s"] * 0.9, 2)})
+            hasil_subjek = pengarah_subjek.arahkan(
+                tx, indeks=idx * 10 + j, durasi=ds,
+                klimaks=(posisi == "klimaks" and wajah in ("kaget", "takut")),
+            )
+            jenis_subjek = {x["jenis"] for x in hasil_subjek["benda"]}
+            if jenis_subjek:
+                benda = [x for x in benda if x.get("jenis") not in jenis_subjek]
+                benda.extend(hasil_subjek["benda"])
             s["benda"] = benda
+            if hasil_subjek["klimaks"]:
+                kamera["hentak"] = [[tk, 0.12]]
+                kamera["guncang"] = [[tk, 24]]
+                kamera["z"] = [1.08, 1.32]
             s["boneka"] = [b]
             # Kerumunan latar hanya di tema "padang terbuka" (di kota/kampung/ruang dalam
             # kerumunan siluet di cakrawala terlihat janggal).
@@ -495,6 +509,15 @@ def arahkan(naskah: dict, waktu_adegan: list[float] | None = None,
                 baris_teks = a["kunci"][:2]
                 s["teks"] = [{"at": 0.1 if j == 0 else 0, "teks": "\n".join(baris_teks), "y": 320,
                               "ukuran": _ukuran_teks_aman(baris_teks)}]
+            teks_kunci = hasil_subjek["teks"]
+            if teks_kunci:
+                daftar_teks = s.setdefault("teks", [])
+                if not any(item.get("teks", "").casefold() == teks_kunci.casefold()
+                           for item in daftar_teks):
+                    daftar_teks.append({
+                        "at": 0.12, "teks": teks_kunci, "y": 350,
+                        "ukuran": _ukuran_teks_aman([teks_kunci], maksimum=104, minimum=68),
+                    })
             shots.append(s)
             framing_seb = framing
 
