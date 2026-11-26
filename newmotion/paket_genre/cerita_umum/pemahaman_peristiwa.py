@@ -144,7 +144,7 @@ def _peristiwa_klausa(
     bentuk = verba.group(1).casefold()
     pasif = bentuk.startswith("di")
     if pasif:
-        oleh = re.search(r"\boleh\b", klausa[verba.end():], re.I)
+        oleh = re.search(r"\boleh\b", klausa_utama[verba.end():], re.I)
         if oleh:
             kandidat_aktor = _posisi_peran(klausa_utama[verba.end() + oleh.end():], peran)
             kandidat_sasaran = subjek
