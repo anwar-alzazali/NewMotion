@@ -32,6 +32,84 @@ def _daftar(nilai: Any) -> list:
     return nilai if isinstance(nilai, list) else []
 
 
+def _periksa_tokoh_semantik(rencana: dict) -> list[TemuanAdab]:
+    """Periksa roster rencana_cerita dan larang tokoh sakral masuk boneka renderer.
+
+    Rencana semantik adalah metadata, bukan izin otomatis untuk menggambar tokoh.
+    Sampai adapter visual khusus tersedia, tokoh sakral tidak boleh dipetakan ke
+    cerita.shot[].boneka[]. Konvensi tampil tetap divalidasi agar metadata yang
+    diteruskan ke tahap berikutnya tidak kehilangan aturan paket.
+    """
+    rencana_cerita = rencana.get("rencana_cerita")
+    if not isinstance(rencana_cerita, dict):
+        return []
+
+    temuan: list[TemuanAdab] = []
+    roster = _daftar(rencana_cerita.get("tokoh"))
+    berdasarkan_id = {}
+    for nomor, item in enumerate(roster, start=1):
+        if not isinstance(item, dict):
+            continue
+        identitas = item.get("id")
+        if isinstance(identitas, str) and identitas:
+            berdasarkan_id[identitas] = item
+        nama = str(item.get("nama", identitas or f"tokoh ke-{nomor}"))
+        kategori = str(item.get("kategori", "")).strip().lower()
+        tampil = item.get("tampil")
+
+        if kategori in KATEGORI_ALLAH or nama.strip().lower() in {
+            "allah", "allah swt", "tuhan", "sang pencipta"
+        }:
+            temuan.append(TemuanAdab(
+                "GAGAL", "ALLAH_TIDAK_DIVISUALKAN",
+                f"{nama}: Allah tidak boleh divisualisasikan dalam bentuk apa pun",
+            ))
+            continue
+
+        wajib = NAMA_TAMPIL.get(kategori)
+        if wajib and tampil != wajib:
+            temuan.append(TemuanAdab(
+                "GAGAL", "CARA_TAMPIL_TOKOH_SUCI",
+                f"{nama} ({kategori}) wajib tampil '{wajib}', bukan '{tampil}'",
+            ))
+        elif not wajib and tampil in {"nur", "cahaya_malaikat", "wajah_cahaya"}:
+            temuan.append(TemuanAdab(
+                "GAGAL", "BENTUK_CAHAYA_SALAH",
+                f"{nama} ({kategori or 'kategori tidak diisi'}) tidak boleh memakai bentuk khusus '{tampil}'",
+            ))
+
+    cerita = rencana.get("cerita")
+    shot_list = cerita.get("shot", []) if isinstance(cerita, dict) else []
+    for nomor_shot, shot in enumerate(_daftar(shot_list)):
+        if not isinstance(shot, dict):
+            continue
+        for nomor_boneka, boneka in enumerate(_daftar(shot.get("boneka"))):
+            if not isinstance(boneka, dict):
+                continue
+            id_tokoh = boneka.get("id")
+            item = berdasarkan_id.get(id_tokoh) if isinstance(id_tokoh, str) else None
+            if item is None:
+                continue
+            kategori = str(item.get("kategori", "")).strip().lower()
+            nama = str(item.get("nama", id_tokoh))
+            if kategori in KATEGORI_ALLAH or nama.strip().lower() in {
+                "allah", "allah swt", "tuhan", "sang pencipta"
+            }:
+                kode = "ALLAH_TIDAK_DIVISUALKAN"
+                pesan = f"{nama}: identitas ini tidak boleh dipetakan ke boneka renderer"
+            elif kategori in KATEGORI_SAKRAL:
+                kode = "TOKOH_SAKRAL_BERTUBUH"
+                pesan = (
+                    f"shot {nomor_shot}, boneka {nomor_boneka}: {nama} ({kategori}) "
+                    "belum boleh masuk boneka renderer; adapter visual yang patuh kebijakan belum tersedia"
+                )
+            else:
+                continue
+            temuan.append(TemuanAdab("GAGAL", kode, pesan))
+
+    return temuan
+
+
 def periksa_adab_tokoh(rencana: Any) -> list[TemuanAdab]:
     """Periksa identitas tokoh dan cara tampilnya sebelum job diteruskan ke renderer.
 
@@ -48,12 +126,14 @@ def periksa_adab_tokoh(rencana: Any) -> list[TemuanAdab]:
         # Format papan lama tetap dijaga oleh adapter paket, bukan oleh inti renderer.
         from .penjaga_tokoh_legacy import periksa_tokoh_suci
 
-        return [
+        temuan_lama = [
             TemuanAdab("GAGAL", "TOKOH_SAKRAL_FORMAT_LAMA", str(item))
             for item in periksa_tokoh_suci(rencana)
         ]
+        # Kontrak NewMotion terbaru menyimpan roster di rencana_cerita, bukan peran[] lama.
+        return temuan_lama + _periksa_tokoh_semantik(rencana)
 
-    temuan: list[TemuanAdab] = []
+    temuan: list[TemuanAdab] = _periksa_tokoh_semantik(rencana)
     peran = {
         str(item.get("id")): item
         for item in peran_list
