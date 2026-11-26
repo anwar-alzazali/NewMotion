@@ -16,6 +16,8 @@ class GalatAdapterVisualTokoh(ValueError):
 
 def _lintasan(nilai):
     """Ambil titik dari keyframe posisi renderer [[detik, nilai], ...]."""
+    if isinstance(nilai, (int, float)):
+        return [(0.0, float(nilai)), (1.0, float(nilai))]
     if not isinstance(nilai, list) or len(nilai) < 2:
         return []
     if all(
@@ -112,6 +114,15 @@ def terapkan_rencana_visual_tokoh(spec):
             raise GalatAdapterVisualTokoh(f"boneka shot {indeks} harus berupa daftar")
 
         indeks_aktor = {}
+        for nomor_lama, boneka_lama_item in enumerate(boneka_lama):
+            if isinstance(boneka_lama_item, Mapping):
+                aktor_lama = boneka_lama_item.get("aktor_id")
+                if isinstance(aktor_lama, str):
+                    if aktor_lama in indeks_aktor:
+                        raise GalatAdapterVisualTokoh(
+                            f"Tokoh {aktor_lama!r} sudah digandakan pada shot {indeks}"
+                        )
+                    indeks_aktor[aktor_lama] = nomor_lama
         boneka_baru = []
         for nomor, arahan in enumerate(daftar_tokoh):
             if not isinstance(arahan, Mapping):
