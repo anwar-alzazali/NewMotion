@@ -242,8 +242,7 @@ def test_tokoh_kamu_menjadi_saksi_saat_pelaku_cerita_tampil():
             kamu = shot["boneka"][0]
             assert kamu["belakang"] is True and kamu["s"] <= 0.6 and kamu["y"] >= 1900
             assert shot["kamera"]["x"] == 540 and shot["kamera"]["z"][0] == 1.0
-            batu = [b for b in shot["benda"] if b["jenis"] == "batu" and b.get("depan")]
-            assert all((b["x"] > 540) != (kamu["x"] > 540) for b in batu)
+            assert not [b for b in shot["benda"] if b["jenis"] == "batu" and b.get("depan")]  # tanpa batu resep
 
 
 def test_kamu_tetap_tokoh_utama_bila_subjek_hanya_suasana():
