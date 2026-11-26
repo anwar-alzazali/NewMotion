@@ -78,7 +78,10 @@ def arahkan_tokoh_visual(rencana_cerita, rencana_blocking, cerita):
             else:
                 diagnostik.append({"kode": "aksi_visual_belum_didukung", "peristiwa_id": id_peristiwa, "aksi": aksi_asli})
                 continue
-            arahan_tokoh.append(butir)
+            if aksi in AKSI_JALAN or aksi in AKSI_LARI:
+                arahan_tokoh.insert(0, butir)
+            else:
+                arahan_tokoh.append(butir)
         if arahan_tokoh:
             shot_plan.append({"indeks": indeks, "tokoh": arahan_tokoh})
             if motor_dibutuhkan:
