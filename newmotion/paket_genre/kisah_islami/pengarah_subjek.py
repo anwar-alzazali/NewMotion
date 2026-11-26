@@ -95,7 +95,7 @@ def _jenis_disebut(teks: str) -> list[str]:
     # Konteks diperiksa per kalimat agar "lubang kubur" tidak ikut memakai
     # dinding Zulkarnain hanya karena kalimat lain menyebut dinding besi.
     kalimat_dinding = [
-        kalimat for kalimat in re.split(r"(?<=[.!?;])\\s+|\\n+", teks)
+        kalimat for kalimat in re.split(r"(?<=[.!?;])\s+|\n+", teks)
         if kalimat.strip()
     ]
     for kalimat in kalimat_dinding:
@@ -123,8 +123,9 @@ def _jenis_disebut(teks: str) -> list[str]:
         if not POLA_SAHABAT.search(kalimat):
             tambah("arus" if POLA_GERAK_KELOMPOK.search(kalimat) else "kerumunan")
 
-    if POLA_MATA_AIR.search(teks) and not POLA_AIR_MATA.search(teks):
-        tambah("pancar")
+    for kalimat in _kalimat_yang_memuat(teks, POLA_MATA_AIR):
+        if not POLA_AIR_MATA.search(kalimat):
+            tambah("pancar")
     if POLA_GUNUNG.search(teks):
         tambah("gunung")
     if POLA_HEWAN.search(teks):
