@@ -156,3 +156,25 @@ def test_benda_ids_di_beat_mempertahankan_id_yang_sama_di_beberapa_shot():
         for shot in spek["cerita"]["shot"]
     ]
     assert ids == [["jembatan-01"], ["jembatan-01"]]
+
+
+
+def test_jenis_motor_dikenali_sebagai_objek_renderer_yang_sah():
+    motor = {
+        "id": "motor-01",
+        "nama": "Sepeda motor",
+        "jenis_renderer": "motor",
+        "posisi": {"x": 520, "y": 1550, "s": 0.8},
+        "properti": {"miring": [[0, 0], [1.0, 18]]},
+    }
+    naskah = _naskah([motor])
+    naskah["adegan"][0]["peristiwa"][0]["sasaran_benda_id"] = "motor-01"
+    naskah["adegan"][0]["peristiwa"][0]["sasaran"] = "motor"
+    spek, _, _ = arahkan_naskah(naskah)
+    visual = next(
+        item for item in spek["cerita"]["shot"][0]["benda"]
+        if item["id"] == "motor-01"
+    )
+
+    assert visual["jenis"] == "motor"
+    assert visual["miring"] == [[0, 0], [1.0, 18]]
