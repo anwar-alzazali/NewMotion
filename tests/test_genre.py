@@ -898,8 +898,10 @@ def test_kisah_islami_tidak_mengaktifkan_pengarah_pemeran_cerita_otomatis():
     })
     assert papan["rencana_visual_tokoh"]["status"] == "belum_didukung_paket"
     assert papan["rencana_visual_tokoh"]["shot"] == []
-    assert all(
-        boneka.get("id") == "kamu"
+    # Roster semantik tidak boleh disisipkan sebagai pemeran renderer oleh
+    # paket Kisah Islami; avatar reaksi yang dikelola pengarah tetap terpisah.
+    assert not any(
+        boneka.get("id") == "tokoh-umum"
         for shot in papan["cerita"]["shot"]
         for boneka in shot.get("boneka", [])
     )
