@@ -33,3 +33,10 @@ Kontrak ini:
 - Tidak membuat `boneka`, koordinat, lintasan, pose, kendaraan, atau keyframe. Semua itu tetap tanggung jawab pengarah visual/paket genre.
 
 Dengan demikian, `rencana_blocking` adalah kontrak semantik untuk tahap blocking berikutnya, bukan bukti bahwa gerakan sudah terbentuk atau siap dirender.
+## Metadata roster tokoh
+
+Naskah dapat menyediakan `tokoh[]` sebagai roster eksplisit. Setiap entri wajib memiliki `nama`; `id` boleh disediakan atau dibentuk deterministik dari nama. Field metadata lain disalin utuh ke `rencana_cerita.tokoh`, misalnya kategori dan deskripsi visual.
+
+Beat yang menyebut nama pada `peran[]` akan ditautkan ke entri roster berdasarkan nama yang dinormalisasi. Nama yang bertabrakan setelah normalisasi dan ID ganda ditolak agar rujukan tidak ambigu.
+
+Metadata ini belum menghasilkan `boneka[]` dan tidak memberi izin visual dengan sendirinya. Paket genre tetap harus menentukan cara tokoh boleh ditampilkan, lalu pengarah visual memetakan profil yang sah ke kontrak renderer.
