@@ -1503,7 +1503,7 @@
           fx = sisi * Math.min(72, Math.abs(Math.sin((sudutKaki[0] + sudutKaki[1]) * R) * 68));
         }
         const H = [sisi * (sg < 0 ? -5 : 5), hy0];
-        const F = [fx, -J.turun - lift - (jalan && aksi === "jalan" ? 8 : 0)];
+        const F = [fx, -lift - (jalan && aksi === "jalan" ? 8 : 0)];
         const dx = F[0] - H[0], dy = F[1] - H[1], jarak = Math.max(1, Math.hypot(dx, dy));
         const d = Math.min(199.5, jarak), tengah = [(H[0] + F[0]) / 2, (H[1] + F[1]) / 2];
         const tinggi = Math.sqrt(Math.max(0, 10000 - d * d / 4));
@@ -1517,9 +1517,22 @@
     } else {
       [-1, 1].forEach((sg) => {
         const s = sg < 0 ? J.lk : J.rk, sw = sg < 0 ? ayun : -ayun;
-        const a1 = (sg * s[0] + sw) * R, a2 = (sg * s[1] + sw) * R;
         const pp = sg < 0 ? (J.pp_ki == null ? J.pp : J.pp_ki) : (J.pp_ka == null ? J.pp : J.pp_ka), pk = sg < 0 ? (J.pk_ki == null ? J.pk : J.pk_ki) : (J.pk_ka == null ? J.pk : J.pk_ka);
-        const H = [sg * 26, hy0], K = [H[0] + Math.sin(a1) * 100 * pp, H[1] + Math.cos(a1) * 100 * pp], F = [K[0] + Math.sin(a2) * 100 * pk, K[1] + Math.cos(a2) * 100 * pk];
+        const H = [sg * 26, hy0];
+        let K, F;
+        if (J.turun > 0) {
+          // Saat pinggul turun, lutut menekuk agar telapak tetap berada di garis tanah.
+          // Ini memperbaiki pose rendah tanpa mengubah panjang paha/betis.
+          F = [sg * 58, 0];
+          const dx = F[0] - H[0], dy = F[1] - H[1], jarak = Math.max(1, Math.hypot(dx, dy));
+          const d = Math.min(199.5, jarak), tinggi = Math.sqrt(Math.max(0, 10000 - d * d / 4));
+          K = [(H[0] + F[0]) / 2 + sg * Math.abs(dy) / jarak * tinggi,
+               (H[1] + F[1]) / 2 - sg * dx / jarak * tinggi];
+        } else {
+          const a1 = (sg * s[0] + sw) * R, a2 = (sg * s[1] + sw) * R;
+          K = [H[0] + Math.sin(a1) * 100 * pp, H[1] + Math.cos(a1) * 100 * pp];
+          F = [K[0] + Math.sin(a2) * 100 * pk, K[1] + Math.cos(a2) * 100 * pk];
+        }
         titik.push([H, K, F]);
         kaki += `<polyline points="${H} ${K} ${F}" fill="none" stroke="${wnK}" stroke-width="${wKaki}" stroke-linecap="round" stroke-linejoin="round"/>`;
         if (pakaiP) kaki += `<ellipse cx="${F[0] + sg * 4}" cy="${F[1] - 6}" rx="30" ry="14" fill="#2a2024"/>`;
@@ -1703,7 +1716,7 @@
       // Tampak samping: wajah mengarah ke depan perjalanan, bukan ke kamera.
       k += `<path d="M -62 -54 Q -38 -94 8 -82 Q 48 -78 52 -40 L 54 -10 L 78 8 L 56 24 Q 60 58 34 76 Q 4 94 -34 70 Q -66 48 -62 -54 Z" fill="${b.kulit || KL}" stroke="${INK}" stroke-width="7"/>`;
       k += `<path d="M -64 -44 Q -58 -108 8 -104 Q 62 -100 66 -48 Q 38 -68 10 -60 Q -24 -54 -64 -20 Z" fill="${b.warna_rambut || INK}" stroke="${INK}" stroke-width="6"/>`;
-      k += `<circle cx="30" cy="-18" r="8" fill="#fff" stroke="${INK}" stroke-width="3"/><circle cx="34" cy="-18" r="4.5" fill="${INK}"/><path d="M 50 42 Q 62 46 68 38" fill="none" stroke="${INK}" stroke-width="5" stroke-linecap="round"/>`;
+      k += `<circle cx="-76" cy="6" r="15" fill="${b.kulit || KL}" stroke="${INK}" stroke-width="6"/><circle cx="30" cy="-18" r="8" fill="#fff" stroke="${INK}" stroke-width="3"/><circle cx="34" cy="-18" r="4.5" fill="${INK}"/><path d="M 50 42 Q 62 46 68 38" fill="none" stroke="${INK}" stroke-width="5" stroke-linecap="round"/>`;
     } else if (belakang) {
       k += `<circle cx="-76" cy="6" r="15" fill="${KL}" stroke="${INK}" stroke-width="6"/><circle cx="76" cy="6" r="15" fill="${KL}" stroke="${INK}" stroke-width="6"/><circle r="78" fill="${b.warna_rambut || INK}" stroke="${INK}" stroke-width="7"/><path d="M -60 50 Q 0 90 60 50 L 50 72 Q 0 96 -50 72 Z" fill="${KL}"/>`;
     } else if (gaya === "umum") {
@@ -1833,6 +1846,7 @@
       const pm = sudutTokoh === "samping" || sudutTokoh === "samping_kiri";
       window.__catatBoneka.push({ id: b.id, t, x, y, s, tubuh, arah, tunduk, profil: pm ? sudutTokoh : null, sudut: sudutTokoh, belakang: sudutTokoh === "belakang",
         badan_samping: pm, badan_tiga_perempat: sudutTokoh === "tiga_perempat", badan_belakang: sudutTokoh === "belakang",
+        kepala_tiga_perempat: sudutTokoh === "tiga_perempat",
         rig: !!RIG, aksi: RIG && RIG._aksi || b.aksi || null, sendi: RG ? RG.sendi : null, guling: RG ? RG.guling || 0 : 0,
         telinga: (k.match(/cx="-?76" cy="6" r="15"/g) || []).length, kepala: [hx, hy] });
     }
