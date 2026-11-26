@@ -54,6 +54,7 @@ def _rencana_cerita(naskah: Mapping[str, Any], shot: list[dict]) -> dict[str, An
     diagnostik = []
     daftar_adegan = []
     id_adegan = set()
+    id_peristiwa_global = set()
     for nomor, adegan in enumerate(naskah["adegan"], start=1):
         identitas = adegan.get("id") or f"beat-{nomor:03d}"
         if not isinstance(identitas, str) or not identitas.strip():
@@ -92,22 +93,91 @@ def _rencana_cerita(naskah: Mapping[str, Any], shot: list[dict]) -> dict[str, An
                         f"Peristiwa ke-{nomor_peristiwa} pada beat {identitas!r} harus berupa objek"
                     )
                 item_peristiwa = copy.deepcopy(dict(data_peristiwa))
+                id_peristiwa = item_peristiwa.get("id")
+                if id_peristiwa is None:
+                    id_peristiwa = f"{identitas}-peristiwa-{nomor_peristiwa:03d}"
+                if not isinstance(id_peristiwa, str) or not id_peristiwa.strip():
+                    raise GalatPengarahan(
+                        f"ID peristiwa ke-{nomor_peristiwa} pada beat {identitas!r} tidak valid"
+                    )
+                if id_peristiwa in id_peristiwa_global:
+                    raise GalatPengarahan(
+                        f"ID peristiwa {id_peristiwa!r} digunakan lebih dari sekali"
+                    )
+                id_peristiwa_global.add(id_peristiwa)
+                item_peristiwa["id"] = id_peristiwa
+                item_peristiwa["beat_id"] = identitas
+
                 aktor = item_peristiwa.get("aktor")
-                if isinstance(aktor, str):
+                aktor_id = item_peristiwa.get("aktor_id")
+                if aktor_id is None and isinstance(aktor, str):
                     aktor_id = cari_id_tokoh(aktor)
-                    if aktor_id:
-                        item_peristiwa["aktor_id"] = aktor_id
-                    else:
+                if aktor_id is not None:
+                    if not isinstance(aktor_id, str) or aktor_id not in id_tokoh:
                         diagnostik.append({
-                            "kode": "aktor_belum_terpetakan",
+                            "kode": "aktor_id_tidak_terdaftar",
                             "beat_id": identitas,
-                            "peristiwa": item_peristiwa.get("id"),
-                            "nilai": aktor,
+                            "peristiwa_id": id_peristiwa,
+                            "nilai": aktor_id,
                         })
+                        item_peristiwa.pop("aktor_id", None)
+                    else:
+                        item_peristiwa["aktor_id"] = aktor_id
+                        if tokoh_ids and aktor_id not in tokoh_ids:
+                            diagnostik.append({
+                                "kode": "aktor_tidak_tercantum_di_beat",
+                                "beat_id": identitas,
+                                "peristiwa_id": id_peristiwa,
+                                "aktor_id": aktor_id,
+                            })
+                else:
+                    diagnostik.append({
+                        "kode": "aktor_belum_terpetakan",
+                        "beat_id": identitas,
+                        "peristiwa_id": id_peristiwa,
+                        "nilai": aktor,
+                    })
+
                 sasaran = item_peristiwa.get("sasaran")
-                sasaran_id = cari_id_tokoh(sasaran)
-                if sasaran_id:
-                    item_peristiwa["sasaran_tokoh_id"] = sasaran_id
+                sasaran_id = item_peristiwa.get("sasaran_tokoh_id")
+                if sasaran_id is None:
+                    sasaran_id = cari_id_tokoh(sasaran)
+                if sasaran_id is not None:
+                    if not isinstance(sasaran_id, str) or sasaran_id not in id_tokoh:
+                        diagnostik.append({
+                            "kode": "sasaran_tokoh_id_tidak_terdaftar",
+                            "beat_id": identitas,
+                            "peristiwa_id": id_peristiwa,
+                            "nilai": sasaran_id,
+                        })
+                        item_peristiwa.pop("sasaran_tokoh_id", None)
+                    else:
+                        item_peristiwa["sasaran_tokoh_id"] = sasaran_id
+                        if tokoh_ids and sasaran_id not in tokoh_ids:
+                            diagnostik.append({
+                                "kode": "sasaran_tokoh_tidak_tercantum_di_beat",
+                                "beat_id": identitas,
+                                "peristiwa_id": id_peristiwa,
+                                "sasaran_tokoh_id": sasaran_id,
+                            })
+
+                bukti = item_peristiwa.get("bukti_teks")
+                if isinstance(bukti, str) and bukti.strip():
+                    teks_sumber = " ".join(str(adegan["teks"]).split()).casefold()
+                    teks_bukti = " ".join(bukti.split()).casefold()
+                    if teks_bukti not in teks_sumber:
+                        diagnostik.append({
+                            "kode": "bukti_teks_tidak_ditemukan_di_beat",
+                            "beat_id": identitas,
+                            "peristiwa_id": id_peristiwa,
+                            "bukti_teks": bukti,
+                        })
+                else:
+                    diagnostik.append({
+                        "kode": "bukti_teks_belum_dicantumkan",
+                        "beat_id": identitas,
+                        "peristiwa_id": id_peristiwa,
+                    })
                 peristiwa_tertaut.append(item_peristiwa)
             butir["peristiwa"] = peristiwa_tertaut
         daftar_adegan.append(butir)
