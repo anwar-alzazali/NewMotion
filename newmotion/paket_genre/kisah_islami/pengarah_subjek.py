@@ -17,8 +17,18 @@ POLA_GERAK_KELOMPOK = re.compile(
     re.I,
 )
 POLA_DINDING = re.compile(r"\b(dinding|tembok|benteng|lubang|terowongan)\b", re.I)
-POLA_DINDING_KHUSUS = re.compile(
-    r"\b(zulkarnain|zulqarnain|ya['’]?juj|ma['’]?juj|besi|tembaga|dua gunung|celah dua gunung)\b",
+POLA_ZULKARNAIN = re.compile(r"\b(zulkarnain|zulqarnain)\b", re.I)
+POLA_YAJUJ = re.compile(r"\b(ya['’]?juj|ma['’]?juj)\b", re.I)
+POLA_MATERIAL_DINDING = re.compile(r"\b(besi|tembaga)\b", re.I)
+POLA_DUA_GUNUNG = re.compile(r"\b(dua gunung|celah dua gunung)\b", re.I)
+POLA_KUBUR = re.compile(r"\b(kubur|makam|pemakaman|jenazah)\b", re.I)
+POLA_PEMIMPIN_SAKRAL = re.compile(
+    r"\b(rasulullah|rasul|nabi(?:\s+\w+)?|malaikat(?:\s+\w+)?|jibril|mikail|israfil|"
+    r"abu bakar|umar|utsman|usman|ali bin abi thalib)\b.{0,45}"
+    r"\b(pemimpin|pemuka|raja|panglima)\b|"
+    r"\b(pemimpin|pemuka|raja|panglima)\b.{0,45}"
+    r"\b(rasulullah|rasul|nabi(?:\s+\w+)?|malaikat(?:\s+\w+)?|jibril|mikail|israfil|"
+    r"abu bakar|umar|utsman|usman|ali bin abi thalib)\b",
     re.I,
 )
 POLA_GALI = re.compile(r"\b(penggali|menggali|digali|menggerogoti|mengikis)\b", re.I)
@@ -78,12 +88,21 @@ def _kalimat_yang_memuat(teks: str, pola: re.Pattern) -> list[str]:
     ]
 
 
-def _konteks_dinding_zulkarnain(teks: str) -> bool:
-    """Ngarai renderer adalah dinding Zulkarnain, bukan dinding/kubur generik."""
-    return bool(POLA_DINDING.search(teks) and POLA_DINDING_KHUSUS.search(teks))
+def _konteks_dinding_zulkarnain(teks: str, konteks: str | None = None) -> bool:
+    """Ngarai renderer hanya untuk dinding Zulkarnain yang sudah dikenali konteks cerita."""
+    if POLA_KUBUR.search(teks):
+        return False
+    sumber = f"{teks} {konteks or ''}"
+    material = bool(POLA_MATERIAL_DINDING.search(sumber))
+    dua_gunung = bool(POLA_DUA_GUNUNG.search(sumber))
+    zulkarnain = bool(POLA_ZULKARNAIN.search(sumber))
+    yajuj = bool(POLA_YAJUJ.search(sumber))
+    return (material and dua_gunung) or (zulkarnain and (material or dua_gunung or yajuj)) or (
+        yajuj and (material or dua_gunung)
+    )
 
 
-def _jenis_disebut(teks: str) -> list[str]:
+def _jenis_disebut(teks: str, konteks: str | None = None) -> list[str]:
     jenis: list[str] = []
     tambah = lambda nama: jenis.append(nama) if nama not in jenis else None
 
@@ -200,14 +219,16 @@ def _properti_benda(jenis: str, teks: str, durasi: float, seed: int) -> dict:
     return dasar
 
 
-def arahkan_subjek(teks: str, durasi: float, indeks: int = 0) -> dict:
+def arahkan_subjek(
+    teks: str, durasi: float, indeks: int = 0, *, konteks: str | None = None
+) -> dict:
     """Kembalikan benda, teks layar, dan penanda klimaks untuk satu segmen narasi."""
     if not isinstance(teks, str) or not teks.strip():
         return {"benda": [], "teks": [], "klimaks": False}
     seed = _seed(f"{indeks}|{teks}")
     benda = [
         _properti_benda(jenis, teks, max(0.5, float(durasi or 0.5)), seed + n * 31)
-        for n, jenis in enumerate(_jenis_disebut(teks))
+        for n, jenis in enumerate(_jenis_disebut(teks, konteks))
     ]
     teks_layar = []
     for pola in KATA_KUNCI_LAYAR:
