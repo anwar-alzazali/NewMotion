@@ -90,16 +90,23 @@ def _periksa_benda_manusia_dalam_konteks_sakral(rencana: Any) -> list[TemuanAdab
     if not isinstance(shot_list, list):
         return []
 
-    pola_sakral = re.compile(
-        r"\b(allah|tuhan|rasulullah|rasul|nabi|muhammad|malaikat|jibril|mikail|israfil|sahabat|abu bakar|umar|utsman|usman|ali bin abi thalib)\b",
-        re.IGNORECASE,
+    pola_tokoh_sakral = (
+        r"(?:rasulullah|rasul|nabi(?:\\s+\\w+)?|malaikat(?:\\s+\\w+)?|jibril|mikail|israfil|"
+        r"abu bakar|umar|utsman|usman|ali bin abi thalib|sahabat)"
     )
     pola_sahabat = re.compile(
-        r"\b(sahabat|abu bakar|umar|utsman|usman|ali bin abi thalib)\b",
+        r"\\b(sahabat|abu bakar|umar|utsman|usman|ali bin abi thalib)\\b",
         re.IGNORECASE,
     )
-    pola_pemimpin = re.compile(r"\b(pemimpin|pemuka|raja|panglima)\b", re.IGNORECASE)
-    pola_penggali = re.compile(r"\b(penggali|menggali|digali|menggerogoti|mengikis)\b", re.IGNORECASE)
+    pola_pemimpin_sakral = re.compile(
+        r"\\b" + pola_tokoh_sakral + r"\\b.{0,45}\\b(pemimpin|pemuka|raja|panglima)\\b|"
+        r"\\b(pemimpin|pemuka|raja|panglima)\\b.{0,45}\\b" + pola_tokoh_sakral + r"\\b",
+        re.IGNORECASE,
+    )
+    pola_penggali_sakral = re.compile(
+        r"\\b" + pola_tokoh_sakral + r"\\b.{0,35}\\b(penggali|menggali|digali|menggerogoti|mengikis)\\b",
+        re.IGNORECASE,
+    )
     jenis_manusia = {"pemimpin", "penggali", "kerumunan", "arus"}
     temuan: list[TemuanAdab] = []
 
@@ -124,13 +131,13 @@ def _periksa_benda_manusia_dalam_konteks_sakral(rencana: Any) -> list[TemuanAdab
             salah_konteks = False
             alasan = ""
             for bagian in kalimat:
-                if jenis == "pemimpin" and pola_pemimpin.search(bagian) and pola_sakral.search(bagian):
+                if jenis == "pemimpin" and pola_pemimpin_sakral.search(bagian):
                     salah_konteks = True
-                    alasan = "sosok pemimpin berpotensi menjadi wujud Nabi/Rasul/malaikat"
+                    alasan = "sosok pemimpin berpotensi menjadi wujud tokoh sakral yang disebut langsung"
                     break
-                if jenis == "penggali" and pola_penggali.search(bagian) and pola_sakral.search(bagian):
+                if jenis == "penggali" and pola_penggali.search(bagian) and pola_penggali_sakral.search(bagian):
                     salah_konteks = True
-                    alasan = "sosok penggali berpotensi menjadi wujud tokoh sakral"
+                    alasan = "sosok penggali berpotensi menjadi wujud tokoh sakral yang disebut langsung"
                     break
                 if jenis in {"kerumunan", "arus"} and pola_sahabat.search(bagian):
                     salah_konteks = True
