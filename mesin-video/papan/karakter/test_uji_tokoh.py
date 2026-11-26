@@ -74,3 +74,24 @@ def test_samping_kiri_tidak_boleh_dilabeli_profil_kanan():
     c = _catat(profil="kanan", badan_samping=True, telinga=1)
     kode = {x["kode"] for x in U.periksa([c], {0: ("berdiri", "samping_kiri")}, ACUAN)}
     assert "A3_SUDUT_TIDAK_DIDUKUNG" in kode
+
+
+
+def test_integrasi_meneruskan_lima_sudut_ke_renderer():
+    from karakter.integrasi import integrasikan_tokoh
+
+    for arah in ("depan", "tiga_perempat", "samping", "samping_kiri", "belakang"):
+        boneka = {}
+        integrasikan_tokoh(boneka, {"arah": arah}, 2.0)
+        assert boneka["sudut"] == arah
+        assert boneka["belakang"] is (arah == "belakang")
+
+
+def test_sahabat_tetap_bertubuh_dengan_wajah_cahaya():
+    from karakter.integrasi import integrasikan_tokoh
+
+    boneka = {}
+    integrasikan_tokoh(boneka, {"mode": "wajah_cahaya", "arah": "samping_kiri"}, 2.0)
+    assert boneka["gaya"] == "umum"
+    assert boneka["wajah_cahaya"] is True
+    assert boneka["sudut"] == "samping_kiri"
