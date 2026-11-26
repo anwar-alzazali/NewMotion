@@ -12,6 +12,7 @@ on:
       - 'tests/test_pengarah_kamera_lingkungan.py'
       - 'tests/test_pengarah_kamera.py'
       - 'tests/test_pengarah_benda_visual.py'
+      - 'tests/test_pemahaman_peristiwa.py'
       - '.github/workflows/test-spektrum-json.yml'
   workflow_dispatch:
 
