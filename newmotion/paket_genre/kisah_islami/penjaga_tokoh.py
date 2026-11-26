@@ -130,7 +130,13 @@ def _periksa_benda_manusia_dalam_konteks_sakral(rencana: Any) -> list[TemuanAdab
                 continue
             salah_konteks = False
             alasan = ""
+            if jenis in {"kerumunan", "arus"} and pola_sahabat.search(narasi):
+                salah_konteks = True
+                alasan = "shot menyebut sahabat; siluet kelompok tidak boleh mengambil identitas mereka"
+
             for bagian in kalimat:
+                if salah_konteks:
+                    break
                 if jenis == "pemimpin" and pola_pemimpin_sakral.search(bagian):
                     salah_konteks = True
                     alasan = "sosok pemimpin berpotensi menjadi wujud tokoh sakral yang disebut langsung"
