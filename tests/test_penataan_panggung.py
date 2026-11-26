@@ -297,3 +297,73 @@ def test_rencana_blocking_mencatat_peristiwa_tanpa_shot_tertaut():
         for item in hasil["diagnostik"]
     )
 
+
+
+
+def test_rencana_blocking_mengurutkan_transisi_dan_tidak_mengarang_keadaan_awal():
+    from newmotion.penataan_panggung import susun_rencana_blocking
+
+    hasil = susun_rencana_blocking(
+        {
+            "tokoh": [{"id": "tokoh-a"}],
+            "benda": [],
+            "adegan": [{
+                "id": "beat-keadaan",
+                "peristiwa": [
+                    {
+                        "id": "jatuh-01",
+                        "aktor_id": "tokoh-a",
+                        "aksi": "jatuh",
+                        "perubahan_keadaan": {
+                            "entitas_id": "tokoh-a",
+                            "menjadi": "terjatuh",
+                        },
+                    },
+                    {
+                        "id": "berdiri-01",
+                        "aktor_id": "tokoh-a",
+                        "aksi": "berdiri",
+                        "perubahan_keadaan": {
+                            "entitas_id": "tokoh-a",
+                            "menjadi": "berdiri",
+                        },
+                    },
+                ],
+            }],
+        },
+        {"shot": [{"_beat_id": "beat-keadaan"}]},
+    )
+
+    assert hasil["transisi_keadaan"][0]["dari"] is None
+    assert hasil["transisi_keadaan"][0]["menjadi"] == "terjatuh"
+    assert hasil["transisi_keadaan"][1]["dari"] == "terjatuh"
+    assert hasil["transisi_keadaan"][1]["menjadi"] == "berdiri"
+    assert hasil["keadaan_akhir"] == {"tokoh-a": "berdiri"}
+
+
+def test_rencana_blocking_menolak_entitas_transisi_yang_tidak_terdaftar():
+    from newmotion.penataan_panggung import susun_rencana_blocking
+
+    hasil = susun_rencana_blocking(
+        {
+            "tokoh": [{"id": "tokoh-a"}],
+            "benda": [],
+            "adegan": [{
+                "id": "beat-keadaan",
+                "peristiwa": [{
+                    "id": "jatuh-02",
+                    "aktor_id": "tokoh-a",
+                    "aksi": "jatuh",
+                    "perubahan_keadaan": {
+                        "entitas_id": "tokoh-tidak-ada",
+                        "menjadi": "terjatuh",
+                    },
+                }],
+            }],
+        },
+        {"shot": [{"_beat_id": "beat-keadaan"}]},
+    )
+
+    assert hasil["transisi_keadaan"] == []
+    assert hasil["keadaan_akhir"] == {}
+    assert hasil["diagnostik"][0]["kode"] == "entitas_perubahan_keadaan_tidak_terdaftar"
