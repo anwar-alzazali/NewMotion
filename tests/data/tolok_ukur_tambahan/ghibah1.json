@@ -1,0 +1,23 @@
+{
+  "judul": "Ghibah 1",
+  "genre": "kisah_islami",
+  "konteks_konten": "islami",
+  "adegan": [
+    {
+      "nama": "adegan_1",
+      "teks": "Kek, lihat nih! Grup lagi rame ngomongin si Doni. Ya… nggak sih, Kek. Separah itu? Oke. Aku ganti topik aja."
+    },
+    {
+      "nama": "adegan_2",
+      "teks": "Ada satu kebiasaan di grup WA… yang Allah gambarkan seperti memakan daging saudaramu yang sudah mati."
+    },
+    {
+      "nama": "adegan_3",
+      "teks": "Kalau Doni baca semua itu… dia suka nggak? Itulah ghibah. Menyebut saudaramu dengan sesuatu yang tidak dia sukai."
+    },
+    {
+      "nama": "adegan_4",
+      "teks": "Rasulullah bersabda: siapa yang beriman kepada Allah dan hari akhir… berkatalah yang baik, atau diam."
+    }
+  ]
+}
