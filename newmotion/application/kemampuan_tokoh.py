@@ -20,12 +20,12 @@ SUKU = ("umum", "arab")
 def _baca(jalur: str) -> dict:
     s = Path(jalur).read_text(encoding="utf-8")
     a = s.index("const POSE = {")
-    pose = list(dict.fromkeys(re.findall(r"^\s{4}(\w+): \{", s[a:s.index("\n  };", a)], re.M)))
+    pose = list(dict.fromkeys(re.findall(r"^\s{4}(\w+): \{", s[a:s.index("\n  };", a)], re.MULTILINE)))
     a = s.index("function poseGerak")
     aksi = sorted(set(re.findall(r'nama === "(\w+)"', s[a:s.index("\n  }\n", a)])))
     a = s.index("const KAIT = {")
     blok = s[a:s.index("\n  };", a)]
-    kait = {m.group(1): m.group(2) for m in re.finditer(r'^\s{4}(\w+): \{ sudut: "(\w+)"', blok, re.M)}
+    kait = {m.group(1): m.group(2) for m in re.finditer(r'^\s{4}(\w+): \{ sudut: "(\w+)"', blok, re.MULTILINE)}
     return {"pose": pose, "aksi": aksi, "kait": kait}
 
 
@@ -46,6 +46,6 @@ def teks_kemampuan_tokoh(jalur: Path = CERITA_JS) -> str:
         f"- aksi berulang: {', '.join(k['aksi'])}",
         f"- hadap: {', '.join(HADAP)} (kanan/kiri = tampak samping utuh, badan dan kaki ikut menyamping)",
         f"- bisa dinaiki/diduduki (kait): {kait}. Tokoh menempel otomatis: duduk di jok, tangan di setang, kaki di pijakan",
-        f"- suku figuran: {', '.join(SUKU)}. arab = laki-laki berjubah dengan imamah/ghutrah/peci (sebagian berbisht), "
-        "perempuan berkerudung dan abaya gelap",
+        (f"- suku figuran: {', '.join(SUKU)}. arab = laki-laki berjubah dengan imamah/ghutrah/peci (sebagian berbisht), "
+         "perempuan berkerudung dan abaya gelap"),
     ])
