@@ -559,6 +559,7 @@ def test_rencana_semantik_tidak_mengarang_id_untuk_sasaran_benda():
                     "aktor": "Pengendara",
                     "aksi": "mengendarai",
                     "sasaran": "motor",
+                    "bukti_teks": "Pengendara mengendalikan motor",
                 }],
             }],
         })
@@ -597,8 +598,12 @@ def test_rencana_semantik_mencatat_aktor_yang_belum_terpetakan():
         assert papan["rencana_cerita"]["diagnostik"] == [{
             "kode": "aktor_belum_terpetakan",
             "beat_id": "beat-001",
-            "peristiwa": None,
+            "peristiwa_id": "beat-001-peristiwa-001",
             "nilai": "Orang asing",
+        }, {
+            "kode": "bukti_teks_belum_dicantumkan",
+            "beat_id": "beat-001",
+            "peristiwa_id": "beat-001-peristiwa-001",
         }]
         assert "aktor_id" not in papan["rencana_cerita"]["adegan"][0]["peristiwa"][0]
     finally:
