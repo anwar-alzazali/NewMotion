@@ -179,6 +179,43 @@ def arahkan_naskah(
         spesifikasi["rencana_cerita"], cerita
     )
 
+    # Visualisasi pemeran bersifat opt-in per paket genre. Tanpa kait eksplisit,
+    # roster tetap semantik dan tidak disisipkan ke cerita.shot.boneka.
+    if paket.pengarah_tokoh_visual is None:
+        spesifikasi["rencana_visual_tokoh"] = {
+            "status": "belum_didukung_paket",
+            "shot": [],
+            "diagnostik": [{
+                "kode": "paket_belum_menyediakan_pengarah_tokoh_visual",
+                "pesan": (
+                    "Roster tokoh dipertahankan sebagai data cerita; "
+                    "paket genre belum mengizinkan pemetaan ke visual renderer."
+                ),
+            }],
+        }
+    else:
+        hasil_visual_tokoh = paket.pengarah_tokoh_visual(
+            copy.deepcopy(spesifikasi["rencana_cerita"]),
+            copy.deepcopy(spesifikasi["rencana_blocking"]),
+            copy.deepcopy(cerita),
+        )
+        if not isinstance(hasil_visual_tokoh, Mapping):
+            raise GalatPengarahan(
+                "Pengarah visual tokoh harus menghasilkan objek rencana"
+            )
+        status_visual = hasil_visual_tokoh.get("status")
+        shot_visual = hasil_visual_tokoh.get("shot")
+        diagnostik_visual = hasil_visual_tokoh.get("diagnostik", [])
+        if not isinstance(status_visual, str) or not status_visual.strip():
+            raise GalatPengarahan(
+                "Rencana visual tokoh harus memiliki status yang tidak kosong"
+            )
+        if not isinstance(shot_visual, list) or not isinstance(diagnostik_visual, list):
+            raise GalatPengarahan(
+                "Rencana visual tokoh harus memiliki daftar shot dan diagnostik"
+            )
+        spesifikasi["rencana_visual_tokoh"] = copy.deepcopy(dict(hasil_visual_tokoh))
+
     # Genre menjadi metadata otoritatif untuk gerbang penjaga pada renderer.
     spesifikasi["genre"] = paket.nama
     spesifikasi["konteks_konten"] = konteks_konten

@@ -52,6 +52,7 @@ class PaketGenre:
     penjaga_tokoh: Callable[..., Any] | None = None
     penjaga_dalil: Callable[..., Any] | None = None
     pengarah_naskah: Callable[..., Any] | None = None
+    pengarah_tokoh_visual: Callable[..., Any] | None = None
     penyesuaian_adegan: Callable[..., Any] | None = None
     skema_tambahan: Mapping[str, Any] = field(default_factory=dict)
     bawaan: Mapping[str, Any] = field(default_factory=dict)
@@ -75,8 +76,10 @@ class PaketGenre:
             raise TypeError("penjaga_dalil paket harus berupa fungsi")
         if self.pengarah_naskah is not None and not callable(self.pengarah_naskah):
             raise TypeError("pengarah_naskah paket harus berupa fungsi")
+        if self.pengarah_tokoh_visual is not None and not callable(self.pengarah_tokoh_visual):
+            raise TypeError("pengarah_tokoh_visual paket harus berupa fungsi")
         if not any((
-            self.komponen_visual, self.validator, self.penjaga_tokoh, self.penjaga_dalil, self.pengarah_naskah,
+            self.komponen_visual, self.validator, self.penjaga_tokoh, self.penjaga_dalil, self.pengarah_naskah, self.pengarah_tokoh_visual,
             self.penyesuaian_adegan, self.skema_tambahan, self.bawaan,
             self.modul_dalil, self.panduan_gaya, self.resep, self.modul_legacy,
         )):
