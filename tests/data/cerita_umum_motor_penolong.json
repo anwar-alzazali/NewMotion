@@ -18,7 +18,7 @@
     {
       "id": "beat-001",
       "nama": "Motor tergelincir",
-      "teks": "Seorang pengendara kehilangan keseimbangan. Motornya tergelincir dan ia terjatuh di jalan. Seorang penolong melihat kejadian itu lalu berjalan mendekat.",
+      "teks": "Pengendara motor tergelincir. Penolong berjalan mendekat.",
       "peran": [
         "Penolong",
         "Pengendara"
@@ -45,7 +45,7 @@
     {
       "id": "beat-002",
       "nama": "Penolong membantu",
-      "teks": "Penolong tiba di samping pengendara yang terjatuh. Ia berhenti dan membantu pengendara bangkit dengan hati-hati.",
+      "teks": "Penolong tiba lalu membantu pengendara bangkit.",
       "peran": [
         "Penolong",
         "Pengendara"
