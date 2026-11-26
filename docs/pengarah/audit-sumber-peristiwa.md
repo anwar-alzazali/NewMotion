@@ -61,6 +61,41 @@ Jangan menambah aturan visual khusus untuk menutupi kegagalan pemahaman cerita.
 Jika narasi belum dapat diurai dengan bukti yang cukup, hasil JSON harus
 menampilkan kekurangan itu secara eksplisit.
 
+
+## Implementasi awal pengurai (Tahap 15)
+
+Pengurai awal kini tersedia di
+`newmotion/paket_genre/cerita_umum/pemahaman_peristiwa.py` dan dipanggil
+oleh `naskah_untuk_pengarah` hanya untuk genre `cerita_umum` ketika beat
+belum memiliki field `peristiwa`. Data peristiwa eksplisit dari sumber tetap
+diprioritaskan. Paket Kisah Islami tidak memakai pengurai ini.
+
+Cakupan pola yang sudah diimplementasikan:
+
+- aksi aktif dengan aktor dan sasaran tokoh yang terdaftar;
+- kalimat pasif dengan pelaku eksplisit melalui frasa `oleh`;
+- aksi berurutan melalui `lalu`, `kemudian`, atau `setelah itu`, termasuk
+  elipsis subjek yang masih jelas dari klausa sebelumnya;
+- aksi simultan melalui `dan` atau `sementara` jika tiap klausa menyebut
+  pelakunya;
+- negasi dan kalimat pasif tanpa pelaku ditandai sebagai diagnostik, bukan aksi.
+
+ID peristiwa hasil ekstraksi diberi awalan ID beat agar unik lintas beat.
+Bukti teks disimpan dan diverifikasi lagi oleh orkestrator inti. Diagnostik
+pemahaman ikut disimpan pada `rencana_cerita`.
+
+**Batas yang belum selesai:** ini tata bahasa deterministik konservatif, bukan
+pemahaman bahasa Indonesia umum. Aksi di luar kamus, sasaran benda, kata ganti
+seperti "ia/dia", kalimat kompleks, perubahan keadaan, tujuan gerak, koreferensi
+lintas kalimat, dan banyak bentuk pasif masih perlu dikembangkan. Klausa dengan
+lebih dari satu aksi yang belum dapat dipisah secara aman akan ditandai untuk
+pemeriksaan. Jangan menganggap status awal ini setara pemahaman narasi lengkap.
+
+Tes baru menguji pola aktif, pasif, urutan, simultan, negasi, pasif tanpa pelaku,
+integrasi beat tanpa field peristiwa, perlindungan jalur Kisah Islami, serta
+pembuatan spek JSON akhir dari narasi biasa. Semua hasil tetap harus menunggu
+CI pada head terbaru sebelum dinyatakan lulus.
+
 ## Gerbang penerimaan
 
 Tahap pengurai narasi-ke-peristiwa belum boleh dinyatakan selesai sampai tes
