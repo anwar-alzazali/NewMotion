@@ -52,6 +52,7 @@ class PaketGenre:
     penjaga_tokoh: Callable[..., Any] | None = None
     penjaga_dalil: Callable[..., Any] | None = None
     pengarah_naskah: Callable[..., Any] | None = None
+    pengarah_tokoh_visual: Callable[..., Any] | None = None
     penyesuaian_adegan: Callable[..., Any] | None = None
     skema_tambahan: Mapping[str, Any] = field(default_factory=dict)
     bawaan: Mapping[str, Any] = field(default_factory=dict)
