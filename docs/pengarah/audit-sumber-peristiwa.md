@@ -89,3 +89,28 @@ relasi posisi yang valid tetap menjadi prasyarat adapter renderer.
 Tes integrasi menguji alur narasi biasa → ID sasaran benda → objek renderer,
 serta kasus tanpa roster dan nama benda ambigu. Status tahap ini menunggu
 keempat workflow CI pada head terbaru. Tidak ada render video.
+
+
+## Perluasan berikutnya — transisi keadaan dari narasi (Tahap 17)
+
+Pengurai cerita umum kini menambahkan perubahan keadaan hanya untuk verba yang
+memiliki keadaan akhir cukup jelas:
+- `jatuh` / `terjatuh` → `terjatuh`;
+- `duduk` → `duduk`;
+- `berdiri` → `berdiri`.
+
+Perubahan keadaan mula-mula menyimpan nama entitas dari bukti narasi. Orkestrator
+menghubungkannya ke ID tokoh yang cocok secara tunggal; blocking memvalidasi
+bahwa ID entitas terdaftar pada roster tokoh atau benda. Nama/ID yang tidak
+terpetakan tidak boleh menghasilkan transisi keadaan yang seolah-olah sah.
+
+Keadaan awal tidak disimpulkan dari verba. Transisi pertama hanya mencatat
+`menjadi`; nilai `dari` baru diisi dari keadaan terakhir yang sebelumnya sudah
+tercatat untuk entitas yang sama. Karena itu, “tergelincir” tidak otomatis
+diubah menjadi “terjatuh”, dan “jatuh” tidak mengklaim bahwa tokoh sebelumnya
+berdiri.
+
+Tes mencakup narasi “Pengendara jatuh lalu berdiri”, keterlacakan ID entitas,
+urutan keadaan akhir, validasi ID yang tidak terdaftar, dan larangan menebak
+keadaan awal. Jalur pengurai tetap khusus `cerita_umum`; aturan Kisah Islami
+tidak diubah. Tidak ada render video dijalankan.
