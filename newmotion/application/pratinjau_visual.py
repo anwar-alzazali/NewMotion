@@ -128,13 +128,33 @@ def naskah_untuk_pengarah(
                 peran,
                 benda=daftar_benda if isinstance(daftar_benda, list) else [],
             )
-            for peristiwa in hasil_pemahaman["peristiwa"]:
-                peristiwa["id"] = f"{id_beat}-{peristiwa['id']}"
-            adegan_item["peristiwa"] = hasil_pemahaman["peristiwa"]
+            daftar_peristiwa = hasil_pemahaman["peristiwa"]
+            pemetaan_id = {
+                item["id"]: f"{id_beat}-{item['id']}"
+                for item in daftar_peristiwa
+                if isinstance(item.get("id"), str)
+            }
+            diagnostik_pemahaman = list(hasil_pemahaman["diagnostik"])
+            for peristiwa in daftar_peristiwa:
+                id_lokal = peristiwa.get("id")
+                if id_lokal in pemetaan_id:
+                    peristiwa["id"] = pemetaan_id[id_lokal]
+                relasi = peristiwa.get("hubungan_sebab_akibat")
+                if isinstance(relasi, dict):
+                    id_sebab_lokal = relasi.get("peristiwa_id")
+                    if id_sebab_lokal in pemetaan_id:
+                        relasi["peristiwa_id"] = pemetaan_id[id_sebab_lokal]
+                    else:
+                        peristiwa.pop("hubungan_sebab_akibat", None)
+                        diagnostik_pemahaman.append({
+                            "kode": "referensi_sebab_akibat_tidak_ditemukan",
+                            "bukti_teks": peristiwa.get("bukti_teks", ""),
+                        })
+            adegan_item["peristiwa"] = daftar_peristiwa
             adegan_item["diagnostik_pemahaman"] = {
                 "status": hasil_pemahaman["status"],
                 "metode": hasil_pemahaman["metode"],
-                "diagnostik": hasil_pemahaman["diagnostik"],
+                "diagnostik": diagnostik_pemahaman,
             }
         adegan.append(adegan_item)
         for id_dalil in b.get("dalil", []):
