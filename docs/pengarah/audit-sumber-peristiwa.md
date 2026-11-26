@@ -79,9 +79,11 @@ peristiwa mendapat `sasaran_benda_id`; ID tersebut diteruskan ke orkestrator,
 blocking, dan adapter visual benda yang sudah ada.
 
 Pengurai tidak membuat entitas dari kata benda bebas. Kata “motor” tanpa entitas
-motor pada roster tidak menghasilkan ID benda atau objek renderer. Dua entitas
-dengan nama/alias yang sama menghasilkan diagnostik ambiguitas, bukan memilih
-salah satu. Resolusi ini tidak menentukan posisi benda; posisi eksplisit atau
+motor pada roster tidak menghasilkan ID benda atau objek renderer. Untuk verba
+yang membutuhkan sasaran kendaraan seperti “menaiki” dan “mengendarai”, sasaran
+yang tidak terdaftar juga menurunkan status pemahaman menjadi `sebagian` dengan
+diagnostik. Dua entitas dengan nama/alias yang sama menghasilkan diagnostik
+ambiguitas, bukan memilih salah satu. Resolusi ini tidak menentukan posisi benda; posisi eksplisit atau
 relasi posisi yang valid tetap menjadi prasyarat adapter renderer.
 
 Tes integrasi menguji alur narasi biasa → ID sasaran benda → objek renderer,
