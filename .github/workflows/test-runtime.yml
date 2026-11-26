@@ -45,7 +45,7 @@ jobs:
       - name: Uji bot
         run: |
           cd bot
-          npm ci
+          npm install
           node --test
       - name: Ukur kedalaman papan hasil pengarah
         run: newmotion ukur
