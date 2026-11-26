@@ -171,13 +171,14 @@ def periksa(catatan: list[dict], label: dict[int, tuple[str, str]], acuan: dict[
             if abs(terendah) > 8:
                 tambah("A2_KAKI_MENAPAK", f"telapak terendah {terendah:+.0f}px dari tanah ({'melayang' if terendah < 0 else 'tenggelam'})")
         kepala = ("samping" if c.get("profil") in ("samping", "samping_kiri", "kanan", True)
-              else "belakang" if c.get("belakang") else "depan")
+                  else "belakang" if c.get("belakang") else
+                  "tiga_perempat" if c.get("kepala_tiga_perempat") else "depan")
         badan = ("samping" if c.get("badan_samping") else
                  "tiga_perempat" if c.get("badan_tiga_perempat") else
                  "belakang" if c.get("badan_belakang") else "depan")
         harus = BADAN_HARUS.get(sudut, "depan")
-        if harus == "samping" and badan != "samping":
-            tambah("A3_ARAH_TIDAK_SEARAH", f"kepala {kepala}, badan & kaki {badan}")
+        if badan != harus or kepala != harus:
+            tambah("A3_ARAH_TIDAK_SEARAH", f"kepala {kepala}, badan & kaki {badan}; seharusnya {harus}")
         if sudut in ("samping", "samping_kiri") and c.get("profil") != sudut:
             tambah("A3_SUDUT_TIDAK_DIDUKUNG", f"profil {c.get('profil')!r} tidak cocok dengan {sudut}")
         harus_telinga = TELINGA_HARUS.get(sudut)
