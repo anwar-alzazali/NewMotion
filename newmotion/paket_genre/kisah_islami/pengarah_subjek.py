@@ -11,7 +11,11 @@ import re
 
 
 POLA_KAPAL = re.compile(r"\b(kapal|bahtera|perahu)\b", re.I)
-POLA_OMBak = re.compile(r"\b(ombak|gelombang)\b", re.I)
+POLA_OMBAK = re.compile(r"\b(ombak|gelombang)\b", re.I)
+POLA_GERAK_KELOMPOK = re.compile(
+    r"\b(berlari|berlarian|menyerbu|berbondong-bondong|berdatangan|bergerak serentak)\b",
+    re.I,
+)
 POLA_DINDING = re.compile(r"\b(dinding|tembok|benteng|lubang|terowongan)\b", re.I)
 POLA_DINDING_KHUSUS = re.compile(
     r"\b(zulkarnain|zulqarnain|ya['’]?juj|ma['’]?juj|besi|tembaga|dua gunung|celah dua gunung)\b",
@@ -85,16 +89,27 @@ def _jenis_disebut(teks: str) -> list[str]:
 
     if POLA_KAPAL.search(teks):
         tambah("bahtera")
-    if POLA_OMBak.search(teks):
+    if POLA_OMBAK.search(teks):
         tambah("ombak")
 
-    # Dinding, lubang, dan penggalian hanya memakai ngarai/penggali bila konteks
-    # menyebut ciri dinding Zulkarnain. Kubur dan tembok rumah tidak memakai renderer ini.
-    konteks_dinding = _konteks_dinding_zulkarnain(teks)
-    if konteks_dinding and POLA_DINDING.search(teks):
-        tambah("ngarai")
-    if konteks_dinding and POLA_GALI.search(teks):
-        tambah("penggali")
+    # Konteks diperiksa per kalimat agar "lubang kubur" tidak ikut memakai
+    # dinding Zulkarnain hanya karena kalimat lain menyebut dinding besi.
+    kalimat_dinding = [
+        kalimat for kalimat in re.split(r"(?<=[.!?;])\\s+|\\n+", teks)
+        if kalimat.strip()
+    ]
+    for kalimat in kalimat_dinding:
+        konteks_dinding = _konteks_dinding_zulkarnain(kalimat)
+        if konteks_dinding and POLA_DINDING.search(kalimat):
+            tambah("ngarai")
+        # Renderer penggali adalah manusia berbeliung. Jangan tampilkan sosok manusia
+        # bila kalimatnya juga menyebut tokoh sakral yang mungkin menjadi pelakunya.
+        if (
+            konteks_dinding
+            and POLA_GALI.search(kalimat)
+            and not POLA_SAKRAL.search(kalimat)
+        ):
+            tambah("penggali")
 
     # "Pemimpin" tidak menjadi sosok manusia bila dalam kalimat yang sama merujuk
     # Nabi/Rasul/malaikat/sahabat. Frasa deskriptif tidak boleh mengubah adab visual.
@@ -106,7 +121,7 @@ def _jenis_disebut(teks: str) -> list[str]:
     # renderer arus/kerumunan hanya dipakai saat subjek plural memang disebut.
     for kalimat in _kalimat_yang_memuat(teks, POLA_KERUMUNAN):
         if not POLA_SAHABAT.search(kalimat):
-            tambah("kerumunan")
+            tambah("arus" if POLA_GERAK_KELOMPOK.search(kalimat) else "kerumunan")
 
     if POLA_MATA_AIR.search(teks) and not POLA_AIR_MATA.search(teks):
         tambah("pancar")
