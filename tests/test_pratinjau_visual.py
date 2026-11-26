@@ -202,3 +202,82 @@ def test_dialog_dengan_bentuk_tidak_valid_ditolak():
 
     with pytest.raises(ValueError, match="Dialog pada beat"):
         naskah_untuk_pengarah(naskah)
+
+def test_metadata_tokoh_eksplisit_dipertahankan_ke_kontrak_semantik():
+    naskah = {
+        "judul": "Tokoh dengan profil",
+        "dalil": [],
+        "tokoh": [{
+            "id": "pengendara-01",
+            "nama": "Pengendara",
+            "kategori": "tokoh_umum",
+            "deskripsi_visual": "Pria dewasa memakai jaket biru dan helm hitam.",
+            "tampil": "tubuh",
+        }],
+        "beat": [{
+            "narasi": "Pengendara melintasi jembatan.",
+            "peran": [" pengendara "],
+        }],
+    }
+
+    hasil = naskah_untuk_pengarah(naskah)
+
+    assert hasil["tokoh"] == [{
+        "id": "pengendara-01",
+        "nama": "Pengendara",
+        "kategori": "tokoh_umum",
+        "deskripsi_visual": "Pria dewasa memakai jaket biru dan helm hitam.",
+        "tampil": "tubuh",
+    }]
+    assert hasil["adegan"][0]["tokoh_ids"] == ["pengendara-01"]
+
+
+def test_tokoh_eksplisit_tanpa_id_mendapat_id_deterministik():
+    naskah = {
+        "judul": "ID tokoh",
+        "dalil": [],
+        "tokoh": [{"nama": "Penolong", "deskripsi_visual": "Kemeja hijau."}],
+        "beat": [{"narasi": "Penolong datang.", "peran": ["Penolong"]}],
+    }
+
+    pertama = naskah_untuk_pengarah(naskah)
+    kedua = naskah_untuk_pengarah(naskah)
+
+    assert pertama["tokoh"][0]["id"].startswith("tokoh-")
+    assert pertama["tokoh"][0]["id"] == kedua["tokoh"][0]["id"]
+    assert pertama["adegan"][0]["tokoh_ids"] == [pertama["tokoh"][0]["id"]]
+
+
+def test_roster_tokoh_menolak_nama_ambigu():
+    import pytest
+
+    naskah = {
+        "judul": "Nama ambigu",
+        "dalil": [],
+        "tokoh": [
+            {"id": "a", "nama": "Penolong"},
+            {"id": "b", "nama": " penolong "},
+        ],
+        "beat": [{"narasi": "Penolong datang."}],
+    }
+
+    with pytest.raises(ValueError, match="ambigu"):
+        naskah_untuk_pengarah(naskah)
+
+
+def test_roster_tokoh_menolak_id_ganda():
+    import pytest
+
+    naskah = {
+        "judul": "ID ganda",
+        "dalil": [],
+        "tokoh": [
+            {"id": "sama", "nama": "Penolong"},
+            {"id": "sama", "nama": "Pengendara"},
+        ],
+        "beat": [{"narasi": "Mereka bertemu."}],
+    }
+
+    with pytest.raises(ValueError, match="digunakan lebih dari sekali"):
+        naskah_untuk_pengarah(naskah)
+
