@@ -484,7 +484,7 @@ def arahkan(naskah: dict, waktu_adegan: list[float] | None = None,
                     benda.append({"jenis": "sajadah", "x": letak["x"], "y": letak["y"] + 14, "s": round(letak["s"] * 0.9, 2)})
             # Subjek yang disebut narasi harus hadir di shot yang mengucapkannya.
             # Pemetaan dimiliki paket genre, terpisah dari leksikon alat ukur.
-            subjek = arahkan_subjek(tx, ds, idx * 100 + j)
+            subjek = arahkan_subjek(tx, ds, idx * 100 + j, konteks=teks_gabungan)
             jenis_ada = {x.get("jenis") for x in benda}
             benda += [x for x in subjek["benda"] if x.get("jenis") not in jenis_ada]
             s["benda"] = benda
