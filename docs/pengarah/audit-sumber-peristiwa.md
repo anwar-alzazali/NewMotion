@@ -167,3 +167,20 @@ Cakupan ini masih berupa pola permukaan satu penghubung kausal per kalimat.
 Korelasi, sebab implisit, sebab jamak, sebab lintas kalimat, dan pengetahuan
 dunia tidak digunakan untuk menebak hubungan. Tes memakai ragam konteks cerita;
 contoh kendaraan bukan acuan utama. Tidak ada render video pada tahap ini.
+
+
+
+## Rantai sebab-akibat eksplisit (Tahap 20)
+
+- Mendukung rantai beberapa klausa dalam satu kalimat bila setiap klausa
+  menghasilkan tepat satu peristiwa yang dikenali.
+- Pada pola A sehingga B sehingga C, B ditautkan sebagai akibat A dan C
+  ditautkan sebagai akibat B.
+- Pada pola A karena B karena C, A ditautkan sebagai akibat B dan B sebagai
+  akibat C. Arah relasi mengikuti penghubung di antara setiap pasangan klausa.
+- ID relasi diselesaikan setelah seluruh ID peristiwa dibuat.
+- Jika satu klausa tidak dikenali, menghasilkan lebih dari satu peristiwa,
+  atau menimbulkan diagnostik, seluruh rantai ditolak; tidak ada tautan parsial.
+- Dukungan ini terbatas pada rantai klausa eksplisit dalam satu kalimat.
+  Sebab lintas kalimat, sebab implisit, sebab jamak, dan inferensi pengetahuan
+  dunia tetap tidak dilakukan.
