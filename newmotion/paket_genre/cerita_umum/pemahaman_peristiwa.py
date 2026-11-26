@@ -1,0 +1,161 @@
+"""Pengurai peristiwa narasi Indonesia dengan tata bahasa konservatif.
+
+Pengurai ini bukan model bahasa. Ia hanya mengeluarkan peristiwa untuk pola yang
+dikenali dengan bukti frasa sumber; pola lain ditandai agar tidak diisi dengan
+dugaan. Cakupan awal sengaja terbatas dan dapat diperluas lewat tes.
+"""
+from __future__ import annotations
+
+import re
+import unicodedata
+from collections.abc import Sequence
+
+
+# Bentuk kata yang didukung dipetakan ke aksi semantik kanonis.
+_POLA_AKSI = {
+    "berjalan": "berjalan",
+    "berjalan kaki": "berjalan",
+    "berlari": "berlari",
+    "lari": "berlari",
+    "mendekati": "mendekati",
+    "menolong": "menolong",
+    "ditolong": "menolong",
+    "membantu": "menolong",
+    "dibantu": "menolong",
+    "mengangkat": "mengangkat",
+    "diangkat": "mengangkat",
+    "menarik": "menarik",
+    "ditarik": "menarik",
+    "mendorong": "mendorong",
+    "didorong": "mendorong",
+    "memukul": "memukul",
+    "dipukul": "memukul",
+    "menyerang": "menyerang",
+    "diserang": "menyerang",
+    "tergelincir": "tergelincir",
+    "jatuh": "jatuh",
+    "terjatuh": "jatuh",
+    "mengendarai": "mengendarai_motor",
+    "menaiki": "menaiki",
+    "menunggu": "menunggu",
+    "mengamati": "mengamati",
+    "duduk": "duduk",
+    "berdiri": "berdiri",
+}
+_AKSI_REGEX = re.compile(
+    r"(?<![\w])(" + "|".join(
+        re.escape(x) for x in sorted(_POLA_AKSI, key=len, reverse=True)
+    ) + r")(?![\w])",
+    re.IGNORECASE,
+)
+_PEMISAH_URUT = re.compile(r"\s+(?:lalu|kemudian|setelah\s+itu|sesudah\s+itu)\s+", re.I)
+_PEMISAH_SIMULTAN = re.compile(r"\s+(?:dan|sementara)\s+", re.I)
+
+
+def _normalisasi(teks: str) -> str:
+    return " ".join(unicodedata.normalize("NFKC", teks).split())
+
+
+def _posisi_peran(teks: str, peran: Sequence[str]) -> list[tuple[int, int, str]]:
+    hasil = []
+    for nama in sorted(set(peran), key=len, reverse=True):
+        nama = _normalisasi(nama)
+        if not nama:
+            continue
+        pola = re.compile(r"(?<![\w])" + re.escape(nama) + r"(?![\w])", re.I)
+        for cocok in pola.finditer(teks):
+            hasil.append((cocok.start(), cocok.end(), nama))
+    return sorted(hasil)
+
+
+def _peristiwa_klausa(klausa: str, peran: Sequence[str], nomor: int) -> tuple[dict | None, str | None]:
+    klausa = _normalisasi(klausa).strip(" ,;")
+    if not klausa:
+        return None, None
+    if re.search(r"\b(?:tidak|bukan|belum|jangan)\b", klausa, re.I):
+        return None, "klausa_negatif_tidak_dijadikan_aksi"
+    aksi = list(_AKSI_REGEX.finditer(klausa))
+    if len(aksi) != 1:
+        if len(aksi) > 1:
+            return None, "lebih_dari_satu_aksi_dalam_klausa"
+        return None, "pola_aksi_belum_dikenali"
+    verba = aksi[0]
+    subjek = _posisi_peran(klausa[:verba.start()], peran)
+    objek = _posisi_peran(klausa[verba.end():], peran)
+    bentuk = verba.group(1).casefold()
+    pasif = bentuk.startswith("di")
+    if pasif:
+        oleh = re.search(r"\boleh\b", klausa[verba.end():], re.I)
+        if oleh:
+            kandidat_aktor = _posisi_peran(klausa[verba.end() + oleh.end():], peran)
+            kandidat_sasaran = subjek
+        else:
+            return None, "kalimat_pasif_tanpa_pelaku_eksplisit"
+    else:
+        kandidat_aktor = subjek
+        kandidat_sasaran = objek
+    if len(kandidat_aktor) != 1:
+        return None, "aktor_tidak_tunggal_atau_tidak_ditemukan"
+    if len(kandidat_sasaran) > 1:
+        return None, "sasaran_tokoh_ambigu"
+    aktor = kandidat_aktor[-1][2]
+    sasaran = kandidat_sasaran[0][2] if kandidat_sasaran else None
+    bukti = klausa
+    hasil = {
+        "id": f"peristiwa-{nomor:03d}",
+        "aktor": aktor,
+        "aksi": _POLA_AKSI[bentuk],
+        "bukti_teks": bukti,
+        "hubungan_temporal": "simultan",
+    }
+    if sasaran:
+        hasil["sasaran"] = sasaran
+    return hasil, None
+
+
+def uraikan_peristiwa(teks: str, peran: Sequence[str]) -> dict:
+    """Urai pola narasi yang didukung; sisanya menjadi diagnostik, bukan tebakan."""
+    if not isinstance(teks, str) or not teks.strip():
+        raise ValueError("Teks narasi harus berupa string yang tidak kosong.")
+    if not isinstance(peran, (list, tuple)) or any(
+        not isinstance(nama, str) or not nama.strip() for nama in peran
+    ):
+        raise ValueError("Daftar peran harus berisi nama tokoh yang tidak kosong.")
+
+    peristiwa = []
+    diagnostik = []
+    nomor = 0
+    kalimat = [x.strip() for x in re.split(r"(?<=[.!?])\s+", _normalisasi(teks)) if x.strip()]
+    for nomor_kalimat, kalimat_item in enumerate(kalimat, 1):
+        bagian_urut = _PEMISAH_URUT.split(kalimat_item)
+        for nomor_bagian, bagian in enumerate(bagian_urut):
+            bagian_simultan = _PEMISAH_SIMULTAN.split(bagian)
+            hasil_bagian = []
+            for klausa in bagian_simultan:
+                nomor += 1
+                hasil, alasan = _peristiwa_klausa(klausa, peran, nomor)
+                if hasil:
+                    hasil["hubungan_temporal"] = (
+                        "setelah" if nomor_bagian > 0 else
+                        "simultan" if len(bagian_simultan) > 1 else "tidak_dinyatakan"
+                    )
+                    hasil_bagian.append(hasil)
+                elif alasan:
+                    diagnostik.append({
+                        "kode": alasan,
+                        "kalimat": nomor_kalimat,
+                        "bukti_teks": klausa.strip(),
+                    })
+            peristiwa.extend(hasil_bagian)
+
+    for nomor_event, item in enumerate(peristiwa, 1):
+        item["id"] = f"peristiwa-{nomor_event:03d}"
+        item["urutan"] = nomor_event
+    return {
+        "status": "siap" if peristiwa and not diagnostik else (
+            "sebagian" if peristiwa else "perlu_pemeriksaan"
+        ),
+        "peristiwa": peristiwa,
+        "diagnostik": diagnostik,
+        "metode": "tata_bahasa_deterministik_konservatif",
+    }
