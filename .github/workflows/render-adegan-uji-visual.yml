@@ -59,6 +59,13 @@ jobs:
           from pathlib import Path
           p = Path("hasil-uji-visual/cerita-umum-motor-penolong.papan.json")
           spec = json.loads(p.read_text(encoding="utf-8"))
+          import sys
+          root = Path.cwd()
+          sys.path.insert(0, str(root / "mesin-video"))
+          import papan_buat
+          papan_buat.jaga_spek(spec)
+          html = papan_buat.buat_html(spec, dasar=str(root), sudah_dijaga=True)
+          assert "motor-beat-001" in html, "HTML renderer tidak memuat motor"
           shots = spec["cerita"]["shot"]
           assert len(shots) == 2, f"Jumlah shot tidak sesuai: {len(shots)}"
           pertama, kedua = shots
