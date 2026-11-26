@@ -35,7 +35,36 @@ def arahkan_tokoh_visual(rencana_cerita, rencana_blocking, cerita):
     pose_terakhir = {}
     # Kendaraan mengikuti kontinuitas tokoh pemiliknya ke shot berikutnya.
     motor_terakhir = {}
-    for tautan in (rencana_blocking or {}).get("shot", []):
+    # Satu beat dapat memiliki beberapa tahap aksi. Peristiwa tanpa relasi
+    # temporal tetap berada dalam satu tahap agar aksi simultan tidak terpecah.
+    tautan_bertahap = []
+    for tautan_asal in (rencana_blocking or {}).get("shot", []):
+        indeks_asal = tautan_asal.get("indeks")
+        shot_asal = (
+            cerita.get("shot", [])[indeks_asal]
+            if type(indeks_asal) is int and 0 <= indeks_asal < len(cerita.get("shot", []))
+            else {}
+        )
+        pengarahan = shot_asal.get("pengarahan", {}) if isinstance(shot_asal, Mapping) else {}
+        tahapan = pengarahan.get("tahapan_peristiwa") if isinstance(pengarahan, Mapping) else None
+        if not isinstance(tahapan, list) or not tahapan:
+            tautan_bertahap.append(dict(tautan_asal))
+            continue
+        for tahap in tahapan:
+            if not isinstance(tahap, Mapping):
+                continue
+            ids_tahap = tahap.get("peristiwa_ids")
+            if not isinstance(ids_tahap, list) or not ids_tahap:
+                continue
+            tautan_bertahap.append({
+                **dict(tautan_asal),
+                "peristiwa_ids": list(ids_tahap),
+                "tahap_id": tahap.get("id"),
+                "tahap_urutan": tahap.get("urutan"),
+                "tahap_dasar": tahap.get("dasar_pemisahan"),
+            })
+
+    for tautan in tautan_bertahap:
         indeks = tautan.get("indeks")
         if type(indeks) is not int or indeks >= len(cerita.get("shot", [])):
             continue
@@ -156,6 +185,13 @@ def arahkan_tokoh_visual(rencana_cerita, rencana_blocking, cerita):
                 pose_terakhir[aktor_id] = "tergelincir"
         if arahan_tokoh:
             butir_shot = {"indeks": indeks, "tokoh": arahan_tokoh}
+            if tautan.get("tahap_id"):
+                butir_shot.update({
+                    "tahap_id": tautan["tahap_id"],
+                    "tahap_urutan": tautan.get("tahap_urutan"),
+                    "tahap_dasar": tautan.get("tahap_dasar"),
+                    "peristiwa_ids": list(tautan.get("peristiwa_ids", [])),
+                })
             benda_shot = []
             if motor_dibutuhkan:
                 pemilik_motor = next(
