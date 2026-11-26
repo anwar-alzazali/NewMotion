@@ -23,3 +23,10 @@ Aturan:
 - Setiap potongan sumber menjadi satu adegan naskah; judul berasal dari nama papan, tanpa aturan pengarah khusus per judul.
 - Fixture ini dipakai untuk membandingkan baseline `main` dan branch PR #28 dengan alat ukur PR #29 yang sama.
 - Skor tetap hanya indikator kedalaman struktur dan kesesuaian leksikal; bukan bukti kualitas visual. Tidak ada render otomatis dari workflow ini.
+
+
+## Pratinjau visual manual
+
+Workflow `.github/workflows/pr28-pratinjau-semantik.yml` disiapkan dengan pemicu `workflow_dispatch` saja. Pilihan default adalah `yajuj1`; pilihan lain adalah `doa2`, `bangkrut1`, dan `wali1`.
+
+Workflow akan menjalankan naskah melalui CLI NewMotion, menyimpan papan hasil pengarahan, memvalidasi subjek semantik penting, merender MP4 H.264 1080x1920, mengambil frame audit, lalu mengunggah artefak. Workflow ini belum dijalankan; pemilik repo perlu memicunya secara manual dan meninjau frame/video sebelum PR dinyatakan layak merge.
