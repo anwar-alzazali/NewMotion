@@ -1,5 +1,6 @@
 from newmotion.application.pengarah_inti import arahkan_naskah
 from newmotion.domain.genre import ambil
+from newmotion.adapter_visual_tokoh import terapkan_rencana_visual_tokoh
 
 
 def _naskah():
@@ -39,3 +40,20 @@ def test_paket_cerita_umum_tidak_mengambil_alih_kebijakan_kisah_islami():
     assert ambil("cerita_umum").pengarah_tokoh_visual is not None
     paket_islami = ambil("kisah_islami")
     assert paket_islami.pengarah_tokoh_visual is None
+
+
+def test_adapter_meneruskan_motor_jadwal_tergelincir_dan_aksi_menolong():
+    spek, _, _ = arahkan_naskah(_naskah())
+    hasil = terapkan_rencana_visual_tokoh(spek)
+    assert hasil[0]["jumlah_tokoh_ditambahkan"] == 2
+    shot = spek["cerita"]["shot"][0]
+    motor = next(item for item in shot["benda"] if item["jenis"] == "motor")
+    assert motor["id"] == "motor-beat-001"
+    penolong = next(item for item in shot["boneka"] if item["aktor_id"] == "penolong")
+    pengendara = next(item for item in shot["boneka"] if item["aktor_id"] == "pengendara")
+    assert penolong["jalan"] == 1.0
+    assert penolong["sasaran_id"] == 1
+    assert penolong["karakter"]["gerak"] == [[0, "jalan"], [2.2, "menolong"]]
+    assert pengendara["kendaraan_id"] == motor["id"]
+    assert pengendara["lepas_kendaraan_at"] == 0.9
+    assert pengendara["karakter"]["gerak"] == [[0, "mengendarai_motor"], [0.65, "tergelincir"]]
