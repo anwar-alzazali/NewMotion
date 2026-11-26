@@ -127,3 +127,44 @@ def test_sosok_pemuka_kaum_di_kalimat_terpisah_tetap_dapat_diarahkan():
 def test_dinding_generik_tanpa_konteks_besi_dua_gunung_tidak_ditebak():
     assert "ngarai" not in _jenis("Dinding rumah itu mulai retak.")
     assert "ngarai" not in _jenis("Lubang pada tembok itu membesar.")
+
+
+
+def test_segmen_yang_menyebut_sahabat_tidak_menyisipkan_siluet_di_kalimat_lain():
+    jenis = _jenis("Para sahabat berkumpul. Rasulullah kemudian menyampaikan nasihat.")
+    assert "kerumunan" not in jenis
+    assert "arus" not in jenis
+
+
+def test_air_biasa_tidak_diberi_visual_kerumunan_atau_mata_air():
+    for teks in (
+        "Mereka meminum habis air.",
+        "Air mengalir di sungai.",
+        "Air mata mengalir di pipinya.",
+        "Hujan membawa aliran air ke lembah.",
+    ):
+        assert not ({"arus", "kerumunan", "pancar"} & _jenis(teks))
+
+
+def test_konteks_zulkarnain_harus_eksplisit_sebelum_dinding_digambar():
+    assert "ngarai" not in _jenis("Dinding batu itu retak dan mulai runtuh.")
+    assert "ngarai" not in _jenis("Mereka menggali lubang besar di tanah.")
+    assert "ngarai" in _jenis("Zulkarnain membangun dinding besi di celah dua gunung.")
+
+
+def test_pengarah_menyimpan_narasi_sumber_untuk_penjaga_adab():
+    from newmotion.paket_genre.kisah_islami.pengarah_naskah import arahkan
+
+    spek = arahkan({
+        "judul": "Nasihat Rasulullah",
+        "adegan": [{
+            "nama": "nasihat",
+            "teks": "Rasulullah, pemimpin umat ini, berdiri di depan para sahabat.",
+        }],
+    })
+    shot = spek["cerita"]["shot"][0]
+    assert shot["_narasi"] == "Rasulullah, pemimpin umat ini, berdiri di depan para sahabat."
+    assert not any(
+        benda.get("jenis") in {"pemimpin", "penggali", "kerumunan", "arus"}
+        for benda in shot.get("benda", [])
+    )
