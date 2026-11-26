@@ -1508,7 +1508,7 @@
           fx = sisi * Math.min(72, Math.abs(Math.sin((sudutKaki[0] + sudutKaki[1]) * R) * 68));
         }
         const H = [sisi * (sg < 0 ? -5 : 5), hy0];
-        const F = [fx, -lift - (jalan && aksi === "jalan" ? 8 : 0)];
+        const F = [fx, Math.min(0, J.turun) - lift - (jalan && aksi === "jalan" ? 8 : 0)];
         const dx = F[0] - H[0], dy = F[1] - H[1], jarak = Math.max(1, Math.hypot(dx, dy));
         const d = Math.min(199.5, jarak), tengah = [(H[0] + F[0]) / 2, (H[1] + F[1]) / 2];
         const tinggi = Math.sqrt(Math.max(0, 10000 - d * d / 4));
