@@ -427,6 +427,7 @@ def arahkan_naskah(
                     copy.deepcopy(spesifikasi["rencana_cerita"]),
                     copy.deepcopy(spesifikasi["rencana_blocking"]),
                     copy.deepcopy(cerita),
+                    copy.deepcopy(shot_visual),
                 )
             except (TypeError, ValueError) as galat:
                 raise GalatPengarahan(
