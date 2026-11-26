@@ -94,3 +94,22 @@ dan pemeriksaan ID duplikat.
 - Perubahan keadaan benda belum diterjemahkan menjadi keyframe/properti temporal.
 - Katalog saat ini hanya subset terverifikasi; belum mencakup semua jenis renderer.
 - Belum ada render video. Tahap ini menguji kontrak JSON dan keterlacakan saja.
+
+
+## Pembaruan implementasi dan validasi katalog
+
+Katalog pada pengarah benda diselaraskan dengan daftar `SUPPORTED_JENIS` yang
+terverifikasi di `mesin-video/papan/direktur.py`, yang mengambil sumber kosakata dari
+fungsi `benda()` pada `papan/cerita.js`. Ini menghindari kesalahan mengambil jenis
+ruang atau pakaian sebagai jenis benda. Daftar NewMotion tetap berupa salinan versi
+tertentu; ia tidak dibaca dari repo renderer saat runtime.
+
+Jenis `motor` termasuk katalog sah dan telah ditambahkan tes langsung. Properti objek
+seperti `miring` tetap diteruskan sebagai data JSON jika tidak menimpa field kontrak
+utama. Penempatan benda tetap wajib eksplisit. Objek tanpa posisi tidak masuk ke
+renderer dan menghasilkan diagnostik, bukan posisi rekaan.
+
+CI kontrak pada head implementasi awal Tahap 12 lulus dengan 70 tes. Setelah
+penyelarasan katalog dan penambahan tes motor, hasil CI revisi terbaru masih harus
+menjadi gerbang penerimaan; keberhasilan run sebelumnya tidak otomatis membuktikan
+revisi baru lulus.
