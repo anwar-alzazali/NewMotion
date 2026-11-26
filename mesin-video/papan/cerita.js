@@ -1555,9 +1555,13 @@
     const lengan = (sg, s) => {
       let a1 = s[0], a2 = s[1]; if (sg > 0 && J.lambai) a2 += Math.sin(t * 9) * 26 * J.lambai;
       const sw = ayun * 0.6 * -sg;
-      const S = samping ? [sisi * (sg < 0 ? 10 : 18), -360 + nafas + (sg < 0 ? -13 : 0)] : tigaPerempat ? [sg < 0 ? -44 : 60, -360 + nafas] : [sg * (62 + 26 * GM), -360 + nafas];
-      const E = [S[0] + (samping ? sisi : sg) * Math.sin((a1 + sw) * R) * 85, S[1] + Math.cos((a1 + sw) * R) * 85];
-      const H = [E[0] + (samping ? sisi : sg) * Math.sin((a2 + sw) * R) * 80, E[1] + Math.cos((a2 + sw) * R) * 80];
+      const S = o.profilMotor ? [sg < 0 ? 26 : 34, -360 + nafas] :
+        samping ? [sisi * (sg < 0 ? 10 : 18), -360 + nafas + (sg < 0 ? -13 : 0)] :
+        tigaPerempat ? [sg < 0 ? -44 : 60, -360 + nafas] : [sg * (62 + 26 * GM), -360 + nafas];
+      const E = o.profilMotor ? [S[0] + 75, -320 + nafas] :
+        [S[0] + (samping ? sisi : sg) * Math.sin((a1 + sw) * R) * 85, S[1] + Math.cos((a1 + sw) * R) * 85];
+      const H = o.profilMotor ? [E[0] + 76, -293 + nafas] :
+        [E[0] + (samping ? sisi : sg) * Math.sin((a2 + sw) * R) * 80, E[1] + Math.cos((a2 + sw) * R) * 80];
       return { ats: `<line x1="${S[0]}" y1="${S[1]}" x2="${E[0]}" y2="${E[1]}" stroke="${BD}" stroke-width="36" stroke-linecap="round"/>`,
                bwh: `<line x1="${E[0]}" y1="${E[1]}" x2="${H[0]}" y2="${H[1]}" stroke="${BD}" stroke-width="34" stroke-linecap="round"/><circle cx="${H[0]}" cy="${H[1]}" r="19" fill="${pakaiP ? KLB : BD}" stroke="${INK}" stroke-width="4"/>`, S, E, H };
     };
@@ -1699,7 +1703,7 @@
     const lenganKiri = `<line x1="${-SH}" y1="${-360 + nafas}" x2="${-SH - 22 - ayun * 0.3}" y2="${-200 + nafas}" stroke="${BD}" stroke-width="36" stroke-linecap="round"/>` + tangan(-SH - 22 - ayun * 0.3, -192 + nafas);
     g += lenganKiri;
     const sudutTokoh = b.sudut || (b.profil === "kiri" ? "samping_kiri" : b.profil === "kanan" || b.profil === true ? "samping" : v(b.belakang, t, d, false) ? "belakang" : "depan");
-    let RG = null; if (RIG) { RG = rangka(RIG, { P, BD, WC, KLB, nafas, ayun, bawahP, t: HD ? ta : t, gm: GM, aksi: RIG && RIG._aksi || b.aksi, id: b.npc != null ? b.npc : b.id, offset: b._gerak_offset, sudut: sudutTokoh }); g = RG.g; }
+    let RG = null; if (RIG) { RG = rangka(RIG, { P, BD, WC, KLB, nafas, ayun, bawahP, t: HD ? ta : t, gm: GM, aksi: RIG && RIG._aksi || b.aksi, id: b.npc != null ? b.npc : b.id, offset: b._gerak_offset, sudut: sudutTokoh, profilMotor: (sudutTokoh === "samping" || sudutTokoh === "samping_kiri") && RIG && RIG._aksi === "mengendarai_motor" }); g = RG.g; }
     let lenganKanan = RIG ? "" : `<line x1="${SH}" y1="${-360 + nafas}" x2="${SH + 22 + ayun * 0.3}" y2="${-200 + nafas}" stroke="${BD}" stroke-width="36" stroke-linecap="round"/>` + tangan(SH + 22 + ayun * 0.3, -192 + nafas);
     // kepala
     const hx = arah * 10, hy = -492 - (KB - 1) * 96 + nafas + tunduk * 14 + (H ? H.ky : 0), ex = arah * 24, ey = tunduk * 14 + (mata === "atas" ? -8 : mata === "bawah" ? 8 : 0);
