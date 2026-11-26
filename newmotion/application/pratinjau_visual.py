@@ -64,6 +64,7 @@ def naskah_untuk_pengarah(
         and d.get("status") == "terverifikasi"
     }
     dalil_dipakai = []
+    genre_efektif = genre or naskah.get("genre") or "kisah_islami"
     for i, b in enumerate(beat, 1):
         if not isinstance(b, dict):
             raise ValueError(f"Beat {i} tidak valid.")
@@ -112,11 +113,22 @@ def naskah_untuk_pengarah(
             "tokoh_ids": peran_ids,
             "dialog": copy.deepcopy(dialog),
         }
-        # Data peristiwa hanya diteruskan bila memang disediakan naskah.
-        # Tahap ini tidak menebak pelaku, sasaran, aksi, atau perubahan keadaan.
-        for kunci in ("peristiwa", "aksi", "sasaran", "tujuan", "perubahan_keadaan"):
-            if kunci in b:
-                adegan_item[kunci] = copy.deepcopy(b[kunci])
+        # Peristiwa eksplisit dari sumber selalu menjadi otoritas.
+        # Cerita umum boleh memakai pengurai deterministik jika field peristiwa belum ada.
+        if "peristiwa" in b:
+            for kunci in ("peristiwa", "aksi", "sasaran", "tujuan", "perubahan_keadaan"):
+                if kunci in b:
+                    adegan_item[kunci] = copy.deepcopy(b[kunci])
+        elif genre_efektif == "cerita_umum":
+            from newmotion.paket_genre.cerita_umum.pemahaman_peristiwa import uraikan_peristiwa
+
+            hasil_pemahaman = uraikan_peristiwa(narasi.strip(), peran)
+            adegan_item["peristiwa"] = hasil_pemahaman["peristiwa"]
+            adegan_item["diagnostik_pemahaman"] = {
+                "status": hasil_pemahaman["status"],
+                "metode": hasil_pemahaman["metode"],
+                "diagnostik": hasil_pemahaman["diagnostik"],
+            }
         adegan.append(adegan_item)
         for id_dalil in b.get("dalil", []):
             d = ids_quran.get(id_dalil)
