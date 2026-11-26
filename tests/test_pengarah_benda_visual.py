@@ -66,13 +66,13 @@ def test_benda_muncul_hanya_pada_shot_yang_menautkan_peristiwanya():
         adegan["peristiwa"].append({
             "id": "event-02",
             "aktor": "Aktor A",
-            "aksi": "melihat",
+            "aksi": "berlari",
             "sasaran": "jembatan",
             "sasaran_benda_id": "jembatan-01",
             "setelah_peristiwa_id": "event-01",
-            "bukti_teks": "jembatan",
+            "bukti_teks": "berlari ke jembatan",
         })
-        adegan["teks"] = "Aktor A menunggu di dekat jembatan lalu melihat jembatan."
+        adegan["teks"] = "Aktor A menunggu di dekat jembatan lalu berlari ke jembatan."
 
     spek, _, _ = arahkan_naskah(_naskah([_jembatan()], dua_peristiwa))
     shot = spek["cerita"]["shot"]
