@@ -72,6 +72,34 @@ def _rencana_cerita(naskah: Mapping[str, Any], shot: list[dict]) -> dict[str, An
         if not isinstance(jenis_benda, str) or not jenis_benda.strip():
             raise GalatPengarahan(f"Benda {identitas_benda!r} wajib memiliki jenis_renderer")
         id_benda.add(identitas_benda)
+
+    # Perubahan keadaan dapat merujuk tokoh atau benda, tetapi nama hanya
+    # dipetakan bila tepat satu entitas cocok.
+    entitas_berdasarkan_nama: dict[str, list[str]] = {}
+    for item in tokoh:
+        kunci = " ".join(str(item["nama"]).split()).casefold()
+        entitas_berdasarkan_nama.setdefault(kunci, []).append(item["id"])
+    for item in daftar_benda:
+        identitas = item["id"]
+        nama_benda = item.get("nama")
+        label_benda = [nama_benda] if isinstance(nama_benda, str) else []
+        alias = item.get("alias", [])
+        if isinstance(alias, (list, tuple)):
+            label_benda.extend(x for x in alias if isinstance(x, str))
+        for label in label_benda:
+            kunci = " ".join(label.split()).casefold()
+            if kunci:
+                entitas_berdasarkan_nama.setdefault(kunci, []).append(identitas)
+
+    def cari_id_entitas(nilai):
+        if not isinstance(nilai, str):
+            return None, False
+        if nilai in id_tokoh or nilai in id_benda:
+            return nilai, False
+        kunci = " ".join(nilai.split()).casefold()
+        cocok = entitas_berdasarkan_nama.get(kunci, [])
+        return (cocok[0], False) if len(cocok) == 1 else (None, len(cocok) > 1)
+
     for nomor, adegan in enumerate(naskah["adegan"], start=1):
         identitas = adegan.get("id") or f"beat-{nomor:03d}"
         if not isinstance(identitas, str) or not identitas.strip():
@@ -207,11 +235,19 @@ def _rencana_cerita(naskah: Mapping[str, Any], shot: list[dict]) -> dict[str, An
                     perubahan = copy.deepcopy(dict(perubahan))
                     entitas_nama = perubahan.pop("entitas", None)
                     entitas_id = perubahan.get("entitas_id")
+                    ambigu = False
                     if entitas_id is None and entitas_nama is not None:
-                        entitas_id = cari_id_tokoh(entitas_nama)
+                        entitas_id, ambigu = cari_id_entitas(entitas_nama)
                         if entitas_id is not None:
                             perubahan["entitas_id"] = entitas_id
-                    if entitas_id is None:
+                    if ambigu:
+                        diagnostik.append({
+                            "kode": "entitas_perubahan_keadaan_ambigu",
+                            "beat_id": identitas,
+                            "peristiwa_id": id_peristiwa,
+                            "entitas": entitas_nama,
+                        })
+                    elif entitas_id is None:
                         diagnostik.append({
                             "kode": "entitas_perubahan_keadaan_belum_terpetakan",
                             "beat_id": identitas,
