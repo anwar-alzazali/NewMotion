@@ -2,6 +2,7 @@
 from newmotion.domain.genre import PaketGenre
 from .pengarah_naskah import arahkan
 from .pengarah_tokoh_visual import arahkan_tokoh_visual
+from .pengarah_kamera import arahkan_kamera
 
 
 def buat_paket() -> PaketGenre:
@@ -9,4 +10,5 @@ def buat_paket() -> PaketGenre:
         nama="cerita_umum",
         pengarah_naskah=arahkan,
         pengarah_tokoh_visual=arahkan_tokoh_visual,
+        pengarah_kamera=arahkan_kamera,
     )
