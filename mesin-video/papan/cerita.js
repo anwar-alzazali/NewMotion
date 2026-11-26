@@ -1730,18 +1730,29 @@
       k += `<path d="M -92 20 C -100 -110, 100 -110, 92 20 C 104 90, 96 130, 70 150 L -70 150 C -96 130, -104 90, -92 20 Z" fill="${BAYANG}" stroke="${INK}" stroke-width="6"/><path d="M -60 -50 C -20 -80, 30 -78, 62 -44" stroke="#ffffff" stroke-width="5" fill="none" opacity=".18"/>`;
     } else if (b.profil === "kanan" || b.profil === true || b.profil === "kiri") {
       // Tampak samping: wajah mengarah ke depan perjalanan, bukan ke kamera.
-      k += `<path d="M -62 -54 Q -38 -94 8 -82 Q 48 -78 52 -40 L 54 -10 L 78 8 L 56 24 Q 60 58 34 76 Q 4 94 -34 70 Q -66 48 -62 -54 Z" fill="${b.kulit || KL}" stroke="${INK}" stroke-width="7"/>`;
-      k += `<path d="M -64 -44 Q -58 -108 8 -104 Q 62 -100 66 -48 Q 38 -68 10 -60 Q -24 -54 -64 -20 Z" fill="${b.warna_rambut || INK}" stroke="${INK}" stroke-width="6"/>`;
-      k += `<circle cx="30" cy="-18" r="8" fill="#fff" stroke="${INK}" stroke-width="3"/><circle cx="34" cy="-18" r="4.5" fill="${INK}"/><path d="M 50 42 Q 62 46 68 38" fill="none" stroke="${INK}" stroke-width="5" stroke-linecap="round"/>`;
+      // (27 Nov) kepala bulat sebesar tampak depan, hidung membulat, telinga di tengah sisi kepala
+      const kp = b.kulit || KL;
+      k += `<path d="M -36 72 Q -82 50 -80 -8 Q -78 -86 2 -86 Q 58 -84 64 -30 L 66 -8 Q 86 6 80 18 Q 76 26 64 26 Q 68 36 62 44 Q 60 72 34 82 Q 4 92 -36 72 Z" fill="${kp}" stroke="${INK}" stroke-width="7" stroke-linejoin="round"/>`;
+      if (b.janggut) k += `<path d="M -8 38 Q 6 98 40 86 Q 62 76 62 54 Q 46 64 24 58 Q 6 52 -8 38 Z" fill="${b.janggut === true ? (b.warna_rambut || INK) : b.janggut}" stroke="${INK}" stroke-width="4"/>`;
+      if (b.rambut === "kerudung") { // kerudung tampak samping: kain menutup rambut, telinga, dan leher; wajah terbuka
+        const kd = b.kerudung || "#6aa6a0";
+        k += `<path d="M 58 -52 Q 36 -114 -26 -104 Q -102 -88 -100 0 Q -100 70 -86 118 L 52 118 Q 62 98 46 86 Q 20 80 4 58 Q -12 30 0 -12 Q 12 -46 58 -52 Z" fill="${kd}" stroke="${INK}" stroke-width="7" stroke-linejoin="round"/>`;
+        k += `<path d="M -66 -50 Q -78 30 -56 104" fill="none" stroke="${warna(kd, "#000000", 0.18)}" stroke-width="5"/><path d="M 40 -60 Q 2 -50 -8 -10" fill="none" stroke="${warna(kd, "#ffffff", 0.25)}" stroke-width="5" stroke-linecap="round"/>`;
+      } else {
+        k += `<path d="M -84 14 Q -96 -92 4 -100 Q 70 -98 70 -42 Q 44 -64 10 -60 Q -22 -56 -40 -28 Q -50 -8 -58 16 Q -70 22 -84 14 Z" fill="${b.warna_rambut || INK}" stroke="${INK}" stroke-width="6"/>`;
+        k += `<ellipse data-telinga="1" cx="-16" cy="10" rx="15" ry="20" fill="${kp}" stroke="${INK}" stroke-width="6"/><path d="M -12 2 Q -24 8 -14 20" fill="none" stroke="${INK}" stroke-width="4" stroke-linecap="round"/>`;
+      }
+      k += `<path d="M 18 -36 Q 34 -42 48 -34" fill="none" stroke="${INK}" stroke-width="7" stroke-linecap="round"/><circle cx="34" cy="-14" r="9" fill="#fff" stroke="${INK}" stroke-width="3"/><circle cx="38" cy="-14" r="5" fill="${INK}"/>`;
+      k += `<path d="M 44 50 Q 54 54 60 48" fill="none" stroke="${INK}" stroke-width="5" stroke-linecap="round"/>`;
     } else if (belakang) {
-      k += `<circle cx="-76" cy="6" r="15" fill="${KL}" stroke="${INK}" stroke-width="6"/><circle cx="76" cy="6" r="15" fill="${KL}" stroke="${INK}" stroke-width="6"/><circle r="78" fill="${b.warna_rambut || INK}" stroke="${INK}" stroke-width="7"/><path d="M -60 50 Q 0 90 60 50 L 50 72 Q 0 96 -50 72 Z" fill="${KL}"/>`;
+      k += `<circle data-telinga="1" cx="-76" cy="6" r="15" fill="${KL}" stroke="${INK}" stroke-width="6"/><circle data-telinga="1" cx="76" cy="6" r="15" fill="${KL}" stroke="${INK}" stroke-width="6"/><circle r="78" fill="${b.warna_rambut || INK}" stroke="${INK}" stroke-width="7"/><path d="M -60 50 Q 0 90 60 50 L 50 72 Q 0 96 -50 72 Z" fill="${KL}"/>`;
     } else if (gaya === "umum") {
       const kl = b.kulit || KL, rb = b.rambut || "pendek", RB = b.warna_rambut || INK;
       if (rb === "kerudung") { // perempuan: kepala tertutup kain gelap (sama dengan badan)
         k += `<path d="M -92 30 C -100 -110, 100 -110, 92 30 C 96 90, 60 120, 0 122 C -60 120, -96 90, -92 30 Z" fill="${b.kerudung || BAYANG}" stroke="${INK}" stroke-width="6"/>`;
         k += `<ellipse cx="0" cy="8" rx="62" ry="72" fill="${kl}" stroke="${INK}" stroke-width="6"/>`;
       } else {
-        k += `<circle cx="-76" cy="6" r="15" fill="${kl}" stroke="${INK}" stroke-width="6"/><circle cx="76" cy="6" r="15" fill="${kl}" stroke="${INK}" stroke-width="6"/>`;
+        k += `<circle data-telinga="1" cx="-76" cy="6" r="15" fill="${kl}" stroke="${INK}" stroke-width="6"/><circle data-telinga="1" cx="76" cy="6" r="15" fill="${kl}" stroke="${INK}" stroke-width="6"/>`;
         k += `<ellipse rx="75" ry="82" fill="${kl}" stroke="${INK}" stroke-width="7"/>`;
         if (rb === "pendek") k += `<path d="M -76 -4 C -84 -98, 82 -106, 76 -4 C 68 -36, 52 -50, 30 -52 C 10 -40, -14 -56, -34 -46 C -54 -50, -70 -30, -76 -4 Z" fill="${RB}"/>`;
         else if (rb === "keriting") { for (let i = 0; i < 9; i++) { const a = Math.PI * (1.05 + i * 0.1), r = 70; k += `<circle cx="${Math.cos(a) * r}" cy="${Math.sin(a) * r - 6}" r="24" fill="${RB}"/>`; } }
@@ -1765,7 +1776,7 @@
     } else if (gaya === "dajjal") { // hanya ciri dari hadits: muda, rambut sangat keriting, satu mata buta menonjol, tulisan ك ف ر di antara mata. Ekspresi: senyum licik.
       const kl = b.kulit || "#b9a88c", RB = "#120d10", tl = v(b.tulisan, t, d, 1), sen = v(b.senyum, t, d, 1), cb = v(b.cahaya_bawah, t, d, 0);
       for (let i = 0; i < 16; i++) { const a = Math.PI * (0.92 + i * 0.075), r = 74 + (i % 2) * 8; k += `<circle cx="${Math.cos(a) * r}" cy="${Math.sin(a) * r - 10}" r="${26 + (i % 3) * 4}" fill="${RB}"/>`; }
-      k += `<circle cx="-78" cy="8" r="15" fill="${kl}" stroke="${INK}" stroke-width="6"/><circle cx="78" cy="8" r="15" fill="${kl}" stroke="${INK}" stroke-width="6"/>`;
+      k += `<circle data-telinga="1" cx="-78" cy="8" r="15" fill="${kl}" stroke="${INK}" stroke-width="6"/><circle data-telinga="1" cx="78" cy="8" r="15" fill="${kl}" stroke="${INK}" stroke-width="6"/>`;
       k += `<ellipse rx="74" ry="84" fill="${kl}" stroke="${INK}" stroke-width="7"/>`;
       for (let i = 0; i < 11; i++) { const a = Math.PI * (1.12 + i * 0.077); k += `<circle cx="${Math.cos(a) * 66}" cy="${Math.sin(a) * 66 - 28}" r="${20 + (i % 2) * 5}" fill="${RB}"/>`; }
       k += `<path d="M 4 -82 A 74 84 0 0 1 4 82 A 46 84 0 0 0 4 -82 Z" fill="#0b0710" opacity=".42"/>`; // bayangan separuh wajah
@@ -1780,7 +1791,7 @@
       k += `<path d="M -26 46 Q -2 ${50 + 2 * sen} 18 ${42 - nk * 0.6} Q 26 ${38 - nk} 32 ${34 - nk}" stroke="${INK}" stroke-width="5" fill="none" stroke-linecap="round"/><path d="M 30 ${30 - nk} q 6 4 4 10" stroke="${INK}" stroke-width="3" fill="none" opacity=".7"/>`;
       if (cb > 0) k += `<defs><linearGradient id="cbw" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#ffe2a8" stop-opacity="${0.45 * cb}"/><stop offset=".45" stop-color="#ffe2a8" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity="${0.35 * cb}"/></linearGradient></defs><ellipse rx="74" ry="84" fill="url(#cbw)"/>`;
     } else if (gaya === "anwar") {
-      k += `<circle cx="-76" cy="6" r="15" fill="${KL}" stroke="${INK}" stroke-width="6"/><circle cx="76" cy="6" r="15" fill="${KL}" stroke="${INK}" stroke-width="6"/>`; // telinga
+      k += `<circle data-telinga="1" cx="-76" cy="6" r="15" fill="${KL}" stroke="${INK}" stroke-width="6"/><circle data-telinga="1" cx="76" cy="6" r="15" fill="${KL}" stroke="${INK}" stroke-width="6"/>`; // telinga
       k += `<ellipse rx="74" ry="84" fill="${KL}" stroke="${INK}" stroke-width="7"/>`;
       k += `<path d="M -72 -8 C -76 -40, -70 -62, -58 -70 L -54 -20 Z M 72 -8 C 76 -40, 70 -62, 58 -70 L 54 -20 Z" fill="#4a4048" opacity=".55"/>`; // samping tipis
       k += `<path d="M -62 -40 C -70 -100, 10 -118, 60 -92 C 78 -80, 76 -56, 66 -44 C 40 -64, 10 -70, -18 -58 C -34 -52, -50 -48, -62 -40 Z" fill="${INK}"/>`; // rambut atas disisir ke samping
@@ -1860,7 +1871,7 @@
       const pm = (b.profil === "kanan" || b.profil === true || b.profil === "kiri") && !!RIG && RIG.turun >= 50;
       window.__catatBoneka.push({ id: b.id, t, x, y, s, tubuh, arah, tunduk, profil: b.profil || null, belakang: !!belakang,
         badan_samping: pm, rig: !!RIG, aksi: RIG && RIG._aksi || b.aksi || null, sendi: RG ? RG.sendi : null, guling: RG ? RG.guling || 0 : 0,
-        telinga: (k.match(/cx="-?76" cy="6" r="15"/g) || []).length, kepala: [hx, hy],
+        telinga: (k.match(/data-telinga="1"/g) || []).length, kepala: [hx, hy],
         kait_galat: kaitL && RG && RG.sendi ? (() => { // jarak (px lokal) tangan/kaki ke titik kait benda; dipakai uji A6
           const jr = (a, q) => Math.hypot(a[0] - q[0], a[1] - q[1]), Sd = RG.sendi;
           const pg = kaitL.pegang ? Math.max(...Sd.lengan.map((Lg, i) => jr(Lg[2], keT(kaitL.pegang[i] || kaitL.pegang[0], RIG)))) : null;
