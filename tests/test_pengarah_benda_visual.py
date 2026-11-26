@@ -287,3 +287,9 @@ def test_benda_peristiwa_dipasang_pada_tahap_yang_memiliki_peristiwa_itu():
     assert len(shot) == 2
     assert any(item["id"] == "tas-01" for item in shot[0]["benda"])
     assert not any(item["id"] == "tas-01" for item in shot[1]["benda"])
+
+
+def test_benda_tidak_boleh_memiliki_lapisan_depan_dan_belakang_sekaligus():
+    benda = _jembatan(lapisan={"depan": True, "belakang": True})
+    with pytest.raises(GalatPengarahan, match="sekaligus"):
+        arahkan_naskah(_naskah([benda]))
