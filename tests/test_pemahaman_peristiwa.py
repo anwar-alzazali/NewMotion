@@ -417,7 +417,7 @@ def test_tujuan_aksi_dipisahkan_dari_aksi_yang_benar_benar_terjadi():
         "aksi": "menolong",
         "sasaran": "Pengendara",
     }
-    assert peristiwa["bukti_teks"] == "Penolong berjalan untuk menolong Pengendara"
+    assert peristiwa["bukti_teks"] == "Penolong berjalan untuk menolong Pengendara."
     assert "menolong" != peristiwa["aksi"]
 
 
