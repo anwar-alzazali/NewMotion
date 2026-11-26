@@ -212,3 +212,10 @@ def test_penggalian_kubur_tetap_tidak_diarahkan_meski_konteks_kisah_menyebut_zul
     }
     assert "ngarai" not in jenis
     assert "penggali" not in jenis
+
+
+
+def test_satu_shot_yang_menyebut_sahabat_tidak_menyisipkan_siluet_kelompok_di_kalimat_lain():
+    jenis = _jenis("Para sahabat berkumpul. Orang-orang berlarian di kejauhan.")
+    assert "kerumunan" not in jenis
+    assert "arus" not in jenis
