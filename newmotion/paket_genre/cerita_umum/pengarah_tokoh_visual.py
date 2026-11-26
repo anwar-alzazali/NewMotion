@@ -83,7 +83,7 @@ def arahkan_tokoh_visual(rencana_cerita, rencana_blocking, cerita):
                     for id_event in tautan.get("peristiwa_ids", [])
                     if peristiwa.get(id_event, {}).get("aktor_id") == sasaran_id
                 ), None)
-                if event_sasaran:
+                if event_sasaran and sasaran_id in tokoh_valid:
                     aksi_sasaran = str(event_sasaran.get("aksi") or "").strip().casefold().replace(" ", "_")
                     objek_sasaran = str(event_sasaran.get("sasaran") or "").casefold()
                     if aksi_sasaran == "tergelincir" and objek_sasaran in {"motor", "sepeda_motor"}:
