@@ -151,9 +151,11 @@ def test_sutradara_menghasilkan_spek_json_dari_narasi_biasa():
     assert peristiwa[0]["aktor_id"] == peristiwa[1]["aktor_id"]
     assert peristiwa[1]["sasaran_tokoh_id"] is not None
     assert all(item["bukti_teks"] in naskah["beat"][0]["narasi"] for item in peristiwa)
-    assert hasil["cerita"]["shot"][0]["pengarahan"]["peristiwa_ids"] == [
-        item["id"] for item in peristiwa
-    ]
+    assert [
+        id_peristiwa
+        for shot in hasil["cerita"]["shot"]
+        for id_peristiwa in shot["pengarahan"]["peristiwa_ids"]
+    ] == [item["id"] for item in peristiwa]
     assert hasil["rencana_cerita"]["adegan"][0]["diagnostik_pemahaman"]["status"] == "siap"
 
 
