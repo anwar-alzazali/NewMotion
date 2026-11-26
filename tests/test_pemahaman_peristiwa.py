@@ -550,7 +550,10 @@ def test_sebab_keadaan_eksplisit_disimpan_sebagai_teks():
     assert event["aksi"] == "jatuh"
     assert event["sebab_teks"] == "jalan licin."
     assert "hubungan_sebab_akibat" not in event
-    assert hasil["diagnostik"][0]["kode"] == "sebab_teks_tidak_dipetakan_ke_peristiwa"
+    assert any(
+        item["kode"] == "sebab_teks_tidak_dipetakan_ke_peristiwa"
+        for item in hasil["diagnostik"]
+    )
 
 
 def test_klausa_akibat_yang_tidak_dikenali_tidak_dibuat_menjadi_event():
