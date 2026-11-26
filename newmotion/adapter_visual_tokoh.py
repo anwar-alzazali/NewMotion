@@ -123,7 +123,11 @@ def terapkan_rencana_visual_tokoh(spec):
                     pengarahan_asal["tahap_id"] = tahap_id
                     pengarahan_asal["tahap_urutan"] = item.get("tahap_urutan", nomor_tahap)
                     pengarahan_asal["peristiwa_ids"] = list(item.get("peristiwa_ids", []))
-                    pengarahan_asal["status_segmentasi"] = "shot_renderer_dibentuk_dari_tahap_semantik"
+                    pengarahan_asal["status_segmentasi"] = (
+                        "shot_renderer_dibagi_dari_tahap_semantik"
+                        if len(rencana_tahap) > 1
+                        else "shot_renderer_satu_tahap_semantik"
+                    )
             if len(rencana_tahap) > 1:
                 durasi_asal = float(shot_asal.get("durasi", 3.0) or 3.0)
                 durasi_tahap = round(durasi_asal / len(rencana_tahap), 2)
