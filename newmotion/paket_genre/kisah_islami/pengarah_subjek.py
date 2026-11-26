@@ -43,6 +43,7 @@ POLA_PERUBAHAN = {
 
 KATA_KUNCI_LAYAR = (
     re.compile(r"\b(\d+(?:[.,]\d+)?\s*(?:tahun|bulan|hari|malam|meter|kilometer|orang|tahun))\b", re.I),
+    re.compile(r"\b((?:seratus|seribu|satu|dua|tiga|empat|lima|enam|tujuh|delapan|sembilan|sepuluh|sebelas)(?:\s+(?:ratus|puluh|belas|satu|dua|tiga|empat|lima|enam|tujuh|delapan|sembilan)){0,3}\s+(?:tahun|bulan|hari|malam|hasta|meter|kilometer|orang|golongan))\b", re.I),
     re.compile(r"\b(jebol|terbelah|kiamat|banjir besar|hari kebangkitan)\b", re.I),
 )
 
