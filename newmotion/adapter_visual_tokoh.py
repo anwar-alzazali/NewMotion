@@ -141,27 +141,36 @@ def terapkan_rencana_visual_tokoh(spec):
                 "x": deepcopy(arahan["x"]),
                 "y": deepcopy(arahan["y"]),
             }
-            karakter = arahan.get("karakter")
-            if karakter is not None:
-                if not isinstance(karakter, Mapping):
-                    raise GalatAdapterVisualTokoh(f"karakter tokoh {aktor_id!r} harus berupa objek")
-                boneka["karakter"] = deepcopy(dict(karakter))
+            karakter = arahan.get("karakter", {})
+            if not isinstance(karakter, Mapping):
+                raise GalatAdapterVisualTokoh(f"karakter tokoh {aktor_id!r} harus berupa objek")
+            karakter = deepcopy(dict(karakter))
 
-            # Aksi lokomosi diterjemahkan ke kanal jalan renderer yang memang ada.
+            # integrasi mesin-video membangun pose dari karakter.gerak dan
+            # mengganti boneka.pose; karena itu jadwal pose diteruskan lewat
+            # kontrak karakter, bukan ditaruh pada field renderer sebelum integrasi.
+            if "pose" in arahan:
+                karakter["gerak"] = deepcopy(arahan["pose"])
+
+            # Aksi lokomosi diterjemahkan ke kanal jalan dan jadwal gerak renderer.
             if aksi in {"jalan", "lari"}:
                 if not _berpindah(arahan["x"], arahan["y"]):
                     raise GalatAdapterVisualTokoh(
                         f"Aksi {aksi} tokoh {aktor_id!r} tidak memiliki lintasan posisi yang nyata"
                     )
                 boneka["jalan"] = 1.0 if aksi == "jalan" else 1.35
+                karakter.setdefault("gerak", aksi)
             elif aksi is not None:
                 if not isinstance(aksi, str) or not aksi.strip():
                     raise GalatAdapterVisualTokoh(f"aksi tokoh {aktor_id!r} tidak valid")
                 boneka["aksi_cerita"] = aksi
 
+            if karakter or aksi in {"jalan", "lari"} or "pose" in arahan:
+                boneka["karakter"] = karakter
+
             for kunci in (
                 "s", "naik", "arah", "wajah", "mata", "lengan", "keringat",
-                "pose", "profil", "gaya", "baju", "kendaraan_id",
+                "profil", "gaya", "baju", "kendaraan_id",
                 "offset_kendaraan_x", "offset_kendaraan_y", "lepas_kendaraan_at",
             ):
                 if kunci in arahan:
