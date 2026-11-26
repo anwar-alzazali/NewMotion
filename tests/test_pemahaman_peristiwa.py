@@ -268,3 +268,56 @@ def test_benda_tetap_divisualkan_jika_aksi_tokoh_belum_didukung():
 
     assert spek["rencana_visual_tokoh"]["diagnostik"][0]["kode"] == "aksi_visual_belum_didukung"
     assert spek["cerita"]["shot"][0]["benda"][0]["id"] == "motor-01"
+
+
+
+def test_parser_menghasilkan_keadaan_akhir_tanpa_mengarang_keadaan_awal():
+    hasil = uraikan_peristiwa(
+        "Pengendara jatuh lalu berdiri.",
+        ["Pengendara"],
+    )
+
+    assert [item["aksi"] for item in hasil["peristiwa"]] == ["jatuh", "berdiri"]
+    perubahan = [item["perubahan_keadaan"] for item in hasil["peristiwa"]]
+    assert perubahan == [
+        {"entitas": "Pengendara", "menjadi": "terjatuh"},
+        {"entitas": "Pengendara", "menjadi": "berdiri"},
+    ]
+    assert all("dari" not in item for item in perubahan)
+
+
+def test_tergelincir_tidak_diartikan_otomatis_sebagai_jatuh():
+    hasil = uraikan_peristiwa("Pengendara tergelincir.", ["Pengendara"])
+
+    assert hasil["peristiwa"][0]["aksi"] == "tergelincir"
+    assert "perubahan_keadaan" not in hasil["peristiwa"][0]
+
+
+def test_sutradara_menghubungkan_transisi_keadaan_ke_id_tokoh():
+    from newmotion.application.pengarah_inti import arahkan_naskah
+
+    naskah = {
+        "judul": "Pengendara jatuh lalu berdiri",
+        "genre": "cerita_umum",
+        "konteks_konten": "umum",
+        "dalil": [],
+        "beat": [{
+            "id": "beat-keadaan",
+            "narasi": "Pengendara jatuh lalu berdiri.",
+            "peran": ["Pengendara"],
+        }],
+    }
+    sumber = naskah_untuk_pengarah(naskah)
+    spek, _, _ = arahkan_naskah(sumber, genre_pilihan="cerita_umum")
+    tokoh_id = spek["rencana_cerita"]["tokoh"][0]["id"]
+    peristiwa = spek["rencana_cerita"]["adegan"][0]["peristiwa"]
+    transisi = spek["rencana_blocking"]["transisi_keadaan"]
+
+    assert [item["perubahan_keadaan"]["entitas_id"] for item in peristiwa] == [
+        tokoh_id, tokoh_id
+    ]
+    assert transisi[0]["dari"] is None
+    assert transisi[0]["menjadi"] == "terjatuh"
+    assert transisi[1]["dari"] == "terjatuh"
+    assert transisi[1]["menjadi"] == "berdiri"
+    assert spek["rencana_blocking"]["keadaan_akhir"][tokoh_id] == "berdiri"
