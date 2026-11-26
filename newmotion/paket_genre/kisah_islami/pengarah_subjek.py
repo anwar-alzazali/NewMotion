@@ -1,49 +1,63 @@
 """Pengarahan subjek naratif ke benda renderer yang benar-benar tampak.
 
-Aturan bersifat leksikal-semantik umum: mengenali entitas dan keadaan yang disebut
-pada segmen, lalu menerjemahkannya ke katalog renderer yang sudah tersedia.
-Tidak membaca atau mengimpor leksikon alat ukur dan tidak bergantung pada judul cerita.
+Pemetaan memakai konteks kalimat dan hanya memilih bentuk yang sesuai. Jika katalog
+renderer tidak memiliki bentuk yang tepat, pengarah memilih tidak menggambar.
+Aturan deterministik, tanpa LLM, tanpa leksikon alat ukur, dan tanpa judul cerita.
 """
 from __future__ import annotations
 
 import hashlib
 import re
-from collections.abc import Mapping
 
 
-# Alias bahasa -> jenis renderer yang sudah tersedia di mesin-video/papan/cerita.js.
-# Urutan lebih spesifik diletakkan lebih dahulu agar "kapal Nabi Nuh" tetap satu bahtera.
-POLA_SUBJEK = (
-    (re.compile(r"\b(kapal|bahtera|perahu)\b", re.I), "bahtera"),
-    (re.compile(r"\b(penggali|para penggali|orang yang menggali|menggali|digali|menggerogoti)\b", re.I), "penggali"),
-    (re.compile(r"\b(pemimpin|pemuka|raja|panglima)\b", re.I), "pemimpin"),
-    (re.compile(r"\b(dinding|tembok|benteng)\b", re.I), "ngarai"),
-    (re.compile(r"\b(pagar)\b", re.I), "pagar"),
-    (re.compile(r"\b(lubang|terowongan)\b", re.I), "ngarai"),
-    (re.compile(r"\b(ombak|gelombang)\b", re.I), "ombak"),
-    (re.compile(r"\b(arus|aliran air|air)\b", re.I), "arus"),
-    (re.compile(r"\b(kaum\w*|orang-orang|manusia|golongan|umat|kerumunan)\b", re.I), "kerumunan"),
-    (re.compile(r"\b(gunung|bukit)\b", re.I), "gunung"),
-    (re.compile(r"\b(hewan|binatang|ternak)\b", re.I), "hewan"),
-    (re.compile(r"\b(unta)\b", re.I), "unta"),
-    (re.compile(r"\b(gerbang|pintu gerbang)\b", re.I), "gerbang"),
-    (re.compile(r"\b(istana|keraton)\b", re.I), "istana"),
-    (re.compile(r"\b(rumah|pondok)\b", re.I), "rumah"),
+POLA_KAPAL = re.compile(r"\b(kapal|bahtera|perahu)\b", re.I)
+POLA_OMBak = re.compile(r"\b(ombak|gelombang)\b", re.I)
+POLA_DINDING = re.compile(r"\b(dinding|tembok|benteng|lubang|terowongan)\b", re.I)
+POLA_DINDING_KHUSUS = re.compile(
+    r"\b(zulkarnain|zulqarnain|ya['’]?juj|ma['’]?juj|besi|tembaga|dua gunung|celah dua gunung)\b",
+    re.I,
 )
+POLA_GALI = re.compile(r"\b(penggali|menggali|digali|menggerogoti|mengikis)\b", re.I)
+POLA_PEMIMPIN = re.compile(r"\b(pemimpin|pemuka|raja|panglima)\b", re.I)
+POLA_SAKRAL = re.compile(
+    r"\b(allah|tuhan|rasulullah|rasul|nabi|muhammad|malaikat|jibril|mikail|israfil|"
+    r"abu bakar|umar|utsman|usman|ali bin abi thalib|sahabat)\b",
+    re.I,
+)
+POLA_SAHABAT = re.compile(
+    r"\b(sahabat|abu bakar|umar|utsman|usman|ali bin abi thalib)\b", re.I
+)
+POLA_KAABAH = re.compile(
+    r"\b(ka['’]?bah|baitullah|rumah allah|rumah tuhan)\b", re.I
+)
+POLA_MATA_AIR = re.compile(r"\b(mata air|mata-mata air)\b", re.I)
+POLA_AIR_MATA = re.compile(r"\b(air mata|air matanya|menangis|tangis)\b", re.I)
+
+# Objek manusia renderer harus memiliki konteks pelaku yang jelas. "Arus" di cerita.js
+# adalah kerumunan berlari, bukan air; air generik tidak dipetakan ke jenis ini.
+POLA_KERUMUNAN = re.compile(
+    r"\b(kaum\w*|orang-orang|manusia|golongan|umat|kerumunan|massa)\b", re.I
+)
+POLA_HEWAN = re.compile(r"\b(hewan|binatang|ternak)\b", re.I)
+POLA_GUNUNG = re.compile(r"\b(gunung|bukit)\b", re.I)
+POLA_GERBANG = re.compile(r"\b(gerbang|pintu gerbang)\b", re.I)
+POLA_ISTANA = re.compile(r"\b(istana|keraton)\b", re.I)
+POLA_RUMAH = re.compile(r"\b(rumah|pondok)\b", re.I)
 
 POLA_PERUBAHAN = {
-    "air": re.compile(r"\b(berlayar|melaju|bergerak|mengapung)\b", re.I),
-    "gelombang": re.compile(r"\b(menghempas|menggulung|menerjang|membesar)\b", re.I),
     "retak": re.compile(r"\b(retak|retakan|pecah)\b", re.I),
-    "lubang": re.compile(r"\b(lubang|terkikis|terbuka|membesar)\b", re.I),
+    "lubang": re.compile(r"\b(lubang|terkikis|terbuka|membesar|hampir tembus|nyaris tembus)\b", re.I),
     "jebol": re.compile(r"\b(jebol|runtuh|roboh|hancur)\b", re.I),
-    "gali": re.compile(r"\b(menggali|menggerogoti|mengikis)\b", re.I),
-    "jatuh": re.compile(r"\b(jatuh|terjun|tergelincir|tenggelam)\b", re.I),
 }
 
 KATA_KUNCI_LAYAR = (
-    re.compile(r"\b(\d+(?:[.,]\d+)?\s*(?:tahun|bulan|hari|malam|meter|kilometer|orang|tahun))\b", re.I),
-    re.compile(r"\b((?:seratus|seribu|satu|dua|tiga|empat|lima|enam|tujuh|delapan|sembilan|sepuluh|sebelas)(?:\s+(?:ratus|puluh|belas|satu|dua|tiga|empat|lima|enam|tujuh|delapan|sembilan)){0,3}\s+(?:tahun|bulan|hari|malam|hasta|meter|kilometer|orang|golongan))\b", re.I),
+    re.compile(r"\b(\d+(?:[.,]\d+)?\s*(?:tahun|bulan|hari|malam|meter|kilometer|orang))\b", re.I),
+    re.compile(
+        r"\b((?:seratus|seribu|satu|dua|tiga|empat|lima|enam|tujuh|delapan|sembilan|sepuluh|sebelas)"
+        r"(?:\s+(?:ratus|puluh|belas|satu|dua|tiga|empat|lima|enam|tujuh|delapan|sembilan)){0,3}"
+        r"\s+(?:tahun|bulan|hari|malam|hasta|meter|kilometer|orang|golongan))\b",
+        re.I,
+    ),
     re.compile(r"\b(jebol|terbelah|kiamat|banjir besar|hari kebangkitan)\b", re.I),
 )
 
@@ -52,15 +66,67 @@ def _seed(teks: str) -> int:
     return int(hashlib.sha1(teks.casefold().encode("utf-8")).hexdigest()[:8], 16)
 
 
+def _kalimat_yang_memuat(teks: str, pola: re.Pattern) -> list[str]:
+    return [
+        kalimat.strip()
+        for kalimat in re.split(r"(?<=[.!?;])\s+|\n+", teks)
+        if kalimat.strip() and pola.search(kalimat)
+    ]
+
+
+def _konteks_dinding_zulkarnain(teks: str) -> bool:
+    """Ngarai renderer adalah dinding Zulkarnain, bukan dinding/kubur generik."""
+    return bool(POLA_DINDING.search(teks) and POLA_DINDING_KHUSUS.search(teks))
+
+
 def _jenis_disebut(teks: str) -> list[str]:
-    jenis = []
-    for pola, nama in POLA_SUBJEK:
-        if pola.search(teks) and nama not in jenis:
-            jenis.append(nama)
+    jenis: list[str] = []
+    tambah = lambda nama: jenis.append(nama) if nama not in jenis else None
+
+    if POLA_KAPAL.search(teks):
+        tambah("bahtera")
+    if POLA_OMBak.search(teks):
+        tambah("ombak")
+
+    # Dinding, lubang, dan penggalian hanya memakai ngarai/penggali bila konteks
+    # menyebut ciri dinding Zulkarnain. Kubur dan tembok rumah tidak memakai renderer ini.
+    konteks_dinding = _konteks_dinding_zulkarnain(teks)
+    if konteks_dinding and POLA_DINDING.search(teks):
+        tambah("ngarai")
+    if konteks_dinding and POLA_GALI.search(teks):
+        tambah("penggali")
+
+    # "Pemimpin" tidak menjadi sosok manusia bila dalam kalimat yang sama merujuk
+    # Nabi/Rasul/malaikat/sahabat. Frasa deskriptif tidak boleh mengubah adab visual.
+    for kalimat in _kalimat_yang_memuat(teks, POLA_PEMIMPIN):
+        if not POLA_SAKRAL.search(kalimat):
+            tambah("pemimpin")
+
+    # Kelompok manusia tidak boleh dijadikan siluet sahabat. Untuk kelompok umum,
+    # renderer arus/kerumunan hanya dipakai saat subjek plural memang disebut.
+    for kalimat in _kalimat_yang_memuat(teks, POLA_KERUMUNAN):
+        if not POLA_SAHABAT.search(kalimat):
+            tambah("kerumunan")
+
+    if POLA_MATA_AIR.search(teks) and not POLA_AIR_MATA.search(teks):
+        tambah("pancar")
+    if POLA_GUNUNG.search(teks):
+        tambah("gunung")
+    if POLA_HEWAN.search(teks):
+        tambah("hewan")
+    if re.search(r"\bunta\b", teks, re.I):
+        tambah("unta")
+    if POLA_GERBANG.search(teks):
+        tambah("gerbang")
+    if POLA_ISTANA.search(teks):
+        tambah("istana")
+    # Renderer rumah adalah rumah umum; tidak ada bentuk Ka'bah dalam katalog.
+    if POLA_RUMAH.search(teks) and not POLA_KAABAH.search(teks):
+        tambah("rumah")
     return jenis
 
 
-def _properti_benda(jenis: str, teks: str, indeks: int, durasi: float, seed: int) -> dict:
+def _properti_benda(jenis: str, teks: str, durasi: float, seed: int) -> dict:
     """Susun posisi dan gerak sederhana yang mengikuti aksi dalam teks segmen."""
     x_sisi = 330 if seed % 2 else 750
     dasar = {"jenis": jenis, "x": x_sisi, "y": 1320, "s": 0.82}
@@ -73,38 +139,46 @@ def _properti_benda(jenis: str, teks: str, indeks: int, durasi: float, seed: int
         if re.search(r"\b(ombak|gelombang|badai|banjir)\b", teks, re.I):
             dasar["goyang"] = 2.2
     elif jenis == "ombak":
-        dasar.update({"x": 540, "y": [[0, 1480], [max(0.5, durasi * 0.8), 1220]],
-                      "s": 1.0, "tinggi": 520, "depan": True, "seed": seed % 997})
-    elif jenis == "arus":
-        dasar.update({"x": 540, "y": 1460, "s": 0.9, "n": 14, "maju": 1.0})
+        dasar.update({
+            "x": 540, "y": [[0, 1480], [max(0.5, durasi * 0.8), 1220]],
+            "s": 1.0, "tinggi": 520, "depan": True, "seed": seed % 997,
+        })
+    elif jenis == "pancar":
+        dasar.update({
+            "x": 540, "y": 1450, "s": 0.9, "kuat": 0.9, "tinggi": 520,
+            "seed": seed % 997,
+        })
     elif jenis == "gunung":
         dasar.update({"x": x_sisi, "y": 1320, "s": 0.9, "belakang": True})
     elif jenis == "kerumunan":
-        dasar.update({"x": x_sisi, "y": 1580, "s": 0.72, "n": 5, "w": 420,
-                      "seed": seed % 997})
+        dasar.update({
+            "x": x_sisi, "y": 1580, "s": 0.72, "n": 5, "w": 420,
+            "seed": seed % 997,
+        })
     elif jenis == "ngarai":
-        # Renderer ngarai adalah dinding Zulkarnain; lubang dan jebol adalah
-        # parameter animasi resminya, bukan bentuk baru.
-        dasar.update({"x": 540, "y": 1320, "s": 0.95, "lubang": 0.12, "jebol": 0.0,
-                      "lx": 0, "ly": -190, "seed": seed % 997, "belakang": True})
+        dasar.update({
+            "x": 540, "y": 1320, "s": 0.95, "lubang": 0.12, "jebol": 0.0,
+            "lx": 0, "ly": -190, "seed": seed % 997, "belakang": True,
+        })
         if POLA_PERUBAHAN["retak"].search(teks):
             dasar["lubang"] = 0.24
-        if POLA_PERUBAHAN["lubang"].search(teks) or re.search(r"\b(hampir tembus|nyaris tembus)\b", teks, re.I):
+        if POLA_PERUBAHAN["lubang"].search(teks):
             dasar["lubang"] = 0.62
         if POLA_PERUBAHAN["jebol"].search(teks):
             dasar["lubang"] = 1.0
             dasar["jebol"] = 1.0
-    elif jenis == "pagar":
-        dasar.update({"x": 540, "y": 1320, "s": 1.05, "w": 1100, "model": "tembok",
-                      "belakang": True})
     elif jenis == "penggali":
-        dasar.update({"x": 540, "y": 1420, "s": 0.82, "aktif": 1, "n": 5,
-                      "seed": seed % 997})
+        dasar.update({
+            "x": 540, "y": 1420, "s": 0.82, "aktif": 1, "n": 5,
+            "seed": seed % 997,
+        })
     elif jenis == "pemimpin":
         dasar.update({"x": x_sisi, "y": 1350, "s": 0.92, "angkat": 0.75})
     elif jenis in {"hewan", "unta"}:
-        dasar.update({"x": [[0, x_sisi - 100], [max(0.5, durasi * 0.8), x_sisi + 100]],
-                      "y": 1390, "s": 0.82})
+        dasar.update({
+            "x": [[0, x_sisi - 100], [max(0.5, durasi * 0.8), x_sisi + 100]],
+            "y": 1390, "s": 0.82,
+        })
     elif jenis in {"gerbang", "istana"}:
         dasar.update({"x": 540, "y": 1270, "s": 0.9, "belakang": True})
     return dasar
@@ -116,7 +190,7 @@ def arahkan_subjek(teks: str, durasi: float, indeks: int = 0) -> dict:
         return {"benda": [], "teks": [], "klimaks": False}
     seed = _seed(f"{indeks}|{teks}")
     benda = [
-        _properti_benda(jenis, teks, indeks, max(0.5, float(durasi or 0.5)), seed + n * 31)
+        _properti_benda(jenis, teks, max(0.5, float(durasi or 0.5)), seed + n * 31)
         for n, jenis in enumerate(_jenis_disebut(teks))
     ]
     teks_layar = []
@@ -126,6 +200,8 @@ def arahkan_subjek(teks: str, durasi: float, indeks: int = 0) -> dict:
             label = cocok.group(1).strip()
             if label.casefold() not in {x["teks"].casefold() for x in teks_layar}:
                 teks_layar.append({"at": 0.15, "teks": label.upper(), "y": 340, "ukuran": 62})
-    klimaks = bool(POLA_PERUBAHAN["jebol"].search(teks) or
-                   re.search(r"\b(terbelah|meledak|tenggelam|jatuh|ditelan)\b", teks, re.I))
+    klimaks = bool(
+        POLA_PERUBAHAN["jebol"].search(teks)
+        or re.search(r"\b(terbelah|meledak|tenggelam|jatuh|ditelan)\b", teks, re.I)
+    )
     return {"benda": benda, "teks": teks_layar, "klimaks": klimaks}
