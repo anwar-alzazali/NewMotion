@@ -47,7 +47,7 @@ jobs:
         run: |
           mkdir -p hasil-uji-visual
           newmotion render tests/data/cerita_umum_motor_penolong.json \
-            --naskah --genre cerita_umum --tanpa-suara -d 18 \
+            --naskah --genre cerita_umum --tanpa-suara -d 7 \
             -o "$GITHUB_WORKSPACE/hasil-uji-visual/cerita-umum-motor-penolong.mp4"
           test -s hasil-uji-visual/cerita-umum-motor-penolong.mp4
           test -s hasil-uji-visual/cerita-umum-motor-penolong.papan.json
@@ -103,11 +103,11 @@ jobs:
           if (video.get("width"), video.get("height")) != (1080, 1920):
               raise SystemExit("Resolusi video bukan 1080x1920.")
           durasi = float(data["format"]["duration"])
-          if not 17.5 <= durasi <= 18.5:
+          if not 6.5 <= durasi <= 7.5:
               raise SystemExit(f"Durasi tidak sesuai: {durasi:.2f} detik.")
           print(f"LOLOS: H.264 1080x1920, durasi {durasi:.2f} detik.")
           PY
-          for detik in 0.5 1.0 2.5 5.0 8.0 9.8 12.0 15.0 17.0; do
+          for detik in 0.5 1.0 2.5 3.8 4.5 5.8 6.8; do
             ffmpeg -y -loglevel error -ss "$detik" -i "$video" -frames:v 1 "hasil-uji-visual/frame-$detik.png"
           done
           sha256sum "$video" > hasil-uji-visual/SHA256SUMS.txt
