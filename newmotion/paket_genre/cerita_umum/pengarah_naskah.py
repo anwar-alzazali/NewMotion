@@ -56,7 +56,7 @@ def _gabungkan_metadata(naskah: Mapping, adegan_item: Mapping, kunci: str) -> tu
     return hasil, sumber
 
 
-def _kamera_renderer(naskah: Mapping, adegan_item: Mapping, zoom: list, kategori: str) -> tuple[dict, str]:
+def _kamera_renderer(naskah: Mapping, adegan_item: Mapping, zoom: list, kategori: str) -> tuple[dict, str, list[str]]:
     """Bentuk kamera dasar dari tujuan shot; metadata eksplisit boleh mengoreksinya."""
     posisi_y = {
         "aksi_jatuh": 1150,
@@ -80,7 +80,7 @@ def _kamera_renderer(naskah: Mapping, adegan_item: Mapping, zoom: list, kategori
         nilai = hasil.get(kunci, [])
         if not isinstance(nilai, list):
             raise ValueError(f"kamera.{kunci} harus berupa daftar keyframe")
-    return hasil, sumber
+    return hasil, sumber, sorted(eksplisit)
 
 
 def _lingkungan_renderer(naskah: Mapping, adegan_item: Mapping) -> tuple[dict, str]:
@@ -139,7 +139,9 @@ def _profil_shot(adegan_item: dict, indeks: int, naskah: Mapping) -> dict:
             ("memperkenalkan_beat", "lebar", [1.0, 1.04], "peristiwa")
         )
 
-    kamera, sumber_kamera = _kamera_renderer(naskah, adegan_item, zoom, kategori)
+    kamera, sumber_kamera, kunci_kamera_eksplisit = _kamera_renderer(
+        naskah, adegan_item, zoom, kategori
+    )
     lingkungan, sumber_lingkungan = _lingkungan_renderer(naskah, adegan_item)
     urutan_peristiwa = [
         {
@@ -162,6 +164,7 @@ def _profil_shot(adegan_item: dict, indeks: int, naskah: Mapping) -> dict:
         "komposisi": {"skala": skala, "pusat": "tengah"},
         "dasar_keputusan": "aksi_dan_tokoh_eksplisit" if peristiwa or tokoh_beat else "beat_sumber",
         "dasar_kamera": kategori if sumber_kamera == "belum_dinyatakan" else sumber_kamera,
+        "kunci_kamera_eksplisit": kunci_kamera_eksplisit,
         "dasar_lingkungan": sumber_lingkungan,
         "kamera": kamera,
         "lingkungan": lingkungan,
