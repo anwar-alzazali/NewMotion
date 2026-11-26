@@ -126,3 +126,25 @@ membuat fallback sintetis, sementara pengarah benda juga menambahkan entitas mot
 asli. Perbaikannya meneruskan `sasaran_benda_id` ke setiap entri peristiwa blocking.
 Pengujian kini memeriksa sekaligus bahwa pengendara memakai ID motor deklaratif dan
 hanya ada satu motor pada shot.
+
+
+## Tahap 13 — Penempatan relatif terhadap lintasan tokoh
+
+Entitas benda kini dapat memakai `relasi_posisi` jika koordinat eksplisit tidak
+tersedia. Relasi harus menunjuk `tokoh_id` yang benar-benar dipetakan pada tahap
+shot yang sama. Hubungan yang didukung: `di_samping_kiri`, `di_samping_kanan`,
+`di_depan`, `di_belakang`, dan `mengikuti`. Offset x/y dapat ditentukan eksplisit;
+nilai bawaan hubungan bersifat deterministik dan dapat ditinjau pada kode.
+
+Jika tokoh memiliki keyframe x/y, benda mengikuti keyframe tersebut dengan offset
+yang sama pada setiap waktu. Jika tokoh tidak hadir pada tahap terkait atau tidak
+memiliki posisi yang dapat dibaca, benda tidak diberi koordinat palsu dan menghasilkan
+diagnostik. Posisi eksplisit benda tetap menjadi prioritas jika tersedia.
+
+Integrasi juga menyelaraskan benda yang ditautkan ke peristiwa tertentu dengan tahap
+renderer yang memuat peristiwa tersebut. Ini mencegah objek dari event pertama muncul
+pada shot event kedua hanya karena keduanya berasal dari beat yang sama. Tes mengunci
+perilaku ini.
+
+Batas: relasi spasial saat ini masih berupa offset 2D sederhana; belum menghitung
+ukuran objek, kedalaman, occlusion, collision, atau ruang aman komposisi.
