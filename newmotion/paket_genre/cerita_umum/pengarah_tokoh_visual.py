@@ -64,7 +64,11 @@ def arahkan_tokoh_visual(rencana_cerita, rencana_blocking, cerita):
                     "aksi": "lari" if aksi in AKSI_LARI else "jalan",
                     "x": [[0, x_mulai], [2.5, x_tujuan]],
                     "sasaran_tokoh_id": sasaran_id,
-                    "pose": [[0, "berdiri"], [2.2, "berdiri"]],
+                    "pose": (
+                        [[0, "jalan"], [2.2, "menolong"]]
+                        if aksi in {"berjalan_menolong", "menolong"}
+                        else [[0, "jalan" if aksi in AKSI_JALAN else "lari"], [2.2, "berdiri"]]
+                    ),
                 })
             elif aksi in AKSI_MOTOR:
                 sasaran = sasaran_objek
@@ -75,6 +79,14 @@ def arahkan_tokoh_visual(rencana_cerita, rencana_blocking, cerita):
                 butir.update({"x": 500, "y": 1510, "kendaraan_id": f"motor-{tautan.get('beat_id')}"})
             elif aksi in AKSI_DIAM:
                 butir["aksi"] = aksi
+                if aksi == "tergelincir" and sasaran_objek in {"motor", "sepeda_motor"}:
+                    butir.update({
+                        "kendaraan_id": f"motor-{tautan.get('beat_id')}",
+                        "lepas_kendaraan_at": 0.9,
+                        "x": [[0, x_tetap], [1.2, min(1000, x_tetap + 85)]],
+                        "y": [[0, 1504], [1.2, 1620]],
+                        "pose": [[0, "mengendarai_motor"], [0.65, "tergelincir"]],
+                    })
             else:
                 diagnostik.append({"kode": "aksi_visual_belum_didukung", "peristiwa_id": id_peristiwa, "aksi": aksi_asli})
                 continue
@@ -83,11 +95,13 @@ def arahkan_tokoh_visual(rencana_cerita, rencana_blocking, cerita):
             else:
                 arahan_tokoh.append(butir)
         if arahan_tokoh:
-            shot_plan.append({"indeks": indeks, "tokoh": arahan_tokoh})
+            butir_shot = {"indeks": indeks, "tokoh": arahan_tokoh}
             if motor_dibutuhkan:
-                cerita["shot"][indeks].setdefault("benda", []).append({
+                butir_shot["benda"] = [{
                     "id": f"motor-{tautan.get('beat_id')}", "jenis": "motor",
-                    "x": 500, "y": 1550, "s": 0.8,
-                })
+                    "x": [[0, _posisi_awal(1)], [0.9, _posisi_awal(1) + 55]],
+                    "y": [[0, 1550], [0.9, 1580]], "s": 0.8,
+                }]
+            shot_plan.append(butir_shot)
     return {"status": "siap_diterjemahkan" if shot_plan else "tidak_ada_aksi_visual_eksplisit",
             "shot": shot_plan, "diagnostik": diagnostik}
