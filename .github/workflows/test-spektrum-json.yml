@@ -8,6 +8,7 @@ on:
       - 'newmotion/paket_genre/cerita_umum/**'
       - 'tests/test_paket_cerita_umum.py'
       - 'tests/test_penataan_panggung.py'
+      - 'tests/test_generalisasi_spek_json.py'
       - '.github/workflows/test-spektrum-json.yml'
   workflow_dispatch:
 
