@@ -150,3 +150,59 @@ def test_posisi_dan_keadaan_tokoh_berlanjut_ke_shot_berikutnya():
     assert motor_kedua["x"] == motor_pertama["x"][-1][1]
     assert motor_kedua["y"] == motor_pertama["y"][-1][1]
     assert motor_kedua["miring"] == motor_pertama["miring"][-1][1] == 28
+
+
+def test_peristiwa_mendapat_id_stabil_dan_tertaut_ke_beat_sumber():
+    spek, _, _ = arahkan_naskah(_naskah())
+    peristiwa = spek["rencana_cerita"]["adegan"][0]["peristiwa"]
+    assert [x["id"] for x in peristiwa] == ["e1", "e2"]
+    assert all(x["beat_id"] == "beat-001" for x in peristiwa)
+    assert {
+        x["peristiwa_id"] for x in spek["rencana_blocking"]["peristiwa"]
+    } == {"e1", "e2"}
+
+
+def test_id_peristiwa_ganda_ditolak_agar_tidak_menimpa_pemetaan():
+    import pytest
+    from newmotion.application.pengarah_inti import GalatPengarahan
+
+    naskah = _naskah()
+    naskah["adegan"].append({
+        "id": "beat-002", "teks": "Penolong menunggu.",
+        "tokoh_ids": ["penolong"],
+        "peristiwa": [{"id": "e1", "aktor": "Penolong", "aksi": "menunggu"}],
+    })
+    with pytest.raises(GalatPengarahan, match="digunakan lebih dari sekali"):
+        arahkan_naskah(naskah)
+
+
+def test_id_peristiwa_tidak_diberikan_dibuat_deterministik():
+    naskah = _naskah()
+    naskah["adegan"][0]["peristiwa"][0].pop("id")
+    spek, _, _ = arahkan_naskah(naskah)
+    peristiwa = spek["rencana_cerita"]["adegan"][0]["peristiwa"][0]
+    assert peristiwa["id"] == "beat-001-peristiwa-001"
+    assert peristiwa["beat_id"] == "beat-001"
+
+
+def test_referensi_aktor_dan_sasaran_tokoh_di_luar_roster_didiagnosis():
+    naskah = _naskah()
+    naskah["adegan"][0]["peristiwa"][0]["aktor_id"] = "tokoh-hilang"
+    naskah["adegan"][0]["peristiwa"][1]["sasaran_tokoh_id"] = "tokoh-hilang"
+    spek, _, _ = arahkan_naskah(naskah)
+    kode = {x["kode"] for x in spek["rencana_cerita"]["diagnostik"]}
+    assert "aktor_id_tidak_terdaftar" in kode
+    assert "sasaran_tokoh_id_tidak_terdaftar" in kode
+
+
+def test_bukti_teks_peristiwa_diperiksa_tanpa_memaksa_migrasi_fixture_lama():
+    naskah = _naskah()
+    naskah["adegan"][0]["peristiwa"][0]["bukti_teks"] = "Pengendara tergelincir"
+    naskah["adegan"][0]["peristiwa"][1]["bukti_teks"] = "penolong terbang"
+    spek, _, _ = arahkan_naskah(naskah)
+    temuan = spek["rencana_cerita"]["diagnostik"]
+    assert any(x["kode"] == "bukti_teks_tidak_ditemukan_di_beat" for x in temuan)
+    assert not any(
+        x.get("peristiwa_id") == "e1" and x["kode"] == "bukti_teks_belum_dicantumkan"
+        for x in temuan
+    )
