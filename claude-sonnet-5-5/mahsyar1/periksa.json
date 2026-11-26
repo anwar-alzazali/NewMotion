@@ -1,0 +1,132 @@
+[
+ {
+  "putaran": 0,
+  "model_periksa": "claude-sonnet-5-5",
+  "biaya_usd": 0.043144,
+  "temuan": {
+   "lulus": false,
+   "temuan": [
+    {
+     "beat": 1,
+     "berat": "ringan",
+     "masalah": "Tokoh 'kamu' sangat besar dan menutupi hampir seluruh retakan. Latar bawah hitam pekat, jadi cahaya retakan nyaris tak tampak. Narasi soal 'tanpa sehelai pakaian' juga tidak terwakili.",
+     "saran": "Pakai bidikan sedang dan geser 'kamu' ke samping agar retakan bercahaya terlihat jelas di tengah. Beri kesan polos tanpa alas, misalnya lewat keadaan 'kamu' yang menyilangkan tangan."
+    },
+    {
+     "beat": 2,
+     "berat": "ringan",
+     "masalah": "Tokoh 'kamu' terlihat dari belakang, kecil, dan jauh di tepi retakan, sehingga tidak jelas ia bangkit dari tanah. Retakan terpotong tepi bawah dan dominan hitam. Matahari sudah tampak padahal narasi baru menyebutnya di beat 5.",
+     "saran": "Dekatkan 'kamu' ke retakan dengan keadaan bangkit dan wajah terlihat. Redupkan atau hilangkan matahari agar kejutan beat 5 terjaga."
+    },
+    {
+     "beat": 5,
+     "berat": "berat",
+     "masalah": "Klimaks 'satu mil' tidak menunjukkan matahari yang didekatkan. Matahari tampil raksasa dan menutupi hampir seluruh langit, dan tidak jelas ia sedang mendekat. Siluet kerumunan menumpuk di pojok kiri bawah dan terpotong tepi layar. 'Kamu' (saksi) hanya tampak sepotong kepala di pojok kanan bawah. Pemandangan padang mahsyar hilang.",
+     "saran": "Tampilkan padang dan kerumunan berdiri dulu dengan matahari kecil di kejauhan, lalu bidikan lebar dengan aksen hentak saat matahari membesar. Letakkan kerumunan tunduk di tengah bawah agar tidak terpotong. Tampilkan 'kamu' utuh di tepi sebagai saksi."
+    },
+    {
+     "beat": 6,
+     "berat": "ringan",
+     "masalah": "Danau keringat di atas kerumunan tampak seperti kolam atau piringan yang melayang. Kerumunan berupa gumpalan hitam di bawahnya, tidak tampak tenggelam sampai mulut. Tingkat air tidak terbaca.",
+     "saran": "Letakkan danau di tengah kerumunan dengan permukaan air setinggi kepala sebagian tokoh. Sertakan beberapa tokoh dengan tinggi air berbeda (mata kaki, lutut, pinggang, mulut) agar sesuai narasi."
+    },
+    {
+     "beat": 7,
+     "berat": "ringan",
+     "masalah": "Garis emas vertikal 'tujuh puluh hasta' menembus seluruh layar dan tidak jelas sebagai keringat yang meresap ke tanah. Kerumunan hilang dan visual terasa kosong. Beat 5–7 tampak serupa (matahari besar plus danau).",
+     "saran": "Pakai bidikan miring ke bawah yang menampilkan lapisan tanah dengan keringat meresap ke dalam. Beri warna dan komposisi berbeda dari beat 6."
+    },
+    {
+     "beat": 8,
+     "berat": "ringan",
+     "masalah": "Siluet orang berlari hanya sebaris kecil di garis horizon, terpotong tepi kiri dan kanan. Tidak tampak sebagai perpisahan dari keluarga (ibu, ayah, istri, anak). Terasa seperti beat diam.",
+     "saran": "Dekatkan kamera ke beberapa tokoh yang berlari menjauh dari kelompok kecil keluarga. Kurangi jumlah tokoh agar lebih jelas, dan turunkan matahari agar tidak mendominasi."
+    },
+    {
+     "beat": 9,
+     "berat": "ringan",
+     "masalah": "Danau tampak seperti kolam di belakang 'kamu', bukan keringat yang membasahi tubuhnya. Ada kotak oranye aneh di kaki yang tidak jelas maknanya.",
+     "saran": "Letakkan 'kamu' di dalam danau sehingga air mencapai tinggi tertentu di tubuhnya (misalnya pinggang), dan hilangkan objek asing di kaki."
+    },
+    {
+     "beat": 10,
+     "berat": "berat",
+     "masalah": "Narasi menyebut naungan bagi tujuh golongan, tetapi awan hanya tampak sebagai pita abu-abu tipis di horizon, hampir tidak terlihat. 'Kamu' tidak berada di bawah naungan. Matahari tetap menyilaukan di atas kepala.",
+     "saran": "Tampilkan awan besar dan jelas di atas 'kamu' dengan bayangan teduh jatuh padanya. Redupkan matahari di balik awan agar harapan terasa kontras dengan panas sebelumnya."
+    },
+    {
+     "beat": 11,
+     "berat": "ringan",
+     "masalah": "Di frame 87,3 dtk, HP kecil melayang di samping 'kamu' dan awan tidak tampak. Di frame 92,0 dtk, HP hilang. Padahal narasi mengajak membagikan dan menyebut berteduh bersama.",
+     "saran": "Tampilkan HP lebih besar dalam genggaman 'kamu' dengan awan naungan terlihat di atas, dan pertahankan keduanya sepanjang beat."
+    }
+   ],
+   "catatan": "Adab aman (Rasulullah tampil sebagai nur dan stempel ILUSTRASI ada), tetapi klimaks matahari didekatkan dan harapan awan naungan belum tersampaikan dengan jelas, dan beat tengah terasa mirip."
+  },
+  "lembar": [
+   "hasil/claude-sonnet-5-5/mahsyar1/periksa/putaran_0/lembar_1.jpg",
+   "hasil/claude-sonnet-5-5/mahsyar1/periksa/putaran_0/lembar_2.jpg",
+   "hasil/claude-sonnet-5-5/mahsyar1/periksa/putaran_0/lembar_3.jpg"
+  ],
+  "revisi": "claude-sonnet-5-5",
+  "biaya_revisi_usd": 0.086536
+ },
+ {
+  "putaran": 1,
+  "model_periksa": "claude-sonnet-5-5",
+  "biaya_usd": 0.058118,
+  "temuan": {
+   "lulus": true,
+   "temuan": [
+    {
+     "beat": 3,
+     "berat": "ringan",
+     "masalah": "Dua frame (16.0 dan 23.4 dtk) hampir identik: nur diam di tengah selama sekitar 7 detik sementara narasi panjang, jadi terasa statis. Label 'Rasulullah ﷺ' juga sedikit menimpa kepala kerumunan.",
+     "saran": "Beri kamera aksen perlahan (mendekat ke nur) atau ubah kamera dari 'sedang' ke 'dekat' di paruh akhir beat. Pindahkan label nur sedikit ke atas, di luar kerumunan, atau kurangi kerumunan di bawahnya."
+    },
+    {
+     "beat": 6,
+     "berat": "ringan",
+     "masalah": "Danau tampak seperti kolam biru di belakang kerumunan, dan siluet orang berdiri di depannya. Narasi 'tenggelam dalam keringat... sampai mulut' tidak terbaca karena tidak ada orang yang terendam dalam tingkat berbeda.",
+     "saran": "Tempatkan kerumunan di dalam danau, bukan di depannya. Buat sebagian orang terendam sampai mata kaki, sebagian sampai pinggang, dan sebagian sampai mulut. Naikkan 'isi' danau sampai menutupi bahu kerumunan pada akhir beat."
+    },
+    {
+     "beat": 5,
+     "berat": "ringan",
+     "masalah": "Klimaks 'didekatkan satu mil' kurang menonjol. Matahari di beat 6 tampak sama besar atau lebih besar, dan 'kamu' sebagai saksi hanya berupa kepala terpotong di pojok kiri bawah.",
+     "saran": "Biarkan matahari beat 5 memenuhi sepertiga atas layar sebagai puncak. Di beat 6 kecilkan sedikit atau turunkan terangnya. Geser 'kamu' saksi agar seluruh wajah dan bahu terlihat, atau hilangkan."
+    },
+    {
+     "beat": 8,
+     "berat": "ringan",
+     "masalah": "Dua frame (64.2 dan 68.6 dtk) hampir sama. Siluet tampak berdiri, belum jelas berlari menjauh dari kerabatnya.",
+     "saran": "Tambah jumlah dan jarak gerak 'arus lari', dan pisahkan kelompok yang ditinggalkan di kiri dari yang berlari ke kanan. Beri aksen kamera atau geser kamera mengikuti arah lari."
+    },
+    {
+     "beat": 9,
+     "berat": "ringan",
+     "masalah": "Ada kotak oranye aneh di kaki 'kamu' yang tampak seperti glitch. Ekspresi dan pose (tangan terbentang, wajah kaget) tidak menunduk sesuai narasi 'Kamu menunduk'.",
+     "saran": "Hilangkan benda oranye di kaki, atau ganti dengan danau yang jelas menutupi sampai mata kaki. Ubah pose 'kamu' menjadi menunduk menatap kaki dan keringatnya."
+    },
+    {
+     "beat": 10,
+     "berat": "ringan",
+     "masalah": "Naungan, yaitu payoff cerita, lemah. Awan hanya kecil di pojok atas dan tidak menutupi matahari, yang masih besar dan terang. Latar juga tampak pucat dan kurang jelas sebagai teduh.",
+     "saran": "Perbesar awan 'tengah' hingga menutupi matahari dan turunkan terang matahari lebih rendah. Pindahkan awan kedua ke atas kepala 'kamu' agar terasa berteduh."
+    },
+    {
+     "beat": 11,
+     "berat": "ringan",
+     "masalah": "Pada frame 87.3 dtk 'kamu' terpotong tepi kiri layar. Awan kecil di pojok dan hanya tampak sebagai hiasan.",
+     "saran": "Letakkan 'kamu' sepenuhnya di dalam layar sejak awal beat, dan pastikan awan naungan tampak di atasnya sebagai penutup harapan."
+    }
+   ],
+   "catatan": "Adab terjaga: Rasulullah ﷺ hanya berupa nur, ada stempel ILUSTRASI, dan alur dari bumi terbelah ke matahari lalu keringat terbaca. Kelemahannya di visualisasi keringat bertingkat, payoff naungan yang kecil, dan beberapa beat yang statis."
+  },
+  "lembar": [
+   "hasil/claude-sonnet-5-5/mahsyar1/periksa/putaran_1/lembar_1.jpg",
+   "hasil/claude-sonnet-5-5/mahsyar1/periksa/putaran_1/lembar_2.jpg",
+   "hasil/claude-sonnet-5-5/mahsyar1/periksa/putaran_1/lembar_3.jpg"
+  ]
+ }
+]

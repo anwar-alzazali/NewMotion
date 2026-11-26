@@ -1,0 +1,356 @@
+{
+ "objek_inti": null,
+ "beat": [
+  {
+   "beat": 1,
+   "bukti": "Akibatnya jatuh ke anak perempuanmu.",
+   "subjek": [
+    {
+     "jenis": "rumah_kampung",
+     "tempat": "kiri",
+     "keadaan": {
+      "lampu": [
+       0.8,
+       0.3
+      ]
+     }
+    },
+    {
+     "jenis": "bayang_misteri",
+     "tempat": "kanan",
+     "keadaan": {
+      "besar": [
+       0.9,
+       1.6
+      ],
+      "cahaya": "#c42a2a",
+      "nafas": 0.6
+     }
+    }
+   ],
+   "kamu": "utama",
+   "kamera": {
+    "bidikan": "sedang",
+    "aksen": "hentak"
+   },
+   "teks_layar": "JATUH KE ANAKMU",
+   "klimaks": false,
+   "suara": {
+    "suasana": "drone_gelap",
+    "efek": [
+     {
+      "nama": "braam",
+      "pada": "Zina",
+      "keras": "kuat",
+      "ulang": 1
+     }
+    ],
+    "transisi": false,
+    "intonasi": "berat"
+   }
+  },
+  {
+   "beat": 2,
+   "bukti": "ayah kandungnya… tidak bisa jadi walinya.",
+   "subjek": [
+    {
+     "jenis": "rumah_kampung",
+     "tempat": "kiri",
+     "keadaan": {
+      "lampu": 0.9,
+      "buka": [
+       0,
+       1
+      ]
+     }
+    },
+    {
+     "jenis": "kursi",
+     "tempat": "depan_kanan",
+     "keadaan": {
+      "sandaran": true
+     }
+    }
+   ],
+   "kamu": "tidak",
+   "kamera": {
+    "bidikan": "dekat",
+    "aksen": null
+   },
+   "teks_layar": "TIDAK BISA JADI WALI",
+   "klimaks": false,
+   "suara": {
+    "suasana": "senandung_gelap",
+    "efek": [],
+    "transisi": false,
+    "intonasi": "tenang"
+   }
+  },
+  {
+   "beat": 3,
+   "bukti": "tidak ada nasab, wali nikah, waris, dan nafkah dari laki-laki itu.",
+   "subjek": [
+    {
+     "jenis": "buku",
+     "tempat": "tengah",
+     "keadaan": {
+      "buka": [
+       0.2,
+       1
+      ],
+      "teks": "Nasab ke ibu",
+      "ukuran": 0.8
+     }
+    }
+   ],
+   "kamu": "tidak",
+   "kamera": {
+    "bidikan": "sedang",
+    "aksen": "hentak"
+   },
+   "teks_layar": "TIDAK ADA NASAB",
+   "klimaks": false,
+   "suara": {
+    "suasana": "senandung_gelap",
+    "efek": [
+     {
+      "nama": "stempel",
+      "pada": "tidak ada nasab",
+      "keras": "sedang",
+      "ulang": 1
+     }
+    ],
+    "transisi": false,
+    "intonasi": "tegas"
+   }
+  },
+  {
+   "beat": 4,
+   "bukti": "tidak sah pernikahan, kecuali dengan wali.",
+   "subjek": [
+    {
+     "jenis": "nur",
+     "tempat": "jauh",
+     "keadaan": {
+      "nama": "Rasulullah ﷺ"
+     }
+    },
+    {
+     "jenis": "buku",
+     "tempat": "tengah",
+     "keadaan": {
+      "buka": [
+       0.4,
+       1
+      ],
+      "teks": "Tidak sah tanpa wali",
+      "ukuran": 0.8
+     }
+    }
+   ],
+   "kamu": "tidak",
+   "kamera": {
+    "bidikan": "sedang",
+    "aksen": null
+   },
+   "teks_layar": "TANPA WALI, TIDAK SAH",
+   "klimaks": false,
+   "suara": {
+    "suasana": "malam_hening",
+    "efek": [
+     {
+      "nama": "halaman_buku",
+      "pada": "bersabda",
+      "keras": "lemah",
+      "ulang": 1
+     }
+    ],
+    "transisi": false,
+    "intonasi": "tegas"
+   }
+  },
+  {
+   "beat": 5,
+   "bukti": "pernikahan anakmu bisa tidak sah.",
+   "subjek": [
+    {
+     "jenis": "kursi",
+     "tempat": "depan_kiri",
+     "keadaan": {
+      "sandaran": true
+     }
+    },
+    {
+     "jenis": "bayang_misteri",
+     "tempat": "kanan",
+     "keadaan": {
+      "besar": [
+       0.6,
+       1.2
+      ],
+      "cahaya": "#b33",
+      "nafas": 0.9
+     }
+    },
+    {
+     "jenis": "rumah_kampung",
+     "tempat": "jauh",
+     "keadaan": {
+      "lampu": [
+       0.8,
+       0.1
+      ]
+     }
+    }
+   ],
+   "kamu": "saksi",
+   "kamera": {
+    "bidikan": "dekat",
+    "aksen": "guncang"
+   },
+   "teks_layar": "PERNIKAHAN TIDAK SAH",
+   "klimaks": true,
+   "suara": {
+    "suasana": "drone_gelap",
+    "efek": [
+     {
+      "nama": "stempel",
+      "pada": "tidak sah",
+      "keras": "kuat",
+      "ulang": 1
+     }
+    ],
+    "transisi": false,
+    "intonasi": "berat"
+   }
+  },
+  {
+   "beat": 6,
+   "bukti": "menanggung akibat perbuatan orang tuanya.",
+   "subjek": [
+    {
+     "jenis": "rumah_kampung",
+     "tempat": "tengah",
+     "keadaan": {
+      "lampu": [
+       0.5,
+       0.15
+      ]
+     }
+    },
+    {
+     "jenis": "bayang_misteri",
+     "tempat": "kiri",
+     "keadaan": {
+      "besar": 1.0,
+      "cahaya": "#6b2a2a",
+      "nafas": 0.4
+     }
+    }
+   ],
+   "kamu": "saksi",
+   "kamera": {
+    "bidikan": "lebar",
+    "aksen": null
+   },
+   "teks_layar": "ANAK MENANGGUNG",
+   "klimaks": false,
+   "suara": {
+    "suasana": "senandung_haru",
+    "efek": [
+     {
+      "nama": "isak_lembut",
+      "pada": "menanggung",
+      "keras": "lemah",
+      "ulang": 1
+     }
+    ],
+    "transisi": false,
+    "intonasi": "haru"
+   }
+  },
+  {
+   "beat": 7,
+   "bukti": "Wali hakim, lewat KUA. Tanyakan sebelum akad.",
+   "subjek": [
+    {
+     "jenis": "kantor_gedung",
+     "tempat": "kanan",
+     "keadaan": {
+      "nama": "KUA"
+     }
+    }
+   ],
+   "kamu": "tidak",
+   "kamera": {
+    "bidikan": "lebar",
+    "aksen": null
+   },
+   "teks_layar": "WALI HAKIM",
+   "klimaks": false,
+   "suara": {
+    "suasana": "angin_sejuk",
+    "efek": [
+     {
+      "nama": "whoosh",
+      "pada": null,
+      "keras": "lemah",
+      "ulang": 1
+     }
+    ],
+    "transisi": true,
+    "intonasi": "tenang"
+   }
+  },
+  {
+   "beat": 8,
+   "bukti": "seseorang tidak akan memikul dosa orang lain.",
+   "subjek": [
+    {
+     "jenis": "rumah_kampung",
+     "tempat": "tengah",
+     "keadaan": {
+      "lampu": [
+       0.3,
+       1
+      ],
+      "buka": [
+       0,
+       1
+      ]
+     }
+    },
+    {
+     "jenis": "jendela",
+     "tempat": "kiri",
+     "keadaan": {
+      "terang": [
+       0.3,
+       1
+      ]
+     }
+    }
+   ],
+   "kamu": "saksi",
+   "kamera": {
+    "bidikan": "sedang",
+    "aksen": null
+   },
+   "teks_layar": "BUKAN SALAHNYA",
+   "klimaks": false,
+   "suara": {
+    "suasana": "senandung_haru",
+    "efek": [
+     {
+      "nama": "kilau_cahaya",
+      "pada": "tidak akan memikul",
+      "keras": "lemah",
+      "ulang": 1
+     }
+    ],
+    "transisi": false,
+    "intonasi": "lega"
+   }
+  }
+ ]
+}

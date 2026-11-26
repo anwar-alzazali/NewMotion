@@ -1,0 +1,124 @@
+[
+ {
+  "putaran": 0,
+  "model_periksa": "claude-sonnet-5-5",
+  "biaya_usd": 0.034962,
+  "temuan": {
+   "lulus": false,
+   "temuan": [
+    {
+     "beat": 2,
+     "berat": "berat",
+     "masalah": "Narasi menyebut Ya'juj dan Ma'juj di balik dinding, tetapi frame hanya menampilkan dinding bata kosong. Bayangan misteri tidak terlihat dan gunung juga tidak tampak. Dinding tidak terasa seperti dinding besi yang mengurung sesuatu.",
+     "saran": "Tampilkan bayang_misteri yang jelas terlihat di balik atau di atas dinding (besar, bernafas, siluet gelap atau mata bercahaya samar). Pastikan gunung jauh tampak, dan beri kamera aksen perlahan agar beat tidak terasa diam."
+    },
+    {
+     "beat": 5,
+     "berat": "berat",
+     "masalah": "Narasi 'dinding kembali utuh', tetapi frame masih menampilkan lubang retak kecil dengan cahaya di dinding. Lubang tidak tampak tertutup, sehingga bertentangan dengan narasi. Gunung juga tidak terlihat.",
+     "saran": "Ubah keadaan ngarai agar lubang benar-benar 0 pada 70% durasi beat (misalnya lubang [0.6, 0] atau mulai dari lebih kecil), sehingga dinding tampak mulus dengan kilap. Pastikan tidak ada retakan tersisa."
+    },
+    {
+     "beat": 3,
+     "berat": "ringan",
+     "masalah": "Penggali di kiri dan kanan tampak berdempetan di tepi ngarai dan sebagian terpotong tepi layar. Cahaya lubang mirip dengan beat lain.",
+     "saran": "Kurangi n penggali atau sebar mereka lebih ke dalam, supaya tidak terpotong tepi layar dan tetap dekat dengan lubang."
+    },
+    {
+     "beat": 4,
+     "berat": "ringan",
+     "masalah": "Pemimpin berada di depan lubang menunjuk ke arahnya, tetapi para penggali yang disebut 'pulang' tidak tampak sama sekali. Teks 'BESOK KITA TEMBUS' berukuran lebih kecil daripada teks beat lain.",
+     "saran": "Tampilkan penggali yang berjalan menjauh di belakang pemimpin agar adegan 'pulanglah' terbaca. Pendekkan teks_layar (misalnya 'BESOK TEMBUS') agar ukuran huruf konsisten."
+    },
+    {
+     "beat": 6,
+     "berat": "ringan",
+     "masalah": "Beat 6 hampir sama dengan beat 1 dan 3 (penggali berjajar di lubang bercahaya, bidikan lebar), tanpa teks layar. Ritme terasa berulang.",
+     "saran": "Variasikan beat 6 sebagai montase hari-hari, misalnya kamera dekat pada pacul, atau beri teks 'HARI DEMI HARI' dan ubah posisi lubang."
+    },
+    {
+     "beat": 7,
+     "berat": "ringan",
+     "masalah": "Beat 7 hampir identik dengan beat 4 (pemimpin besar di kiri menunjuk lubang bercahaya, teks kemiripan). Penonton sulit merasakan perbedaan penting dari kata 'insya Allah'. Penggali yang pulang tidak tampak.",
+     "saran": "Bedakan dari beat 4: kamera lebih dekat ke wajah/siluet pemimpin tanpa menunjuk, lubang lebih redup, dan tampilkan penggali pergi di latar. Beri aksen kamera agar kata 'insya Allah' terasa menonjol."
+    },
+    {
+     "beat": 11,
+     "berat": "ringan",
+     "masalah": "Tokoh 'kamu' besar menutupi layar ponsel sehingga teks notifikasi ('Besok aku lakukan', 'insya Allah') terpotong dan tidak terbaca. Teks layar 'INSYA ALLAH' juga sama dengan beat 7.",
+     "saran": "Geser 'kamu' ke samping atau kecilkan agar notifikasi ponsel terbaca penuh. Ganti teks_layar menjadi kalimat lain seperti 'UCAPKAN INSYA ALLAH'."
+    },
+    {
+     "beat": 10,
+     "berat": "ringan",
+     "masalah": "Narasi menyebut ulat di tengkuk, tetapi yang tampak hanya satu titik kecil di permukaan air; beat terasa kosong dan tidak jelas.",
+     "saran": "Dekatkan kamera ke bayang_misteri dan tampilkan beberapa siluet yang rebah, atau ulat kecil bercahaya di tengkuk, supaya binasa terbaca jelas."
+    }
+   ],
+   "catatan": "Gaya dan adab aman (tokoh hanya siluet, tanpa gambar Allah), tetapi beat 2 dan 5 tidak menampilkan apa yang dikatakan narasi, dan beberapa beat berurutan terlihat terlalu mirip."
+  },
+  "lembar": [
+   "hasil/claude-sonnet-5-5/yajuj1/periksa/putaran_0/lembar_1.jpg",
+   "hasil/claude-sonnet-5-5/yajuj1/periksa/putaran_0/lembar_2.jpg"
+  ],
+  "revisi": "claude-sonnet-5-5",
+  "biaya_revisi_usd": 0.08478
+ },
+ {
+  "putaran": 1,
+  "model_periksa": "claude-sonnet-5-5",
+  "biaya_usd": 0.033562,
+  "temuan": {
+   "lulus": false,
+   "temuan": [
+    {
+     "beat": 2,
+     "berat": "berat",
+     "masalah": "Narasi menyebut Ya'juj dan Ma'juj di balik dinding, tetapi frame hanya menampilkan dinding kosong. Bayang_misteri merah tidak tampak sama sekali, dan gunung jauh juga tidak terlihat. Beat ini tampak seperti beat 5 (dinding utuh) sehingga tidak menceritakan apa-apa.",
+     "saran": "Tampilkan bayang_misteri besar dengan cahaya merah di balik atau di celah dinding, dan buat dinding lebih jelas sebagai dinding besi. Pakai bidikan sedang atau lebar agar sosok bayangan dan dinding sama-sama terlihat."
+    },
+    {
+     "beat": 7,
+     "berat": "berat",
+     "masalah": "Narasi menyebut pemimpin berkata 'besok kita tembus... insya Allah', tetapi tidak ada penggali yang pulang. Pemimpin besar menutupi sebagian besar frame dan para penggali tidak tampak. Adegan dengan beat 4 jadi hampir identik, sehingga momen kunci yang membedakan (insya Allah) tidak terasa.",
+     "saran": "Tampilkan pemimpin lebih kecil dan berdampingan dengan penggali yang berjalan pulang di kejauhan, atau ganti bidikan menjadi sedang. Beri aksen khusus pada teks 'INSYA ALLAH' agar berbeda dari beat 4. Lubang di dinding harus tetap terlihat jelas."
+    },
+    {
+     "beat": 6,
+     "berat": "ringan",
+     "masalah": "Lubang dan penggali mirip dengan beat 3, dan hanya sedikit lebih dekat. Kesan 'hari demi hari' (pengulangan) kurang terasa.",
+     "saran": "Tunjukkan pengulangan lewat dua keadaan dinding dalam satu frame, misalnya lubang kecil yang sudah menutup di samping lubang yang sedang digali. Atau ubah kamera menjadi lebar dengan banyak penggali."
+    },
+    {
+     "beat": 3,
+     "berat": "ringan",
+     "masalah": "Beat 1, 3, 4, 6, dan 7 tampak serupa: dinding gelap dengan lubang bercahaya oranye di tengah dan siluet berdiri. Ritme visual terasa monoton sebelum klimaks.",
+     "saran": "Variasikan penempatan ngarai (kiri/kanan), bidikan, dan jarak penggali. Pakai satu beat dengan bidikan sangat dekat pada lubang untuk menunjukkan 'hampir tembus'."
+    },
+    {
+     "beat": 4,
+     "berat": "ringan",
+     "masalah": "Pemimpin berdiri besar di depan dan menutupi sebagian dinding. Penggali yang pulang tidak terlihat sehingga narasi 'pulanglah' kurang tergambar.",
+     "saran": "Tunjukkan penggali berjalan menjauh dari lubang di belakang pemimpin, dan geser pemimpin ke tepi agar lubang terlihat penuh."
+    },
+    {
+     "beat": 9,
+     "berat": "ringan",
+     "masalah": "Tokoh 'kamu' terpotong tepi bawah layar. Bayang_misteri tidak tampak jelas, hanya siluet orang dan danau kecil di kiri. Teks 'AIR HABIS' tidak ditunjang oleh air yang jelas menyusut.",
+     "saran": "Naikkan posisi 'kamu' agar utuh terlihat, buat danau lebih besar dan jelas surut dengan dasar kering. Tampilkan bayang_misteri besar di dekat danau."
+    },
+    {
+     "beat": 11,
+     "berat": "ringan",
+     "masalah": "Tokoh 'kamu' menutupi teks di layar ponsel, sehingga judul notifikasi 'Besok aku lakukan' dan 'insya Allah' terpotong dan tidak terbaca. Teks layar juga menumpuk dengan jam ponsel.",
+     "saran": "Geser 'kamu' ke samping ponsel atau perkecil agar teks notifikasi terbaca penuh. Pastikan teks 'insya Allah' pada ponsel tidak tertutup."
+    }
+   ],
+   "catatan": "Alur klimaks dan beat jebol (beat 8) sudah kuat, tetapi beat 2 dan 7 gagal menyampaikan isi narasi dan banyak beat tengah terlihat terlalu mirip."
+  },
+  "lembar": [
+   "hasil/claude-sonnet-5-5/yajuj1/periksa/putaran_1/lembar_1.jpg",
+   "hasil/claude-sonnet-5-5/yajuj1/periksa/putaran_1/lembar_2.jpg"
+  ]
+ }
+]

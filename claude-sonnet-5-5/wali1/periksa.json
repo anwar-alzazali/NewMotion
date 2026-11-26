@@ -1,0 +1,124 @@
+[
+ {
+  "putaran": 0,
+  "model_periksa": "claude-sonnet-5-5",
+  "biaya_usd": 0.035888,
+  "temuan": {
+   "lulus": false,
+   "temuan": [
+    {
+     "beat": 3,
+     "berat": "berat",
+     "masalah": "Teks di dalam buku ('Nasab hanya ke ibu') melebar melewati tepi halaman buku. Huruf 'N' dan 'u' menempel atau keluar dari halaman, dan tulisan menimpa garis-garis halaman sehingga sulit dibaca. Dua frame beat 3 (15,1 dtk dan 22,5 dtk) tampak hampir identik, sehingga beat panjang ini terasa diam.",
+     "saran": "Perkecil teks buku atau pecah jadi dua baris ('Nasab hanya' / 'ke ibu') agar muat di halaman. Beri gerak di beat 3, misalnya kamera mulai 'sedang' lalu mendekat ke buku, atau halaman berganti, supaya tidak tampak diam selama lebih dari 13 detik."
+    },
+    {
+     "beat": 4,
+     "berat": "berat",
+     "masalah": "Buku terpotong tepi kanan layar, dan teks 'Tidak sah nikah tanpa wali' terpotong ('Tidak sah nikah tanpa...'). Bagian awal teks juga tertimpa cahaya nur sehingga kata 'Tidak' tidak terbaca. Inti dalil jadi tidak terbaca penonton.",
+     "saran": "Geser buku ke tengah atau kecilkan supaya utuh di dalam layar. Pindahkan nur ke kiri-atas atau jauhkan dari buku agar cahayanya tidak menimpa teks. Perpendek teks buku menjadi 'Tidak sah tanpa wali' dan pecah jadi dua baris."
+    },
+    {
+     "beat": 7,
+     "berat": "berat",
+     "masalah": "Gedung KUA tertutup tokoh 'kamu' dan teks layar 'WALI HAKIM' menimpa bagian atas gedung. Label 'KUA' di atas gedung terpotong tepi layar dan nyaris tak terbaca karena gelap. Penonton tidak menangkap bahwa gedung itu KUA.",
+     "saran": "Kecilkan gedung dan turunkan supaya seluruhnya terlihat dengan label 'KUA' jelas di bawah teks layar. Geser 'kamu' ke samping gedung, tidak di depannya. Gunakan bidikan lebar agar gedung dan label muat."
+    },
+    {
+     "beat": 5,
+     "berat": "berat",
+     "masalah": "Bayangan misterius besar menutupi sebagian rumah dan kursi di belakang 'kamu', sehingga kursi tidak terlihat. Klimaks hanya terlihat sedikit berbeda dari beat 1 (komposisi mirip: kamu di tengah, bayangan kiri, rumah di belakang).",
+     "saran": "Pindahkan kursi ke depan dan beri ruang terpisah dari 'kamu' dan bayangan agar terbaca sebagai kursi wali yang kosong. Kecilkan bayangan atau geser ke tepi kiri supaya tidak menutupi rumah. Bedakan klimaks dengan bidikan dekat atau kamera hentak yang lebih kuat."
+    },
+    {
+     "beat": 1,
+     "berat": "ringan",
+     "masalah": "Rumah terpotong tepi kanan layar, sebagian jendela dan atap hilang. Bayangan di kiri kecil dan hampir tidak terbaca sebagai ancaman.",
+     "saran": "Geser rumah sedikit ke kiri agar utuh. Perbesar bayangan atau beri cahaya merah lebih jelas."
+    },
+    {
+     "beat": 6,
+     "berat": "ringan",
+     "masalah": "'Kamu' sebagai saksi nyaris keluar layar di pojok kanan bawah dan terpotong. Kerumunan siluet kecil di depan rumah tidak ada di rencana dan tidak jelas maknanya. Tidak ada teks layar sehingga beat terasa kosong.",
+     "saran": "Geser 'kamu' lebih ke dalam layar agar utuh. Hapus kerumunan atau pastikan itu disengaja. Tambahkan teks layar singkat seperti 'ANAK MENANGGUNG'."
+    },
+    {
+     "beat": 2,
+     "berat": "ringan",
+     "masalah": "Rumah kecil dan jauh, kursi menutupi bagian depan rumah. Frame banyak ruang kosong dan terasa mirip beat 1 dan 5, sehingga beat 1, 2, dan 5 terasa seragam.",
+     "saran": "Dekatkan kamera ke kursi dan rumah, atau tampilkan sosok anak perempuan dewasa sebagai siluet di samping kursi kosong agar maksud 'ayah tidak bisa jadi wali' terbaca."
+    },
+    {
+     "beat": 8,
+     "berat": "ringan",
+     "masalah": "Rencana menyebut rumah di kanan, tetapi rumah tidak tampak, hanya jendela menyala. 'Kamu' terpotong di pojok kiri bawah layar. Narasi menyebut firman Allah, dan tidak ada visual yang menandainya.",
+     "saran": "Tampilkan rumah utuh dengan lampu menyala di kanan, dan geser 'kamu' ke dalam layar agar tidak terpotong. Bila perlu tambahkan teks dalil singkat."
+    }
+   ],
+   "catatan": "Gaya dan stempel ILUSTRASI sudah sesuai dan nur Rasulullah aman dari sisi adab, tetapi beberapa frame punya teks buku terpotong, gedung KUA tertutup, dan ritme beat 3 terasa diam sehingga perlu diperbaiki."
+  },
+  "lembar": [
+   "hasil/claude-sonnet-5-5/wali1/periksa/putaran_0/lembar_1.jpg",
+   "hasil/claude-sonnet-5-5/wali1/periksa/putaran_0/lembar_2.jpg"
+  ],
+  "revisi": "claude-sonnet-5-5",
+  "biaya_revisi_usd": 0.071238
+ },
+ {
+  "putaran": 1,
+  "model_periksa": "claude-sonnet-5-5",
+  "biaya_usd": 0.034202,
+  "temuan": {
+   "lulus": false,
+   "temuan": [
+    {
+     "beat": 4,
+     "berat": "berat",
+     "masalah": "Narasi menyebut sabda Rasulullah, tetapi yang tampak hanya seberkas cahaya tipis di belakang buku dan hampir tidak terbaca sebagai nur. Tidak ada nama atau penanda yang jelas, sehingga penonton tidak tahu siapa yang bersabda.",
+     "saran": "Perbesar nur Rasulullah ﷺ: letakkan di tengah atas dan lebih terang, dengan nama 'Rasulullah ﷺ' terbaca. Geser buku ke bawah supaya tidak bertabrakan. Tetap tanpa sosok bertubuh."
+    },
+    {
+     "beat": 8,
+     "berat": "berat",
+     "masalah": "Rencana meminta rumah kampung di tengah yang terbuka, tetapi frame hanya menampilkan jendela menyala di kiri. Rumah tidak tampak sama sekali. Narasi menyebut Allah berfirman, tetapi tidak ada penanda ayat atau cahaya. Tokoh 'kamu' terpotong di pojok kanan bawah dan hanya terlihat rambut hitam.",
+     "saran": "Tampilkan rumah kampung di tengah dengan lampu menyala hangat dan pintu terbuka. Jendela terang boleh tetap di kiri sebagai aksen. Pindahkan 'kamu' ke dalam bingkai sebagai saksi yang menghadap rumah, tidak terpotong tepi layar."
+    },
+    {
+     "beat": 5,
+     "berat": "berat",
+     "masalah": "Bayangan hitam besar menutupi sebagian rumah di latar. Jendela kanan dan pintu rumah tertutup, padahal rumah (rumah anak yang akan menikah) adalah benda inti beat ini. Tokoh 'kamu' hanya tampak sedikit di tepi kanan bawah dan terpotong. Klimaks juga tidak terasa berbeda dari beat lain.",
+     "saran": "Geser bayang_misteri ke sisi yang tidak menutupi rumah, atau kecilkan. Tampilkan rumah utuh dan jelas dengan lampu padam. Tempatkan 'kamu' sebagai saksi di bawah, utuh dan tidak terpotong. Naikkan kesan klimaks lewat kamera dekat, guncang, dan rona merah yang lebih kuat."
+    },
+    {
+     "beat": 3,
+     "berat": "ringan",
+     "masalah": "Dua frame beat 3 (15,1 dtk dan 22,5 dtk) hampir identik: buku terbuka di depan gunung tanpa perubahan. Beat ini panjang, jadi terasa diam. Gunung juga di belakang buku tanpa alasan cerita, dan teks di halaman buku tidak terbaca.",
+     "saran": "Beri perubahan di tengah beat: buku bergeser mendekat, atau tampilkan teks 'Nasab ke ibu' lebih besar di halaman. Hapus gunung atau ganti latar yang bermakna, misalnya rumah kecil dan siluet ibu."
+    },
+    {
+     "beat": 6,
+     "berat": "ringan",
+     "masalah": "Bayangan hitam kecil menempel di sisi rumah dan hampir tidak terbaca. Orang-orang siluet di depan juga terlalu gelap. Tokoh 'kamu' terpotong di bawah. Pesan 'anak menanggung' kurang tergambar.",
+     "saran": "Perbesar bayang_misteri di kiri rumah agar terbaca sebagai beban. Letakkan 'kamu' utuh di bawah menghadap rumah. Pertegas rumah dengan lampu meredup."
+    },
+    {
+     "beat": 2,
+     "berat": "ringan",
+     "masalah": "Rumah terpotong tepi kiri dan atapnya menabrak teks layar 'TIDAK BISA JADI WALI'. Kursi terpotong tepi kanan. Narasi tentang anak dewasa yang akan menikah tidak tergambar.",
+     "saran": "Turunkan rumah dan kursi atau pakai bidikan sedang agar tidak menabrak teks. Pindahkan kursi lebih ke dalam bingkai. Tambahkan 'kamu' atau penanda lain agar narasi tentang anak dan wali terbaca."
+    },
+    {
+     "beat": 1,
+     "berat": "ringan",
+     "masalah": "Bayangan misteri di kanan tampak kecil dan hampir tak terlihat, padahal rencana memintanya besar. Rumah terpotong tepi kiri. Teks layar sedikit dekat dengan stempel ILUSTRASI.",
+     "saran": "Perbesar bayang_misteri dengan cahaya merah yang jelas. Geser rumah ke dalam bingkai agar tidak terpotong."
+    }
+   ],
+   "catatan": "Cerita cukup terbaca dan gaya konsisten, tetapi beat 4, 5, dan 8 punya masalah inti: nur Rasulullah nyaris tak terlihat, rumah tertutup, dan rumah hilang di akhir. Beat 3 juga terasa diam."
+  },
+  "lembar": [
+   "hasil/claude-sonnet-5-5/wali1/periksa/putaran_1/lembar_1.jpg",
+   "hasil/claude-sonnet-5-5/wali1/periksa/putaran_1/lembar_2.jpg"
+  ]
+ }
+]

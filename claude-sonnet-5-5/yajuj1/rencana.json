@@ -1,0 +1,509 @@
+{
+ "objek_inti": {
+  "jenis": "ngarai",
+  "perkembangan": "dinding digali sampai hampir tembus, utuh kembali setiap pagi, lalu pada hari kata 'insya Allah' diucapkan dinding tetap berlubang dan jebol"
+ },
+ "beat": [
+  {
+   "beat": 1,
+   "bukti": "Ada satu dinding yang digali setiap hari.",
+   "subjek": [
+    {
+     "jenis": "gunung",
+     "tempat": "jauh"
+    },
+    {
+     "jenis": "ngarai",
+     "tempat": "tengah",
+     "keadaan": {
+      "lubang": [
+       0.2,
+       0.5
+      ]
+     }
+    },
+    {
+     "jenis": "penggali",
+     "tempat": "di_lubang:ngarai",
+     "keadaan": {
+      "aktif": 1,
+      "n": 3
+     }
+    }
+   ],
+   "kamu": "tidak",
+   "kamera": {
+    "bidikan": "lebar",
+    "aksen": null
+   },
+   "teks_layar": "SATU KATA",
+   "klimaks": false,
+   "suara": {
+    "suasana": "angin_gurun",
+    "efek": [
+     {
+      "nama": "braam",
+      "pada": "satu kata",
+      "keras": "kuat",
+      "ulang": 1
+     }
+    ],
+    "transisi": false,
+    "intonasi": "berat"
+   }
+  },
+  {
+   "beat": 2,
+   "bukti": "Dinding besi itu dibangun Zulkarnain untuk mengurung mereka.",
+   "subjek": [
+    {
+     "jenis": "gunung",
+     "tempat": "jauh"
+    },
+    {
+     "jenis": "bayang_misteri",
+     "tempat": "tengah",
+     "keadaan": {
+      "besar": 1.2,
+      "nafas": 0.6,
+      "cahaya": "merah"
+     }
+    },
+    {
+     "jenis": "ngarai",
+     "tempat": "tengah",
+     "keadaan": {
+      "lubang": 0,
+      "jebol": 0
+     }
+    }
+   ],
+   "kamu": "tidak",
+   "kamera": {
+    "bidikan": "sedang",
+    "aksen": null
+   },
+   "teks_layar": "DINDING BESI",
+   "klimaks": false,
+   "suara": {
+    "suasana": "drone_gelap",
+    "efek": [
+     {
+      "nama": "dentum_jauh",
+      "pada": "mengurung",
+      "keras": "lemah",
+      "ulang": 1
+     }
+    ],
+    "transisi": false,
+    "intonasi": "tenang"
+   }
+  },
+  {
+   "beat": 3,
+   "bukti": "Setiap hari mereka menggali, sampai hampir tembus.",
+   "subjek": [
+    {
+     "jenis": "ngarai",
+     "tempat": "tengah",
+     "keadaan": {
+      "lubang": [
+       0.4,
+       0.95
+      ]
+     }
+    },
+    {
+     "jenis": "penggali",
+     "tempat": "di_lubang:ngarai",
+     "keadaan": {
+      "aktif": 1,
+      "n": 3
+     }
+    }
+   ],
+   "kamu": "tidak",
+   "kamera": {
+    "bidikan": "sedang",
+    "aksen": null
+   },
+   "teks_layar": "HAMPIR TEMBUS",
+   "klimaks": false,
+   "suara": {
+    "suasana": "drone_gelap",
+    "efek": [
+     {
+      "nama": "palu_kayu",
+      "pada": "menggali",
+      "keras": "sedang",
+      "ulang": 6
+     }
+    ],
+    "transisi": false,
+    "intonasi": "tegang"
+   }
+  },
+  {
+   "beat": 4,
+   "bukti": "pulanglah, besok kita tembus.",
+   "subjek": [
+    {
+     "jenis": "ngarai",
+     "tempat": "kanan",
+     "keadaan": {
+      "lubang": 0.95
+     }
+    },
+    {
+     "jenis": "penggali",
+     "tempat": "di_lubang:ngarai",
+     "keadaan": {
+      "aktif": 0,
+      "pulang": [
+       0,
+       1
+      ],
+      "n": 4
+     }
+    },
+    {
+     "jenis": "pemimpin",
+     "tempat": "depan_kiri",
+     "keadaan": {
+      "angkat": 0.6
+     }
+    }
+   ],
+   "kamu": "tidak",
+   "kamera": {
+    "bidikan": "sedang",
+    "aksen": null
+   },
+   "teks_layar": "BESOK TEMBUS",
+   "klimaks": false,
+   "suara": {
+    "suasana": "angin_gurun",
+    "efek": [
+     {
+      "nama": "langkah_pelan",
+      "pada": "pulanglah",
+      "keras": "lemah",
+      "ulang": 3
+     }
+    ],
+    "transisi": false,
+    "intonasi": "tenang"
+   }
+  },
+  {
+   "beat": 5,
+   "bukti": "Esoknya, dinding itu sudah kembali utuh.",
+   "subjek": [
+    {
+     "jenis": "gunung",
+     "tempat": "jauh"
+    },
+    {
+     "jenis": "ngarai",
+     "tempat": "tengah",
+     "keadaan": {
+      "lubang": 0,
+      "jebol": 0,
+      "kilap": 1
+     }
+    }
+   ],
+   "kamu": "tidak",
+   "kamera": {
+    "bidikan": "sedang",
+    "aksen": "hentak"
+   },
+   "teks_layar": "UTUH KEMBALI",
+   "klimaks": false,
+   "suara": {
+    "suasana": "malam_hening",
+    "efek": [
+     {
+      "nama": "kilau_cahaya",
+      "pada": "kembali utuh",
+      "keras": "sedang",
+      "ulang": 1
+     }
+    ],
+    "transisi": true,
+    "intonasi": "berat"
+   }
+  },
+  {
+   "beat": 6,
+   "bukti": "Begitu terus. Hari demi hari.",
+   "subjek": [
+    {
+     "jenis": "ngarai",
+     "tempat": "kiri",
+     "keadaan": {
+      "lubang": [
+       0.1,
+       0.7
+      ]
+     }
+    },
+    {
+     "jenis": "penggali",
+     "tempat": "di_lubang:ngarai",
+     "keadaan": {
+      "aktif": 1,
+      "n": 2
+     }
+    }
+   ],
+   "kamu": "tidak",
+   "kamera": {
+    "bidikan": "dekat",
+    "aksen": null
+   },
+   "teks_layar": "HARI DEMI HARI",
+   "klimaks": false,
+   "suara": {
+    "suasana": "jam_dinding",
+    "efek": [
+     {
+      "nama": "palu_kayu",
+      "pada": "Hari demi hari",
+      "keras": "lemah",
+      "ulang": 4
+     }
+    ],
+    "transisi": false,
+    "intonasi": "tenang"
+   }
+  },
+  {
+   "beat": 7,
+   "bukti": "besok kita tembus… insya Allah.",
+   "subjek": [
+    {
+     "jenis": "ngarai",
+     "tempat": "kanan",
+     "keadaan": {
+      "lubang": 0.8
+     }
+    },
+    {
+     "jenis": "penggali",
+     "tempat": "jauh",
+     "keadaan": {
+      "aktif": 0,
+      "pulang": [
+       0,
+       1
+      ],
+      "n": 4
+     }
+    },
+    {
+     "jenis": "pemimpin",
+     "tempat": "depan_kiri",
+     "keadaan": {
+      "angkat": 0.1
+     }
+    }
+   ],
+   "kamu": "tidak",
+   "kamera": {
+    "bidikan": "dekat",
+    "aksen": "hentak"
+   },
+   "teks_layar": "INSYA ALLAH",
+   "klimaks": false,
+   "suara": {
+    "suasana": "dengung_haru",
+    "efek": [
+     {
+      "nama": "stempel",
+      "pada": "insya Allah",
+      "keras": "sedang",
+      "ulang": 1
+     }
+    ],
+    "transisi": false,
+    "intonasi": "berat"
+   }
+  },
+  {
+   "beat": 8,
+   "bukti": "Mereka menembusnya, dan keluar.",
+   "subjek": [
+    {
+     "jenis": "ngarai",
+     "tempat": "tengah",
+     "keadaan": {
+      "lubang": [
+       0.8,
+       0.95
+      ],
+      "jebol": [
+       0,
+       1
+      ]
+     }
+    },
+    {
+     "jenis": "penggali",
+     "tempat": "di_lubang:ngarai",
+     "keadaan": {
+      "aktif": 1,
+      "n": 6
+     }
+    }
+   ],
+   "kamu": "tidak",
+   "kamera": {
+    "bidikan": "lebar",
+    "aksen": "guncang"
+   },
+   "teks_layar": "JEBOL",
+   "klimaks": true,
+   "suara": {
+    "suasana": null,
+    "efek": [
+     {
+      "nama": "tanah_retak",
+      "pada": "menembusnya",
+      "keras": "kuat",
+      "ulang": 1
+     }
+    ],
+    "transisi": false,
+    "intonasi": "tegas"
+   }
+  },
+  {
+   "beat": 9,
+   "bukti": "Mereka meminum habis air, dan manusia berlarian menghindar.",
+   "subjek": [
+    {
+     "jenis": "danau",
+     "tempat": "kiri",
+     "keadaan": {
+      "isi": [
+       0.9,
+       0.05
+      ]
+     }
+    },
+    {
+     "jenis": "bayang_misteri",
+     "tempat": "jauh",
+     "keadaan": {
+      "besar": 1.0,
+      "nafas": 0.6
+     }
+    },
+    {
+     "jenis": "arus",
+     "tempat": "kanan",
+     "keadaan": {
+      "mode": "lari",
+      "n": 14,
+      "maju": [
+       0,
+       1
+      ]
+     }
+    }
+   ],
+   "kamu": "saksi",
+   "kamera": {
+    "bidikan": "lebar",
+    "aksen": null
+   },
+   "teks_layar": "AIR HABIS",
+   "klimaks": false,
+   "suara": {
+    "suasana": "kerumunan_cemas",
+    "efek": [
+     {
+      "nama": "langkah_lari",
+      "pada": "berlarian",
+      "keras": "sedang",
+      "ulang": 4
+     }
+    ],
+    "transisi": false,
+    "intonasi": "tegang"
+   }
+  },
+  {
+   "beat": 10,
+   "bukti": "mereka binasa.",
+   "subjek": [
+    {
+     "jenis": "awan",
+     "tempat": "jauh"
+    },
+    {
+     "jenis": "arus",
+     "tempat": "tengah",
+     "keadaan": {
+      "mode": "lari",
+      "n": 10,
+      "maju": 0.3,
+      "rebah": [
+       0,
+       1
+      ]
+     }
+    }
+   ],
+   "kamu": "tidak",
+   "kamera": {
+    "bidikan": "sedang",
+    "aksen": null
+   },
+   "teks_layar": "BINASA",
+   "klimaks": false,
+   "suara": {
+    "suasana": "malam_hening",
+    "efek": [
+     {
+      "nama": "hentak_serius",
+      "pada": "binasa",
+      "keras": "sedang",
+      "ulang": 1
+     }
+    ],
+    "transisi": false,
+    "intonasi": "tegas"
+   }
+  },
+  {
+   "beat": 11,
+   "bukti": "jangan berkata, besok aku lakukan, kecuali dengan insya Allah.",
+   "subjek": [
+    {
+     "jenis": "ponsel",
+     "tempat": "tengah",
+     "keadaan": {
+      "judul": "Besok aku lakukan",
+      "teks": "insya Allah",
+      "getar": 0
+     }
+    }
+   ],
+   "kamu": "utama",
+   "kamera": {
+    "bidikan": "sedang",
+    "aksen": null
+   },
+   "teks_layar": "UCAPKAN INSYA ALLAH",
+   "klimaks": false,
+   "suara": {
+    "suasana": "senandung_haru",
+    "efek": [],
+    "transisi": true,
+    "intonasi": "haru"
+   }
+  }
+ ]
+}

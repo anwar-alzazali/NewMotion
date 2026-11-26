@@ -1,0 +1,41 @@
+{
+ "naskah": "tests/data/tolok_ukur/yajuj1.json",
+ "model": "claude-sonnet-5-5",
+ "penyedia": "anthropic",
+ "token_masuk": 10428,
+ "token_keluar": 5582,
+ "biaya_usd": 0.23,
+ "percobaan": [
+  "claude-sonnet-5-5: diterima (33.3 dtk)"
+ ],
+ "periksa": [
+  {
+   "putaran": 0,
+   "model_periksa": "claude-sonnet-5-5",
+   "biaya_usd": 0.034962,
+   "revisi": "claude-sonnet-5-5",
+   "biaya_revisi_usd": 0.08478,
+   "lulus": false,
+   "jumlah_temuan": 8
+  },
+  {
+   "putaran": 1,
+   "model_periksa": "claude-sonnet-5-5",
+   "biaya_usd": 0.033562,
+   "lulus": false,
+   "jumlah_temuan": 7
+  }
+ ],
+ "shot": 11,
+ "skor_gabungan": 94,
+ "skor_aspek": {
+  "ritme": 63,
+  "kamera": 100,
+  "lingkungan": 97,
+  "benda": 96,
+  "tokoh": 100,
+  "teks_layar": 69,
+  "gerak": 100,
+  "cerita": 100
+ }
+}
