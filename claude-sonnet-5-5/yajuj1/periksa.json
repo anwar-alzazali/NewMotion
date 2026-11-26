@@ -1,0 +1,112 @@
+[
+ {
+  "putaran": 0,
+  "model_periksa": "claude-sonnet-5-5",
+  "biaya_usd": 0.031784,
+  "temuan": {
+   "lulus": false,
+   "temuan": [
+    {
+     "beat": 2,
+     "berat": "berat",
+     "masalah": "Narasi menyebut Ya'juj dan Ma'juj di balik dinding, tetapi bayang_misteri tidak tampak sama sekali. Frame hanya menampilkan dinding bata polos, jadi visual tidak menceritakan narasi.",
+     "saran": "Munculkan bayang_misteri di balik atau di atas dinding dengan siluet besar bercahaya samar. Kamera bisa sedikit dinaikkan agar dinding dan bayangan sama-sama terlihat."
+    },
+    {
+     "beat": 5,
+     "berat": "berat",
+     "masalah": "Narasi 'dinding kembali utuh', tetapi masih ada lubang retak gelap di dasar dinding dan frame tidak menunjukkan dinding benar-benar mulus. Matahari (surya) yang direncanakan juga tidak tampak, jadi tidak terasa pagi.",
+     "saran": "Ubah lubang jadi 0 sepenuhnya pada akhir beat. Tampilkan surya atau cahaya pagi hangat di langit jauh agar terasa pergantian hari, dan beri kilap pada dinding yang mulus."
+    },
+    {
+     "beat": 4,
+     "berat": "ringan",
+     "masalah": "Pemimpin berdiri besar di depan menutupi sebagian lubang. Penggali tidak terlihat sama sekali padahal narasi menyebut mereka pulang. Teks 'TANPA INSYA ALLAH' berukuran lebih kecil daripada teks beat lain.",
+     "saran": "Geser pemimpin sedikit agar lubang tetap jelas. Tampilkan penggali berjalan menjauh di sisi lain. Perpendek teks layar agar bisa tampil dengan ukuran sama."
+    },
+    {
+     "beat": 6,
+     "berat": "ringan",
+     "masalah": "Beat montase 'hari demi hari' hampir identik dengan beat 3 dan tidak memakai teks. Surya yang direncanakan tidak terlihat, sehingga tidak terasa waktu berlalu.",
+     "saran": "Tampilkan surya/bulan yang jelas berganti posisi atau kamera bidikan lebih lebar agar berbeda dari beat 3. Tambahkan teks singkat seperti 'HARI DEMI HARI'."
+    },
+    {
+     "beat": 8,
+     "berat": "ringan",
+     "masalah": "Bayang_misteri besar hitam di kiri menutupi sebagian penggali dan lubang. Kamu (anak) terpotong tepi bawah layar.",
+     "saran": "Geser bayang_misteri ke jauh atau kanan atas agar lubang jebol dan penggali terlihat penuh. Naikkan posisi kamu agar utuh di dalam frame."
+    },
+    {
+     "beat": 9,
+     "berat": "ringan",
+     "masalah": "Kamu terpotong tepi bawah layar. Danau kecil dan terletak di tepi kiri sehingga terpotong, dan bayang_misteri besar tidak terlihat jelas.",
+     "saran": "Geser danau ke tengah-kiri agar utuh, naikkan kamu agar tidak terpotong, dan tampilkan bayang_misteri lebih jelas di langit jauh."
+    },
+    {
+     "beat": 11,
+     "berat": "ringan",
+     "masalah": "Narasi bicara tentang 'besok aku lakukan', tetapi tidak ada meja belajar di frame. Latar masih dinding ngarai besar, bukan suasana pribadi penonton.",
+     "saran": "Tampilkan meja_belajar dengan lampu di dekat kamu, dan kecilkan ngarai di kejauhan agar jelas beralih ke kehidupan penonton."
+    }
+   ],
+   "catatan": "Gaya siluet dan adab aman, tetapi beat 2 dan 5 tidak sesuai narasi dan beberapa beat lain punya objek terpotong atau hilang."
+  },
+  "lembar": [
+   "hasil/claude-sonnet-5-5/yajuj1/periksa/putaran_0/lembar_1.jpg",
+   "hasil/claude-sonnet-5-5/yajuj1/periksa/putaran_0/lembar_2.jpg"
+  ],
+  "revisi": "claude-sonnet-5-5",
+  "biaya_revisi_usd": 0.071456
+ },
+ {
+  "putaran": 1,
+  "model_periksa": "claude-sonnet-5-5",
+  "biaya_usd": 0.04525,
+  "temuan": {
+   "lulus": true,
+   "temuan": [
+    {
+     "beat": 2,
+     "berat": "ringan",
+     "masalah": "Narasi menyebut Ya'juj dan Ma'juj di balik dinding, tetapi frame hanya menampilkan dinding polos. Bayang misteri yang direncanakan tidak terlihat, jadi beat ini terasa diam dan hampir sama dengan beat 5.",
+     "saran": "Pada beat 2, buat bayang_misteri tampak sebagai siluet besar atau cahaya jingga yang menyembul di balik atau di atas dinding, atau tambahkan kamera 'aksen' ringan agar terasa ada yang mengintai."
+    },
+    {
+     "beat": 5,
+     "berat": "ringan",
+     "masalah": "Dinding utuh polos hampir identik dengan beat 2. Matahari yang direncanakan tidak tampak, hanya ada seberkas cahaya miring.",
+     "saran": "Bedakan dari beat 2 dengan menampakkan matahari pagi atau langit terang di atas dinding, atau ganti bidikan menjadi 'dekat' pada permukaan dinding yang mulus."
+    },
+    {
+     "beat": 4,
+     "berat": "ringan",
+     "masalah": "Beat 4 dan beat 7 hampir sama persis: pemimpin besar di kiri menunjuk ke lubang yang menyala. Beat 7 tidak terasa sebagai momen 'waktu yang Allah tetapkan'.",
+     "saran": "Pada beat 7, ubah suasana lewat bintang atau langit senja yang jelas, atau ubah bidikan menjadi 'dekat' pada pemimpin, supaya berbeda dari beat 4."
+    },
+    {
+     "beat": 9,
+     "berat": "ringan",
+     "masalah": "Sosok 'kamu' sebagai saksi terpotong tepi bawah layar dan kecil. Bayang Ya'juj dan Ma'juj yang meminum air tidak terlihat, hanya danau cokelat yang hampir kering dan kerumunan kecil.",
+     "saran": "Naikkan posisi 'kamu' agar utuh di layar. Tampilkan bayang_misteri besar di dekat danau agar jelas siapa yang menghabiskan air."
+    },
+    {
+     "beat": 10,
+     "berat": "ringan",
+     "masalah": "Gumpalan hitam di atas air sulit dibaca sebagai kebinasaan. Tidak ada kesan ulat atau kematian, dan gumpalan itu tampak seperti batu.",
+     "saran": "Perjelas penyusutan bayang_misteri, misalnya dengan cahaya yang meredup dan sisa siluet yang rebah di dataran, atau tambahkan bintang yang lebih terang sebagai tanda akhir."
+    },
+    {
+     "beat": 11,
+     "berat": "ringan",
+     "masalah": "Kepala dan badan 'kamu' menutupi sebagian besar meja, sehingga lampu dan laptop hampir tidak terbaca.",
+     "saran": "Geser 'kamu' ke samping meja, atau gunakan bidikan lebih lebar agar meja belajar, lampu, dan laptop terlihat jelas di sebelahnya."
+    }
+   ],
+   "catatan": "Cerita terbaca jelas dan klimaks jebolnya dinding menonjol lewat cahaya terang, tanpa pelanggaran adab; yang perlu dibenahi hanya variasi beat yang mirip dan beberapa objek penyebut narasi yang kurang tampak."
+  },
+  "lembar": [
+   "hasil/claude-sonnet-5-5/yajuj1/periksa/putaran_1/lembar_1.jpg",
+   "hasil/claude-sonnet-5-5/yajuj1/periksa/putaran_1/lembar_2.jpg"
+  ]
+ }
+]

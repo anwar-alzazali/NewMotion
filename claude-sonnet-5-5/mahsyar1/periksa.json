@@ -1,0 +1,132 @@
+[
+ {
+  "putaran": 0,
+  "model_periksa": "claude-sonnet-5-5",
+  "biaya_usd": 0.058228,
+  "temuan": {
+   "lulus": false,
+   "temuan": [
+    {
+     "beat": 5,
+     "berat": "berat",
+     "masalah": "Ini klimaks 'matahari didekatkan sejauh satu mil', tetapi tidak ada matahari sama sekali di frame. Langit kosong, hanya siluet kerumunan kecil di pojok kiri bawah. Klimaks tampak sepi, tidak berbeda dari beat sebelumnya, dan tidak bercerita.",
+     "saran": "Tampilkan surya besar dan menyengat di tengah atas, memenuhi sebagian langit dan tidak tertutup gunung. Pastikan ukurannya sudah membesar pada 70% durasi beat. Pertahankan aksen hentak dan kerumunan tunduk di bawahnya."
+    },
+    {
+     "beat": 6,
+     "berat": "berat",
+     "masalah": "Matahari yang seharusnya sudah dekat dan raksasa hanya tampak sebagai cahaya kecil di sela dua gunung, hampir tertutup. Danau berbentuk kolam oval melayang di atas kerumunan, bukan menenggelamkan orang, sehingga 'keringat sampai mulut' kurang terbaca.",
+     "saran": "Letakkan surya besar di atas, di depan atau di atas garis gunung, bukan di belakangnya. Buat danau melingkupi kerumunan sehingga badan mereka terendam dan hanya kepala yang muncul, dengan tingkat isi tinggi."
+    },
+    {
+     "beat": 7,
+     "berat": "ringan",
+     "masalah": "Matahari tidak terlihat, hanya sinar samar di belakang gunung. Kesinambungan 'matahari tetap dekat' hilang.",
+     "saran": "Pada beat ini geser gunung atau tampilkan sebagian surya besar di atas cakrawala agar tetap tampak dekat."
+    },
+    {
+     "beat": 8,
+     "berat": "ringan",
+     "masalah": "Matahari hanya setengah bulat kecil di cakrawala, tidak terasa dekat dan menyengat seperti beat 5-6. Adegan lari dari keluarga juga terbaca lemah karena siluet kecil dan tersebar.",
+     "saran": "Perbesar surya agar mengisi langit. Dekatkan kelompok yang lari dan yang menolak, dengan jarak jelas di antara mereka."
+    },
+    {
+     "beat": 9,
+     "berat": "ringan",
+     "masalah": "Danau berada di belakang 'kamu' dan terpotong tepi layar, sedangkan kaki 'kamu' berada di kotak oranye aneh. Tidak jelas keringat sampai mana. Matahari terpotong di pojok kanan atas.",
+     "saran": "Letakkan danau mengelilingi 'kamu' sampai sekitar pinggang atau dada (isi 0.6), dengan seluruh danau masuk layar. Tampilkan surya utuh di atas."
+    },
+    {
+     "beat": 10,
+     "berat": "ringan",
+     "masalah": "Awan kecil berada di samping golongan yang mengangkat tangan, bukan menaungi mereka. Matahari tidak tampak sehingga kontras panas dan teduh hilang.",
+     "saran": "Letakkan awan tepat di atas kelompok kanan dengan bayangan teduh di bawahnya, dan tampilkan surya terik di sisi lain agar kontrasnya jelas."
+    },
+    {
+     "beat": 11,
+     "berat": "ringan",
+     "masalah": "Pohon mangga berada tepat di belakang kepala 'kamu' dan pada frame akhir tampak seperti topi atau rambut hijau. Batangnya tertutup.",
+     "saran": "Geser 'kamu' ke samping pohon atau pakai bidikan lebih lebar agar batang dan tajuk pohon terlihat, dengan 'kamu' berteduh di bawahnya."
+    },
+    {
+     "beat": 3,
+     "berat": "ringan",
+     "masalah": "Dua frame beat 3 (16.0 dan 23.4 dtk) hampir identik, begitu juga beat 4. Awal video terasa diam. Label 'Rasulullah ﷺ' juga menimpa kerumunan.",
+     "saran": "Beri perubahan pada beat panjang, misalnya kamera bergeser dari lebar ke sedang atau nur makin terang. Naikkan label sedikit ke atas kerumunan."
+    },
+    {
+     "beat": 1,
+     "berat": "ringan",
+     "masalah": "Matahari kecil di cakrawala tidak terlihat, padahal ia objek inti dan perlu diperkenalkan sejak awal.",
+     "saran": "Tampilkan surya kecil tetapi terlihat di antara gunung atau di atas cakrawala."
+    }
+   ],
+   "catatan": "Adab terjaga (Rasulullah hanya berupa nur dan ada stempel ILUSTRASI), tetapi matahari sebagai benda inti hilang atau tersembunyi tepat di klimaks dan beat sesudahnya."
+  },
+  "lembar": [
+   "hasil/claude-sonnet-5-5/mahsyar1/periksa/putaran_0/lembar_1.jpg",
+   "hasil/claude-sonnet-5-5/mahsyar1/periksa/putaran_0/lembar_2.jpg",
+   "hasil/claude-sonnet-5-5/mahsyar1/periksa/putaran_0/lembar_3.jpg"
+  ],
+  "revisi": "claude-sonnet-5-5",
+  "biaya_revisi_usd": 0.064916
+ },
+ {
+  "putaran": 1,
+  "model_periksa": "claude-sonnet-5-5",
+  "biaya_usd": 0.06162,
+  "temuan": {
+   "lulus": false,
+   "temuan": [
+    {
+     "beat": 5,
+     "berat": "berat",
+     "masalah": "Ini beat klimaks 'Matahari didekatkan sejauh satu mil', tetapi tidak ada matahari sama sekali di frame. Langit kosong, hanya kerumunan siluet terpotong di pojok kiri bawah. Klimaks terlihat paling sepi dan tidak berbeda dari beat lain.",
+     "saran": "Pastikan surya tampak besar dan menyengat di tengah atas, melebar dari sedang ke raksasa. Pindahkan kerumunan tunduk dari depan_kiri ke bawah matahari agar tidak terpotong tepi layar. Pertahankan aksen hentak dan teks SATU MIL."
+    },
+    {
+     "beat": 1,
+     "berat": "berat",
+     "masalah": "Matahari kecil di cakrawala, benda inti cerita, tidak terlihat. Tokoh 'kamu' di tengah menutupinya, sehingga titik awal 'matahari masih jauh' hilang dan lonjakan di beat 5 kurang terasa.",
+     "saran": "Geser surya ke kiri atau kanan dekat cakrawala, di luar badan 'kamu', agar bulatan kecilnya jelas terlihat. Atau geser 'kamu' ke sisi lain."
+    },
+    {
+     "beat": 4,
+     "berat": "berat",
+     "masalah": "Matahari kecil tidak tampak. Posisinya di tengah tertutup tokoh 'kamu'. Frame ini nyaris sama dengan beat 1, dan dua frame di beat ini juga identik.",
+     "saran": "Letakkan surya di sisi kiri atau kanan cakrawala agar terlihat di samping 'kamu'. Beri variasi pada beat ini, misalnya kamera lebar yang benar-benar menampilkan hamparan manusia, atau 'kamu' menoleh ke sisi berbeda."
+    },
+    {
+     "beat": 2,
+     "berat": "ringan",
+     "masalah": "Matahari sudah tampak besar di kiri atas, padahal baru didekatkan di beat 5. Ini melemahkan perkembangan 'kecil lalu didekatkan'. Rencana beat ini juga tidak memuat surya.",
+     "saran": "Hilangkan matahari besar dari latar beat 2, atau kecilkan jadi bulatan jauh di cakrawala. Dengan begitu fokus tetap pada retakan tanah."
+    },
+    {
+     "beat": 3,
+     "berat": "ringan",
+     "masalah": "Label 'Rasulullah ﷺ' bertabrakan dengan siluet kerumunan di kanan. Pada frame kedua, simbol ﷺ tertutup kepala-kepala siluet.",
+     "saran": "Geser kerumunan telinga lebih ke kanan-bawah, atau naikkan nur dan labelnya agar label tidak tertimpa siluet."
+    },
+    {
+     "beat": 6,
+     "berat": "ringan",
+     "masalah": "Matahari tampak kecil dan separuh tertutup danau. Ia tidak terlihat raksasa menyengat di atas manusia, padahal rencananya r 300.",
+     "saran": "Naikkan posisi surya ke atas kerumunan dan danau agar besar dan jelas di atas manusia. Perkecil danau atau letakkan di bawah matahari."
+    },
+    {
+     "beat": 9,
+     "berat": "ringan",
+     "masalah": "Kaki 'kamu' tampak seperti balok oranye yang janggal di dalam danau, dan wajahnya menghadap depan. Narasi 'Kamu menunduk' tidak terlihat.",
+     "saran": "Buat 'kamu' menunduk melihat air. Atur danau agar tampak mengelilingi tubuh setinggi yang dimaksud, tanpa balok aneh di kaki."
+    }
+   ],
+   "catatan": "Gaya visual dan adab sudah baik (Rasulullah sebagai nur, ada stempel ILUSTRASI), tetapi matahari sebagai objek inti hilang atau tertutup di beat 1, 4, dan 5, sehingga klimaks tidak terasa."
+  },
+  "lembar": [
+   "hasil/claude-sonnet-5-5/mahsyar1/periksa/putaran_1/lembar_1.jpg",
+   "hasil/claude-sonnet-5-5/mahsyar1/periksa/putaran_1/lembar_2.jpg",
+   "hasil/claude-sonnet-5-5/mahsyar1/periksa/putaran_1/lembar_3.jpg"
+  ]
+ }
+]
