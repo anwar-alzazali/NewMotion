@@ -24,6 +24,9 @@ def buat_parser():
     render.add_argument("--genre", help="Pilih paket genre secara eksplisit untuk mode --naskah")
     render.add_argument("--tanpa-suara", action="store_true", help="Jangan gabungkan trek efek suara")
     render.add_argument("-d", "--durasi", type=float, help="Paksa durasi render dalam detik")
+    ukur = perintah.add_parser("ukur", help="Ukur kedalaman spek papan dibanding referensi Nuh/Mahsyar/Ya'juj")
+    ukur.add_argument("spek", nargs="*", help="Berkas spek papan; kosongkan untuk tolok ukur pengarah")
+    ukur.add_argument("--json", action="store_true", help="Cetak hasil sebagai JSON")
     return parser
 
 
@@ -41,6 +44,10 @@ def main(argv=None):
                     if item.nama in {"FFmpeg", "FFprobe"} and not item.tersedia:
                         gagal = True
                 return 1 if gagal else 0
+            if args.perintah == "ukur":
+                from newmotion.application.ukur_kedalaman import main as ukur_main
+
+                return ukur_main(list(args.spek) + (["--json"] if args.json else []))
             if args.perintah == "render":
                 if args.genre and not args.naskah:
                     raise ValueError("--genre hanya dapat digunakan bersama --naskah")
