@@ -76,3 +76,14 @@ def test_efek_keringat_resapan_dan_naungan_masuk_ke_shot():
     assert pertama["boneka"][0]["keringat"] == 1
     assert pertama["boneka"][0]["genangan"] > 0
     assert kedua["naungan"]["kuat"] == 1
+
+
+
+def test_kata_angka_dalam_narasi_muncul_sebagai_teks_layar():
+    hasil = arahkan_subjek("Sembilan ratus lima puluh tahun telah berlalu.", 4.0)
+    assert any("SEMBILAN RATUS LIMA PULUH TAHUN" in item["teks"] for item in hasil["teks"])
+
+
+def test_dinding_yang_digali_dan_kaum_dikenali_tanpa_judul_khusus():
+    jenis = _jenis("Dinding yang digali setiap hari dijaga oleh kaum itu.")
+    assert {"ngarai", "penggali", "kerumunan"} <= jenis
