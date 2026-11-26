@@ -138,8 +138,10 @@ def _jenis_disebut(teks: str, konteks: str | None = None) -> list[str]:
 
     # Kelompok manusia tidak boleh dijadikan siluet sahabat. Untuk kelompok umum,
     # renderer arus/kerumunan hanya dipakai saat subjek plural memang disebut.
-    for kalimat in _kalimat_yang_memuat(teks, POLA_KERUMUNAN):
-        if not POLA_SAHABAT.search(kalimat):
+    # Jika segmen menyebut sahabat di bagian mana pun, jangan sisipkan siluet
+    # kelompok pada shot yang sama; satu shot tidak cukup untuk memisahkan identitas visual.
+    if not POLA_SAHABAT.search(teks):
+        for kalimat in _kalimat_yang_memuat(teks, POLA_KERUMUNAN):
             tambah("arus" if POLA_GERAK_KELOMPOK.search(kalimat) else "kerumunan")
 
     for kalimat in _kalimat_yang_memuat(teks, POLA_MATA_AIR):
