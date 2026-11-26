@@ -31,6 +31,15 @@ POLA_PEMIMPIN_SAKRAL = re.compile(
     r"abu bakar|umar|utsman|usman|ali bin abi thalib)\b",
     re.I,
 )
+POLA_PENGGALI_SAKRAL = re.compile(
+    r"\b(rasulullah|rasul|nabi(?:\s+\w+)?|malaikat(?:\s+\w+)?|jibril|mikail|israfil|"
+    r"sahabat|abu bakar|umar|utsman|usman|ali bin abi thalib)\b.{0,35}"
+    r"\b(penggali|menggali|digali|menggerogoti|mengikis)\b|"
+    r"\b(penggali|menggali|digali|menggerogoti|mengikis)\b.{0,35}"
+    r"\b(rasulullah|rasul|nabi(?:\s+\w+)?|malaikat(?:\s+\w+)?|jibril|mikail|israfil|"
+    r"sahabat|abu bakar|umar|utsman|usman|ali bin abi thalib)\b",
+    re.I,
+)
 POLA_GALI = re.compile(r"\b(penggali|menggali|digali|menggerogoti|mengikis)\b", re.I)
 POLA_PEMIMPIN = re.compile(r"\b(pemimpin|pemuka|raja|panglima)\b", re.I)
 POLA_SAKRAL = re.compile(
@@ -118,22 +127,18 @@ def _jenis_disebut(teks: str, konteks: str | None = None) -> list[str]:
         if kalimat.strip()
     ]
     for kalimat in kalimat_dinding:
-        konteks_dinding = _konteks_dinding_zulkarnain(kalimat)
-        if konteks_dinding and POLA_DINDING.search(kalimat):
+        konteks_dinding = _konteks_dinding_zulkarnain(kalimat, konteks)
+        if konteks_dinding and (POLA_DINDING.search(kalimat) or POLA_GALI.search(kalimat)):
             tambah("ngarai")
-        # Renderer penggali adalah manusia berbeliung. Jangan tampilkan sosok manusia
-        # bila kalimatnya juga menyebut tokoh sakral yang mungkin menjadi pelakunya.
-        if (
-            konteks_dinding
-            and POLA_GALI.search(kalimat)
-            and not POLA_SAKRAL.search(kalimat)
-        ):
+        # Penggali adalah sosok manusia; blokir hanya bila kalimat menghubungkannya
+        # langsung dengan tokoh sakral, bukan sekadar menyebut Allah di kalimat yang sama.
+        if konteks_dinding and POLA_GALI.search(kalimat) and not POLA_PENGGALI_SAKRAL.search(kalimat):
             tambah("penggali")
 
     # "Pemimpin" tidak menjadi sosok manusia bila dalam kalimat yang sama merujuk
     # Nabi/Rasul/malaikat/sahabat. Frasa deskriptif tidak boleh mengubah adab visual.
     for kalimat in _kalimat_yang_memuat(teks, POLA_PEMIMPIN):
-        if not POLA_SAKRAL.search(kalimat):
+        if not POLA_PEMIMPIN_SAKRAL.search(kalimat):
             tambah("pemimpin")
 
     # Kelompok manusia tidak boleh dijadikan siluet sahabat. Untuk kelompok umum,
