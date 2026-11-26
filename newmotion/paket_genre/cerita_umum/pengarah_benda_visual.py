@@ -139,11 +139,17 @@ def _benda_renderer(entitas, tokoh_visual_by_id=None):
 
 
 def arahkan_benda_visual(rencana_cerita, rencana_blocking, cerita, rencana_visual_tokoh=None):
-    """Petakan benda eksplisit ke shot; posisi dapat mengikuti lintasan tokoh."""
+    """Petakan benda ke tahap shot yang benar; posisi dapat mengikuti lintasan tokoh."""
     daftar_benda = rencana_cerita.get("benda", [])
     daftar_adegan = rencana_cerita.get("adegan", [])
-    benda_by_id = {item["id"]: item for item in daftar_benda if isinstance(item, Mapping)}
-    beat_by_id = {item["id"]: item for item in daftar_adegan if isinstance(item, Mapping)}
+    benda_by_id = {
+        item["id"]: item for item in daftar_benda
+        if isinstance(item, Mapping) and isinstance(item.get("id"), str)
+    }
+    beat_by_id = {
+        item["id"]: item for item in daftar_adegan
+        if isinstance(item, Mapping) and isinstance(item.get("id"), str)
+    }
     hasil_shot = []
     diagnostik = []
 
@@ -152,61 +158,84 @@ def arahkan_benda_visual(rencana_cerita, rencana_blocking, cerita, rencana_visua
             continue
         beat_id = shot.get("_beat_id")
         beat = beat_by_id.get(beat_id, {})
-        id_terkait = list(beat.get("benda_ids", []))
+        id_beat = list(dict.fromkeys(beat.get("benda_ids", [])))
         pengarahan = shot.get("pengarahan", {})
         peristiwa_shot = set(pengarahan.get("peristiwa_ids", []))
+        id_peristiwa_benda = {}
         for peristiwa in beat.get("peristiwa", []):
             if (
                 isinstance(peristiwa, Mapping)
                 and peristiwa.get("id") in peristiwa_shot
                 and isinstance(peristiwa.get("sasaran_benda_id"), str)
             ):
-                id_terkait.append(peristiwa["sasaran_benda_id"])
+                id_peristiwa_benda.setdefault(
+                    peristiwa["sasaran_benda_id"], []
+                ).append(peristiwa["id"])
 
-        id_terkait = list(dict.fromkeys(id_terkait))
-        if not id_terkait:
-            continue
-        visual_tokoh_shot = {}
-        if isinstance(rencana_visual_tokoh, list):
-            entri_tokoh = next((
-                item for item in rencana_visual_tokoh
-                if isinstance(item, Mapping) and item.get("indeks") == indeks
-            ), {})
-            for arahan_tokoh in entri_tokoh.get("tokoh", []):
-                if isinstance(arahan_tokoh, Mapping) and isinstance(arahan_tokoh.get("tokoh_id"), str):
+        tahapan_visual = [
+            item for item in (rencana_visual_tokoh or [])
+            if isinstance(item, Mapping) and item.get("indeks") == indeks
+        ]
+        if not tahapan_visual:
+            tahapan_visual = [{"indeks": indeks, "tokoh": [], "peristiwa_ids": list(peristiwa_shot)}]
+
+        for tahap_visual in tahapan_visual:
+            ids_tahap = set(tahap_visual.get("peristiwa_ids") or peristiwa_shot)
+            id_terkait = list(id_beat)
+            for benda_id, event_ids in id_peristiwa_benda.items():
+                if ids_tahap.intersection(event_ids):
+                    id_terkait.append(benda_id)
+            id_terkait = list(dict.fromkeys(id_terkait))
+            if not id_terkait:
+                continue
+
+            visual_tokoh_shot = {}
+            for arahan_tokoh in tahap_visual.get("tokoh", []):
+                if (
+                    isinstance(arahan_tokoh, Mapping)
+                    and isinstance(arahan_tokoh.get("tokoh_id"), str)
+                ):
                     visual_tokoh_shot[arahan_tokoh["tokoh_id"]] = arahan_tokoh
-        benda_shot = []
-        for benda_id in id_terkait:
-            entitas = benda_by_id.get(benda_id)
-            if entitas is None:
-                diagnostik.append({
-                    "kode": "benda_tidak_ditemukan",
-                    "shot": indeks,
+
+            benda_shot = []
+            for benda_id in id_terkait:
+                entitas = benda_by_id.get(benda_id)
+                if entitas is None:
+                    diagnostik.append({
+                        "kode": "benda_tidak_ditemukan",
+                        "shot": indeks,
+                        "beat_id": beat_id,
+                        "benda_id": benda_id,
+                    })
+                    continue
+                try:
+                    visual = _benda_renderer(entitas, visual_tokoh_shot)
+                except ValueError:
+                    raise
+                if visual is None:
+                    diagnostik.append({
+                        "kode": "benda_perlu_penempatan",
+                        "shot": indeks,
+                        "beat_id": beat_id,
+                        "benda_id": benda_id,
+                        "pesan": (
+                            "Entitas perlu posisi x/y eksplisit atau relasi posisi "
+                            "ke tokoh yang memiliki lintasan pada tahap ini."
+                        ),
+                    })
+                    continue
+                benda_shot.append(visual)
+
+            if benda_shot:
+                hasil = {
+                    "indeks": indeks,
+                    "benda": benda_shot,
                     "beat_id": beat_id,
-                    "benda_id": benda_id,
-                })
-                continue
-            visual = _benda_renderer(entitas, visual_tokoh_shot)
-            if visual is None:
-                diagnostik.append({
-                    "kode": "benda_perlu_penempatan",
-                    "shot": indeks,
-                    "beat_id": beat_id,
-                    "benda_id": benda_id,
-                    "pesan": "Entitas sudah dikenal tetapi belum memiliki posisi x/y renderer.",
-                })
-                continue
-            benda_shot.append(visual)
-        if benda_shot:
-            hasil_shot.append({
-                "indeks": indeks,
-                "benda": benda_shot,
-                "beat_id": beat_id,
-                "peristiwa_ids": [
-                    item.get("id") for item in beat.get("peristiwa", [])
-                    if isinstance(item, Mapping) and item.get("id") in peristiwa_shot
-                ],
-            })
+                    "peristiwa_ids": sorted(ids_tahap),
+                }
+                if tahap_visual.get("tahap_id"):
+                    hasil["tahap_id"] = tahap_visual["tahap_id"]
+                hasil_shot.append(hasil)
 
     status = "siap" if hasil_shot and not diagnostik else (
         "perlu_pelengkapan" if diagnostik else "tidak_ada_benda_tertaut"
