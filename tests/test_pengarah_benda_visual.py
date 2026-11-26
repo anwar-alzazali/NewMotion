@@ -62,6 +62,7 @@ def test_entitas_benda_dengan_id_dan_jenis_renderer_menjadi_objek_shot():
 
 def test_benda_muncul_hanya_pada_shot_yang_menautkan_peristiwanya():
     def dua_peristiwa(adegan):
+        adegan["peristiwa"][0].pop("sasaran_benda_id")
         adegan["peristiwa"].append({
             "id": "event-02",
             "aktor": "Aktor A",
@@ -77,7 +78,8 @@ def test_benda_muncul_hanya_pada_shot_yang_menautkan_peristiwanya():
     shot = spek["cerita"]["shot"]
 
     assert len(shot) == 2
-    assert all(any(x["id"] == "jembatan-01" for x in item["benda"]) for item in shot)
+    assert not any(x["id"] == "jembatan-01" for x in shot[0]["benda"])
+    assert any(x["id"] == "jembatan-01" for x in shot[1]["benda"])
 
 
 def test_benda_dengan_posisi_keyframe_diteruskan_tanpa_diratakan():
