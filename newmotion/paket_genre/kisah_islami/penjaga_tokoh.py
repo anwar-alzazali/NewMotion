@@ -114,6 +114,11 @@ def _periksa_benda_manusia_dalam_konteks_sakral(rencana: Any) -> list[TemuanAdab
         if not isinstance(narasi, str) or not narasi.strip():
             continue
 
+        kalimat = [
+            bagian.strip()
+            for bagian in re.split(r"(?<=[.!?;])\s+|\n+", narasi)
+            if bagian.strip()
+        ]
         menyebut_tokoh_sakral = bool(pola_tokoh_sakral.search(narasi))
         menyebut_sahabat = bool(pola_sahabat.search(narasi))
         benda = shot.get("benda") if isinstance(shot.get("benda"), list) else []
@@ -126,10 +131,26 @@ def _periksa_benda_manusia_dalam_konteks_sakral(rencana: Any) -> list[TemuanAdab
 
             alasan = ""
             if jenis in jenis_manusia_tunggal and menyebut_tokoh_sakral:
-                alasan = (
-                    "renderer manusia tunggal tidak boleh dipakai dalam shot "
-                    "yang menyebut tokoh sakral; identitas sosok tidak dapat dipastikan"
+                # Pengecualian hanya jika narasi secara eksplisit mengenalkan
+                # sosok manusia lain pada kalimat terpisah yang tidak menyebut
+                # tokoh sakral. Tanpa penanda ini, renderer dianggap berisiko
+                # mengambil identitas tokoh sakral.
+                pola_peran = (
+                    r"\b(?:pemimpin|pemuka|raja|panglima)\b"
+                    if jenis == "pemimpin"
+                    else r"\b(?:penggali|menggali|digali|menggerogoti|mengikis)\b"
                 )
+                ada_sosok_lain_eksplisit = any(
+                    re.search(pola_peran, bagian, re.IGNORECASE)
+                    and not pola_tokoh_sakral.search(bagian)
+                    for bagian in kalimat
+                )
+                if not ada_sosok_lain_eksplisit:
+                    alasan = (
+                        "renderer manusia tunggal tidak boleh dipakai dalam shot "
+                        "yang menyebut tokoh sakral tanpa narasi eksplisit tentang "
+                        "sosok manusia lain"
+                    )
             elif jenis in jenis_kelompok and menyebut_sahabat:
                 alasan = (
                     "shot menyebut sahabat; siluet kelompok tidak boleh "
