@@ -119,13 +119,15 @@ def _peristiwa_klausa(
     klausa_tujuan = None
     pemisah_tujuan = re.search(r"\buntuk\s+", klausa, re.I)
     if pemisah_tujuan:
+        # Sufiks "untuk ..." tidak boleh keliru dianggap sasaran langsung
+        # aksi utama, terutama bila menyebut nama benda.
+        klausa_utama = klausa[:pemisah_tujuan.start()].strip()
         calon_tujuan = klausa[pemisah_tujuan.end():].strip()
         aksi_tujuan = list(_AKSI_REGEX.finditer(calon_tujuan))
         if (
             len(aksi_tujuan) == 1
             and not calon_tujuan[:aksi_tujuan[0].start()].strip()
         ):
-            klausa_utama = klausa[:pemisah_tujuan.start()].strip()
             klausa_tujuan = calon_tujuan
         elif len(aksi_tujuan) > 1:
             return None, "tujuan_aksi_ambigu"
