@@ -302,3 +302,36 @@ def test_pengarah_menetapkan_tujuan_shot_dan_zoom_dari_peristiwa_eksplisit():
     assert [x["jenis"] for x in pertama["benda"]] == ["motor"]
     assert kedua["benda"] == []
 
+
+
+def test_segmentasi_hanya_memisahkan_aksi_dengan_relasi_temporal_eksplisit():
+    naskah = _naskah()
+    spek, _, _ = arahkan_naskah(naskah)
+    pengarahan = spek["cerita"]["shot"][0]["pengarahan"]
+    assert len(pengarahan["tahapan_peristiwa"]) == 1
+    assert pengarahan["tahapan_peristiwa"][0]["peristiwa_ids"] == ["e1", "e2"]
+    assert pengarahan["status_segmentasi"] == "rencana_semantik_belum_memecah_shot_renderer"
+
+    naskah["adegan"][0]["peristiwa"][1]["setelah_peristiwa_id"] = "e1"
+    spek_berurutan, _, _ = arahkan_naskah(naskah)
+    tahapan = spek_berurutan["cerita"]["shot"][0]["pengarahan"]["tahapan_peristiwa"]
+    assert len(tahapan) == 2
+    assert tahapan[0]["peristiwa_ids"] == ["e1"]
+    assert tahapan[1]["peristiwa_ids"] == ["e2"]
+    assert tahapan[1]["dasar_pemisahan"] == "relasi_temporal_eksplisit"
+    assert tahapan[1]["bergantung_pada_peristiwa_id"] == "e1"
+
+
+def test_transisi_keadaan_berantai_membentuk_tahap_aksi_berbeda():
+    naskah = _naskah()
+    naskah["adegan"][0]["peristiwa"][0]["perubahan_keadaan"] = {
+        "entitas_id": "pengendara", "dari": "mengendarai", "menjadi": "terjatuh",
+    }
+    naskah["adegan"][0]["peristiwa"][1]["perubahan_keadaan"] = {
+        "entitas_id": "pengendara", "dari": "terjatuh", "menjadi": "ditolong",
+    }
+    spek, _, _ = arahkan_naskah(naskah)
+    tahapan = spek["cerita"]["shot"][0]["pengarahan"]["tahapan_peristiwa"]
+    assert len(tahapan) == 2
+    assert tahapan[1]["dasar_pemisahan"] == "transisi_keadaan_berurutan"
+
