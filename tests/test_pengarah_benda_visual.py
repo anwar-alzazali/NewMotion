@@ -208,3 +208,8 @@ def test_motor_eksplisit_dipakai_tokoh_dan_tidak_digandakan():
     assert len(motor_renderer) == 1
     assert motor_renderer[0]["id"] == "motor-01"
     assert pengendara["kendaraan_id"] == "motor-01"
+    event_blocking = next(
+        item for item in spek["rencana_blocking"]["peristiwa"]
+        if item["id"] == "event-01"
+    )
+    assert event_blocking["sasaran_benda_id"] == "motor-01"
