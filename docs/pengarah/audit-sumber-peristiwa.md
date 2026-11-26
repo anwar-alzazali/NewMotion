@@ -127,8 +127,8 @@ Aturannya:
 - Aksi utama menjadi peristiwa yang benar-benar dinyatakan.
 - Aksi setelah kata "untuk" disimpan sebagai metadata `tujuan`, bukan sebagai
   peristiwa yang dianggap sudah terjadi.
-- Sasaran tokoh pada tujuan disimpan sebagai nama yang masih harus diresolusikan
-  oleh lapisan semantik; tujuan tidak mengubah sasaran aksi utama.
+- Sasaran tokoh pada tujuan disimpan sebagai nama, sedangkan sasaran benda hanya
+  ditautkan melalui ID roster yang eksplisit; tujuan tidak mengubah sasaran aksi utama.
 - Bentuk pasif dengan pelaku eksplisit tetap dapat memiliki tujuan, misalnya
   "Pengendara ditolong oleh Penolong untuk berdiri".
 - Frasa "untuk ..." yang belum dapat diklasifikasikan menghasilkan diagnostik
