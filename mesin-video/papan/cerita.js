@@ -1502,6 +1502,8 @@
       s += `<path d="M -14 ${-378 + n} L -18 ${-318 + n} M 14 ${-378 + n} L 18 ${-318 + n}" stroke="#f4f1ea" stroke-width="4" stroke-linecap="round"/><path d="M -46 ${-262 + n} L 46 ${-262 + n} L 56 ${-206 + n} L -56 ${-206 + n} Z" fill="${G(0.12)}" stroke="${G(0.4)}" stroke-width="3"/>`;
     } else if (j === "blazer") {
       s += `<path d="M -30 ${-398 + n} L 30 ${-398 + n} L 0 ${-300 + n} Z" fill="${P.dalam || "#f4f1ea"}"/><path d="M -30 ${-400 + n} L -6 ${-300 + n} L -40 ${-330 + n} L -50 ${-392 + n} Z M 30 ${-400 + n} L 6 ${-300 + n} L 40 ${-330 + n} L 50 ${-392 + n} Z" fill="${G(0.15)}" stroke="${G(0.45)}" stroke-width="3"/><circle cx="0" cy="${-262 + n}" r="6" fill="${G(0.5)}"/>`;
+    } else if (j === "jubah") { // jubah Arab (thobe): kerah bulat kecil + celah dada, tanpa kancing
+      s += `<path d="M -24 ${-404 + n} Q 0 ${-388 + n} 24 ${-404 + n}" fill="none" stroke="${G(0.3)}" stroke-width="5"/><line x1="0" y1="${-392 + n}" x2="0" y2="${-330 + n}" stroke="${G(0.3)}" stroke-width="4"/>`;
     } else {
       s += `<rect x="-27" y="${-404 + n}" width="54" height="20" rx="7" fill="${BD}" stroke="${G(0.35)}" stroke-width="4"/><line x1="0" y1="${-384 + n}" x2="0" y2="${(j === "gamis" ? -240 : -260) + n}" stroke="${G(0.25)}" stroke-width="4"/>`;
       for (let i = 0; i < 4; i++) s += `<circle cx="0" cy="${-370 + i * 30 + n}" r="5" fill="${G(0.45)}"/>`;
@@ -1584,6 +1586,12 @@
       ? `<path d="M -30 ${-396 + nafas} Q 22 ${-420 + nafas} 52 ${-382 + nafas} L 68 ${-270 + nafas} Q 56 ${-222 + nafas} 8 ${-206 + nafas} L -28 ${-244 + nafas} Z" fill="${BD}" stroke="${warna(BD, "#000000", 0.18)}" stroke-width="4"/>`
       : `<rect x="${-70 - 30 * GM}" y="${-395 + nafas}" width="${140 + 60 * GM}" height="215" rx="${58 + 20 * GM}" fill="${BD}"/>`;
     if (P && !o.profilMotor) bdn += bajuDetail(P, BD, nafas, GM);
+    if (P && P.bisht) { // bisht: jubah luar terbuka berlis emas, dari bahu sampai betis
+      const BS = P.bisht, lis = "#c9a24a", yb = hy0 + geserY + 150;
+      bdn += o.profilMotor
+        ? `<path d="M -26 ${-400 + nafas} Q -62 ${-300 + nafas} -70 ${yb} L -14 ${yb} Q -6 ${-250 + nafas} 14 ${-398 + nafas} Z" fill="${BS}" stroke="${INK}" stroke-width="4"/><path d="M 14 ${-398 + nafas} Q -6 ${-250 + nafas} -14 ${yb}" fill="none" stroke="${lis}" stroke-width="6"/>`
+        : [-1, 1].map((sg) => `<path d="M ${sg * 30} ${-404 + nafas} L ${sg * (78 + 30 * GM)} ${-392 + nafas} L ${sg * (104 + 30 * GM)} ${yb} L ${sg * 40} ${yb} Z" fill="${BS}" stroke="${INK}" stroke-width="4"/><path d="M ${sg * 30} ${-404 + nafas} L ${sg * 40} ${yb}" stroke="${lis}" stroke-width="6"/>`).join("");
+    }
     // lengan
     const lengan = (sg, s) => {
       let a1 = s[0], a2 = s[1]; if (sg > 0 && J.lambai) a2 += Math.sin(t * 9) * 26 * J.lambai;
@@ -1659,11 +1667,22 @@
   function boneka(b, t, d) {
     if (b.npc != null && !b._npc) { // figuran berwarna acak tetap (seed = b.npc); kunci yang diisi manual menimpa
       const R = rng(b.npc * 97 + 13), pk = (arr) => arr[Math.floor(R() * arr.length)], BJ = ["#5a7a9a", "#d9534f", "#6aa6a0", "#f2c14e", "#9a7ac9", "#e9e4d8", "#3f8a4a", "#c96a4a", "#4a6a8a"];
-      const pr = R() < 0.45, tua = R() < 0.2, kulit = pk(["#f2dcc2", "#e9c6a2", "#d9b48c", "#c99a72", "#a87a56"]);
+      const pr = R() < 0.45, tua = R() < 0.2; let kulit = pk(["#f2dcc2", "#e9c6a2", "#d9b48c", "#c99a72", "#a87a56"]);
       const gen = pr ? { rambut: "kerudung", kerudung: pk(["#6aa6a0", "#d98a9a", "#f2c14e", "#5a7a9a", "#e9e4d8", "#9a7ac9", "#3a3a4a"]), pakaian: { jenis: "gamis", warna: pk(BJ) } }
         : { rambut: tua ? "tipis" : pk(["pendek", "belah", "keriting", "pendek"]), warna_rambut: tua ? "#cfcac2" : pk(["#1d1520", "#3a2a20", "#1d1520"]), janggut: tua || R() < 0.2 ? (tua ? "#d8d2c8" : true) : false,
             pakaian: { jenis: pk(["kaus", "koko", "kaus"]), warna: pk(BJ), bawah: pk(["celana", "celana", "sarung"]), bawah_warna: pk(["#2f3a4a", "#3b3f4a", "#6a4a3a", "#4a5a3a"]), peci: R() < 0.25 ? pk([true, "putih"]) : false } };
       if (tua) gen.keriput = true;
+      if ((b.suku || C.suku) === "arab") { // (27 Nov) figuran Arab: jubah, bisht, imamah/ghutrah/peci; perempuan berabaya
+        const R2 = rng(b.npc * 131 + 7), pk2 = (arr) => arr[Math.floor(R2() * arr.length)];
+        Object.assign(gen, pr
+          ? { rambut: "kerudung", kerudung: pk2(["#2a2430", "#3a3440", "#4a3a30", "#5a4a3a", "#e9e4d8"]), pakaian: { jenis: "gamis", warna: pk2(["#2a2430", "#3a3440", "#4a3a30", "#6a5a48"]) } }
+          : { rambut: "pendek", warna_rambut: tua ? "#cfcac2" : "#1d1520", janggut: tua ? "#d8d2c8" : R2() < 0.7,
+              penutup_kepala: pk2(["imamah", "imamah", "kain", "kopiah"]),
+              warna_penutup: pk2(["#ffffff", "#f4f1ea", "#ece2cc", "#ffffff"]),
+              pakaian: { jenis: "jubah", warna: pk2(["#f4f1ea", "#ece2cc", "#d8c9a8", "#b89a74", "#8a7a6a", "#ffffff"]), bawah: "gamis",
+                bisht: tua || R2() < 0.3 ? pk2(["#2a2024", "#4a3426", "#6a4a2a"]) : false } });
+        kulit = pk2(["#d9b48c", "#c99a72", "#b8865e", "#e0bf98"]);
+      }
       Object.keys(gen).forEach((k) => { if (b[k] == null) b[k] = gen[k]; }); if (b.kulit == null) b.kulit = kulit; if (!b.gaya) b.gaya = "umum"; b._npc = 1;
     }
     const HD = (b.hidup != null ? b.hidup : C.hidup) && b.gaya !== "siluet" && b.gaya !== "dajjal";
@@ -1704,7 +1723,7 @@
     const tubuh = 520 * (1 - naik) * 1.1;
     // pakaian (5 Nov): b.pakaian = {jenis: koko|kaus|gamis, warna, bawah: sarung|celana|gamis, bawah_warna, motif: kotak|polos, peci: warna|false}
     const P = b.pakaian && b.gaya !== "siluet" ? b.pakaian : null, KLB = b.kulit || (b.gaya === "anwar" ? "#dca779" : KULIT);
-    const BD = P ? (P.warna || "#ece6d6") : BADAN, WC = P ? (P.bawah_warna || "#2f4a6a") : BADAN, bawahP = P ? (P.bawah || (P.jenis === "gamis" || P.jenis === "daster" ? "gamis" : "sarung")) : "";
+    const BD = P ? (P.warna || "#ece6d6") : BADAN, WC = P ? (P.bawah_warna || "#2f4a6a") : BADAN, bawahP = P ? (P.bawah || (P.jenis === "gamis" || P.jenis === "daster" || P.jenis === "jubah" ? "gamis" : "sarung")) : "";
     const GM = v(b.gemuk, t, d, 0), SH = 62 + 26 * GM, KB = b.kepala_besar || 1;
     const kaki = (dx, a, w = BADAN, tb = 44) => `<line x1="${dx}" y1="-200" x2="${dx + Math.sin((a * Math.PI) / 180) * 200}" y2="${-200 + Math.cos((a * Math.PI) / 180) * 200}" stroke="${w}" stroke-width="${tb}" stroke-linecap="round"/>`;
     const RIG = b.pose != null || HD || b.profil ? poseKini(b, HD ? ta : t, HD) : null; // tampak samping selalu bersendi (badan ikut menyamping)
@@ -1740,6 +1759,7 @@
       }
       if (bawahP !== "gamis") g += `<rect x="${-70 - 30 * GM}" y="${-395 + nafas}" width="${140 + 60 * GM}" height="${bawahP === "sarung" ? 190 : 215}" rx="${56 + 20 * GM}" fill="${BD}"/>`;
       g += bajuDetail(P, BD, nafas, GM);
+      if (P.bisht) g += [-1, 1].map((sg) => `<path d="M ${sg * 30} ${-404 + nafas} L ${sg * (78 + 30 * GM)} ${-392 + nafas} L ${sg * (104 + 30 * GM)} -50 L ${sg * 40} -50 Z" fill="${P.bisht}" stroke="${INK}" stroke-width="4"/><path d="M ${sg * 30} ${-404 + nafas} L ${sg * 40} -50" stroke="#c9a24a" stroke-width="6"/>`).join(""); // bisht (tanpa rangka)
     }
     const tangan = (x2, y2) => (P ? `<circle cx="${x2}" cy="${y2}" r="19" fill="${KLB}" stroke="${INK}" stroke-width="4"/>` : "");
     const lenganKiri = `<line x1="${-SH}" y1="${-360 + nafas}" x2="${-SH - 22 - ayun * 0.3}" y2="${-200 + nafas}" stroke="${BD}" stroke-width="36" stroke-linecap="round"/>` + tangan(-SH - 22 - ayun * 0.3, -192 + nafas);
@@ -1845,12 +1865,21 @@
       k += `<path d="M ${arah * 14 - 12} 62 Q ${arah * 14} 96 ${arah * 14 + 12} 62 Q ${arah * 14} 70 ${arah * 14 - 12} 62 Z" fill="${INK}"/>`; // jenggot dagu
     }
     // Penutup kepala dari kontrak karakter gabungan Python.
-    if (!belakang && gaya !== "siluet" && b.rambut !== "kerudung" && b.penutup_kepala && b.penutup_kepala !== "tanpa" && !(P && P.peci)) {
+    const pfl = b.profil === "kanan" || b.profil === true || b.profil === "kiri";
+    if (pfl && gaya !== "siluet" && b.rambut !== "kerudung" && b.penutup_kepala && b.penutup_kepala !== "tanpa" && !(P && P.peci)) {
+      const WPK = b.warna_penutup || "#e8dcc4", gr = warna(WPK, "#000000", 0.16);
+      if (b.penutup_kepala === "imamah") // lilitan sorban dari samping: kubah berlapis, ekor kain di belakang
+        k += `<path d="M -84 -10 Q -96 -96 -16 -114 Q 52 -122 70 -56 Q 74 -36 62 -30 Q 0 -54 -84 -10 Z" fill="${WPK}" stroke="${INK}" stroke-width="6"/><path d="M -78 -36 Q 0 -86 64 -58 M -70 -64 Q 0 -104 50 -88" fill="none" stroke="${gr}" stroke-width="6" stroke-linecap="round"/><path d="M -80 -16 Q -104 40 -90 96 L -66 92 Q -76 40 -60 0 Z" fill="${WPK}" stroke="${INK}" stroke-width="5"/>`;
+      else if (b.penutup_kepala === "kain") // ghutrah: kain menutup kepala dan menjuntai ke punggung, iqal hitam melingkar
+        k += `<path d="M 60 -46 Q 40 -118 -24 -112 Q -96 -100 -98 -6 Q -100 70 -80 118 L -30 118 Q -40 60 -30 20 Q -20 -20 0 -34 Q 30 -52 60 -46 Z" fill="${WPK}" stroke="${INK}" stroke-width="6"/><path d="M 62 -58 Q 0 -78 -86 -40" fill="none" stroke="#1d1a22" stroke-width="12" stroke-linecap="round"/>`;
+      else if (b.penutup_kepala === "kopiah")
+        k += `<path d="M -74 -46 Q 0 -66 62 -50 L 58 -86 Q 0 -110 -70 -90 Z" fill="${WPK}" stroke="${INK}" stroke-width="6"/><path d="M -64 -58 Q 0 -76 56 -62" stroke="${gr}" stroke-width="5" fill="none"/>`;
+    } else if (!belakang && gaya !== "siluet" && b.rambut !== "kerudung" && b.penutup_kepala && b.penutup_kepala !== "tanpa" && !(P && P.peci)) {
       const WPK = b.warna_penutup || "#e8dcc4";
       if (b.penutup_kepala === "imamah") {
         k += `<path d="M -70 -42 Q -84 -92 -48 -112 Q 0 -138 48 -112 Q 84 -92 70 -42 Q 0 -58 -70 -42 Z" fill="${WPK}" stroke="${INK}" stroke-width="6"/><path d="M -64 -72 Q 0 -96 64 -72 M -58 -54 Q 0 -76 58 -54" fill="none" stroke="${warna(WPK, "#000000", 0.16)}" stroke-width="7" stroke-linecap="round"/>`;
-      } else if (b.penutup_kepala === "kain") {
-        k += `<path d="M -72 -42 Q -82 -98 -42 -116 Q 0 -132 42 -116 Q 82 -98 72 -42 Q 30 -58 0 -52 Q -34 -58 -72 -42 Z" fill="${WPK}" stroke="${INK}" stroke-width="6"/><path d="M 42 -96 Q 84 -54 66 20 L 48 34 Q 58 -28 30 -54" fill="${WPK}" stroke="${INK}" stroke-width="5"/>`;
+      } else if (b.penutup_kepala === "kain") { // ghutrah: kain menjuntai di kedua sisi wajah sampai bahu + iqal hitam
+        k += `<path d="M -74 -40 Q -84 -100 -40 -118 Q 0 -134 40 -118 Q 84 -100 74 -40 L 98 112 L 58 118 Q 72 40 64 -16 Q 0 -50 -64 -16 Q -72 40 -58 118 L -98 112 Z" fill="${WPK}" stroke="${INK}" stroke-width="6" stroke-linejoin="round"/><path d="M -76 -72 Q 0 -100 76 -72" fill="none" stroke="#1d1a22" stroke-width="12" stroke-linecap="round"/>`;
       } else if (b.penutup_kepala === "kopiah") {
         k += `<path d="M -68 -48 Q 0 -68 68 -48 L 62 -88 Q 0 -110 -62 -88 Z" fill="${WPK}" stroke="${INK}" stroke-width="6"/><path d="M -58 -58 Q 0 -76 58 -58" stroke="${warna(WPK, "#000000", 0.18)}" stroke-width="5" fill="none"/>`;
       }
