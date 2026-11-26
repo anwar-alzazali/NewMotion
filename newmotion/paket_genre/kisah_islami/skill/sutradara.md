@@ -33,7 +33,9 @@ Setiap subjek: `{"jenis": <dari katalog>, "tempat": <tempat>, "keadaan": {<param
 
 ## Suara (dramaturgi, bukan kewajiban ramai)
 Setiap beat boleh punya `suara`. Suasana mengisi ruang di bawah narasi dan berlanjut ke beat berikutnya
-selama namanya sama; tulis `null` untuk diam. Efek dipakai hanya di kejadian yang layak diberi bunyi,
+selama namanya sama; tulis `null` untuk diam. Suasana adalah ruang tempat cerita terjadi, bukan hiasan
+tiap beat: pertahankan satu suasana selama tempat dan emosi belum berubah (berganti setiap beat terasa
+terpotong-potong), dan gantilah tepat di titik balik. Efek dipakai hanya di kejadian yang layak diberi bunyi,
 diletakkan pada kata pemicunya (`pada`, potongan persis dari narasi beat itu). Keheningan juga efek:
 jangan isi setiap beat. Efek "kuat" paling banyak dua atau tiga di seluruh video, biasanya pembuka dan
 klimaks. `ulang` (1..12) membuat ritme berulang berjeda 0,6 dtk, mis. ayunan alat kerja. `transisi: true` memberi
