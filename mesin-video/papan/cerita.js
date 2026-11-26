@@ -1506,7 +1506,7 @@
       const E = o.profilMotor ? [112 + (sg < 0 ? -8 : 8), -320 + nafas] : [S[0] + sg * Math.sin((a1 + sw) * R) * 85, S[1] + Math.cos((a1 + sw) * R) * 85];
       const H = o.profilMotor ? [218, -284 + nafas + (sg < 0 ? -7 : 0)] : [E[0] + sg * Math.sin((a2 + sw) * R) * 80, E[1] + Math.cos((a2 + sw) * R) * 80];
       return { ats: `<line x1="${S[0]}" y1="${S[1]}" x2="${E[0]}" y2="${E[1]}" stroke="${BD}" stroke-width="36" stroke-linecap="round"/>`,
-               bwh: `<line x1="${E[0]}" y1="${E[1]}" x2="${H[0]}" y2="${H[1]}" stroke="${BD}" stroke-width="34" stroke-linecap="round"/><circle cx="${H[0]}" cy="${H[1]}" r="19" fill="${pakaiP ? KLB : BD}" stroke="${INK}" stroke-width="4"/>`, H };
+               bwh: `<line x1="${E[0]}" y1="${E[1]}" x2="${H[0]}" y2="${H[1]}" stroke="${BD}" stroke-width="34" stroke-linecap="round"/><circle cx="${H[0]}" cy="${H[1]}" r="19" fill="${pakaiP ? KLB : BD}" stroke="${INK}" stroke-width="4"/>`, S, E, H };
     };
     const L = lengan(-1, J.la), Rk = lengan(1, J.ra);
     let barang = "";
@@ -1550,7 +1550,9 @@
     const T = `translate(0 ${J.turun}) rotate(${J.badan} 0 -200)`;
     const g = kaki + `<g transform="${T}">${bdn}${L.ats}${Rk.ats}${J.depan > 0.5 ? "" : L.bwh + Rk.bwh + barang}</g>`;
     const depan = J.depan > 0.5 ? `<g transform="${T}">${L.bwh}${Rk.bwh}${barang}</g>` : "";
-    return { g, depan, T, kepala: J.kepala, guling: J.guling };
+    // sendi (koordinat lokal, sebelum T untuk lengan) dipakai alat uji tokoh (mesin-video/papan/uji_tokoh.py)
+    const sendi = { kaki: titik, lengan: [[L.S, L.E, L.H], [Rk.S, Rk.E, Rk.H]], turun: J.turun, badan: J.badan };
+    return { g, depan, T, kepala: J.kepala, guling: J.guling, sendi };
   }
 
   // ---- tokoh boneka: kepala detail, badan siluet gelap (sopan), kaki di (0,0) ----
@@ -1783,6 +1785,12 @@
     const opb = v(b.op, t, d, 1); if (opb <= 0.01) return "";
     if (H) { x += H.dx; y += H.dy; s *= H.sc; isi = `<g transform="scale(${1 - H.sq * 0.7} ${1 + H.sq})">${isi}</g>`; }
     const byg = (C.bayangan === false || b.bayangan === false || gaya === "siluet" || naik < 0.98 || potong > 0 || gen > 0 || (RG && RG.guling)) ? "" : `<ellipse cx="0" cy="6" rx="${b.bayangan > 0 ? b.bayangan : 92}" ry="15" fill="#000" opacity=".2"/>`; // standar visual butir 5: bayangan lembut di pijakan (matikan: bayangan:false di boneka atau cerita)
+    if (window.__catatBoneka) { // hanya aktif saat alat uji tokoh menyiapkannya; tidak memengaruhi render biasa
+      const pm = (b.profil === "kanan" || b.profil === true) && !!RIG && RIG.turun >= 50;
+      window.__catatBoneka.push({ id: b.id, t, x, y, s, tubuh, arah, tunduk, profil: b.profil || null, belakang: !!belakang,
+        badan_samping: pm, rig: !!RIG, aksi: RIG && RIG._aksi || b.aksi || null, sendi: RG ? RG.sendi : null, guling: RG ? RG.guling || 0 : 0,
+        telinga: (k.match(/cx="-?76" cy="6" r="15"/g) || []).length, kepala: [hx, hy] });
+    }
     return `<g opacity="${opb}" transform="translate(${x} ${y}) scale(${s})">${byg}<clipPath id="kp${b.id || 0}"><rect x="-400" y="-1400" width="800" height="${1400 - potong}"/></clipPath><g clip-path="url(#kp${b.id || 0})"><g transform="translate(0 ${tubuh})${RG && RG.guling ? ` rotate(${RG.guling} 0 -200)` : ""}">${isi}</g></g>${label}</g>`;
   }
 
