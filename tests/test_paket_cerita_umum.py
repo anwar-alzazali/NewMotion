@@ -29,6 +29,9 @@ def test_paket_cerita_umum_membuat_lintasan_penolong_dan_menautkan_sasaran():
     assert nama == "cerita_umum"
     assert jumlah == 1
     assert spek["rencana_visual_tokoh"]["status"] == "siap_diterjemahkan"
+    assert spek["_rencana_visual_tokoh_diterapkan"] is True
+    assert len(spek["cerita"]["shot"][0]["boneka"]) == 2
+    assert any(x["jenis"] == "motor" for x in spek["cerita"]["shot"][0]["benda"])
     arahan = spek["rencana_visual_tokoh"]["shot"][0]["tokoh"][0]
     assert arahan["tokoh_id"] == "penolong"
     assert arahan["aksi"] == "jalan"
@@ -70,8 +73,8 @@ def test_paket_cerita_umum_tidak_mengambil_alih_kebijakan_kisah_islami():
 
 def test_adapter_meneruskan_motor_jadwal_tergelincir_dan_aksi_menolong():
     spek, _, _ = arahkan_naskah(_naskah())
-    hasil = terapkan_rencana_visual_tokoh(spek)
-    assert hasil[0]["jumlah_tokoh_ditambahkan"] == 2
+    # JSON sudah lengkap saat keluar dari sutradara; pemanggilan kedua aman.
+    assert terapkan_rencana_visual_tokoh(spek) == []
     shot = spek["cerita"]["shot"][0]
     motor = next(item for item in shot["benda"] if item["jenis"] == "motor")
     assert motor["id"] == "motor-beat-001"
@@ -138,7 +141,7 @@ def test_posisi_dan_keadaan_tokoh_berlanjut_ke_shot_berikutnya():
     assert shot_kedua["pengendara"]["y"] == shot_pertama["pengendara"]["y"][-1][1]
     assert shot_kedua["pengendara"]["pose"] == [[0, "tergelincir"]]
 
-    terapkan_rencana_visual_tokoh(spek)
+    assert terapkan_rencana_visual_tokoh(spek) == []
     hasil_pertama = {x["aktor_id"]: x for x in spek["cerita"]["shot"][0]["boneka"]}
     hasil_kedua = {x["aktor_id"]: x for x in spek["cerita"]["shot"][1]["boneka"]}
     assert hasil_kedua["penolong"]["x"] == hasil_pertama["penolong"]["x"][-1][1]
