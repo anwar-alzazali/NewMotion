@@ -11,7 +11,7 @@ AKSI_JALAN = {"jalan", "berjalan", "berjalan_menolong", "mendekati"}
 AKSI_INTERAKSI = {"menolong"}
 AKSI_LARI = {"lari", "berlari"}
 AKSI_MOTOR = {"naik_motor", "menaiki", "mengendarai_motor", "mengendarai"}
-AKSI_DIAM = {"tergelincir", "jatuh", "berhenti", "menunggu", "duduk"}
+AKSI_DIAM = {"tergelincir", "jatuh", "berhenti", "menunggu", "duduk", "berdiri"}
 
 
 def _posisi_awal(nomor: int) -> int:
