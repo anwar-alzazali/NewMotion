@@ -1,0 +1,2 @@
+{"naskah": "tests/data/tolok_ukur/yajuj1.json", "model": "gemini-3.8-flash", "penyedia": "google", "token_masuk": 5713, "token_keluar": 2500, "biaya_usd": 0.0, "percobaan": ["gemini-3.8-flash: diterima (68.3 dtk)"], "shot": 11, "skor_gabungan": 90, "skor_aspek": {"ritme": 63, "kamera": 90, "lingkungan": 97, "benda": 88, "tokoh": 100, "teks_layar": 44, "gerak": 92, "cerita": 100}}
+selesai hasil/gemini/yajuj1/video.mp4 58.36 dtk; 2 efek suara

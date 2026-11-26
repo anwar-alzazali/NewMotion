@@ -1,0 +1,351 @@
+{
+ "objek_inti": {
+  "jenis": "ngarai",
+  "perkembangan": "dinding besi Zulkarnain yang terus digali hingga berlubang, berulang kali pulih utuh, sampai akhirnya jebol sepenuhnya"
+ },
+ "beat": [
+  {
+   "beat": 1,
+   "bukti": "Ada satu dinding yang digali setiap hari. Dan satu kata, yang akhirnya menjebolnya.",
+   "subjek": [
+    {
+     "jenis": "ngarai",
+     "tempat": "tengah",
+     "keadaan": {
+      "lubang": 0.2,
+      "jebol": 0
+     }
+    },
+    {
+     "jenis": "penggali",
+     "tempat": "di_lubang:ngarai",
+     "keadaan": {
+      "aktif": 1,
+      "n": 3,
+      "pulang": 0
+     }
+    }
+   ],
+   "kamu": "saksi",
+   "kamera": {
+    "bidikan": "sedang",
+    "aksen": null
+   },
+   "teks_layar": "SATU KATA",
+   "klimaks": false
+  },
+  {
+   "beat": 2,
+   "bukti": "Dinding besi itu dibangun Zulkarnain untuk mengurung mereka.",
+   "subjek": [
+    {
+     "jenis": "ngarai",
+     "tempat": "tengah",
+     "keadaan": {
+      "lubang": 0.2,
+      "jebol": 0
+     }
+    },
+    {
+     "jenis": "bayang_misteri",
+     "tempat": "jauh",
+     "keadaan": {
+      "besar": 1.2,
+      "nafas": 0.4
+     }
+    }
+   ],
+   "kamu": "tidak",
+   "kamera": {
+    "bidikan": "lebar",
+    "aksen": null
+   },
+   "teks_layar": null,
+   "klimaks": false
+  },
+  {
+   "beat": 3,
+   "bukti": "Setiap hari mereka menggali, sampai hampir tembus.",
+   "subjek": [
+    {
+     "jenis": "ngarai",
+     "tempat": "tengah",
+     "keadaan": {
+      "lubang": [
+       0.3,
+       0.85
+      ],
+      "jebol": 0
+     }
+    },
+    {
+     "jenis": "penggali",
+     "tempat": "di_lubang:ngarai",
+     "keadaan": {
+      "aktif": 1,
+      "n": 5,
+      "pulang": 0
+     }
+    }
+   ],
+   "kamu": "tidak",
+   "kamera": {
+    "bidikan": "dekat",
+    "aksen": null
+   },
+   "teks_layar": "HAMPIR TEMBUS",
+   "klimaks": false
+  },
+  {
+   "beat": 4,
+   "bukti": "Lalu pemimpin mereka berkata: pulanglah, besok kita tembus.",
+   "subjek": [
+    {
+     "jenis": "ngarai",
+     "tempat": "tengah",
+     "keadaan": {
+      "lubang": 0.85,
+      "jebol": 0
+     }
+    },
+    {
+     "jenis": "pemimpin",
+     "tempat": "kiri",
+     "keadaan": {
+      "angkat": 0.8
+     }
+    },
+    {
+     "jenis": "penggali",
+     "tempat": "di_lubang:ngarai",
+     "keadaan": {
+      "aktif": 0,
+      "pulang": 1
+     }
+    }
+   ],
+   "kamu": "tidak",
+   "kamera": {
+    "bidikan": "sedang",
+    "aksen": null
+   },
+   "teks_layar": null,
+   "klimaks": false
+  },
+  {
+   "beat": 5,
+   "bukti": "Esoknya, dinding itu sudah kembali utuh.",
+   "subjek": [
+    {
+     "jenis": "ngarai",
+     "tempat": "tengah",
+     "keadaan": {
+      "lubang": 0,
+      "kilap": 1,
+      "jebol": 0
+     }
+    },
+    {
+     "jenis": "surya",
+     "tempat": "jauh",
+     "keadaan": {
+      "terang": 0.8
+     }
+    }
+   ],
+   "kamu": "tidak",
+   "kamera": {
+    "bidikan": "sedang",
+    "aksen": "hentak"
+   },
+   "teks_layar": "KEMBALI UTUH",
+   "klimaks": false
+  },
+  {
+   "beat": 6,
+   "bukti": "Begitu terus. Hari demi hari.",
+   "subjek": [
+    {
+     "jenis": "ngarai",
+     "tempat": "tengah",
+     "keadaan": {
+      "lubang": [
+       0.6,
+       0.1
+      ],
+      "jebol": 0
+     }
+    },
+    {
+     "jenis": "bintang",
+     "tempat": "jauh",
+     "keadaan": {
+      "n": 12
+     }
+    }
+   ],
+   "kamu": "tidak",
+   "kamera": {
+    "bidikan": "lebar",
+    "aksen": null
+   },
+   "teks_layar": null,
+   "klimaks": false
+  },
+  {
+   "beat": 7,
+   "bukti": "Hari itu pemimpin mereka berkata: besok kita tembus… insya Allah.",
+   "subjek": [
+    {
+     "jenis": "ngarai",
+     "tempat": "tengah",
+     "keadaan": {
+      "lubang": 0.85,
+      "jebol": 0
+     }
+    },
+    {
+     "jenis": "pemimpin",
+     "tempat": "kiri",
+     "keadaan": {
+      "angkat": 0.9
+     }
+    },
+    {
+     "jenis": "penggali",
+     "tempat": "di_lubang:ngarai",
+     "keadaan": {
+      "aktif": 0,
+      "pulang": [
+       0,
+       0.5
+      ]
+     }
+    }
+   ],
+   "kamu": "tidak",
+   "kamera": {
+    "bidikan": "sedang",
+    "aksen": null
+   },
+   "teks_layar": "INSYA ALLAH",
+   "klimaks": false
+  },
+  {
+   "beat": 8,
+   "bukti": "Esoknya, dinding itu masih seperti saat mereka tinggalkan. Mereka menembusnya, dan keluar.",
+   "subjek": [
+    {
+     "jenis": "ngarai",
+     "tempat": "tengah",
+     "keadaan": {
+      "lubang": 1,
+      "jebol": [
+       0.2,
+       1
+      ]
+     }
+    },
+    {
+     "jenis": "arus",
+     "tempat": "tengah",
+     "keadaan": {
+      "mode": "lereng",
+      "maju": 1,
+      "n": 20
+     }
+    }
+   ],
+   "kamu": "saksi",
+   "kamera": {
+    "bidikan": "lebar",
+    "aksen": "guncang"
+   },
+   "teks_layar": "JEBOL",
+   "klimaks": true
+  },
+  {
+   "beat": 9,
+   "bukti": "Mereka meminum habis air, dan manusia berlarian menghindar.",
+   "subjek": [
+    {
+     "jenis": "danau",
+     "tempat": "tengah",
+     "keadaan": {
+      "isi": [
+       0.8,
+       0
+      ]
+     }
+    },
+    {
+     "jenis": "arus",
+     "tempat": "kanan",
+     "keadaan": {
+      "mode": "lari",
+      "maju": 1,
+      "n": 15
+     }
+    }
+   ],
+   "kamu": "tidak",
+   "kamera": {
+    "bidikan": "lebar",
+    "aksen": null
+   },
+   "teks_layar": null,
+   "klimaks": false
+  },
+  {
+   "beat": 10,
+   "bukti": "Sampai Allah mengirim ulat ke tengkuk mereka, dan mereka binasa.",
+   "subjek": [
+    {
+     "jenis": "kerumunan",
+     "tempat": "tengah",
+     "keadaan": {
+      "n": 25,
+      "pose": "tunduk",
+      "hangus": 0.8
+     }
+    },
+    {
+     "jenis": "lahar",
+     "tempat": "jauh",
+     "keadaan": {
+      "kuat": 0.2
+     }
+    }
+   ],
+   "kamu": "tidak",
+   "kamera": {
+    "bidikan": "sedang",
+    "aksen": null
+   },
+   "teks_layar": "BINASA",
+   "klimaks": false
+  },
+  {
+   "beat": 11,
+   "bukti": "Satu kata itu juga diperintahkan untukmu: jangan berkata, besok aku lakukan, kecuali dengan insya Allah.",
+   "subjek": [
+    {
+     "jenis": "buku",
+     "tempat": "tengah",
+     "keadaan": {
+      "buka": 1,
+      "teks": "QS AL-KAHFI 23-24",
+      "sub": "HR Ahmad & Tirmidzi"
+     }
+    }
+   ],
+   "kamu": "utama",
+   "kamera": {
+    "bidikan": "dekat",
+    "aksen": null
+   },
+   "teks_layar": "UCAPKAN INSYA ALLAH",
+   "klimaks": false
+  }
+ ]
+}
