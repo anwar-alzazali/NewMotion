@@ -83,7 +83,10 @@ def arahkan_tokoh_visual(rencana_cerita, rencana_blocking, cerita):
                 continue
             aksi = aksi_asli.strip().casefold().replace(" ", "_")
             sasaran_objek = str(event.get("sasaran") or "").casefold()
-            if sasaran_objek in {"motor", "sepeda_motor"}:
+            if (
+                sasaran_objek in {"motor", "sepeda_motor"}
+                and not isinstance(event.get("sasaran_benda_id"), str)
+            ):
                 motor_dibutuhkan = True
             if aktor_id in sudah:
                 diagnostik.append({"kode": "aktor_memiliki_beberapa_aksi_dalam_satu_shot", "aktor_id": aktor_id})
