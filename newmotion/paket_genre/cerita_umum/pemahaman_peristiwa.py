@@ -142,9 +142,13 @@ def uraikan_peristiwa(teks: str, peran: Sequence[str]) -> dict:
             hasil_bagian = []
             for indeks_klausa, klausa in enumerate(bagian_simultan):
                 nomor += 1
+                # Klausa simultan boleh mewarisi subjek klausa sebelumnya hanya
+                # jika klausa itu sendiri tidak menyebut aktor sebelum verba.
                 aktor_default = (
                     aktor_sebelumnya
                     if nomor_bagian > 0 and indeks_klausa == 0
+                    else hasil_bagian[-1]["aktor"]
+                    if indeks_klausa > 0 and hasil_bagian
                     else None
                 )
                 hasil, alasan = _peristiwa_klausa(
