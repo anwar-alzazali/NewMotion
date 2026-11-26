@@ -145,7 +145,8 @@ def test_sutradara_menghasilkan_spek_json_dari_narasi_biasa():
     peristiwa = hasil["rencana_cerita"]["adegan"][0]["peristiwa"]
 
     assert genre == "cerita_umum"
-    assert jumlah_shot == 1
+    # Dua peristiwa berurutan harus menjadi dua tahap/shot renderer.
+    assert jumlah_shot == 2
     assert [item["aksi"] for item in peristiwa] == ["berjalan", "menolong"]
     assert peristiwa[0]["aktor_id"] == peristiwa[1]["aktor_id"]
     assert peristiwa[1]["sasaran_tokoh_id"] is not None
