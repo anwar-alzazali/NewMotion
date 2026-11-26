@@ -43,7 +43,8 @@ def test_paket_cerita_umum_membuat_lintasan_penolong_dan_menautkan_sasaran():
     assert penolong["x"][0][1] == 100
     assert penolong["x"][-1][1] == 430
     assert penolong["x"][-1][1] - penolong["x"][0][1] >= 100
-    assert penolong["y"][-1][1] == pengendara["y"][-1][1] == 1700
+    assert penolong["y"][-1][1] == 1620
+    assert pengendara["y"][-1][1] == 1700
     assert pengendara["x"][-1][1] - penolong["x"][-1][1] >= 200
     assert pengendara["y"][-1][1] - penolong["y"][-1][1] >= 80
 
@@ -58,7 +59,7 @@ def test_posisi_penolong_tetap_mengacu_posisi_akhir_meski_urutan_peristiwa_berbe
     }
     assert arahan["pengendara"]["x"][-1][1] == 650
     assert arahan["penolong"]["x"][-1][1] == 430
-    assert arahan["penolong"]["y"][-1][1] == 1700
+    assert arahan["penolong"]["y"][-1][1] == 1620
 
 
 def test_paket_cerita_umum_tidak_mengambil_alih_kebijakan_kisah_islami():
