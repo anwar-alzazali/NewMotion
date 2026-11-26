@@ -149,8 +149,10 @@ def arahkan_tokoh_visual(rencana_cerita, rencana_blocking, cerita):
                 posisi_motor = 500
                 butir.update({"x": 500, "y": 1510, "kendaraan_id": f"motor-{tautan.get('beat_id')}"})
             elif aksi in AKSI_INTERAKSI:
-                # Menolong adalah interaksi di lokasi yang sudah dicapai, bukan berjalan ulang.
+                # Interaksi harus membawa relasi sasaran sampai ke kontrak boneka renderer.
+                # Sasaran yang tidak bergerak tetap ditambahkan sebagai pemeran pendukung di bawah.
                 butir["aksi"] = aksi
+                butir["sasaran_tokoh_id"] = event.get("sasaran_tokoh_id")
                 butir["pose"] = [[0, "menolong"]]
             elif aksi in AKSI_DIAM:
                 butir["aksi"] = aksi
