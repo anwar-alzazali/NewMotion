@@ -159,10 +159,11 @@ def test_modul_lama_hanya_menjadi_shim_ke_paket_genre():
 def test_workflow_render_mahsyar_tidak_terpicu_perubahan_paket_genre():
     akar = Path(__file__).resolve().parents[1]
     sumber = (akar / ".github" / "workflows" / "uji-mahsyar1.yml").read_text(encoding="utf-8")
-    assert "'newmotion/**'" not in sumber
-    assert "'mesin-video/papan/cerita.js'" in sumber
+    # Render Mahsyar hanya manual: tidak ada pemicu push/pull_request sama sekali,
+    # dan tidak bergantung pada repo mesin-video.
     assert "workflow_dispatch:" in sumber
-    assert "github.head_ref != 'feature/pemisahan-pengarah-kisah-islami'" in sumber
+    assert "\n  push:" not in sumber and "\n  pull_request:" not in sumber
+    assert "repository: anwar-alzazali/mesin-video" not in sumber
 
 
 
