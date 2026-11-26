@@ -51,15 +51,24 @@ def test_ditolak_validator_naik_ke_model_berikutnya_dengan_daftar_galat():
     validasi = lambda d: [] if d["jenis"] == "bahtera" else [f"jenis {d['jenis']} tidak ada di katalog"]  # noqa: E731
     j = llm.panggil("sutradara", "s", "p", json=True, validasi=validasi, http=http, konfigurasi=KONFIG)
     assert j.data == {"jenis": "bahtera"}
-    teks_gemini = panggilan[1][1]["contents"][0]["parts"][-1]["text"]
+    assert [p[0].split("/")[2] for p in panggilan] == ["api.anthropic.com"] * 2 + ["generativelanguage.googleapis.com"]
+    assert "naga tidak ada di katalog" in panggilan[1][1]["messages"][0]["content"][-1]["text"]  # ulang model sama
+    teks_gemini = panggilan[2][1]["contents"][0]["parts"][-1]["text"]
     assert "naga tidak ada di katalog" in teks_gemini
+
+
+def test_tanpa_ulang_validasi_langsung_ke_cadangan():
+    http, panggilan = _palsu('{"jenis": "naga"}', '{"jenis": "bahtera"}')
+    validasi = lambda d: [] if d["jenis"] == "bahtera" else ["salah"]
+    llm.panggil("sutradara", "s", "p", json=True, validasi=validasi, http=http, konfigurasi=KONFIG, ulang_validasi=0)
+    assert len(panggilan) == 2
 
 
 def test_semua_gagal_memberi_riwayat():
     http, _ = _palsu("bukan json", "juga bukan")
     with pytest.raises(llm.GalatLLM) as e:
         llm.panggil("sutradara", "s", "p", json=True, http=http, konfigurasi=KONFIG)
-    assert len(e.value.riwayat) == 2
+    assert len(e.value.riwayat) == 4  # tiap model: percobaan + satu ulang
 
 
 def test_gambar_dikirim_ke_kedua_penyedia():

@@ -269,3 +269,29 @@ def test_penggali_menggali_di_lubang_dinding():
     assert dinding["y"] == shot["horizon"]
     assert gali["x"] == dinding["x"] + (dinding.get("lx") or 0) * dinding["s"]
     assert gali["y"] == round(dinding["y"] + dinding.get("ly", -190) * dinding["s"])
+
+
+def test_surya_subjek_rencana_di_langit_dan_bisa_membesar():
+    """Temuan pemeriksa visual Mahsyar: matahari subjek jatuh di tanah (tertutup), dan r
+    berkunci waktu tidak digambar. Kini duduk di atas cakrawala dan r dianimasikan renderer."""
+    import json
+    from pathlib import Path
+
+    from newmotion.application.katalog_renderer import katalog
+    from newmotion.application.pengarah_inti import arahkan_naskah
+    from newmotion.paket_genre.kisah_islami.rencana_sutradara import terapkan_rencana
+
+    naskah = json.loads((Path(__file__).parent / "data" / "tolok_ukur" / "mahsyar1.json").read_text(encoding="utf-8"))
+    n = len(naskah["adegan"])
+    rencana = {"beat": [{"beat": i, "bukti": naskah["adegan"][i - 1]["teks"].split()[0], "kamu": "tidak",
+                         "subjek": [{"jenis": "surya", "tempat": "tengah", "keadaan": {"r": [120, 300]}}]}
+                        for i in range(1, n + 1)]}
+    spek, _, _ = arahkan_naskah(terapkan_rencana(naskah, rencana))
+    dicek = 0
+    for sh in spek["cerita"]["shot"]:
+        for b in sh["benda"]:
+            if b["jenis"] == "surya" and isinstance(b.get("r"), list):
+                assert b["y"] + 300 * 0.2 <= sh["horizon"] and not b.get("belakang")
+                dicek += 1
+    assert dicek >= n
+    assert "r" in katalog()["surya"]["animasi"]
