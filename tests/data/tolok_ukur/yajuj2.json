@@ -1,0 +1,60 @@
+{
+ "judul": "Ya'juj Ma'juj Bagian 2",
+ "referensi": "mesin-video/papan/kisah/yajuj2.json",
+ "genre": "kisah_islami",
+ "konteks_konten": "islami",
+ "adegan": [
+  {
+   "nama": "adegan_1",
+   "teks": "Ada satu dinding yang digali setiap hari. Dan satu kata, yang akhirnya menjebolnya."
+  },
+  {
+   "nama": "adegan_2",
+   "teks": "Di baliknya: Ya'juj dan Ma'juj. Dinding besi itu dibangun Zulkarnain untuk mengurung mereka."
+  },
+  {
+   "nama": "adegan_3",
+   "teks": "Setiap hari mereka menggali, sampai hampir tembus."
+  },
+  {
+   "nama": "adegan_4",
+   "teks": "Lalu pemimpin mereka berkata:"
+  },
+  {
+   "nama": "adegan_5",
+   "teks": "[low, cold, slow] Pulanglah. Besok kita tembus."
+  },
+  {
+   "nama": "adegan_6",
+   "teks": "Esoknya, dinding itu sudah kembali utuh."
+  },
+  {
+   "nama": "adegan_7",
+   "teks": "Begitu terus. Hari demi hari."
+  },
+  {
+   "nama": "adegan_8",
+   "teks": "Sampai tiba waktu yang Allah tetapkan. Hari itu pemimpin mereka berkata:"
+  },
+  {
+   "nama": "adegan_9",
+   "teks": "[low, cold, slow] Besok kita tembus… insya Allah."
+  },
+  {
+   "nama": "adegan_10",
+   "teks": "Esoknya, dinding itu masih seperti saat mereka tinggalkan. Mereka menembusnya, dan keluar."
+  },
+  {
+   "nama": "adegan_11",
+   "teks": "Mereka meminum habis air, dan manusia berlarian menghindar."
+  },
+  {
+   "nama": "adegan_12",
+   "teks": "Sampai Allah mengirim ulat ke tengkuk mereka, dan mereka binasa."
+  },
+  {
+   "nama": "adegan_13",
+   "teks": "Satu kata itu juga diperintahkan untukmu: jangan berkata, besok aku lakukan, kecuali dengan insya Allah."
+  }
+ ]
+}
