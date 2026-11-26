@@ -219,7 +219,7 @@ def test_posisi_benda_relatif_mengikuti_keyframe_tokoh():
     benda = {
         "id": "tas-01",
         "nama": "Tas",
-        "jenis_renderer": "dompet",
+        "jenis_renderer": "kantong",
         "relasi_posisi": {
             "tokoh_id": "aktor-a",
             "hubungan": "di_samping_kanan",
