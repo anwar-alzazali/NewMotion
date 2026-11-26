@@ -6,6 +6,7 @@ on:
     paths:
       - 'mesin-video/papan/karakter/**'
       - 'mesin-video/papan/cerita.js'
+      - 'mesin-video/papan/uji_tokoh.py'
       - 'mesin-video/papan_buat.py'
       - 'mesin-video/papan/kisah/yajuj2_visual3.json'
       - 'tests/test_penataan_panggung.py'
@@ -44,6 +45,6 @@ jobs:
         run: python -m pip install pytest
       - name: Jalankan tes renderer karakter
         working-directory: mesin-video/papan
-        run: python -m pytest karakter/test_karakter.py -v
+        run: python -m pytest karakter/test_karakter.py karakter/test_uji_tokoh.py -v
       - name: Jalankan tes penataan panggung dan adegan motor
         run: python -m pytest tests/test_penataan_panggung.py -v
