@@ -33,6 +33,8 @@ def arahkan_tokoh_visual(rencana_cerita, rencana_blocking, cerita):
     # Keadaan terakhir per ID tokoh dibawa antar-shot; identitas stabil menjadi kuncinya.
     posisi_terakhir = {}
     pose_terakhir = {}
+    # Kendaraan mengikuti kontinuitas tokoh pemiliknya ke shot berikutnya.
+    motor_terakhir = {}
     for tautan in (rencana_blocking or {}).get("shot", []):
         indeks = tautan.get("indeks")
         if type(indeks) is not int or indeks >= len(cerita.get("shot", [])):
@@ -123,12 +125,34 @@ def arahkan_tokoh_visual(rencana_cerita, rencana_blocking, cerita):
                 pose_terakhir[aktor_id] = "tergelincir"
         if arahan_tokoh:
             butir_shot = {"indeks": indeks, "tokoh": arahan_tokoh}
+            benda_shot = []
             if motor_dibutuhkan:
-                butir_shot["benda"] = [{
-                    "id": f"motor-{tautan.get('beat_id')}", "jenis": "motor",
-                    "x": [[0, posisi_motor if posisi_motor is not None else 540], [0.9, min(1000, (posisi_motor if posisi_motor is not None else 540) + 55)]],
+                pemilik_motor = next(
+                    (item["tokoh_id"] for item in arahan_tokoh if item.get("kendaraan_id")),
+                    None,
+                )
+                id_motor = f"motor-{tautan.get('beat_id')}"
+                x_awal_motor = posisi_motor if posisi_motor is not None else 540
+                motor = {
+                    "id": id_motor, "jenis": "motor",
+                    "x": [[0, x_awal_motor], [0.9, min(1000, x_awal_motor + 55)]],
                     "y": [[0, 1550], [0.9, 1580]], "s": 0.8,
-                }]
+                }
+                benda_shot.append(motor)
+                if pemilik_motor:
+                    motor_terakhir[pemilik_motor] = {
+                        "id": id_motor, "jenis": "motor",
+                        "x": min(1000, x_awal_motor + 55), "y": 1580, "s": 0.8,
+                    }
+
+            # Jika pemilik masih tampil di shot berikutnya, motor yang sudah
+            # terlepas tetap berada di panggung pada posisi akhir sebelumnya.
+            aktor_shot = {item["tokoh_id"] for item in arahan_tokoh}
+            for pemilik, motor in motor_terakhir.items():
+                if pemilik in aktor_shot and not any(x["id"] == motor["id"] for x in benda_shot):
+                    benda_shot.append(dict(motor))
+            if benda_shot:
+                butir_shot["benda"] = benda_shot
             shot_plan.append(butir_shot)
     return {"status": "siap_diterjemahkan" if shot_plan else "tidak_ada_aksi_visual_eksplisit",
             "shot": shot_plan, "diagnostik": diagnostik}
