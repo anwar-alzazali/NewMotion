@@ -493,15 +493,17 @@ def arahkan(naskah: dict, waktu_adegan: list[float] | None = None,
                 kamera["guncang"] = [[round(min(ds * 0.35, 1.4), 2), 24]]
             # Efek lingkungan dan respons tubuh yang disebut eksplisit oleh narasi.
             # Semua properti ini sudah didukung renderer cerita.js.
-            if re.search(r"\b(keringat|keringatmu)\b", tx, re.I):
+            if re.search(r"\bkeringat\w*\b", teks, re.I):
                 b["keringat"] = 1
-                b["genangan"] = 110 if re.search(r"\b(tenggelam|sampai|setinggi)\b", tx, re.I) else 25
-            if re.search(r"\b(meresap|menyerap)\b", tx, re.I):
+                b["genangan"] = 110 if re.search(r"\b(tenggelam|sampai|setinggi)\b", teks, re.I) else 25
+            if re.search(r"\b(meresap|menyerap)\b", teks, re.I):
                 s["resap"] = {"p": 0.85, "dalam": 700}
-            if re.search(r"\b(naungan|teduh)\b", tx, re.I):
+            if re.search(r"\b(naungan|teduh)\b", teks, re.I):
                 s["naungan"] = {"x": 540, "y": 1100, "r": 300, "kuat": 1}
-            if re.search(r"\b(retak|terbelah|terbelahnya)\b", tx, re.I):
+            if re.search(r"\b(retak|terbelah|terbelahnya)\b", teks, re.I):
                 s["retak"] = {"x": 540, "y": 1500, "p": 0.7}
+            if re.search(r"\b(hujan|tercurah)\b", teks, re.I):
+                s["hujan"] = 0.8
             s["boneka"] = [b]
             # Kerumunan latar hanya di tema "padang terbuka" (di kota/kampung/ruang dalam
             # kerumunan siluet di cakrawala terlihat janggal).
