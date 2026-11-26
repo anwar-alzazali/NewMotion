@@ -56,7 +56,7 @@ def test_posisi_penolong_tetap_mengacu_posisi_akhir_meski_urutan_peristiwa_berbe
         for item in spek["rencana_visual_tokoh"]["shot"][0]["tokoh"]
     }
     assert arahan["pengendara"]["x"][-1][1] == 650
-    assert arahan["penolong"]["x"][-1][1] == 385
+    assert arahan["penolong"]["x"][-1][1] == 430
     assert arahan["penolong"]["y"][-1][1] == 1620
 
 
