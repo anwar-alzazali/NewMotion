@@ -281,3 +281,34 @@ def test_roster_tokoh_menolak_id_ganda():
     with pytest.raises(ValueError, match="digunakan lebih dari sekali"):
         naskah_untuk_pengarah(naskah)
 
+
+
+
+def test_referensi_sebab_akibat_tetap_valid_setelah_id_peristiwa_diprefix_beat():
+    naskah = {
+        "judul": "Rantai pertolongan",
+        "genre": "cerita_umum",
+        "konteks_konten": "umum",
+        "dalil": [],
+        "beat": [{
+            "id": "adegan-rantai",
+            "narasi": (
+                "Tokoh tergelincir sehingga Tokoh jatuh "
+                "sehingga Penolong menolong Tokoh."
+            ),
+            "peran": ["Tokoh", "Penolong"],
+        }],
+    }
+
+    hasil = naskah_untuk_pengarah(naskah)
+    peristiwa = hasil["adegan"][0]["peristiwa"]
+    pertama, kedua, ketiga = peristiwa
+
+    assert pertama["id"] == "adegan-rantai-peristiwa-001"
+    assert kedua["hubungan_sebab_akibat"]["peristiwa_id"] == pertama["id"]
+    assert ketiga["hubungan_sebab_akibat"]["peristiwa_id"] == kedua["id"]
+    semua_id = {item["id"] for item in peristiwa}
+    for item in peristiwa:
+        relasi = item.get("hubungan_sebab_akibat")
+        if relasi:
+            assert relasi["peristiwa_id"] in semua_id
