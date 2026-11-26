@@ -42,11 +42,6 @@ POLA_PENGGALI_SAKRAL = re.compile(
 )
 POLA_GALI = re.compile(r"\b(penggali|menggali|digali|menggerogoti|mengikis)\b", re.I)
 POLA_PEMIMPIN = re.compile(r"\b(pemimpin|pemuka|raja|panglima)\b", re.I)
-POLA_SAKRAL = re.compile(
-    r"\b(allah|tuhan|rasulullah|rasul|nabi|muhammad|malaikat|jibril|mikail|israfil|"
-    r"abu bakar|umar|utsman|usman|ali bin abi thalib|sahabat)\b",
-    re.I,
-)
 POLA_SAHABAT = re.compile(
     r"\b(sahabat|abu bakar|umar|utsman|usman|ali bin abi thalib)\b", re.I
 )
