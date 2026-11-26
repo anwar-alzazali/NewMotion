@@ -27,6 +27,6 @@ Aturan:
 
 ## Pratinjau visual manual
 
-Workflow `.github/workflows/pr28-pratinjau-semantik.yml` disiapkan dengan pemicu `workflow_dispatch` saja. Pilihan default adalah `yajuj1`; pilihan lain adalah `doa2`, `bangkrut1`, dan `wali1`.
+Workflow `.github/workflows/render-yajuj2-runtime.yml` (workflow manual yang sudah ada di `main`) diperluas dengan mode `kisah`. Pemilik repo dapat memilih branch `feat/pengarah-subjek-naratif`, lalu memilih cerita `yajuj1` (default), `doa2`, `bangkrut1`, atau `wali1`. Mode `adegan` yang lama tetap tersedia.
 
 Workflow akan menjalankan naskah melalui CLI NewMotion, menyimpan papan hasil pengarahan, memvalidasi subjek semantik penting, merender MP4 H.264 1080x1920, mengambil frame audit, lalu mengunggah artefak. Workflow ini belum dijalankan; pemilik repo perlu memicunya secara manual dan meninjau frame/video sebelum PR dinyatakan layak merge.
