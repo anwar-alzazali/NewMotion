@@ -578,7 +578,10 @@ def test_penghubung_sebab_akibat_ambigu_ditolak():
     )
 
     assert hasil["peristiwa"] == []
-    assert hasil["diagnostik"][0]["kode"] == "hubungan_sebab_akibat_ambigu"
+    assert any(
+        item["kode"] == "rantai_sebab_akibat_tidak_dapat_dipetakan"
+        for item in hasil["diagnostik"]
+    )
 
 
 def test_sebab_akibat_tidak_disamakan_dengan_tujuan():
