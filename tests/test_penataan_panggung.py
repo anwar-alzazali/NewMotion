@@ -172,11 +172,12 @@ def test_pengendara_menghadap_samping_dan_memegang_setang():
     assert 'b.profil === "kanan"' in sumber  # kompatibilitas papan lama
     assert 'const sudutTokoh = b.sudut ||' in sumber
     assert 'const samping = sudut === "samping" || sudut === "samping_kiri";' in sumber
-    assert "const H = o.profilMotor ? [218, -284 + nafas + (sg < 0 ? -7 : 0)]" in sumber
-    assert 'M -30 ${-396 + nafas} Q 22 ${-420 + nafas}' in sumber
-    assert 'points="-4 ${hy0} -82 ${hy0 + 72} -142 ${hy0 + 108}"' in sumber
+    assert "const H = o.profilMotor ? [E[0] + 76, -293 + nafas]" in sumber
+    assert 'M -24 ${-396 + nafas} Q 12 ${-420 + nafas}' in sumber
+    assert 'const F = [fx, -lift - (jalan && aksi === "jalan" ? 8 : 0)]' in sumber
     assert 'M -4 ${-414 + nafas} L 34 ${-414 + nafas}' in sumber
-    assert 'S = o.profilMotor ? [34 + (sg < 0 ? -8 : 8)' in sumber
+    assert 'const S = o.profilMotor ? [sg < 0 ? 26 : 34' in sumber
+    assert 'RIG._aksi === "mengendarai_motor"' in sumber
 
 
 
