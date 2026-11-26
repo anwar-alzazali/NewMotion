@@ -179,7 +179,9 @@ def test_pengendara_menghadap_samping_dan_memegang_setang():
     assert 'M -30 ${-396 + nafas} Q 22 ${-420 + nafas}' in sumber
     assert 'points="-4 ${hy0} -82 ${hy0 + 72} -142 ${hy0 + 108}"' in sumber
     # Sudut baru memakai profil universal, sementara tangan motor baru tetap tepat di setang.
-    assert 'const F = [fx, Math.min(0, J.turun) - lift - (jalan && aksi === "jalan" ? 8 : 0)]' in sumber
+    assert 'const H = [jalan ? 0 : sisi * (sg < 0 ? -5 : 5), hy0]' in sumber
+    assert 'F = [sisi * panjangLangkah * ayunKaki, -18 * Math.sin(Math.PI * ayunKaki)]' in sumber
+    assert 'const arahDepan = sisi * (sg < 0 ? 1 : -1)' in sumber
     assert "o.profilMotorBaru ? [E[0] + 76, -293 + nafas]" in sumber
     assert 'M -4 ${-414 + nafas} L 34 ${-414 + nafas}' in sumber
     assert 'const S = o.profilMotor ? [34 + (sg < 0 ? -8 : 8)' in sumber
