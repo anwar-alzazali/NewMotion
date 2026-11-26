@@ -80,3 +80,17 @@ def test_konfigurasi_repo_mengatur_semua_tahap():
         assert llm.rantai_model(tahap, k)
     for model in {m for t in k["tahap"].values() for m in t["model"]}:
         assert model in k["harga"]
+
+
+def test_gemini_penuh_dicoba_ulang_dengan_jeda(monkeypatch):
+    monkeypatch.setattr(llm.time, "sleep", lambda d: None)
+    k = {"tahap": {"sutradara": {"model": ["gemini"]}}, "harga": {"gemini": [0, 0]}}
+    hitung = {"n": 0}
+
+    def http(url, badan, kepala, batas):
+        hitung["n"] += 1
+        if hitung["n"] < 3:
+            raise RuntimeError("HTTP 503: high demand")
+        return {"candidates": [{"content": {"parts": [{"text": '{"ok": 3}'}]}}], "usageMetadata": {}}
+    j = llm.panggil("sutradara", "s", "p", json=True, http=http, konfigurasi=k)
+    assert j.data == {"ok": 3} and hitung["n"] == 3

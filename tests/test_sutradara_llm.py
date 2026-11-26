@@ -94,3 +94,15 @@ def test_tanpa_rencana_pengarah_aturan_tidak_berubah():
     tanpa, _, _ = arahkan_naskah(NASKAH)
     assert all("rencana" not in a for a in NASKAH["adegan"])
     assert tanpa["cerita"]["shot"][0]["boneka"]  # pengarah aturan tetap menaruh tokoh "kamu"
+
+
+def test_gunung_subjek_tidak_dibuang_bersama_latar():
+    naskah = {"judul": "uji", "genre": "kisah_islami", "konteks_konten": "islami",
+              "adegan": [{"nama": "a1", "teks": "Anaknya berkata: aku akan berlindung ke gunung, sementara kapal berlayar."}]}
+    r = {"objek_inti": None, "beat": [{"beat": 1, "bukti": "aku akan berlindung ke gunung", "kamu": "tidak",
+                                       "subjek": [{"jenis": "bahtera", "tempat": "kiri"}, {"jenis": "gunung", "tempat": "kanan"}],
+                                       "kamera": {"bidikan": "lebar", "aksen": None}, "teks_layar": None, "klimaks": False}]}
+    assert S.validasi_lengkap(r, naskah) == []
+    spek, _, _ = arahkan_naskah(terapkan_rencana(naskah, r))
+    gunung = [b for s in spek["cerita"]["shot"] for b in s["benda"] if b["jenis"] == "gunung"]
+    assert gunung and all(g["x"] == 780 for g in gunung)  # hanya gunung subjek (kanan) yang tersisa

@@ -329,7 +329,9 @@ def _boneka_kamu(tampilan: dict, letak: dict, wajah: str, pose: str, ds: float, 
 # Subjek yang membawa lanskapnya sendiri: `ngarai` sudah berupa dinding di celah dua tebing,
 # `istana`/`gerbang` adalah bangunan besar. Latar tema yang bertabrakan dengannya dibuang
 # (renderer menggambar benda `belakang` lebih dulu, sehingga gunung latar menimpa dinding).
-SUBJEK_PANGGUNG = frozenset({"ngarai", "istana", "gerbang"})
+SUBJEK_PANGGUNG = frozenset({"ngarai", "istana", "gerbang", "rumah", "rumah_kampung", "masjid",
+                             "masjid_kampung", "gedung", "kantor_gedung", "sekolah", "rumah_sakit_gedung",
+                             "bahtera", "gapura", "menara"})
 LATAR_BERTABRAKAN = frozenset({"gunung", "tebing", "kota", "bukit"})
 # Subjek suasana/latar: "kamu" tetap tokoh utama (mis. Mahsyar: "keringatmu sampai mana?").
 SUBJEK_SUASANA = frozenset({"kerumunan", "ombak", "gunung", "rumah", "makam", "pancar"})
@@ -403,7 +405,7 @@ def _susun_ulang_untuk_subjek(benda: list[dict], subjek: list[dict], b: dict, ka
     """
     jenis_subjek = {x.get("jenis") for x in subjek}
     if jenis_subjek & SUBJEK_PANGGUNG:
-        benda = [x for x in benda if x.get("jenis") not in LATAR_BERTABRAKAN]
+        benda = [x for x in benda if x.get("jenis") not in LATAR_BERTABRAKAN or any(x is o for o in subjek)]
 
     def _x_awal(o: dict) -> float:
         x = o.get("x", 540)
@@ -599,15 +601,28 @@ def arahkan(naskah: dict, waktu_adegan: list[float] | None = None,
             rb = a.get("rencana") if isinstance(a.get("rencana"), dict) else None
             subjek = (subjek_dari_rencana(rb, tx, ds, seed0 + idx * 100 + j) if rb
                       else arahkan_subjek(tx, ds, idx * 100 + j, konteks=teks_gabungan))
-            jenis_ada = {x.get("jenis") for x in benda}
-            benda += [x for x in subjek["benda"] if x.get("jenis") not in jenis_ada]
+            if rb:
+                # Rencana sutradara: subjek menggantikan latar berjenis sama (mis. gunung tujuan
+                # berlindung menggantikan gunung latar), bukan diabaikan karena jenisnya sudah ada.
+                jenis_subjek = {x.get("jenis") for x in subjek["benda"]}
+                benda = [x for x in benda if x.get("jenis") not in jenis_subjek] + list(subjek["benda"])
+            else:
+                jenis_ada = {x.get("jenis") for x in benda}
+                benda += [x for x in subjek["benda"] if x.get("jenis") not in jenis_ada]
             if subjek["benda"]:
                 _ikat_posisi_subjek(s, subjek["benda"])
                 if not rb or subjek["kamu"] == "saksi":
                     benda, b, kamera = _susun_ulang_untuk_subjek(benda, subjek["benda"], b, kamera, look, wajah,
                                                                   pose, ds, tx, posisi, R, paksa_saksi=bool(rb))
-                elif {x.get("jenis") for x in subjek["benda"]} & SUBJEK_PANGGUNG:
-                    benda = [x for x in benda if x.get("jenis") not in LATAR_BERTABRAKAN]
+                else:
+                    if {x.get("jenis") for x in subjek["benda"]} & SUBJEK_PANGGUNG:
+                        benda = [x for x in benda if x.get("jenis") not in LATAR_BERTABRAKAN
+                                 or any(x is o for o in subjek["benda"])]
+                    if subjek["kamu"] == "utama":
+                        # "kamu" tokoh utama: lapisan depan (mis. ombak) tidak boleh menutupi wajahnya
+                        for o in benda:
+                            if o in subjek["benda"]:
+                                o.pop("depan", None)
                 for o in benda:
                     o.pop("_di_lubang", None)
             if rb:
