@@ -117,7 +117,7 @@ def _peristiwa_klausa(
     # Pisahkan hanya jika verba tujuan dikenal dan muncul di awal frasa tujuan.
     klausa_utama = klausa
     klausa_tujuan = None
-    pemisah_tujuan = re.search(r"\\buntuk\\s+", klausa, re.I)
+    pemisah_tujuan = re.search(r"\buntuk\s+", klausa, re.I)
     if pemisah_tujuan:
         calon_tujuan = klausa[pemisah_tujuan.end():].strip()
         aksi_tujuan = list(_AKSI_REGEX.finditer(calon_tujuan))
