@@ -25,6 +25,12 @@ BUKAN_SUBJEK = frozenset({"kartu_dalil", "stempel", "logo_app", "bingkai", "tand
 @lru_cache(maxsize=4)
 def _baca(jalur: str) -> dict[str, dict]:
     teks = Path(jalur).read_text(encoding="utf-8")
+    # Hanya isi fungsi benda(): cabang `j === ...` di ruang() (tamu, istana, mobil...) dan di
+    # bajuDetail() (jaket, jubah...) bukan benda; sebelumnya ikut masuk katalog sutradara.
+    a = teks.find("function benda(o, t, d)")
+    b = teks.find("// ---- TITIK KAIT", a)
+    if a >= 0 and b > a:
+        teks = teks[a:b]
     pola = re.compile(r'(?:if|else if) \((j === "[a-z_0-9]+"(?: \|\| j === "[a-z_0-9]+")*)\) \{(?: *//([^\n]*))?')
     cocok = list(pola.finditer(teks))
     katalog: dict[str, dict] = {}

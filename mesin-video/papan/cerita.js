@@ -1238,7 +1238,7 @@
     } else if (j === "cahaya") { // berkas cahaya turun dari atas
       g = `<defs><linearGradient id="cb" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e8fbff" stop-opacity=".0"/><stop offset=".4" stop-color="#e8fbff" stop-opacity=".35"/><stop offset="1" stop-color="#bfefff" stop-opacity=".05"/></linearGradient></defs><path d="M -90 -1400 L 90 -1400 L 260 0 L -260 0 Z" fill="url(#cb)"/>`;
     }
-    return `<g opacity="${op}" transform="translate(${x} ${y}) rotate(${miring} 0 -62) scale(${sc})"${o.kabur ? ` filter="url(#kb${o.kabur === true ? 8 : o.kabur})"` : ""}>${g}</g>`;
+    return `<g data-j="${j}" opacity="${op}" transform="translate(${x} ${y}) rotate(${miring} 0 -62) scale(${sc})"${o.kabur ? ` filter="url(#kb${o.kabur === true ? 8 : o.kabur})"` : ""}>${g}</g>`;
   }
 
   // ---- TITIK KAIT (27 Nov): benda/ruang menyediakan dudukan, pegangan, pijakan, dan sudut pandang tokoh.

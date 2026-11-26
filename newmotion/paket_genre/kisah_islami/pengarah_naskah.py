@@ -702,6 +702,12 @@ def arahkan(naskah: dict, waktu_adegan: list[float] | None = None,
                 baris_teks = a["kunci"][:2]
                 s["teks"] = [{"at": 0.1 if j == 0 else 0, "teks": "\n".join(baris_teks), "y": 320,
                               "ukuran": _ukuran_teks_aman(baris_teks)}]
+            if rb:  # lapisan tata letak: subjek utuh & tidak tertutup, figuran tidak berdempetan
+                from newmotion.application.tata_letak import tata_shot
+
+                tl = tata_shot(s, subjek["benda"])
+                if tl:
+                    s["_tata_letak"] = tl
             shots.append(s)
             framing_seb = framing
 
