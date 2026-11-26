@@ -24,26 +24,26 @@ POLA_DUA_GUNUNG = re.compile(r"\b(dua gunung|celah dua gunung)\b", re.I)
 POLA_KUBUR = re.compile(r"\b(kubur|makam|pemakaman|jenazah)\b", re.I)
 POLA_PEMIMPIN_SAKRAL = re.compile(
     r"\b(rasulullah|rasul|nabi(?:\s+\w+)?|malaikat(?:\s+\w+)?|jibril|mikail|israfil|"
-    r"abu bakar|umar|utsman|usman|ali bin abi thalib)\b.{0,45}"
+    r"abu bakar|umar|utsman|usman|ali bin abi thalib|sahabat)\b.{0,45}"
     r"\b(pemimpin|pemuka|raja|panglima)\b|"
     r"\b(pemimpin|pemuka|raja|panglima)\b.{0,45}"
     r"\b(rasulullah|rasul|nabi(?:\s+\w+)?|malaikat(?:\s+\w+)?|jibril|mikail|israfil|"
-    r"abu bakar|umar|utsman|usman|ali bin abi thalib)\b",
+    r"abu bakar|umar|utsman|usman|ali bin abi thalib|sahabat)\b",
     re.I,
 )
 POLA_PENGGALI_SAKRAL = re.compile(
     r"\b(rasulullah|rasul|nabi(?:\s+\w+)?|malaikat(?:\s+\w+)?|jibril|mikail|israfil|"
-    r"sahabat|abu bakar|umar|utsman|usman|ali bin abi thalib)\b.{0,35}"
+    r"sahabat|abu bakar|umar|utsman|usman|ali bin abi thalib|sahabat)\b.{0,35}"
     r"\b(penggali|menggali|digali|menggerogoti|mengikis)\b|"
     r"\b(penggali|menggali|digali|menggerogoti|mengikis)\b.{0,35}"
     r"\b(rasulullah|rasul|nabi(?:\s+\w+)?|malaikat(?:\s+\w+)?|jibril|mikail|israfil|"
-    r"sahabat|abu bakar|umar|utsman|usman|ali bin abi thalib)\b",
+    r"sahabat|abu bakar|umar|utsman|usman|ali bin abi thalib|sahabat)\b",
     re.I,
 )
 POLA_GALI = re.compile(r"\b(penggali|menggali|digali|menggerogoti|mengikis)\b", re.I)
 POLA_PEMIMPIN = re.compile(r"\b(pemimpin|pemuka|raja|panglima)\b", re.I)
 POLA_SAHABAT = re.compile(
-    r"\b(sahabat|abu bakar|umar|utsman|usman|ali bin abi thalib)\b", re.I
+    r"\b(sahabat|abu bakar|umar|utsman|usman|ali bin abi thalib|sahabat)\b", re.I
 )
 POLA_KAABAH = re.compile(
     r"\b(ka['’]?bah|baitullah|rumah allah|rumah tuhan)\b", re.I
