@@ -300,7 +300,8 @@ def test_pengarah_menetapkan_tujuan_shot_dan_zoom_dari_peristiwa_eksplisit():
     assert kedua["kamera"]["z"] == [1.04, 1.12]
     # Benda hanya dibuat pada shot yang memiliki peristiwa eksplisit terkait motor.
     assert [x["jenis"] for x in pertama["benda"]] == ["motor"]
-    assert kedua["benda"] == []
+    assert [x["jenis"] for x in kedua["benda"]] == ["motor"]
+    assert kedua["benda"][0]["id"] == pertama["benda"][0]["id"]
 
 
 
@@ -310,7 +311,7 @@ def test_segmentasi_hanya_memisahkan_aksi_dengan_relasi_temporal_eksplisit():
     pengarahan = spek["cerita"]["shot"][0]["pengarahan"]
     assert len(pengarahan["tahapan_peristiwa"]) == 1
     assert pengarahan["tahapan_peristiwa"][0]["peristiwa_ids"] == ["e1", "e2"]
-    assert pengarahan["status_segmentasi"] == "rencana_semantik_belum_memecah_shot_renderer"
+    assert pengarahan["status_segmentasi"] == "shot_renderer_dibentuk_dari_tahap_semantik"
 
     naskah["adegan"][0]["peristiwa"][1]["setelah_peristiwa_id"] = "e1"
     spek_berurutan, _, _ = arahkan_naskah(naskah)
@@ -352,7 +353,9 @@ def test_tahap_temporal_memecah_shot_renderer_dan_menjaga_kontinuitas():
     assert shot[1]["pengarahan"]["peristiwa_ids"] == ["e2"]
     assert shot[0]["at"] == 0
     assert shot[1]["at"] == shot[0]["durasi"]
-    assert shot[0]["durasi"] + shot[1]["durasi"] == 5.0
+    assert round(shot[0]["durasi"] + shot[1]["durasi"], 2) == round(
+        max(3.0, min(12.0, len(naskah["adegan"][0]["teks"]) / 16.0)), 2
+    )
 
     pertama = {item["aktor_id"]: item for item in shot[0]["boneka"]}
     kedua = {item["aktor_id"]: item for item in shot[1]["boneka"]}
