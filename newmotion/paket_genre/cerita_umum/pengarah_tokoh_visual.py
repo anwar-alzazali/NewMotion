@@ -56,6 +56,8 @@ def arahkan_tokoh_visual(rencana_cerita, rencana_blocking, cerita):
             sudah.add(aktor_id)
             nomor = list(tokoh_valid).index(aktor_id)
             x_tetap = _posisi_awal(nomor)
+            if aksi == "tergelincir" and sasaran_objek in {"motor", "sepeda_motor"}:
+                posisi_motor = x_tetap
             butir = {"tokoh_id": aktor_id, "x": x_tetap, "y": 1510}
             if aksi in AKSI_JALAN or aksi in AKSI_LARI:
                 sasaran_id = event.get("sasaran_tokoh_id")
@@ -77,6 +79,7 @@ def arahkan_tokoh_visual(rencana_cerita, rencana_blocking, cerita):
                     diagnostik.append({"kode": "kendaraan_tidak_dinyatakan_eksplisit", "peristiwa_id": id_peristiwa})
                     continue
                 motor_dibutuhkan = True
+                posisi_motor = 500
                 butir.update({"x": 500, "y": 1510, "kendaraan_id": f"motor-{tautan.get('beat_id')}"})
             elif aksi in AKSI_DIAM:
                 butir["aksi"] = aksi
