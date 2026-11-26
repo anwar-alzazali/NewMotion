@@ -153,3 +153,41 @@ Actions pada commit `84c5287` lulus. Tidak ada video referensi yang dirender ula
 Tahap berikutnya adalah mengembangkan pengarah shot deterministik untuk lima hal di atas,
 memakai kontrak renderer yang benar-benar didukung `papan/cerita.js`. Uji tetap berupa
 JSON dan tes kontrak; render ditahan sampai gerbang penerimaan terpenuhi.
+
+
+## Pembaruan setelah Tahap 8 — segmentasi shot renderer
+
+Pembaruan ini menggantikan pernyataan historis di atas yang menyebut segmentasi
+subperistiwa belum diterapkan. Pada commit `f53aa3d`, pengarah cerita umum sudah
+memecah satu shot sumber menjadi beberapa shot renderer hanya ketika tahap semantik
+memiliki relasi temporal eksplisit atau transisi keadaan berantai yang konsisten.
+Peristiwa simultan tetap berada dalam satu shot.
+
+Adapter mempertahankan ID tahap, urutan, ID peristiwa, aktor sasaran, identitas benda,
+dan keadaan posisi lintas-shot. Durasi sumber dibagi untuk menentukan nilai `at`
+shot turunan. Status segmentasi membedakan shot yang benar-benar dibagi dari shot
+yang tetap satu tahap.
+
+### Batas waktu renderer yang telah diverifikasi
+
+Di `mesin-video/papan/cerita.js`, renderer mengurutkan `cerita.shot` berdasarkan
+`at`, lalu menetapkan akhir shot dari nilai `at` shot sesudahnya. Waktu lokal
+keyframe kamera dan visual dihitung relatif terhadap `at` shot aktif. Dengan demikian,
+pergeseran `at` adalah mekanisme yang benar-benar menentukan batas antar-shot.
+Field `durasi` pada JSON NewMotion saat ini adalah metadata; renderer tersebut tidak
+membacanya sebagai penentu batas shot. Karena itu, audit tidak mengklaim bahwa field
+`durasi` mengendalikan playback.
+
+### Status setelah CI
+
+Ketiga workflow pada commit `f53aa3d2a002b2f082d8a1e3264e429a060b52b2`
+(`uji-runtime`, `uji-adab`, dan `kontrak-json`) telah selesai dengan hasil sukses.
+Tidak ada workflow render yang dijalankan.
+
+### Kesenjangan berikutnya
+
+Segmentasi temporal kini terbukti pada level JSON dan tes kontrak, tetapi keluaran
+belum mendekati kekayaan referensi secara keseluruhan. Pekerjaan berikutnya harus
+memperkaya keputusan kamera dan lingkungan secara deterministik berdasarkan konteks
+tempat, waktu, dan peristiwa yang eksplisit, sambil mempertahankan diagnostik ketika
+informasi tidak tersedia. Uji tetap berupa JSON; jangan render referensi.
