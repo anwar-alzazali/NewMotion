@@ -1,61 +1,108 @@
-name: Uji visual adegan motor dan jembatan
+name: Uji visual aksi cerita umum NewMotion
 
 on:
-  # Render hanya dijalankan saat diminta secara manual.
+  pull_request:
+    paths:
+      - 'newmotion/adapter_visual_tokoh.py'
+      - 'newmotion/paket_genre/cerita_umum/**'
+      - 'tests/test_paket_cerita_umum.py'
+      - 'tests/data/cerita_umum_motor_penolong.json'
+      - '.github/workflows/render-adegan-uji-visual.yml'
   workflow_dispatch:
 
 permissions:
   contents: read
 
 jobs:
-  render-adegan-uji-visual:
+  render-cerita-umum:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
-      - name: Ambil kode
+      - name: Ambil kode PR
         uses: actions/checkout@v4
+
+      - name: Siapkan Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
 
       - name: Pasang FFmpeg dan font
         run: |
           sudo apt-get update -qq
           sudo apt-get install -y -qq ffmpeg fonts-dejavu-core
 
-      - name: Pasang dependensi Python dan Chromium
+      - name: Pasang runtime, dependensi render, dan Chromium
         run: |
           python -m pip install --upgrade pip
-          python -m pip install pillow numpy playwright
+          python -m pip install -e '.[uji,render]'
           python -m playwright install --with-deps chromium
 
-      - name: Pasang alat uji
-        run: python -m pip install 'pytest>=8,<9'
+      - name: Uji kontrak paket cerita umum
+        run: python -m pytest tests/test_paket_cerita_umum.py -q
 
-      - name: Uji kontrak penataan panggung
-        run: python -m pytest tests/test_penataan_panggung.py -q
-
-      - name: Validasi spesifikasi adegan
-        run: python -m json.tool tests/data/adegan_uji_visual.json > /dev/null
-
-      - name: Render video uji
+      - name: Render naskah melalui CLI NewMotion
         run: |
           mkdir -p hasil-uji-visual
-          python mesin-video/papan_buat.py tests/data/adegan_uji_visual.json -o hasil-uji-visual/adegan-motor-jembatan.mp4
+          newmotion render tests/data/cerita_umum_motor_penolong.json \
+            --naskah --genre cerita_umum --tanpa-suara -d 18 \
+            -o "$GITHUB_WORKSPACE/hasil-uji-visual/cerita-umum-motor-penolong.mp4"
+          test -s hasil-uji-visual/cerita-umum-motor-penolong.mp4
+          test -s hasil-uji-visual/cerita-umum-motor-penolong.papan.json
 
-      - name: Ambil frame pembanding
-        if: always()
+      - name: Verifikasi spesifikasi hasil pengarahan
         run: |
-          if [ -f hasil-uji-visual/adegan-motor-jembatan.mp4 ]; then
-            for detik in 0 5 10 15 20 25 30 35; do
-              ffmpeg -y -ss "$detik" -i hasil-uji-visual/adegan-motor-jembatan.mp4 -frames:v 1 "hasil-uji-visual/frame-$detik.png"
-            done
-            ffprobe -v error -show_entries format=duration,size:stream=codec_name,width,height,r_frame_rate -of json hasil-uji-visual/adegan-motor-jembatan.mp4 | tee hasil-uji-visual/metadata.json
-            sha256sum hasil-uji-visual/adegan-motor-jembatan.mp4 | tee hasil-uji-visual/SHA256SUMS.txt
-          fi
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p = Path("hasil-uji-visual/cerita-umum-motor-penolong.papan.json")
+          spec = json.loads(p.read_text(encoding="utf-8"))
+          shots = spec["cerita"]["shot"]
+          assert len(shots) == 2, f"Jumlah shot tidak sesuai: {len(shots)}"
+          pertama, kedua = shots
+          motor = next(x for x in pertama["benda"] if x.get("jenis") == "motor")
+          pengendara = next(x for x in pertama["boneka"] if x.get("aktor_id") == "pengendara")
+          penolong = next(x for x in pertama["boneka"] if x.get("aktor_id") == "penolong")
+          assert motor["miring"][-1][1] == 28, "Motor tidak memiliki kemiringan saat tergelincir"
+          assert pengendara.get("kendaraan_id") == motor["id"], "Pengendara tidak terikat ke motor"
+          assert pengendara.get("lepas_kendaraan_at") == 0.9, "Waktu lepas pengendara tidak benar"
+          assert penolong.get("jalan") == 1.0, "Penolong tidak memakai kanal gerak jalan"
+          assert penolong.get("sasaran_id") == 1, "Penolong tidak mengarah ke pengendara"
+          penolong_akhir = next(x for x in kedua["boneka"] if x.get("aktor_id") == "penolong")
+          pengendara_akhir = next(x for x in kedua["boneka"] if x.get("aktor_id") == "pengendara")
+          assert penolong_akhir["x"] == penolong["x"][-1][1], "Posisi penolong tidak kontinu"
+          assert pengendara_akhir["x"] == pengendara["x"][-1][1], "Posisi pengendara tidak kontinu"
+          print("LOLOS: motor miring, pengendara terlepas, penolong berjalan, dan posisi antarscene kontinu.")
+          PY
 
-      - name: Simpan hasil uji visual
+      - name: Verifikasi MP4 dan ambil frame audit
+        run: |
+          video="hasil-uji-visual/cerita-umum-motor-penolong.mp4"
+          ffprobe -v error -show_entries format=duration,size:stream=codec_name,width,height,r_frame_rate -of json "$video" > hasil-uji-visual/metadata.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          data = json.loads(Path("hasil-uji-visual/metadata.json").read_text())
+          video = next((s for s in data["streams"] if s.get("codec_name") == "h264"), None)
+          if video is None:
+              raise SystemExit("Stream H.264 tidak ditemukan.")
+          if (video.get("width"), video.get("height")) != (1080, 1920):
+              raise SystemExit("Resolusi video bukan 1080x1920.")
+          durasi = float(data["format"]["duration"])
+          if not 17.5 <= durasi <= 18.5:
+              raise SystemExit(f"Durasi tidak sesuai: {durasi:.2f} detik.")
+          print(f"LOLOS: H.264 1080x1920, durasi {durasi:.2f} detik.")
+          PY
+          for detik in 0.5 1.0 2.5 5.0 8.0 9.8 12.0 15.0 17.0; do
+            ffmpeg -y -loglevel error -ss "$detik" -i "$video" -frames:v 1 "hasil-uji-visual/frame-$detik.png"
+          done
+          sha256sum "$video" > hasil-uji-visual/SHA256SUMS.txt
+
+      - name: Simpan video, papan, metadata, dan frame audit
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: adegan-motor-jembatan-newmotion
+          name: bukti-render-cerita-umum-motor-penolong
           path: hasil-uji-visual/
           if-no-files-found: warn
           retention-days: 14
