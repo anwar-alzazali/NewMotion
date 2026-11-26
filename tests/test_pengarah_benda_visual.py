@@ -213,3 +213,38 @@ def test_motor_eksplisit_dipakai_tokoh_dan_tidak_digandakan():
         if item["id"] == "event-01"
     )
     assert event_blocking["sasaran_benda_id"] == "motor-01"
+
+
+def test_posisi_benda_relatif_mengikuti_keyframe_tokoh():
+    benda = {
+        "id": "tas-01",
+        "nama": "Tas",
+        "jenis_renderer": "dompet",
+        "relasi_posisi": {
+            "tokoh_id": "aktor-a",
+            "hubungan": "di_samping_kanan",
+            "offset_x": 120,
+            "offset_y": 25,
+            "s": 0.7,
+        },
+    }
+    naskah = _naskah([benda])
+    naskah["adegan"][0]["teks"] = "Aktor A berlari sambil membawa tas."
+    naskah["adegan"][0]["peristiwa"][0].update({
+        "aksi": "berlari",
+        "sasaran": "tas",
+        "sasaran_benda_id": "tas-01",
+        "bukti_teks": "Aktor A berlari sambil membawa tas",
+    })
+    spek, _, _ = arahkan_naskah(naskah)
+    shot = spek["cerita"]["shot"][0]
+    aktor = next(x for x in shot["boneka"] if x["aktor_id"] == "aktor-a")
+    tas = next(x for x in shot["benda"] if x["id"] == "tas-01")
+
+    assert tas["x"] == [
+        [t, round(x + 120, 3)] for t, x in aktor["x"]
+    ]
+    assert tas["y"] == [
+        [t, round(y + 25, 3)] for t, y in aktor["y"]
+    ]
+    assert tas["s"] == 0.7
