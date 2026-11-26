@@ -1,0 +1,295 @@
+"""Uji kontrak entitas benda eksplisit menuju objek renderer."""
+
+import pytest
+
+from newmotion.application.pengarah_inti import GalatPengarahan, arahkan_naskah
+
+
+def _naskah(benda=None, adegan_tambahan=None):
+    adegan = {
+        "id": "beat-01",
+        "nama": "Tokoh di jembatan",
+        "teks": "Aktor A menunggu di dekat jembatan.",
+        "tokoh_ids": ["aktor-a"],
+        "peristiwa": [{
+            "id": "event-01",
+            "aktor": "Aktor A",
+            "aksi": "menunggu",
+            "sasaran": "jembatan",
+            "sasaran_benda_id": "jembatan-01",
+            "bukti_teks": "Aktor A menunggu di dekat jembatan",
+        }],
+    }
+    if adegan_tambahan:
+        adegan_tambahan(adegan)
+    return {
+        "genre": "cerita_umum",
+        "konteks_konten": "umum",
+        "judul": "Uji entitas benda",
+        "tokoh": [{"id": "aktor-a", "nama": "Aktor A", "kategori": "tokoh_umum"}],
+        "benda": benda or [],
+        "adegan": [adegan],
+    }
+
+
+def _jembatan(**tambahan):
+    benda = {
+        "id": "jembatan-01",
+        "nama": "Jembatan",
+        "jenis_renderer": "jembatan",
+        "posisi": {"x": 540, "y": 1480, "s": 1.1},
+        "properti": {"cahaya": 0.25},
+        "lapisan": {"belakang": True},
+    }
+    benda.update(tambahan)
+    return benda
+
+
+def test_entitas_benda_dengan_id_dan_jenis_renderer_menjadi_objek_shot():
+    spek, _, _ = arahkan_naskah(_naskah([_jembatan()]))
+    shot = spek["cerita"]["shot"][0]
+    visual = next(item for item in shot["benda"] if item["id"] == "jembatan-01")
+
+    assert visual["jenis"] == "jembatan"
+    assert visual["x"] == 540
+    assert visual["y"] == 1480
+    assert visual["s"] == 1.1
+    assert visual["cahaya"] == 0.25
+    assert visual["belakang"] is True
+    assert spek["rencana_visual_benda"]["status"] == "siap"
+    assert spek["rencana_visual_benda"]["shot"][0]["peristiwa_ids"] == ["event-01"]
+
+
+def test_benda_muncul_hanya_pada_shot_yang_menautkan_peristiwanya():
+    def dua_peristiwa(adegan):
+        adegan["peristiwa"][0].pop("sasaran_benda_id")
+        adegan["peristiwa"].append({
+            "id": "event-02",
+            "aktor": "Aktor A",
+            "aksi": "berlari",
+            "sasaran": "jembatan",
+            "sasaran_benda_id": "jembatan-01",
+            "setelah_peristiwa_id": "event-01",
+            "bukti_teks": "berlari ke jembatan",
+        })
+        adegan["teks"] = "Aktor A menunggu di dekat jembatan lalu berlari ke jembatan."
+
+    spek, _, _ = arahkan_naskah(_naskah([_jembatan()], dua_peristiwa))
+    shot = spek["cerita"]["shot"]
+
+    assert len(shot) == 2
+    assert not any(x["id"] == "jembatan-01" for x in shot[0]["benda"])
+    assert any(x["id"] == "jembatan-01" for x in shot[1]["benda"])
+
+
+def test_benda_dengan_posisi_keyframe_diteruskan_tanpa_diratakan():
+    posisi = {
+        "x": [[0, 400], [2.0, 620]],
+        "y": [[0, 1500], [2.0, 1450]],
+        "s": 0.9,
+    }
+    spek, _, _ = arahkan_naskah(_naskah([_jembatan(posisi=posisi)]))
+    benda = next(x for x in spek["cerita"]["shot"][0]["benda"] if x["id"] == "jembatan-01")
+
+    assert benda["x"] == posisi["x"]
+    assert benda["y"] == posisi["y"]
+    assert benda["s"] == 0.9
+
+
+def test_benda_tanpa_posisi_menghasilkan_diagnostik_bukan_posisi_rekaan():
+    benda = _jembatan()
+    benda.pop("posisi")
+    spek, _, _ = arahkan_naskah(_naskah([benda]))
+
+    assert not any(x["id"] == "jembatan-01" for x in spek["cerita"]["shot"][0]["benda"])
+    assert spek["rencana_visual_benda"]["status"] == "perlu_pelengkapan"
+    assert spek["rencana_visual_benda"]["diagnostik"][0]["kode"] == "benda_perlu_penempatan"
+
+
+def test_jenis_renderer_yang_tidak_dikenal_ditolak():
+    benda = _jembatan(jenis_renderer="jembatan_ajaib")
+    with pytest.raises(GalatPengarahan, match="tidak didukung"):
+        arahkan_naskah(_naskah([benda]))
+
+
+def test_properti_tidak_boleh_menimpa_id_atau_posisi_renderer():
+    benda = _jembatan(properti={"x": 10})
+    with pytest.raises(GalatPengarahan, match="tidak boleh menimpa"):
+        arahkan_naskah(_naskah([benda]))
+
+
+def test_id_benda_ganda_ditolak_di_roster_semantik():
+    with pytest.raises(GalatPengarahan, match="ID benda"):
+        arahkan_naskah(_naskah([_jembatan(), _jembatan()]))
+
+
+def test_benda_global_tidak_ditampilkan_tanpa_tautan_ke_beat_atau_peristiwa():
+    def hapus_tautan(adegan):
+        adegan["peristiwa"][0].pop("sasaran_benda_id")
+    spek, _, _ = arahkan_naskah(_naskah([_jembatan()], hapus_tautan))
+
+    assert not any(x["id"] == "jembatan-01" for x in spek["cerita"]["shot"][0]["benda"])
+    assert spek["rencana_visual_benda"]["status"] == "tidak_ada_benda_tertaut"
+
+
+def test_benda_ids_di_beat_mempertahankan_id_yang_sama_di_beberapa_shot():
+    def tambah_beat(adegan):
+        adegan["benda_ids"] = ["jembatan-01"]
+    naskah = _naskah([_jembatan()], tambah_beat)
+    naskah["adegan"].append({
+        "id": "beat-02",
+        "nama": "Masih di jembatan",
+        "teks": "Aktor A tetap menunggu di dekat jembatan.",
+        "tokoh_ids": ["aktor-a"],
+        "benda_ids": ["jembatan-01"],
+        "peristiwa": [{
+            "id": "event-02",
+            "aktor": "Aktor A",
+            "aksi": "menunggu",
+            "bukti_teks": "Aktor A tetap menunggu di dekat jembatan",
+        }],
+    })
+    spek, _, _ = arahkan_naskah(naskah)
+
+    ids = [
+        [x["id"] for x in shot["benda"] if x["jenis"] == "jembatan"]
+        for shot in spek["cerita"]["shot"]
+    ]
+    assert ids == [["jembatan-01"], ["jembatan-01"]]
+
+
+
+def test_jenis_motor_dikenali_sebagai_objek_renderer_yang_sah():
+    motor = {
+        "id": "motor-01",
+        "nama": "Sepeda motor",
+        "jenis_renderer": "motor",
+        "posisi": {"x": 520, "y": 1550, "s": 0.8},
+        "properti": {"miring": [[0, 0], [1.0, 18]]},
+    }
+    naskah = _naskah([motor])
+    naskah["adegan"][0]["peristiwa"][0]["sasaran_benda_id"] = "motor-01"
+    naskah["adegan"][0]["peristiwa"][0]["sasaran"] = "motor"
+    spek, _, _ = arahkan_naskah(naskah)
+    visual = next(
+        item for item in spek["cerita"]["shot"][0]["benda"]
+        if item["id"] == "motor-01"
+    )
+
+    assert visual["jenis"] == "motor"
+    assert visual["miring"] == [[0, 0], [1.0, 18]]
+
+
+def test_motor_eksplisit_dipakai_tokoh_dan_tidak_digandakan():
+    motor = {
+        "id": "motor-01",
+        "nama": "Sepeda motor",
+        "jenis_renderer": "motor",
+        "posisi": {"x": 520, "y": 1550, "s": 0.8},
+        "properti": {"miring": [[0, 0], [1.0, 18]]},
+    }
+    naskah = _naskah([motor])
+    event = naskah["adegan"][0]["peristiwa"][0]
+    event.update({
+        "aksi": "mengendarai_motor",
+        "sasaran": "motor",
+        "sasaran_benda_id": "motor-01",
+        "bukti_teks": "Aktor A menunggu di dekat jembatan",
+    })
+    spek, _, _ = arahkan_naskah(naskah)
+    shot = spek["cerita"]["shot"][0]
+    motor_renderer = [
+        item for item in shot["benda"] if item["jenis"] == "motor"
+    ]
+    pengendara = next(
+        item for item in shot["boneka"] if item["aktor_id"] == "aktor-a"
+    )
+
+    assert len(motor_renderer) == 1
+    assert motor_renderer[0]["id"] == "motor-01"
+    assert pengendara["kendaraan_id"] == "motor-01"
+    event_blocking = next(
+        item for item in spek["rencana_blocking"]["peristiwa"]
+        if item["id"] == "event-01"
+    )
+    assert event_blocking["sasaran_benda_id"] == "motor-01"
+
+
+def test_posisi_benda_relatif_mengikuti_keyframe_tokoh():
+    benda = {
+        "id": "tas-01",
+        "nama": "Tas",
+        "jenis_renderer": "kantong",
+        "relasi_posisi": {
+            "tokoh_id": "aktor-a",
+            "hubungan": "di_samping_kanan",
+            "offset_x": 120,
+            "offset_y": 25,
+            "s": 0.7,
+        },
+    }
+    naskah = _naskah([benda])
+    naskah["adegan"][0]["teks"] = "Aktor A berlari sambil membawa tas."
+    naskah["adegan"][0]["peristiwa"][0].update({
+        "aksi": "berlari",
+        "sasaran": "tas",
+        "sasaran_benda_id": "tas-01",
+        "bukti_teks": "Aktor A berlari sambil membawa tas",
+    })
+    spek, _, _ = arahkan_naskah(naskah)
+    shot = spek["cerita"]["shot"][0]
+    aktor = next(x for x in shot["boneka"] if x["aktor_id"] == "aktor-a")
+    tas = next(x for x in shot["benda"] if x["id"] == "tas-01")
+
+    assert tas["x"] == [
+        [t, round(x + 120, 3)] for t, x in aktor["x"]
+    ]
+    assert tas["y"] == [
+        [t, round(y + 25, 3)] for t, y in aktor["y"]
+    ]
+    assert tas["s"] == 0.7
+
+
+def test_benda_peristiwa_dipasang_pada_tahap_yang_memiliki_peristiwa_itu():
+    tas = {
+        "id": "tas-01",
+        "nama": "Tas",
+        "jenis_renderer": "kantong",
+        "relasi_posisi": {
+            "tokoh_id": "aktor-a",
+            "hubungan": "mengikuti",
+        },
+    }
+    naskah = _naskah([tas])
+    naskah["adegan"][0]["teks"] = (
+        "Aktor A berlari sambil membawa tas lalu menunggu."
+    )
+    naskah["adegan"][0]["peristiwa"] = [
+        {
+            "id": "event-01",
+            "aktor": "Aktor A",
+            "aksi": "berlari",
+            "sasaran": "tas",
+            "sasaran_benda_id": "tas-01",
+            "bukti_teks": "Aktor A berlari sambil membawa tas",
+        },
+        {
+            "id": "event-02",
+            "aktor": "Aktor A",
+            "aksi": "menunggu",
+            "setelah_peristiwa_id": "event-01",
+            "bukti_teks": "lalu menunggu",
+        },
+    ]
+    spek, _, _ = arahkan_naskah(naskah)
+    shot = spek["cerita"]["shot"]
+
+    assert len(shot) == 2
+    assert any(item["id"] == "tas-01" for item in shot[0]["benda"])
+    assert not any(item["id"] == "tas-01" for item in shot[1]["benda"])
+
+
+def test_benda_tidak_boleh_memiliki_lapisan_depan_dan_belakang_sekaligus():
+    benda = _jembatan(lapisan={"depan": True, "belakang": True})
+    with pytest.raises(GalatPengarahan, match="sekaligus"):
+        arahkan_naskah(_naskah([benda]))

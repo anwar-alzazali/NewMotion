@@ -60,6 +60,10 @@ class PaketGenre:
     panduan_gaya: str | None = None
     resep: str | None = None
     modul_legacy: Mapping[str, str] = field(default_factory=dict)
+    # Kait kamera ditambahkan di akhir agar urutan argumen posisi lama tetap kompatibel.
+    pengarah_kamera: Callable[..., Any] | None = None
+    # Kait objek diletakkan terakhir agar argumen posisi yang sudah ada tetap kompatibel.
+    pengarah_benda_visual: Callable[..., Any] | None = None
 
     def __post_init__(self) -> None:
         if not isinstance(self.nama, str) or not _POLA_NAMA.fullmatch(self.nama):
@@ -78,8 +82,12 @@ class PaketGenre:
             raise TypeError("pengarah_naskah paket harus berupa fungsi")
         if self.pengarah_tokoh_visual is not None and not callable(self.pengarah_tokoh_visual):
             raise TypeError("pengarah_tokoh_visual paket harus berupa fungsi")
+        if self.pengarah_kamera is not None and not callable(self.pengarah_kamera):
+            raise TypeError("pengarah_kamera paket harus berupa fungsi")
+        if self.pengarah_benda_visual is not None and not callable(self.pengarah_benda_visual):
+            raise TypeError("pengarah_benda_visual paket harus berupa fungsi")
         if not any((
-            self.komponen_visual, self.validator, self.penjaga_tokoh, self.penjaga_dalil, self.pengarah_naskah, self.pengarah_tokoh_visual,
+            self.komponen_visual, self.validator, self.penjaga_tokoh, self.penjaga_dalil, self.pengarah_naskah, self.pengarah_tokoh_visual, self.pengarah_kamera, self.pengarah_benda_visual,
             self.penyesuaian_adegan, self.skema_tambahan, self.bawaan,
             self.modul_dalil, self.panduan_gaya, self.resep, self.modul_legacy,
         )):

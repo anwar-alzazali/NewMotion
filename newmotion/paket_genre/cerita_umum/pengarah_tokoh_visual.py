@@ -10,8 +10,8 @@ from collections.abc import Mapping
 AKSI_JALAN = {"jalan", "berjalan", "berjalan_menolong", "mendekati"}
 AKSI_INTERAKSI = {"menolong"}
 AKSI_LARI = {"lari", "berlari"}
-AKSI_MOTOR = {"naik_motor", "mengendarai_motor", "mengendarai"}
-AKSI_DIAM = {"tergelincir", "jatuh", "berhenti", "menunggu", "duduk"}
+AKSI_MOTOR = {"naik_motor", "menaiki", "mengendarai_motor", "mengendarai"}
+AKSI_DIAM = {"tergelincir", "jatuh", "berhenti", "menunggu", "duduk", "berdiri"}
 
 
 def _posisi_awal(nomor: int) -> int:
@@ -35,7 +35,36 @@ def arahkan_tokoh_visual(rencana_cerita, rencana_blocking, cerita):
     pose_terakhir = {}
     # Kendaraan mengikuti kontinuitas tokoh pemiliknya ke shot berikutnya.
     motor_terakhir = {}
-    for tautan in (rencana_blocking or {}).get("shot", []):
+    # Satu beat dapat memiliki beberapa tahap aksi. Peristiwa tanpa relasi
+    # temporal tetap berada dalam satu tahap agar aksi simultan tidak terpecah.
+    tautan_bertahap = []
+    for tautan_asal in (rencana_blocking or {}).get("shot", []):
+        indeks_asal = tautan_asal.get("indeks")
+        shot_asal = (
+            cerita.get("shot", [])[indeks_asal]
+            if type(indeks_asal) is int and 0 <= indeks_asal < len(cerita.get("shot", []))
+            else {}
+        )
+        pengarahan = shot_asal.get("pengarahan", {}) if isinstance(shot_asal, Mapping) else {}
+        tahapan = pengarahan.get("tahapan_peristiwa") if isinstance(pengarahan, Mapping) else None
+        if not isinstance(tahapan, list) or not tahapan:
+            tautan_bertahap.append(dict(tautan_asal))
+            continue
+        for tahap in tahapan:
+            if not isinstance(tahap, Mapping):
+                continue
+            ids_tahap = tahap.get("peristiwa_ids")
+            if not isinstance(ids_tahap, list) or not ids_tahap:
+                continue
+            tautan_bertahap.append({
+                **dict(tautan_asal),
+                "peristiwa_ids": list(ids_tahap),
+                "tahap_id": tahap.get("id"),
+                "tahap_urutan": tahap.get("urutan"),
+                "tahap_dasar": tahap.get("dasar_pemisahan"),
+            })
+
+    for tautan in tautan_bertahap:
         indeks = tautan.get("indeks")
         if type(indeks) is not int or indeks >= len(cerita.get("shot", [])):
             continue
@@ -53,8 +82,11 @@ def arahkan_tokoh_visual(rencana_cerita, rencana_blocking, cerita):
                 diagnostik.append({"kode": "peristiwa_tidak_cukup_untuk_visual", "peristiwa_id": id_peristiwa})
                 continue
             aksi = aksi_asli.strip().casefold().replace(" ", "_")
-            sasaran_objek = str(event.get("sasaran") or "").casefold()
-            if sasaran_objek in {"motor", "sepeda_motor"}:
+            sasaran_objek = str(event.get("sasaran_benda") or event.get("sasaran") or "").casefold()
+            if (
+                sasaran_objek in {"motor", "sepeda_motor"}
+                and not isinstance(event.get("sasaran_benda_id"), str)
+            ):
                 motor_dibutuhkan = True
             if aktor_id in sudah:
                 diagnostik.append({"kode": "aktor_memiliki_beberapa_aksi_dalam_satu_shot", "aktor_id": aktor_id})
@@ -62,6 +94,12 @@ def arahkan_tokoh_visual(rencana_cerita, rencana_blocking, cerita):
             sudah.add(aktor_id)
             nomor = list(tokoh_valid).index(aktor_id)
             x_tetap, y_tetap = posisi_terakhir.get(aktor_id, (_posisi_awal(nomor), 1510))
+            sasaran_benda_id = event.get("sasaran_benda_id")
+            motor_id_eksplisit = (
+                sasaran_benda_id
+                if isinstance(sasaran_benda_id, str) and sasaran_objek in {"motor", "sepeda_motor"}
+                else None
+            )
             if aksi == "tergelincir" and sasaran_objek in {"motor", "sepeda_motor"}:
                 posisi_motor = x_tetap
             butir = {"tokoh_id": aktor_id, "x": x_tetap, "y": y_tetap}
@@ -83,7 +121,7 @@ def arahkan_tokoh_visual(rencana_cerita, rencana_blocking, cerita):
                     for id_event in tautan.get("peristiwa_ids", [])
                     if peristiwa.get(id_event, {}).get("aktor_id") == sasaran_id
                 ), None)
-                if event_sasaran:
+                if event_sasaran and sasaran_id in tokoh_valid:
                     aksi_sasaran = str(event_sasaran.get("aksi") or "").strip().casefold().replace(" ", "_")
                     objek_sasaran = str(event_sasaran.get("sasaran") or "").casefold()
                     if aksi_sasaran == "tergelincir" and objek_sasaran in {"motor", "sepeda_motor"}:
@@ -116,12 +154,17 @@ def arahkan_tokoh_visual(rencana_cerita, rencana_blocking, cerita):
                 if sasaran not in {"motor", "sepeda_motor"}:
                     diagnostik.append({"kode": "kendaraan_tidak_dinyatakan_eksplisit", "peristiwa_id": id_peristiwa})
                     continue
-                motor_dibutuhkan = True
+                motor_dibutuhkan = motor_id_eksplisit is None
                 posisi_motor = 500
-                butir.update({"x": 500, "y": 1510, "kendaraan_id": f"motor-{tautan.get('beat_id')}"})
+                butir.update({
+                    "x": 500, "y": 1510,
+                    "kendaraan_id": motor_id_eksplisit or f"motor-{tautan.get('beat_id')}",
+                })
             elif aksi in AKSI_INTERAKSI:
-                # Menolong adalah interaksi di lokasi yang sudah dicapai, bukan berjalan ulang.
+                # Interaksi harus membawa relasi sasaran sampai ke kontrak boneka renderer.
+                # Sasaran yang tidak bergerak tetap ditambahkan sebagai pemeran pendukung di bawah.
                 butir["aksi"] = aksi
+                butir["sasaran_tokoh_id"] = event.get("sasaran_tokoh_id")
                 butir["pose"] = [[0, "menolong"]]
             elif aksi in AKSI_DIAM:
                 butir["aksi"] = aksi
@@ -129,7 +172,7 @@ def arahkan_tokoh_visual(rencana_cerita, rencana_blocking, cerita):
                     butir["pose"] = [[0, pose_terakhir[aktor_id]]]
                 if aksi == "tergelincir" and sasaran_objek in {"motor", "sepeda_motor"}:
                     butir.update({
-                        "kendaraan_id": f"motor-{tautan.get('beat_id')}",
+                        "kendaraan_id": motor_id_eksplisit or f"motor-{tautan.get('beat_id')}",
                         "lepas_kendaraan_at": 0.9,
                         "x": [[0, x_tetap], [1.2, min(1000, x_tetap + 280)]],
                         "y": [[0, 1504], [1.2, 1700]],
@@ -154,8 +197,32 @@ def arahkan_tokoh_visual(rencana_cerita, rencana_blocking, cerita):
                 pose_terakhir[aktor_id] = jadwal_pose[-1][1] if isinstance(jadwal_pose[-1], (list, tuple)) else jadwal_pose[-1]
             elif aksi == "tergelincir":
                 pose_terakhir[aktor_id] = "tergelincir"
+        # Tokoh sasaran yang tidak memiliki aksi pada tahap ini tetap harus
+        # hadir sebagai pemeran pendukung agar relasi interaksi renderer valid.
+        for id_peristiwa in tautan.get("peristiwa_ids", []):
+            event = peristiwa.get(id_peristiwa)
+            sasaran_id = event.get("sasaran_tokoh_id") if isinstance(event, Mapping) else None
+            if sasaran_id not in tokoh_valid or sasaran_id in sudah:
+                continue
+            nomor_sasaran = list(tokoh_valid).index(sasaran_id)
+            x_sasaran, y_sasaran = posisi_terakhir.get(
+                sasaran_id, (_posisi_awal(nomor_sasaran), 1510)
+            )
+            pendukung = {"tokoh_id": sasaran_id, "x": x_sasaran, "y": y_sasaran}
+            if sasaran_id in pose_terakhir:
+                pendukung["pose"] = [[0, pose_terakhir[sasaran_id]]]
+            arahan_tokoh.append(pendukung)
+            sudah.add(sasaran_id)
+
         if arahan_tokoh:
             butir_shot = {"indeks": indeks, "tokoh": arahan_tokoh}
+            if tautan.get("tahap_id"):
+                butir_shot.update({
+                    "tahap_id": tautan["tahap_id"],
+                    "tahap_urutan": tautan.get("tahap_urutan"),
+                    "tahap_dasar": tautan.get("tahap_dasar"),
+                    "peristiwa_ids": list(tautan.get("peristiwa_ids", [])),
+                })
             benda_shot = []
             if motor_dibutuhkan:
                 pemilik_motor = next(

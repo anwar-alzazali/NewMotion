@@ -9,6 +9,7 @@ from collections.abc import Mapping
 from typing import Any
 
 from newmotion.penataan_panggung import susun_rencana_blocking
+from newmotion.adapter_visual_tokoh import terapkan_rencana_visual_tokoh
 
 from newmotion.domain.genre import (
     ambil,
@@ -54,6 +55,51 @@ def _rencana_cerita(naskah: Mapping[str, Any], shot: list[dict]) -> dict[str, An
     diagnostik = []
     daftar_adegan = []
     id_adegan = set()
+    id_peristiwa_global = set()
+    daftar_benda = naskah.get("benda", [])
+    if not isinstance(daftar_benda, list):
+        raise GalatPengarahan("Daftar benda naskah harus berupa daftar")
+    id_benda = set()
+    for nomor_benda, benda in enumerate(daftar_benda, start=1):
+        if not isinstance(benda, Mapping):
+            raise GalatPengarahan(f"Benda ke-{nomor_benda} harus berupa objek")
+        identitas_benda = benda.get("id")
+        jenis_benda = benda.get("jenis_renderer")
+        if not isinstance(identitas_benda, str) or not identitas_benda.strip():
+            raise GalatPengarahan(f"Benda ke-{nomor_benda} wajib memiliki ID")
+        if identitas_benda in id_benda:
+            raise GalatPengarahan(f"ID benda {identitas_benda!r} digunakan lebih dari sekali")
+        if not isinstance(jenis_benda, str) or not jenis_benda.strip():
+            raise GalatPengarahan(f"Benda {identitas_benda!r} wajib memiliki jenis_renderer")
+        id_benda.add(identitas_benda)
+
+    # Perubahan keadaan dapat merujuk tokoh atau benda, tetapi nama hanya
+    # dipetakan bila tepat satu entitas cocok.
+    entitas_berdasarkan_nama: dict[str, list[str]] = {}
+    for item in tokoh:
+        kunci = " ".join(str(item["nama"]).split()).casefold()
+        entitas_berdasarkan_nama.setdefault(kunci, []).append(item["id"])
+    for item in daftar_benda:
+        identitas = item["id"]
+        nama_benda = item.get("nama")
+        label_benda = [nama_benda] if isinstance(nama_benda, str) else []
+        alias = item.get("alias", [])
+        if isinstance(alias, (list, tuple)):
+            label_benda.extend(x for x in alias if isinstance(x, str))
+        for label in label_benda:
+            kunci = " ".join(label.split()).casefold()
+            if kunci:
+                entitas_berdasarkan_nama.setdefault(kunci, []).append(identitas)
+
+    def cari_id_entitas(nilai):
+        if not isinstance(nilai, str):
+            return None, False
+        if nilai in id_tokoh or nilai in id_benda:
+            return nilai, False
+        kunci = " ".join(nilai.split()).casefold()
+        cocok = entitas_berdasarkan_nama.get(kunci, [])
+        return (cocok[0], False) if len(cocok) == 1 else (None, len(cocok) > 1)
+
     for nomor, adegan in enumerate(naskah["adegan"], start=1):
         identitas = adegan.get("id") or f"beat-{nomor:03d}"
         if not isinstance(identitas, str) or not identitas.strip():
@@ -76,7 +122,21 @@ def _rencana_cerita(naskah: Mapping[str, Any], shot: list[dict]) -> dict[str, An
             "peran": copy.deepcopy(adegan.get("peran", [])),
             "tokoh_ids": list(tokoh_ids),
             "dialog": copy.deepcopy(adegan.get("dialog", [])),
+            "benda_ids": copy.deepcopy(adegan.get("benda_ids", [])),
         }
+        if "diagnostik_pemahaman" in adegan:
+            butir["diagnostik_pemahaman"] = copy.deepcopy(
+                adegan["diagnostik_pemahaman"]
+            )
+        if not isinstance(butir["benda_ids"], list):
+            raise GalatPengarahan(f"Beat {identitas!r} benda_ids harus berupa daftar")
+        for benda_id in butir["benda_ids"]:
+            if not isinstance(benda_id, str) or benda_id not in id_benda:
+                diagnostik.append({
+                    "kode": "benda_id_tidak_terdaftar",
+                    "beat_id": identitas,
+                    "benda_id": benda_id,
+                })
         for kunci in ("peristiwa", "aksi", "sasaran", "tujuan", "perubahan_keadaan"):
             if kunci in adegan:
                 butir[kunci] = copy.deepcopy(adegan[kunci])
@@ -92,22 +152,134 @@ def _rencana_cerita(naskah: Mapping[str, Any], shot: list[dict]) -> dict[str, An
                         f"Peristiwa ke-{nomor_peristiwa} pada beat {identitas!r} harus berupa objek"
                     )
                 item_peristiwa = copy.deepcopy(dict(data_peristiwa))
+                id_peristiwa = item_peristiwa.get("id")
+                if id_peristiwa is None:
+                    id_peristiwa = f"{identitas}-peristiwa-{nomor_peristiwa:03d}"
+                if not isinstance(id_peristiwa, str) or not id_peristiwa.strip():
+                    raise GalatPengarahan(
+                        f"ID peristiwa ke-{nomor_peristiwa} pada beat {identitas!r} tidak valid"
+                    )
+                if id_peristiwa in id_peristiwa_global:
+                    raise GalatPengarahan(
+                        f"ID peristiwa {id_peristiwa!r} digunakan lebih dari sekali"
+                    )
+                id_peristiwa_global.add(id_peristiwa)
+                item_peristiwa["id"] = id_peristiwa
+                item_peristiwa["beat_id"] = identitas
+                sasaran_benda_id = item_peristiwa.get("sasaran_benda_id")
+                if sasaran_benda_id is not None and (
+                    not isinstance(sasaran_benda_id, str) or sasaran_benda_id not in id_benda
+                ):
+                    diagnostik.append({
+                        "kode": "sasaran_benda_id_tidak_terdaftar",
+                        "beat_id": identitas,
+                        "peristiwa_id": id_peristiwa,
+                        "sasaran_benda_id": sasaran_benda_id,
+                    })
+
                 aktor = item_peristiwa.get("aktor")
-                if isinstance(aktor, str):
+                aktor_id = item_peristiwa.get("aktor_id")
+                if aktor_id is None and isinstance(aktor, str):
                     aktor_id = cari_id_tokoh(aktor)
-                    if aktor_id:
-                        item_peristiwa["aktor_id"] = aktor_id
-                    else:
+                if aktor_id is not None:
+                    if not isinstance(aktor_id, str) or aktor_id not in id_tokoh:
                         diagnostik.append({
-                            "kode": "aktor_belum_terpetakan",
+                            "kode": "aktor_id_tidak_terdaftar",
                             "beat_id": identitas,
-                            "peristiwa": item_peristiwa.get("id"),
-                            "nilai": aktor,
+                            "peristiwa_id": id_peristiwa,
+                            "nilai": aktor_id,
                         })
+                        item_peristiwa.pop("aktor_id", None)
+                    else:
+                        item_peristiwa["aktor_id"] = aktor_id
+                        if tokoh_ids and aktor_id not in tokoh_ids:
+                            diagnostik.append({
+                                "kode": "aktor_tidak_tercantum_di_beat",
+                                "beat_id": identitas,
+                                "peristiwa_id": id_peristiwa,
+                                "aktor_id": aktor_id,
+                            })
+                else:
+                    diagnostik.append({
+                        "kode": "aktor_belum_terpetakan",
+                        "beat_id": identitas,
+                        "peristiwa_id": id_peristiwa,
+                        "nilai": aktor,
+                    })
+
                 sasaran = item_peristiwa.get("sasaran")
-                sasaran_id = cari_id_tokoh(sasaran)
-                if sasaran_id:
-                    item_peristiwa["sasaran_tokoh_id"] = sasaran_id
+                sasaran_id = item_peristiwa.get("sasaran_tokoh_id")
+                if sasaran_id is None:
+                    sasaran_id = cari_id_tokoh(sasaran)
+                if sasaran_id is not None:
+                    if not isinstance(sasaran_id, str) or sasaran_id not in id_tokoh:
+                        diagnostik.append({
+                            "kode": "sasaran_tokoh_id_tidak_terdaftar",
+                            "beat_id": identitas,
+                            "peristiwa_id": id_peristiwa,
+                            "nilai": sasaran_id,
+                        })
+                        item_peristiwa.pop("sasaran_tokoh_id", None)
+                    else:
+                        item_peristiwa["sasaran_tokoh_id"] = sasaran_id
+                        if tokoh_ids and sasaran_id not in tokoh_ids:
+                            diagnostik.append({
+                                "kode": "sasaran_tokoh_tidak_tercantum_di_beat",
+                                "beat_id": identitas,
+                                "peristiwa_id": id_peristiwa,
+                                "sasaran_tokoh_id": sasaran_id,
+                            })
+
+                perubahan = item_peristiwa.get("perubahan_keadaan")
+                if isinstance(perubahan, Mapping):
+                    perubahan = copy.deepcopy(dict(perubahan))
+                    entitas_nama = perubahan.pop("entitas", None)
+                    entitas_id = perubahan.get("entitas_id")
+                    ambigu = False
+                    if entitas_id is None and entitas_nama is not None:
+                        entitas_id, ambigu = cari_id_entitas(entitas_nama)
+                        if entitas_id is not None:
+                            perubahan["entitas_id"] = entitas_id
+                    if ambigu:
+                        diagnostik.append({
+                            "kode": "entitas_perubahan_keadaan_ambigu",
+                            "beat_id": identitas,
+                            "peristiwa_id": id_peristiwa,
+                            "entitas": entitas_nama,
+                        })
+                    elif entitas_id is None:
+                        diagnostik.append({
+                            "kode": "entitas_perubahan_keadaan_belum_terpetakan",
+                            "beat_id": identitas,
+                            "peristiwa_id": id_peristiwa,
+                            "entitas": entitas_nama,
+                        })
+                    elif entitas_id not in (id_tokoh | id_benda):
+                        diagnostik.append({
+                            "kode": "entitas_perubahan_keadaan_tidak_terdaftar",
+                            "beat_id": identitas,
+                            "peristiwa_id": id_peristiwa,
+                            "entitas_id": entitas_id,
+                        })
+                    item_peristiwa["perubahan_keadaan"] = perubahan
+
+                bukti = item_peristiwa.get("bukti_teks")
+                if isinstance(bukti, str) and bukti.strip():
+                    teks_sumber = " ".join(str(adegan["teks"]).split()).casefold()
+                    teks_bukti = " ".join(bukti.split()).casefold()
+                    if teks_bukti not in teks_sumber:
+                        diagnostik.append({
+                            "kode": "bukti_teks_tidak_ditemukan_di_beat",
+                            "beat_id": identitas,
+                            "peristiwa_id": id_peristiwa,
+                            "bukti_teks": bukti,
+                        })
+                else:
+                    diagnostik.append({
+                        "kode": "bukti_teks_belum_dicantumkan",
+                        "beat_id": identitas,
+                        "peristiwa_id": id_peristiwa,
+                    })
                 peristiwa_tertaut.append(item_peristiwa)
             butir["peristiwa"] = peristiwa_tertaut
         daftar_adegan.append(butir)
@@ -125,9 +297,104 @@ def _rencana_cerita(naskah: Mapping[str, Any], shot: list[dict]) -> dict[str, An
 
     return {
         "tokoh": copy.deepcopy(tokoh),
+        "benda": copy.deepcopy(daftar_benda),
         "adegan": daftar_adegan,
         "diagnostik": diagnostik,
     }
+
+
+
+
+def _tahapan_peristiwa(peristiwa: list[Mapping]) -> list[dict]:
+    """Kelompokkan aksi simultan; pisahkan hanya jika urutan temporal dinyatakan."""
+    tahapan = []
+    tahap_aktif = None
+    keadaan_terakhir = {}
+    for nomor, item in enumerate(peristiwa, start=1):
+        id_event = item.get("id")
+        ketergantungan = (
+            item.get("setelah_peristiwa_id")
+            or item.get("peristiwa_sebelumnya_id")
+        )
+        relasi = str(item.get("hubungan_temporal") or "").strip().casefold()
+        perubahan = item.get("perubahan_keadaan")
+        transisi_berurutan = False
+        if isinstance(perubahan, Mapping):
+            entitas = perubahan.get("entitas_id")
+            if isinstance(entitas, str) and entitas in keadaan_terakhir:
+                transisi_berurutan = (
+                    perubahan.get("dari") == keadaan_terakhir[entitas]
+                )
+            if isinstance(entitas, str) and perubahan.get("menjadi") is not None:
+                keadaan_terakhir[entitas] = perubahan["menjadi"]
+
+        eksplisit_setelah = (
+            isinstance(ketergantungan, str) and bool(ketergantungan.strip())
+        ) or relasi in {"setelah", "sesudah", "kemudian", "berikutnya"}
+        perlu_tahap_baru = tahap_aktif is None or (
+            eksplisit_setelah or transisi_berurutan
+        )
+        if perlu_tahap_baru:
+            tahap_aktif = {
+                "id": f"tahap-aksi-{len(tahapan) + 1:03d}",
+                "urutan": len(tahapan) + 1,
+                "peristiwa_ids": [],
+                "dasar_pemisahan": (
+                    "relasi_temporal_eksplisit" if eksplisit_setelah
+                    else "transisi_keadaan_berurutan" if transisi_berurutan
+                    else "tahap_awal"
+                ),
+                "bergantung_pada_peristiwa_id": ketergantungan,
+            }
+            tahapan.append(tahap_aktif)
+        if isinstance(id_event, str):
+            tahap_aktif["peristiwa_ids"].append(id_event)
+    return tahapan
+
+
+def _lengkapi_metadata_pengarah(shot: list[dict], rencana_cerita: dict) -> None:
+    """Tautkan metadata shot ke hasil resolusi ID aktor/sasaran yang otoritatif."""
+    adegan = {
+        item["id"]: item
+        for item in rencana_cerita.get("adegan", [])
+        if isinstance(item, Mapping) and isinstance(item.get("id"), str)
+    }
+    for item_shot in shot:
+        if not isinstance(item_shot, dict):
+            continue
+        identitas_beat = item_shot.get("_beat_id")
+        sumber = adegan.get(identitas_beat)
+        pengarahan = item_shot.get("pengarahan")
+        if not isinstance(sumber, Mapping) or not isinstance(pengarahan, dict):
+            continue
+        peristiwa = sumber.get("peristiwa") or []
+        urutan = []
+        fokus = list(pengarahan.get("fokus_tokoh_ids") or [])
+        for nomor, item in enumerate(peristiwa, start=1):
+            if not isinstance(item, Mapping):
+                continue
+            aktor_id = item.get("aktor_id")
+            sasaran_tokoh_id = item.get("sasaran_tokoh_id")
+            for tokoh_id in (aktor_id, sasaran_tokoh_id):
+                if isinstance(tokoh_id, str) and tokoh_id not in fokus:
+                    fokus.append(tokoh_id)
+            urutan.append({
+                "urutan": nomor,
+                "peristiwa_id": item.get("id"),
+                "aktor_id": aktor_id,
+                "aktor": item.get("aktor"),
+                "aksi": item.get("aksi"),
+                "sasaran": item.get("sasaran"),
+                "sasaran_tokoh_id": sasaran_tokoh_id,
+                "sasaran_benda_id": item.get("sasaran_benda_id"),
+            })
+        pengarahan["fokus_tokoh_ids"] = fokus
+        pengarahan["tahapan_peristiwa"] = _tahapan_peristiwa(peristiwa)
+        pengarahan["status_segmentasi"] = "rencana_semantik_belum_memecah_shot_renderer"
+        pengarahan["peristiwa_ids"] = [
+            item["peristiwa_id"] for item in urutan if item.get("peristiwa_id")
+        ]
+        pengarahan["urutan_peristiwa"] = urutan
 
 
 def arahkan_naskah(
@@ -175,6 +442,7 @@ def arahkan_naskah(
     # Rencana semantik disimpan terpisah dari instruksi visual renderer.
     # Renderer tetap menerima cerita.shot; lapisan blocking berikutnya memakai rencana_cerita.
     spesifikasi["rencana_cerita"] = _rencana_cerita(naskah, shot)
+    _lengkapi_metadata_pengarah(shot, spesifikasi["rencana_cerita"])
     spesifikasi["rencana_blocking"] = susun_rencana_blocking(
         spesifikasi["rencana_cerita"], cerita
     )
@@ -215,6 +483,100 @@ def arahkan_naskah(
                 "Rencana visual tokoh harus memiliki daftar shot dan diagnostik"
             )
         spesifikasi["rencana_visual_tokoh"] = copy.deepcopy(dict(hasil_visual_tokoh))
+
+        # Benda lingkungan/props memiliki pengarah terpisah dari blocking tokoh.
+        # Kedua rencana digabung sebelum adapter tunggal menerapkan kontrak renderer.
+        if paket.pengarah_benda_visual is not None:
+            try:
+                hasil_visual_benda = paket.pengarah_benda_visual(
+                    copy.deepcopy(spesifikasi["rencana_cerita"]),
+                    copy.deepcopy(spesifikasi["rencana_blocking"]),
+                    copy.deepcopy(cerita),
+                    copy.deepcopy(shot_visual),
+                )
+            except (TypeError, ValueError) as galat:
+                raise GalatPengarahan(
+                    f"Pengarah benda tidak dapat menyusun objek renderer: {galat}"
+                ) from galat
+            if not isinstance(hasil_visual_benda, Mapping):
+                raise GalatPengarahan("Pengarah benda harus menghasilkan objek rencana")
+            daftar_shot_benda = hasil_visual_benda.get("shot")
+            diagnostik_benda = hasil_visual_benda.get("diagnostik", [])
+            if not isinstance(daftar_shot_benda, list) or not isinstance(diagnostik_benda, list):
+                raise GalatPengarahan(
+                    "Rencana visual benda harus memiliki daftar shot dan diagnostik"
+                )
+            spesifikasi["rencana_visual_benda"] = copy.deepcopy(dict(hasil_visual_benda))
+            for item_benda in daftar_shot_benda:
+                if not isinstance(item_benda, Mapping):
+                    raise GalatPengarahan("Entri shot pada rencana visual benda harus berupa objek")
+                indeks_benda = item_benda.get("indeks")
+                if type(indeks_benda) is not int or not 0 <= indeks_benda < len(shot):
+                    raise GalatPengarahan("Indeks shot pada rencana visual benda tidak valid")
+                kandidat = [
+                    item for item in shot_visual
+                    if isinstance(item, dict) and item.get("indeks") == indeks_benda
+                ]
+                tahap_id_benda = item_benda.get("tahap_id")
+                if tahap_id_benda is not None:
+                    kandidat = [
+                        item for item in kandidat
+                        if item.get("tahap_id") == tahap_id_benda
+                    ]
+                elif item_benda.get("peristiwa_ids"):
+                    ids_benda = set(item_benda.get("peristiwa_ids", []))
+                    kandidat = [
+                        item for item in kandidat
+                        if ids_benda.intersection(item.get("peristiwa_ids", []))
+                    ]
+                if not kandidat:
+                    target_visual = {
+                        "indeks": indeks_benda,
+                        "tokoh": [],
+                        "benda": [],
+                    }
+                    if tahap_id_benda is not None:
+                        target_visual["tahap_id"] = tahap_id_benda
+                    if item_benda.get("peristiwa_ids"):
+                        target_visual["peristiwa_ids"] = list(item_benda["peristiwa_ids"])
+                    shot_visual.append(target_visual)
+                    kandidat = [target_visual]
+                for target_visual in kandidat:
+                    target_visual.setdefault("benda", []).extend(
+                        copy.deepcopy(item_benda.get("benda", []))
+                    )
+            # Sinkronkan hasil gabungan; sebelumnya spesifikasi sudah menyalin rencana
+            # tokoh sehingga perubahan pada daftar lokal tidak ikut terbawa.
+            spesifikasi["rencana_visual_tokoh"]["shot"] = copy.deepcopy(shot_visual)
+            # Benda dapat tetap divisualkan meski aksi tokohnya belum didukung.
+            # Adapter yang sama menerapkan daftar benda; status siap hanya berarti
+            # kontrak visual memiliki sesuatu yang sah untuk diterjemahkan.
+            if daftar_shot_benda:
+                spesifikasi["rencana_visual_tokoh"]["status"] = "siap_diterjemahkan"
+
+        # JSON keluaran sutradara sudah memuat instruksi renderer, bukan hanya rencana terpisah.
+        try:
+            terapkan_rencana_visual_tokoh(spesifikasi)
+        except ValueError as galat:
+            raise GalatPengarahan(
+                f"Rencana visual tidak dapat diterapkan ke JSON renderer: {galat}"
+            ) from galat
+
+    # Kamera dihitung setelah posisi tokoh diterjemahkan agar dapat mengikuti panggung nyata.
+    if paket.pengarah_kamera is not None:
+        try:
+            hasil_kamera = paket.pengarah_kamera(
+                copy.deepcopy(spesifikasi["rencana_cerita"]),
+                copy.deepcopy(spesifikasi["rencana_blocking"]),
+                spesifikasi["cerita"],
+            )
+        except (TypeError, ValueError) as galat:
+            raise GalatPengarahan(
+                f"Pengarah kamera tidak dapat menyusun keyframe: {galat}"
+            ) from galat
+        if not isinstance(hasil_kamera, Mapping):
+            raise GalatPengarahan("Pengarah kamera harus menghasilkan objek rencana")
+        spesifikasi["rencana_kamera"] = copy.deepcopy(dict(hasil_kamera))
 
     # Genre menjadi metadata otoritatif untuk gerbang penjaga pada renderer.
     spesifikasi["genre"] = paket.nama

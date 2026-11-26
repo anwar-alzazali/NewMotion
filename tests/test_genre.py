@@ -521,6 +521,7 @@ def test_rencana_semantik_mengaitkan_aktor_dan_sasaran_ke_id_tokoh():
                     "aktor": "  PENOLONG ",
                     "aksi": "menghampiri",
                     "sasaran": "Pengendara",
+                    "bukti_teks": "Penolong menghampiri pengendara",
                 }],
             }],
         })
@@ -559,6 +560,7 @@ def test_rencana_semantik_tidak_mengarang_id_untuk_sasaran_benda():
                     "aktor": "Pengendara",
                     "aksi": "mengendarai",
                     "sasaran": "motor",
+                    "bukti_teks": "Pengendara mengendalikan motor",
                 }],
             }],
         })
@@ -597,8 +599,12 @@ def test_rencana_semantik_mencatat_aktor_yang_belum_terpetakan():
         assert papan["rencana_cerita"]["diagnostik"] == [{
             "kode": "aktor_belum_terpetakan",
             "beat_id": "beat-001",
-            "peristiwa": None,
+            "peristiwa_id": "beat-001-peristiwa-001",
             "nilai": "Orang asing",
+        }, {
+            "kode": "bukti_teks_belum_dicantumkan",
+            "beat_id": "beat-001",
+            "peristiwa_id": "beat-001-peristiwa-001",
         }]
         assert "aktor_id" not in papan["rencana_cerita"]["adegan"][0]["peristiwa"][0]
     finally:
@@ -842,8 +848,12 @@ def test_paket_dapat_mengarahkan_rencana_visual_tokoh_secara_opt_in():
         assert diterima[0][1]["peristiwa"][0]["aktor_id"] == "tokoh-penolong"
         assert papan["rencana_visual_tokoh"]["status"] == "siap_diterjemahkan"
         assert papan["rencana_visual_tokoh"]["shot"][0]["tokoh"][0]["aksi"] == "jalan"
-        # Kait visual mengeluarkan rencana, bukan menyisipkan boneka secara diam-diam.
-        assert papan["cerita"]["shot"][0]["boneka"] == []
+        # Rencana visual opt-in diterjemahkan ke JSON renderer oleh sutradara.
+        boneka = papan["cerita"]["shot"][0]["boneka"]
+        assert len(boneka) == 1
+        assert boneka[0]["aktor_id"] == "tokoh-penolong"
+        assert boneka[0]["x"] == [[0, 200], [2, 500]]
+        assert papan["_rencana_visual_tokoh_diterapkan"] is True
     finally:
         from newmotion.domain import genre as modul_genre
         modul_genre._PAKET.pop(nama, None)

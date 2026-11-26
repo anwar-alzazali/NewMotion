@@ -1,0 +1,39 @@
+name: Uji kontrak pengarahan JSON
+
+on:
+  pull_request:
+    paths:
+      - 'newmotion/application/pengarah_inti.py'
+      - 'newmotion/penataan_panggung.py'
+      - 'newmotion/paket_genre/cerita_umum/**'
+      - 'tests/test_paket_cerita_umum.py'
+      - 'tests/test_penataan_panggung.py'
+      - 'tests/test_generalisasi_spek_json.py'
+      - 'tests/test_pengarah_kamera_lingkungan.py'
+      - 'tests/test_pengarah_kamera.py'
+      - 'tests/test_pengarah_benda_visual.py'
+      - 'tests/test_pemahaman_peristiwa.py'
+      - '.github/workflows/test-spektrum-json.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  kontrak-json:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Siapkan Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+      - name: Pasang dependensi
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -e '.[uji]'
+      - name: Uji relasi peristiwa dan kontrak pengarahan
+        run: python -m pytest tests/test_paket_cerita_umum.py tests/test_penataan_panggung.py tests/test_generalisasi_spek_json.py tests/test_pengarah_kamera_lingkungan.py tests/test_pengarah_kamera.py tests/test_pengarah_benda_visual.py -q

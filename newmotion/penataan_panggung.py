@@ -313,7 +313,15 @@ def susun_rencana_blocking(rencana_cerita, cerita):
 
     peristiwa_berdasarkan_beat = {}
     daftar_peristiwa = []
+    transisi_keadaan = []
+    keadaan_terakhir = {}
     diagnostik = []
+    id_entitas_terdaftar = {
+        item.get("id")
+        for kunci in ("tokoh", "benda")
+        for item in (rencana_cerita.get(kunci) or [])
+        if isinstance(item, dict) and isinstance(item.get("id"), str)
+    }
     for nomor_adegan, beat in enumerate(adegan, start=1):
         if not isinstance(beat, dict):
             continue
@@ -346,10 +354,83 @@ def susun_rencana_blocking(rencana_cerita, cerita):
                 "aksi": aksi,
                 "sasaran": item.get("sasaran"),
                 "sasaran_tokoh_id": sasaran_tokoh_id,
+                "sasaran_benda": item.get("sasaran_benda"),
+                "sasaran_benda_id": item.get("sasaran_benda_id"),
+                "sasaran_benda": item.get("sasaran_benda"),
                 "tujuan": item.get("tujuan"),
                 "perubahan_keadaan": item.get("perubahan_keadaan"),
                 "status": "siap_dipetakan_ke_visual" if siap_dipetakan else "perlu_pelengkapan_semantik",
             }
+            perubahan = item.get("perubahan_keadaan")
+            if perubahan is not None:
+                if not isinstance(perubahan, dict):
+                    diagnostik.append({
+                        "kode": "perubahan_keadaan_tidak_valid",
+                        "beat_id": beat_id,
+                        "peristiwa_id": id_peristiwa,
+                    })
+                else:
+                    entitas_id = perubahan.get("entitas_id")
+                    dari_dinyatakan = "dari" in perubahan
+                    dari = perubahan.get("dari")
+                    menjadi = perubahan.get("menjadi")
+                    if (
+                        not isinstance(entitas_id, str) or not entitas_id.strip()
+                        or not isinstance(menjadi, str) or not menjadi.strip()
+                    ):
+                        diagnostik.append({
+                            "kode": "transisi_keadaan_belum_lengkap",
+                            "beat_id": beat_id,
+                            "peristiwa_id": id_peristiwa,
+                        })
+                    elif entitas_id not in id_entitas_terdaftar:
+                        diagnostik.append({
+                            "kode": "entitas_perubahan_keadaan_tidak_terdaftar",
+                            "beat_id": beat_id,
+                            "peristiwa_id": id_peristiwa,
+                            "entitas_id": entitas_id,
+                        })
+                    elif dari_dinyatakan and (
+                        not isinstance(dari, str) or not dari.strip()
+                    ):
+                        diagnostik.append({
+                            "kode": "keadaan_awal_transisi_tidak_valid",
+                            "beat_id": beat_id,
+                            "peristiwa_id": id_peristiwa,
+                            "entitas_id": entitas_id,
+                        })
+                    else:
+                        sebelumnya = keadaan_terakhir.get(entitas_id)
+                        # Keadaan asal hanya diisi dari transisi sebelumnya yang
+                        # sudah tercatat; keadaan awal yang tidak diketahui tetap kosong.
+                        if not dari_dinyatakan:
+                            dari = sebelumnya
+                        if dari_dinyatakan and sebelumnya is not None and dari != sebelumnya:
+                            diagnostik.append({
+                                "kode": "asal_transisi_tidak_cocok_dengan_keadaan_terakhir",
+                                "beat_id": beat_id,
+                                "peristiwa_id": id_peristiwa,
+                                "entitas_id": entitas_id,
+                                "keadaan_terakhir": sebelumnya,
+                                "keadaan_dari": dari,
+                            })
+                        else:
+                            perubahan_normal = {
+                                "entitas_id": entitas_id,
+                                "menjadi": menjadi,
+                            }
+                            if dari is not None:
+                                perubahan_normal["dari"] = dari
+                            butir["perubahan_keadaan"] = perubahan_normal
+                            transisi_keadaan.append({
+                                "entitas_id": entitas_id,
+                                "dari": dari,
+                                "menjadi": menjadi,
+                                "beat_id": beat_id,
+                                "peristiwa_id": id_peristiwa,
+                                "urutan": len(transisi_keadaan) + 1,
+                            })
+                            keadaan_terakhir[entitas_id] = menjadi
             daftar_peristiwa.append(butir)
             ids.append(id_peristiwa)
             if not siap_dipetakan:
@@ -394,6 +475,8 @@ def susun_rencana_blocking(rencana_cerita, cerita):
             "Pengarah visual harus memetakannya ke boneka dan benda renderer."
         ),
         "peristiwa": daftar_peristiwa,
+        "transisi_keadaan": transisi_keadaan,
+        "keadaan_akhir": dict(keadaan_terakhir),
         "shot": tautan_shot,
         "diagnostik": diagnostik,
     }

@@ -64,6 +64,7 @@ def naskah_untuk_pengarah(
         and d.get("status") == "terverifikasi"
     }
     dalil_dipakai = []
+    genre_efektif = genre or naskah.get("genre") or "kisah_islami"
     for i, b in enumerate(beat, 1):
         if not isinstance(b, dict):
             raise ValueError(f"Beat {i} tidak valid.")
@@ -112,11 +113,49 @@ def naskah_untuk_pengarah(
             "tokoh_ids": peran_ids,
             "dialog": copy.deepcopy(dialog),
         }
-        # Data peristiwa hanya diteruskan bila memang disediakan naskah.
-        # Tahap ini tidak menebak pelaku, sasaran, aksi, atau perubahan keadaan.
-        for kunci in ("peristiwa", "aksi", "sasaran", "tujuan", "perubahan_keadaan"):
-            if kunci in b:
-                adegan_item[kunci] = copy.deepcopy(b[kunci])
+        # Peristiwa eksplisit dari sumber selalu menjadi otoritas.
+        # Cerita umum boleh memakai pengurai deterministik jika field peristiwa belum ada.
+        if "peristiwa" in b:
+            for kunci in ("peristiwa", "aksi", "sasaran", "tujuan", "perubahan_keadaan"):
+                if kunci in b:
+                    adegan_item[kunci] = copy.deepcopy(b[kunci])
+        elif genre_efektif == "cerita_umum":
+            from newmotion.paket_genre.cerita_umum.pemahaman_peristiwa import uraikan_peristiwa
+
+            daftar_benda = naskah.get("benda", [])
+            hasil_pemahaman = uraikan_peristiwa(
+                narasi.strip(),
+                peran,
+                benda=daftar_benda if isinstance(daftar_benda, list) else [],
+            )
+            daftar_peristiwa = hasil_pemahaman["peristiwa"]
+            pemetaan_id = {
+                item["id"]: f"{id_beat}-{item['id']}"
+                for item in daftar_peristiwa
+                if isinstance(item.get("id"), str)
+            }
+            diagnostik_pemahaman = list(hasil_pemahaman["diagnostik"])
+            for peristiwa in daftar_peristiwa:
+                id_lokal = peristiwa.get("id")
+                if id_lokal in pemetaan_id:
+                    peristiwa["id"] = pemetaan_id[id_lokal]
+                relasi = peristiwa.get("hubungan_sebab_akibat")
+                if isinstance(relasi, dict):
+                    id_sebab_lokal = relasi.get("peristiwa_id")
+                    if id_sebab_lokal in pemetaan_id:
+                        relasi["peristiwa_id"] = pemetaan_id[id_sebab_lokal]
+                    else:
+                        peristiwa.pop("hubungan_sebab_akibat", None)
+                        diagnostik_pemahaman.append({
+                            "kode": "referensi_sebab_akibat_tidak_ditemukan",
+                            "bukti_teks": peristiwa.get("bukti_teks", ""),
+                        })
+            adegan_item["peristiwa"] = daftar_peristiwa
+            adegan_item["diagnostik_pemahaman"] = {
+                "status": hasil_pemahaman["status"],
+                "metode": hasil_pemahaman["metode"],
+                "diagnostik": diagnostik_pemahaman,
+            }
         adegan.append(adegan_item)
         for id_dalil in b.get("dalil", []):
             d = ids_quran.get(id_dalil)
@@ -149,6 +188,7 @@ def naskah_untuk_pengarah(
         "konteks_konten": hasil_klasifikasi["konteks_konten"],
         "adegan": adegan,
         "tokoh": list(tokoh_berdasarkan_nama.values()),
+        "benda": copy.deepcopy(naskah.get("benda", [])),
         "dalil_dipakai": dalil_dipakai,
     }
 

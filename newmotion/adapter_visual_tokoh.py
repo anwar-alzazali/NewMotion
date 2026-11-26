@@ -72,6 +72,10 @@ def terapkan_rencana_visual_tokoh(spec):
     """
     if not isinstance(spec, dict):
         raise GalatAdapterVisualTokoh("Spesifikasi harus berupa objek")
+    # Pengarahan memanggil adapter saat JSON disusun; renderer dapat memanggilnya lagi.
+    # Penanda ini mencegah tokoh dan benda digandakan.
+    if spec.get("_rencana_visual_tokoh_diterapkan") is True:
+        return []
     rencana = spec.get("rencana_visual_tokoh")
     if not isinstance(rencana, Mapping):
         return []
@@ -90,6 +94,56 @@ def terapkan_rencana_visual_tokoh(spec):
         item.get("id") for item in roster
         if isinstance(item, Mapping) and isinstance(item.get("id"), str)
     }
+    # Perluas satu shot sumber menjadi beberapa shot renderer bila pengarah
+    # menghasilkan lebih dari satu tahap temporal. Salinan mempertahankan
+    # metadata kamera/komposisi, sedangkan ID shot dan tahap dibuat eksplisit.
+    rencana_per_indeks = {}
+    for item in daftar_rencana:
+        if not isinstance(item, Mapping):
+            raise GalatAdapterVisualTokoh("Rencana shot harus berupa objek")
+        indeks_asal = item.get("indeks")
+        if type(indeks_asal) is not int or not 0 <= indeks_asal < len(daftar_shot):
+            raise GalatAdapterVisualTokoh("Indeks shot sumber tidak valid")
+        rencana_per_indeks.setdefault(indeks_asal, []).append(item)
+
+    shot_renderer_baru = []
+    rencana_renderer_baru = []
+    for indeks_asal, shot_asal in enumerate(daftar_shot):
+        rencana_tahap = rencana_per_indeks.get(indeks_asal, [])
+        if not rencana_tahap:
+            shot_renderer_baru.append(shot_asal)
+            continue
+        for nomor_tahap, item in enumerate(rencana_tahap, start=1):
+            shot_turunan = deepcopy(shot_asal)
+            tahap_id = item.get("tahap_id")
+            if tahap_id:
+                pengarahan_asal = shot_turunan.get("pengarahan")
+                if isinstance(pengarahan_asal, dict):
+                    pengarahan_asal["id"] = f"{pengarahan_asal.get('id', f'shot-{indeks_asal + 1:03d}')}-{tahap_id}"
+                    pengarahan_asal["tahap_id"] = tahap_id
+                    pengarahan_asal["tahap_urutan"] = item.get("tahap_urutan", nomor_tahap)
+                    pengarahan_asal["peristiwa_ids"] = list(item.get("peristiwa_ids", []))
+                    pengarahan_asal["status_segmentasi"] = (
+                        "shot_renderer_dibagi_dari_tahap_semantik"
+                        if len(rencana_tahap) > 1
+                        else "shot_renderer_satu_tahap_semantik"
+                    )
+            if len(rencana_tahap) > 1:
+                durasi_asal = float(shot_asal.get("durasi", 3.0) or 3.0)
+                durasi_tahap = round(durasi_asal / len(rencana_tahap), 2)
+                shot_turunan["at"] = round(
+                    float(shot_asal.get("at", 0) or 0) + (nomor_tahap - 1) * durasi_tahap, 2
+                )
+                shot_turunan["durasi"] = durasi_tahap
+            indeks_baru = len(shot_renderer_baru)
+            shot_renderer_baru.append(shot_turunan)
+            item_baru = deepcopy(dict(item))
+            item_baru["indeks_asal"] = indeks_asal
+            item_baru["indeks"] = indeks_baru
+            rencana_renderer_baru.append(item_baru)
+
+    daftar_shot[:] = shot_renderer_baru
+    daftar_rencana = rencana_renderer_baru
     indeks_dipakai = set()
     hasil = []
 
@@ -100,7 +154,7 @@ def terapkan_rencana_visual_tokoh(spec):
         if type(indeks) is not int or not 0 <= indeks < len(daftar_shot):
             raise GalatAdapterVisualTokoh(f"Indeks shot ke-{nomor_shot} tidak valid")
         if indeks in indeks_dipakai:
-            raise GalatAdapterVisualTokoh(f"Shot {indeks} memiliki rencana visual ganda")
+            raise GalatAdapterVisualTokoh(f"Shot renderer {indeks} memiliki rencana visual ganda")
         indeks_dipakai.add(indeks)
         shot = daftar_shot[indeks]
         if not isinstance(shot, dict):
@@ -231,7 +285,10 @@ def terapkan_rencana_visual_tokoh(spec):
         shot["boneka"].extend(boneka_baru)
         hasil.append({
             "shot": indeks,
+            "shot_asal": rencana_shot.get("indeks_asal", indeks),
+            "tahap_id": rencana_shot.get("tahap_id"),
             "jumlah_tokoh_ditambahkan": len(boneka_baru),
             "aktor_ids": [b["aktor_id"] for b in boneka_baru],
         })
+    spec["_rencana_visual_tokoh_diterapkan"] = True
     return hasil
