@@ -47,6 +47,22 @@ jobs:
           cd bot
           npm install
           node --test
+      - name: Bandingkan skor sebelum dan sesudah untuk tolok ukur dan holdout
+        run: |
+          git fetch origin main
+          mkdir -p /tmp/newmotion-baseline
+          git archive origin/main | tar -x -C /tmp/newmotion-baseline
+          mkdir -p /tmp/newmotion-baseline/tests/data/tolok_ukur_tambahan
+          cp tests/laporan_ukur_perbandingan.py /tmp/newmotion-baseline/tests/
+          cp tests/data/tolok_ukur_tambahan/*.json /tmp/newmotion-baseline/tests/data/tolok_ukur_tambahan/
+          echo "=== BASELINE MAIN: 4 TOLok UKUR ==="
+          (cd /tmp/newmotion-baseline && PYTHONPATH=. python tests/laporan_ukur_perbandingan.py --folder tests/data/tolok_ukur)
+          echo "=== BASELINE MAIN: 3 HOLDOUT ==="
+          (cd /tmp/newmotion-baseline && PYTHONPATH=. python tests/laporan_ukur_perbandingan.py --folder tests/data/tolok_ukur_tambahan)
+          echo "=== BRANCH PR: 4 TOLok UKUR ==="
+          PYTHONPATH=. python tests/laporan_ukur_perbandingan.py --folder tests/data/tolok_ukur
+          echo "=== BRANCH PR: 3 HOLDOUT ==="
+          PYTHONPATH=. python tests/laporan_ukur_perbandingan.py --folder tests/data/tolok_ukur_tambahan
       - name: Ukur kedalaman papan hasil pengarah
         run: newmotion ukur
       - name: Periksa CLI
