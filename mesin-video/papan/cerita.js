@@ -1509,7 +1509,7 @@
         const tinggi = Math.sqrt(Math.max(0, 10000 - d * d / 4));
         const arahDepan = sisi;
         const K = [tengah[0] + arahDepan * Math.abs(dy) / jarak * tinggi,
-                    tengah[1] - arahDepan * dx / jarak * tinggi];
+                    tengah[1] - Math.abs(dx) / jarak * tinggi];
         titik.push([H, K, F]);
         kaki += `<polyline points="${H} ${K} ${F}" fill="none" stroke="${wnK}" stroke-width="${wKaki}" stroke-linecap="round" stroke-linejoin="round"/>`;
         if (pakaiP) kaki += `<ellipse cx="${F[0] + sisi * 4}" cy="${F[1] - 6}" rx="30" ry="14" fill="#2a2024"/>`;
