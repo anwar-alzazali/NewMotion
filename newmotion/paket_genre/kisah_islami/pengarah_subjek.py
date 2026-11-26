@@ -15,13 +15,15 @@ from collections.abc import Mapping
 # Urutan lebih spesifik diletakkan lebih dahulu agar "kapal Nabi Nuh" tetap satu bahtera.
 POLA_SUBJEK = (
     (re.compile(r"\b(kapal|bahtera|perahu)\b", re.I), "bahtera"),
-    (re.compile(r"\b(penggali|para penggali|orang yang menggali|menggali|menggerogoti)\b", re.I), "penggali"),
+    (re.compile(r"\b(penggali|para penggali|orang yang menggali|menggali|digali|menggerogoti)\b", re.I), "penggali"),
     (re.compile(r"\b(pemimpin|pemuka|raja|panglima)\b", re.I), "pemimpin"),
     (re.compile(r"\b(dinding|tembok|benteng)\b", re.I), "ngarai"),
     (re.compile(r"\b(pagar)\b", re.I), "pagar"),
     (re.compile(r"\b(lubang|terowongan)\b", re.I), "ngarai"),
     (re.compile(r"\b(ombak|gelombang)\b", re.I), "ombak"),
     (re.compile(r"\b(arus|aliran air|air)\b", re.I), "arus"),
+    (re.compile(r"\b(kaum\w*|orang-orang|umat|kerumunan)\b", re.I), "kerumunan"),
+    (re.compile(r"\b(gunung|bukit)\b", re.I), "gunung"),
     (re.compile(r"\b(hewan|binatang|ternak)\b", re.I), "hewan"),
     (re.compile(r"\b(unta)\b", re.I), "unta"),
     (re.compile(r"\b(gerbang|pintu gerbang)\b", re.I), "gerbang"),
@@ -74,6 +76,11 @@ def _properti_benda(jenis: str, teks: str, indeks: int, durasi: float, seed: int
                       "s": 1.0, "tinggi": 520, "depan": True, "seed": seed % 997})
     elif jenis == "arus":
         dasar.update({"x": 540, "y": 1460, "s": 0.9, "n": 14, "maju": 1.0})
+    elif jenis == "gunung":
+        dasar.update({"x": x_sisi, "y": 1320, "s": 0.9, "belakang": True})
+    elif jenis == "kerumunan":
+        dasar.update({"x": x_sisi, "y": 1580, "s": 0.72, "n": 5, "w": 420,
+                      "seed": seed % 997})
     elif jenis == "ngarai":
         # Renderer ngarai adalah dinding Zulkarnain; lubang dan jebol adalah
         # parameter animasi resminya, bukan bentuk baru.
