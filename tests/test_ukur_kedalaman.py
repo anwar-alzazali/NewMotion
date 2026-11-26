@@ -73,3 +73,16 @@ def test_cli_ukur_berkas(capsys):
     from newmotion.cli import main
     assert main(["ukur", str(U.FOLDER_REFERENSI / "yajuj1.json")]) == 0
     assert "Skor kedalaman gabungan" in capsys.readouterr().out
+
+
+def test_arus_adalah_kerumunan_bukan_air():
+    # Di cerita.js, jenis `arus` = kerumunan siluet berlari (Ya'juj keluar), bukan air.
+    shot = [{"at": 0, "benda": [{"jenis": "arus"}], "_adegan": 0},
+            {"at": 3, "benda": [{"jenis": "arus"}], "_adegan": 1}]
+    spek = _papan(shot, rencana_cerita={"adegan": [
+        {"id": "b1", "teks": "Mereka meminum habis air danau itu."},
+        {"id": "b2", "teks": "Air mata Rasulullah menetes."},
+    ]})
+    nilai, rincian = U._kesesuaian_narasi(spek, shot)
+    assert nilai == 0.0  # air tidak digambar dengan kerumunan
+    assert [r["shot"] for r in rincian] == [0]  # "air mata" bukan penyebutan air
