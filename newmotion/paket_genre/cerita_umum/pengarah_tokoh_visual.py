@@ -183,6 +183,23 @@ def arahkan_tokoh_visual(rencana_cerita, rencana_blocking, cerita):
                 pose_terakhir[aktor_id] = jadwal_pose[-1][1] if isinstance(jadwal_pose[-1], (list, tuple)) else jadwal_pose[-1]
             elif aksi == "tergelincir":
                 pose_terakhir[aktor_id] = "tergelincir"
+        # Tokoh sasaran yang tidak memiliki aksi pada tahap ini tetap harus
+        # hadir sebagai pemeran pendukung agar relasi interaksi renderer valid.
+        for id_peristiwa in tautan.get("peristiwa_ids", []):
+            event = peristiwa.get(id_peristiwa)
+            sasaran_id = event.get("sasaran_tokoh_id") if isinstance(event, Mapping) else None
+            if sasaran_id not in tokoh_valid or sasaran_id in sudah:
+                continue
+            nomor_sasaran = list(tokoh_valid).index(sasaran_id)
+            x_sasaran, y_sasaran = posisi_terakhir.get(
+                sasaran_id, (_posisi_awal(nomor_sasaran), 1510)
+            )
+            pendukung = {"tokoh_id": sasaran_id, "x": x_sasaran, "y": y_sasaran}
+            if sasaran_id in pose_terakhir:
+                pendukung["pose"] = [[0, pose_terakhir[sasaran_id]]]
+            arahan_tokoh.append(pendukung)
+            sudah.add(sasaran_id)
+
         if arahan_tokoh:
             butir_shot = {"indeks": indeks, "tokoh": arahan_tokoh}
             if tautan.get("tahap_id"):
