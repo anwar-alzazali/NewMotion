@@ -285,7 +285,7 @@ def test_pengarah_menetapkan_tujuan_shot_dan_zoom_dari_peristiwa_eksplisit():
 
     assert pertama["pengarahan"]["tujuan"] == "menampilkan_perubahan_aksi"
     assert pertama["pengarahan"]["peristiwa_ids"] == ["e1", "e2"]
-    assert pertama["pengarahan"]["fokus_tokoh_ids"] == ["pengendara", "penolong"]
+    assert pertama["pengarahan"]["fokus_tokoh_ids"] == ["penolong", "pengendara"]
     urutan = pertama["pengarahan"]["urutan_peristiwa"]
     assert [item["peristiwa_id"] for item in urutan] == ["e1", "e2"]
     assert [item["urutan"] for item in urutan] == [1, 2]
