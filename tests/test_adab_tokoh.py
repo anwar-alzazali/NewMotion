@@ -147,3 +147,46 @@ def test_manifest_mengaktifkan_adapter_penjaga_dalil_legacy():
 
     paket = buat_paket()
     assert paket.penjaga_dalil({}) == []
+
+
+def test_penjaga_adab_mendeteksi_pemimpin_manusia_yang_merujuk_rasulullah():
+    papan = {
+        "genre": "kisah_islami",
+        "cerita": {
+            "shot": [{
+                "_narasi": "Rasulullah, pemimpin umat ini, berdiri di depan para sahabat.",
+                "benda": [{"jenis": "pemimpin"}],
+            }]
+        },
+    }
+    kode = {item.kode for item in periksa_adab_tokoh(papan)}
+    assert "BENDA_MANUSIA_TOKOH_SAKRAL" in kode
+
+
+def test_penjaga_adab_mendeteksi_kerumunan_yang_dapat_menggambarkan_sahabat():
+    papan = {
+        "genre": "kisah_islami",
+        "cerita": {
+            "shot": [{
+                "_narasi": "Para sahabat berkumpul di sekitar Rasulullah.",
+                "benda": [{"jenis": "kerumunan"}],
+            }]
+        },
+    }
+    kode = {item.kode for item in periksa_adab_tokoh(papan)}
+    assert "BENDA_MANUSIA_TOKOH_SAKRAL" in kode
+
+
+def test_penjaga_adab_mengizinkan_pemuka_kaum_di_kalimat_terpisah():
+    papan = {
+        "genre": "kisah_islami",
+        "cerita": {
+            "shot": [{
+                "_narasi": "Nabi Nuh membuat kapal. Pemuka kaumnya lewat dan mengejek.",
+                "benda": [{"jenis": "pemimpin"}],
+            }]
+        },
+    }
+    assert "BENDA_MANUSIA_TOKOH_SAKRAL" not in {
+        item.kode for item in periksa_adab_tokoh(papan)
+    }
