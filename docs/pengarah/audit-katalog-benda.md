@@ -148,3 +148,15 @@ perilaku ini.
 
 Batas: relasi spasial saat ini masih berupa offset 2D sederhana; belum menghitung
 ukuran objek, kedalaman, occlusion, collision, atau ruang aman komposisi.
+
+
+## Audit lapisan kedalaman renderer
+
+Renderer menyusun urutan gambar benda melalui tiga kelompok: bintang/bulan/benda
+berlapis belakang lebih dulu, benda biasa di tengah, lalu benda dengan `depan: true`
+di atas tokoh. Karena itu `lapisan.belakang` dan `lapisan.depan` adalah kontrol
+urutan gambar yang nyata, bukan sekadar label metadata. Keduanya tidak boleh bernilai
+true bersamaan; pengarah sekarang menolak kombinasi yang kontradiktif.
+
+Ini belum merupakan simulasi kedalaman 3D atau occlusion otomatis. Penentuan lapisan
+masih eksplisit dari naskah/entitas, dan tidak disimpulkan hanya dari posisi y.
