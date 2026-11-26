@@ -424,7 +424,11 @@ def test_sutradara_memisahkan_rencana_semantik_dan_mengaitkan_shot_ke_beat():
             "beat-001", "beat-002"
         ]
         assert papan["rencana_cerita"]["adegan"][1]["dialog"] == naskah["adegan"][1]["dialog"]
-        assert papan["rencana_cerita"]["adegan"][1]["peristiwa"] == naskah["adegan"][1]["peristiwa"]
+        peristiwa = papan["rencana_cerita"]["adegan"][1]["peristiwa"][0]
+        sumber = naskah["adegan"][1]["peristiwa"][0]
+        assert {k: peristiwa[k] for k in sumber} == sumber
+        assert peristiwa["aktor_id"] == "tokoh-penolong"
+        assert peristiwa["sasaran_tokoh_id"] == "tokoh-pengendara"
         assert [s["_beat_id"] for s in papan["cerita"]["shot"]] == [
             "beat-001", "beat-002"
         ]
@@ -482,6 +486,148 @@ def test_sutradara_menolak_indeks_adegan_shot_di_luar_rencana():
                 "genre": nama,
                 "konteks_konten": "umum",
                 "adegan": [{"id": "beat-001", "teks": "Adegan tunggal."}],
+            })
+    finally:
+        from newmotion.domain import genre as modul_genre
+        modul_genre._PAKET.pop(nama, None)
+
+
+def test_rencana_semantik_mengaitkan_aktor_dan_sasaran_ke_id_tokoh():
+    from newmotion.application.pengarah_inti import arahkan_naskah
+
+    nama = "sutradara_tautan_peristiwa_uji"
+    paket = PaketGenre(
+        nama=nama,
+        pengarah_naskah=lambda data: {
+            "cerita": {"shot": [{"at": 0, "_adegan": 0}]}
+        },
+    )
+    daftarkan(paket)
+    try:
+        papan, _, _ = arahkan_naskah({
+            "judul": "Penolong",
+            "genre": nama,
+            "konteks_konten": "umum",
+            "tokoh": [
+                {"id": "tokoh-penolong", "nama": "Penolong"},
+                {"id": "tokoh-korban", "nama": "Pengendara"},
+            ],
+            "adegan": [{
+                "id": "beat-001",
+                "teks": "Penolong menghampiri pengendara.",
+                "tokoh_ids": ["tokoh-penolong", "tokoh-korban"],
+                "peristiwa": [{
+                    "id": "peristiwa-1",
+                    "aktor": "  PENOLONG ",
+                    "aksi": "menghampiri",
+                    "sasaran": "Pengendara",
+                }],
+            }],
+        })
+        peristiwa = papan["rencana_cerita"]["adegan"][0]["peristiwa"][0]
+        assert peristiwa["aktor"] == "  PENOLONG "
+        assert peristiwa["aktor_id"] == "tokoh-penolong"
+        assert peristiwa["sasaran_tokoh_id"] == "tokoh-korban"
+        assert papan["rencana_cerita"]["diagnostik"] == []
+    finally:
+        from newmotion.domain import genre as modul_genre
+        modul_genre._PAKET.pop(nama, None)
+
+
+def test_rencana_semantik_tidak_mengarang_id_untuk_sasaran_benda():
+    from newmotion.application.pengarah_inti import arahkan_naskah
+
+    nama = "sutradara_sasaran_benda_uji"
+    paket = PaketGenre(
+        nama=nama,
+        pengarah_naskah=lambda data: {
+            "cerita": {"shot": [{"at": 0, "_adegan": 0}]}
+        },
+    )
+    daftarkan(paket)
+    try:
+        papan, _, _ = arahkan_naskah({
+            "judul": "Motor tergelincir",
+            "genre": nama,
+            "konteks_konten": "umum",
+            "tokoh": [{"id": "tokoh-pengendara", "nama": "Pengendara"}],
+            "adegan": [{
+                "id": "beat-001",
+                "teks": "Pengendara mengendalikan motor.",
+                "tokoh_ids": ["tokoh-pengendara"],
+                "peristiwa": [{
+                    "aktor": "Pengendara",
+                    "aksi": "mengendarai",
+                    "sasaran": "motor",
+                }],
+            }],
+        })
+        peristiwa = papan["rencana_cerita"]["adegan"][0]["peristiwa"][0]
+        assert peristiwa["aktor_id"] == "tokoh-pengendara"
+        assert "sasaran_tokoh_id" not in peristiwa
+        assert peristiwa["sasaran"] == "motor"
+    finally:
+        from newmotion.domain import genre as modul_genre
+        modul_genre._PAKET.pop(nama, None)
+
+
+def test_rencana_semantik_mencatat_aktor_yang_belum_terpetakan():
+    from newmotion.application.pengarah_inti import arahkan_naskah
+
+    nama = "sutradara_aktor_belum_terpetakan_uji"
+    paket = PaketGenre(
+        nama=nama,
+        pengarah_naskah=lambda data: {
+            "cerita": {"shot": [{"at": 0, "_adegan": 0}]}
+        },
+    )
+    daftarkan(paket)
+    try:
+        papan, _, _ = arahkan_naskah({
+            "judul": "Aktor belum ada",
+            "genre": nama,
+            "konteks_konten": "umum",
+            "tokoh": [],
+            "adegan": [{
+                "id": "beat-001",
+                "teks": "Seseorang menolong.",
+                "peristiwa": [{"aktor": "Orang asing", "aksi": "menolong"}],
+            }],
+        })
+        assert papan["rencana_cerita"]["diagnostik"] == [{
+            "kode": "aktor_belum_terpetakan",
+            "beat_id": "beat-001",
+            "peristiwa": None,
+            "nilai": "Orang asing",
+        }]
+        assert "aktor_id" not in papan["rencana_cerita"]["adegan"][0]["peristiwa"][0]
+    finally:
+        from newmotion.domain import genre as modul_genre
+        modul_genre._PAKET.pop(nama, None)
+
+
+def test_rencana_semantik_menolak_peristiwa_non_objek():
+    from newmotion.application.pengarah_inti import GalatPengarahan, arahkan_naskah
+
+    nama = "sutradara_peristiwa_tidak_valid_uji"
+    paket = PaketGenre(
+        nama=nama,
+        pengarah_naskah=lambda data: {
+            "cerita": {"shot": [{"at": 0, "_adegan": 0}]}
+        },
+    )
+    daftarkan(paket)
+    try:
+        with pytest.raises(GalatPengarahan, match="harus berupa objek"):
+            arahkan_naskah({
+                "judul": "Peristiwa rusak",
+                "genre": nama,
+                "konteks_konten": "umum",
+                "adegan": [{
+                    "id": "beat-001",
+                    "teks": "Adegan.",
+                    "peristiwa": ["teks bukan objek"],
+                }],
             })
     finally:
         from newmotion.domain import genre as modul_genre
