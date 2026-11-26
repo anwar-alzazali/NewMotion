@@ -9,6 +9,7 @@ from collections.abc import Mapping
 from typing import Any
 
 from newmotion.penataan_panggung import susun_rencana_blocking
+from newmotion.adapter_visual_tokoh import terapkan_rencana_visual_tokoh
 
 from newmotion.domain.genre import (
     ambil,
@@ -285,6 +286,13 @@ def arahkan_naskah(
                 "Rencana visual tokoh harus memiliki daftar shot dan diagnostik"
             )
         spesifikasi["rencana_visual_tokoh"] = copy.deepcopy(dict(hasil_visual_tokoh))
+        # JSON keluaran sutradara sudah memuat instruksi renderer, bukan hanya rencana terpisah.
+        try:
+            terapkan_rencana_visual_tokoh(spesifikasi)
+        except ValueError as galat:
+            raise GalatPengarahan(
+                f"Rencana visual tidak dapat diterapkan ke JSON renderer: {galat}"
+            ) from galat
 
     # Genre menjadi metadata otoritatif untuk gerbang penjaga pada renderer.
     spesifikasi["genre"] = paket.nama
