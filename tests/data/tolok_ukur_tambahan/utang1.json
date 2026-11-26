@@ -1,0 +1,43 @@
+{
+  "judul": "Utang 1",
+  "genre": "kisah_islami",
+  "konteks_konten": "islami",
+  "adegan": [
+    {
+      "nama": "adegan_1",
+      "teks": "Seorang jenazah dibawa ke hadapan Rasulullah… tapi beliau tidak mau menshalatkannya."
+    },
+    {
+      "nama": "adegan_2",
+      "teks": "Padahal hari itu, beliau baru saja menshalatkan dua jenazah lain."
+    },
+    {
+      "nama": "adegan_3",
+      "teks": "Apa yang terjadi dengan orang ini?"
+    },
+    {
+      "nama": "adegan_4",
+      "teks": "Sebelumnya, beliau bertanya tentang jenazah itu… dan jawabannya: tiga dinar."
+    },
+    {
+      "nama": "adegan_5",
+      "teks": "Tiga dinar… yang belum dibayar. Ia punya utang, dan tidak meninggalkan apa pun untuk melunasinya. Beliau tidak maju menshalatkannya. Beliau hanya berkata: shalatkanlah teman kalian."
+    },
+    {
+      "nama": "adegan_6",
+      "teks": "Lalu seorang sahabat, Abu Qatadah, berkata: utangnya tanggunganku, ya Rasulullah. Barulah beliau menshalatkannya."
+    },
+    {
+      "nama": "adegan_7",
+      "teks": "Yang mengejutkan… salah satu jenazah sebelumnya juga punya utang. Tapi ia meninggalkan harta untuk melunasinya. Jadi masalahnya bukan utangnya."
+    },
+    {
+      "nama": "adegan_8",
+      "teks": "Berutang itu boleh. Yang berat: pergi… dan meninggalkannya untuk orang lain. Hari ini… mungkin tidak ada Abu Qatadah yang menanggung utangmu."
+    },
+    {
+      "nama": "adegan_9",
+      "teks": "Kalau kamu sedang berusaha melunasinya… tulis: Bismillah lunas."
+    }
+  ]
+}

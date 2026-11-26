@@ -36,6 +36,7 @@ from __future__ import annotations
 
 import hashlib
 import re
+import statistics
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
@@ -43,6 +44,7 @@ ROOT = Path(__file__).resolve().parents[3]
 
 from .dalil import ambil_ayat
 from . import arah_visual as AV
+from .pengarah_subjek import arahkan_subjek
 
 # ---------------------------------------------------------------------------
 # Pagar keselamatan: deteksi frasa, bukan keputusan AI. (Lihat catatan sakral di atas --
@@ -323,6 +325,86 @@ def _boneka_kamu(tampilan: dict, letak: dict, wajah: str, pose: str, ds: float, 
     return b, pose
 
 
+# Subjek yang membawa lanskapnya sendiri: `ngarai` sudah berupa dinding di celah dua tebing,
+# `istana`/`gerbang` adalah bangunan besar. Latar tema yang bertabrakan dengannya dibuang
+# (renderer menggambar benda `belakang` lebih dulu, sehingga gunung latar menimpa dinding).
+SUBJEK_PANGGUNG = frozenset({"ngarai", "istana", "gerbang"})
+LATAR_BERTABRAKAN = frozenset({"gunung", "tebing", "kota", "bukit"})
+# Subjek suasana/latar: "kamu" tetap tokoh utama (mis. Mahsyar: "keringatmu sampai mana?").
+SUBJEK_SUASANA = frozenset({"kerumunan", "ombak", "gunung", "rumah", "makam", "pancar"})
+
+
+HORIZON_DINDING = 1500  # kaki dinding Zulkarnain di cakrawala (papan Ya'juj 1/2)
+
+
+def _ikat_posisi_subjek(shot: dict, subjek: list[dict]) -> None:
+    """Posisi subjek ditetapkan relatif satu sama lain, bukan angka lepas per benda.
+
+    - Kaki dinding (`ngarai`) berdiri di garis cakrawala; tanah tidak menutupinya.
+    - Titik gali `penggali` = lubang dinding (x + lx, y + ly), jadi beliung mengayun ke lubang.
+    - `pemimpin` berdiri di depan, di samping dinding, menghadap para penggali.
+    Mengubah benda subjek di tempat; dipanggil sebelum benda dimasukkan ke shot.
+    """
+    dinding = next((o for o in subjek if o.get("jenis") == "ngarai"), None)
+    if dinding is None:
+        return
+    shot["horizon"] = HORIZON_DINDING
+    skala = float(dinding.get("s", 1) if not isinstance(dinding.get("s"), list) else 1)
+    dinding.update({"x": 540, "y": HORIZON_DINDING})
+    dinding.pop("belakang", None)
+    lubang_x = 540 + (dinding.get("lx") or 0) * skala
+    lubang_y = HORIZON_DINDING + (dinding.get("ly") if dinding.get("ly") is not None else -190) * skala
+    for o in subjek:
+        if o.get("jenis") == "penggali":
+            o.update({"x": round(lubang_x), "y": round(lubang_y), "s": skala})
+        elif o.get("jenis") == "pemimpin":
+            o.update({"x": 300, "y": 1700, "s": 1.2, "depan": True})
+
+
+def _susun_ulang_untuk_subjek(benda: list[dict], subjek: list[dict], b: dict, kamera: dict,
+                              look: dict, wajah: str, pose: str, ds: float, tx: str,
+                              posisi: str, R) -> tuple[list[dict], dict, dict]:
+    """Jadikan subjek narasi fokus shot, bukan tempelan di atas templat "kamu".
+
+    - Latar tema yang bertabrakan dengan subjek panggung (dinding, istana, gerbang) dibuang.
+    - Tokoh "kamu" mundur menjadi saksi: kecil, tampak belakang, di sisi yang berlawanan
+      dengan subjek, sehingga tidak menutupi atau tampak berdiri di antara pelaku cerita.
+    - Kamera melebar ke subjek; bidikan dekat ke wajah "kamu" akan memotong subjek keluar
+      bingkai. Aksen kamera (hentak/guncang) yang sudah ditetapkan tetap dipertahankan.
+    """
+    jenis_subjek = {x.get("jenis") for x in subjek}
+    if jenis_subjek & SUBJEK_PANGGUNG:
+        benda = [x for x in benda if x.get("jenis") not in LATAR_BERTABRAKAN]
+
+    def _x_awal(o: dict) -> float:
+        x = o.get("x", 540)
+        while isinstance(x, list) and x:
+            x = x[0][1] if isinstance(x[0], list) else x[0]
+        return float(x) if isinstance(x, (int, float)) else 540.0
+
+    pelaku = [o for o in subjek if o.get("jenis") not in SUBJEK_SUASANA]
+    if not pelaku:
+        return benda, b, kamera
+    pusat = statistics.fmean(_x_awal(o) for o in pelaku)
+    x_saksi = 880 if pusat < 540 else 200
+    # Kaki sedikit di bawah bingkai: "kamu" menjadi siluet saksi di latar paling depan,
+    # di bawah garis kaki pelaku sehingga tidak menumpuk dengan mereka.
+    letak = {"x": x_saksi, "y": 1980, "s": 0.55, "belakang": True}
+    # Batu kabur di sudut depan pindah ke sisi seberang agar tidak menutupi "kamu".
+    batu_seberang = BATU_KANAN if x_saksi < 540 else BATU_KIRI
+    benda = [dict(batu_seberang) if o.get("jenis") == "batu" and o.get("depan") else o for o in benda]
+    b_baru, _ = _boneka_kamu(look, letak, wajah, pose, ds, tx, posisi, R, -1 if x_saksi > 540 else 1)
+    for kunci in ("keringat", "genangan"):
+        if kunci in b:
+            b_baru[kunci] = b[kunci]
+
+    lebar = {"z": [1.0, 1.06], "x": 540, "y": 1000}
+    for kunci in ("hentak", "guncang"):
+        if kunci in kamera:
+            lebar[kunci] = kamera[kunci]
+    return benda, b_baru, lebar
+
+
 def arahkan(naskah: dict, waktu_adegan: list[float] | None = None,
             waktu_kata: list[list] | None = None, tampilan: dict | None = None,
             latar: str | None = None) -> dict:
@@ -385,7 +467,9 @@ def arahkan(naskah: dict, waktu_adegan: list[float] | None = None,
         wajah_adegan = _wajah_dari_teks(teks, bawaan={"isi": "netral", "hook": "bingung"}.get(posisi, "lega"))
 
         def shot_dasar(at: float) -> dict:
-            s: dict = {"at": round(at, 2), "_adegan": idx, "horizon": h}
+            s: dict = {
+                "at": round(at, 2), "_adegan": idx, "_narasi": teks, "horizon": h
+            }
             if palet is not None:
                 s["palet"] = palet
                 s["malam"] = AV.MALAM_PALET.get(palet, 0)
@@ -479,7 +563,35 @@ def arahkan(naskah: dict, waktu_adegan: list[float] | None = None,
                 benda += [x for x in aksen if x["jenis"] not in ada]
                 if pose == "doa":  # sajadah di kaki saat berdoa (bukan di ruang dalam yang berlantai)
                     benda.append({"jenis": "sajadah", "x": letak["x"], "y": letak["y"] + 14, "s": round(letak["s"] * 0.9, 2)})
+            # Subjek yang disebut narasi harus hadir di shot yang mengucapkannya.
+            # Pemetaan dimiliki paket genre, terpisah dari leksikon alat ukur.
+            subjek = arahkan_subjek(tx, ds, idx * 100 + j, konteks=teks_gabungan)
+            jenis_ada = {x.get("jenis") for x in benda}
+            benda += [x for x in subjek["benda"] if x.get("jenis") not in jenis_ada]
+            if subjek["benda"]:
+                _ikat_posisi_subjek(s, subjek["benda"])
+                benda, b, kamera = _susun_ulang_untuk_subjek(benda, subjek["benda"], b, kamera,
+                                                              look, wajah, pose, ds, tx, posisi, R)
+                s["kamera"] = kamera
             s["benda"] = benda
+            if subjek["teks"]:
+                s["teks"] = (s.get("teks") or []) + subjek["teks"]
+            if subjek["klimaks"]:
+                kamera["hentak"] = [[round(min(ds * 0.35, 1.4), 2), 0.11]]
+                kamera["guncang"] = [[round(min(ds * 0.35, 1.4), 2), 24]]
+            # Efek lingkungan dan respons tubuh yang disebut eksplisit oleh narasi.
+            # Semua properti ini sudah didukung renderer cerita.js.
+            if re.search(r"\bkeringat\w*\b", teks, re.I):
+                b["keringat"] = 1
+                b["genangan"] = 110 if re.search(r"\b(tenggelam|sampai|setinggi)\b", teks, re.I) else 25
+            if re.search(r"\b(meresap|menyerap)\b", teks, re.I):
+                s["resap"] = {"p": 0.85, "dalam": 700}
+            if re.search(r"\b(naungan|teduh)\b", teks, re.I):
+                s["naungan"] = {"x": 540, "y": 1100, "r": 300, "kuat": 1}
+            if re.search(r"\b(retak|terbelah|terbelahnya)\b", teks, re.I):
+                s["retak"] = {"x": 540, "y": 1500, "p": 0.7}
+            if re.search(r"\b(hujan|tercurah)\b", teks, re.I):
+                s["hujan"] = 0.8
             s["boneka"] = [b]
             # Kerumunan latar hanya di tema "padang terbuka" (di kota/kampung/ruang dalam
             # kerumunan siluet di cakrawala terlihat janggal).

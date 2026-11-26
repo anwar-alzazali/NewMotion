@@ -7,6 +7,7 @@ Penjaga ini hanya aktif melalui kait paket genre Kisah Islami.
 from __future__ import annotations
 
 from dataclasses import dataclass
+import re
 from typing import Any
 
 NAMA_TAMPIL = {
@@ -76,6 +77,93 @@ def _periksa_roster_semantik(rencana: dict) -> list[TemuanAdab]:
     return temuan
 
 
+def _periksa_benda_manusia_dalam_konteks_sakral(rencana: Any) -> list[TemuanAdab]:
+    """Cegah renderer manusia mengambil identitas tokoh sakral dalam satu shot.
+
+    Pemeriksaan ini sengaja berbasis keberadaan tokoh sakral pada narasi shot,
+    bukan kedekatan kata kerja/jabatan. Renderer tunggal seperti pemimpin dan
+    penggali tidak boleh dipakai ketika shot menyebut nabi, rasul, malaikat,
+    atau sahabat. Siluet kelompok tetap memiliki aturan khusus untuk sahabat.
+    """
+    if not isinstance(rencana, dict):
+        return []
+    cerita = rencana.get("cerita")
+    shot_list = cerita.get("shot") if isinstance(cerita, dict) else None
+    if not isinstance(shot_list, list):
+        return []
+
+    pola_tokoh_sakral = re.compile(
+        r"\b(?:rasulullah|rasul|nabi(?:\s+\w+)?|malaikat(?:\s+\w+)?|"
+        r"jibril|mikail|israfil|abu bakar|umar|utsman|usman|"
+        r"ali bin abi thalib|sahabat)\b",
+        re.IGNORECASE,
+    )
+    pola_sahabat = re.compile(
+        r"\b(?:sahabat|abu bakar|umar|utsman|usman|ali bin abi thalib)\b",
+        re.IGNORECASE,
+    )
+    jenis_manusia_tunggal = {"pemimpin", "penggali"}
+    jenis_kelompok = {"kerumunan", "arus"}
+    jenis_manusia = jenis_manusia_tunggal | jenis_kelompok
+    temuan: list[TemuanAdab] = []
+
+    for nomor, shot in enumerate(shot_list):
+        if not isinstance(shot, dict):
+            continue
+        narasi = shot.get("_narasi") or shot.get("narasi") or shot.get("subtitle")
+        if not isinstance(narasi, str) or not narasi.strip():
+            continue
+
+        kalimat = [
+            bagian.strip()
+            for bagian in re.split(r"(?<=[.!?;])\s+|\n+", narasi)
+            if bagian.strip()
+        ]
+        menyebut_tokoh_sakral = bool(pola_tokoh_sakral.search(narasi))
+        menyebut_sahabat = bool(pola_sahabat.search(narasi))
+        benda = shot.get("benda") if isinstance(shot.get("benda"), list) else []
+        for item in benda:
+            if not isinstance(item, dict):
+                continue
+            jenis = item.get("jenis")
+            if jenis not in jenis_manusia:
+                continue
+
+            alasan = ""
+            if jenis in jenis_manusia_tunggal and menyebut_tokoh_sakral:
+                # Pengecualian hanya jika narasi secara eksplisit mengenalkan
+                # sosok manusia lain pada kalimat terpisah yang tidak menyebut
+                # tokoh sakral. Tanpa penanda ini, renderer dianggap berisiko
+                # mengambil identitas tokoh sakral.
+                pola_peran = (
+                    r"\b(?:pemimpin|pemuka|raja|panglima)\b"
+                    if jenis == "pemimpin"
+                    else r"\b(?:penggali|menggali|digali|menggerogoti|mengikis)\b"
+                )
+                ada_sosok_lain_eksplisit = any(
+                    re.search(pola_peran, bagian, re.IGNORECASE)
+                    and not pola_tokoh_sakral.search(bagian)
+                    for bagian in kalimat
+                )
+                if not ada_sosok_lain_eksplisit:
+                    alasan = (
+                        "renderer manusia tunggal tidak boleh dipakai dalam shot "
+                        "yang menyebut tokoh sakral tanpa narasi eksplisit tentang "
+                        "sosok manusia lain"
+                    )
+            elif jenis in jenis_kelompok and menyebut_sahabat:
+                alasan = (
+                    "shot menyebut sahabat; siluet kelompok tidak boleh "
+                    "mengambil identitas mereka"
+                )
+
+            if alasan:
+                temuan.append(TemuanAdab(
+                    "GAGAL", "BENDA_MANUSIA_TOKOH_SAKRAL",
+                    f"shot {nomor}: benda {jenis!r} tidak aman untuk narasi ini: {alasan}",
+                ))
+    return temuan
+
 def periksa_adab_tokoh(rencana: Any) -> list[TemuanAdab]:
     """Periksa identitas tokoh dan cara tampilnya sebelum job diteruskan ke renderer.
 
@@ -89,17 +177,23 @@ def periksa_adab_tokoh(rencana: Any) -> list[TemuanAdab]:
         return []
     rencana_semantik = rencana.get("rencana_cerita")
     if isinstance(rencana_semantik, dict) and not _daftar(rencana.get("peran")):
-        return _periksa_roster_semantik(rencana_semantik)
+        return (
+            _periksa_roster_semantik(rencana_semantik)
+            + _periksa_benda_manusia_dalam_konteks_sakral(rencana)
+        )
 
     peran_list = _daftar(rencana.get("peran"))
     if not peran_list:
         # Format papan lama tetap dijaga oleh adapter paket, bukan oleh inti renderer.
         from .penjaga_tokoh_legacy import periksa_tokoh_suci
 
-        return [
-            TemuanAdab("GAGAL", "TOKOH_SAKRAL_FORMAT_LAMA", str(item))
-            for item in periksa_tokoh_suci(rencana)
-        ]
+        return (
+            [
+                TemuanAdab("GAGAL", "TOKOH_SAKRAL_FORMAT_LAMA", str(item))
+                for item in periksa_tokoh_suci(rencana)
+            ]
+            + _periksa_benda_manusia_dalam_konteks_sakral(rencana)
+        )
 
     temuan: list[TemuanAdab] = []
     peran = {
@@ -173,6 +267,7 @@ def periksa_adab_tokoh(rencana: Any) -> list[TemuanAdab]:
                     temuan.append(TemuanAdab("GAGAL", "BERKAS_CAHAYA_BUKAN_MALAIKAT",
                                              f"{lokasi}: berkas cahaya khusus malaikat tidak boleh dipakai oleh '{nama}'"))
 
+    temuan.extend(_periksa_benda_manusia_dalam_konteks_sakral(rencana))
     return temuan
 
 

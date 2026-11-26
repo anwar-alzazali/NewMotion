@@ -147,3 +147,156 @@ def test_manifest_mengaktifkan_adapter_penjaga_dalil_legacy():
 
     paket = buat_paket()
     assert paket.penjaga_dalil({}) == []
+
+
+def test_penjaga_adab_mendeteksi_pemimpin_manusia_yang_merujuk_rasulullah():
+    papan = {
+        "genre": "kisah_islami",
+        "cerita": {
+            "shot": [{
+                "_narasi": "Rasulullah, pemimpin umat ini, berdiri di depan para sahabat.",
+                "benda": [{"jenis": "pemimpin"}],
+            }]
+        },
+    }
+    kode = {item.kode for item in periksa_adab_tokoh(papan)}
+    assert "BENDA_MANUSIA_TOKOH_SAKRAL" in kode
+
+
+def test_penjaga_adab_mendeteksi_kerumunan_yang_dapat_menggambarkan_sahabat():
+    papan = {
+        "genre": "kisah_islami",
+        "cerita": {
+            "shot": [{
+                "_narasi": "Para sahabat berkumpul di sekitar Rasulullah.",
+                "benda": [{"jenis": "kerumunan"}],
+            }]
+        },
+    }
+    kode = {item.kode for item in periksa_adab_tokoh(papan)}
+    assert "BENDA_MANUSIA_TOKOH_SAKRAL" in kode
+
+
+def test_penjaga_adab_mengizinkan_pemuka_kaum_di_kalimat_terpisah():
+    papan = {
+        "genre": "kisah_islami",
+        "cerita": {
+            "shot": [{
+                "_narasi": "Nabi Nuh membuat kapal. Pemuka kaumnya lewat dan mengejek.",
+                "benda": [{"jenis": "pemimpin"}],
+            }]
+        },
+    }
+    assert "BENDA_MANUSIA_TOKOH_SAKRAL" not in {
+        item.kode for item in periksa_adab_tokoh(papan)
+    }
+
+
+
+def test_penjaga_adab_mendeteksi_sosok_manusia_pada_narasi_malaikat():
+    papan = {
+        "genre": "kisah_islami",
+        "cerita": {
+            "shot": [{
+                "_narasi": "Malaikat Jibril datang sebagai pemimpin rombongan.",
+                "benda": [{"jenis": "pemimpin"}],
+            }]
+        },
+    }
+    kode = {item.kode for item in periksa_adab_tokoh(papan)}
+    assert "BENDA_MANUSIA_TOKOH_SAKRAL" in kode
+
+
+def test_penjaga_adab_mendeteksi_penggali_dalam_narasi_sahabat():
+    papan = {
+        "genre": "kisah_islami",
+        "cerita": {
+            "shot": [{
+                "_narasi": "Para sahabat menggali tanah bersama-sama.",
+                "benda": [{"jenis": "penggali"}],
+            }]
+        },
+    }
+    kode = {item.kode for item in periksa_adab_tokoh(papan)}
+    assert "BENDA_MANUSIA_TOKOH_SAKRAL" in kode
+
+
+
+def test_penjaga_adab_tidak_menolak_pemimpin_yajuj_hanya_karena_allah_disebut():
+    papan = {
+        "genre": "kisah_islami",
+        "cerita": {
+            "shot": [{
+                "_narasi": "Allah menetapkan waktunya. Hari itu pemimpin mereka berkata: pulanglah.",
+                "benda": [{"jenis": "pemimpin"}],
+            }]
+        },
+    }
+    assert "BENDA_MANUSIA_TOKOH_SAKRAL" not in {
+        item.kode for item in periksa_adab_tokoh(papan)
+    }
+
+
+
+def test_penjaga_adab_mendeteksi_siluet_kelompok_jika_sahabat_disebut_di_shot_yang_sama():
+    papan = {
+        "genre": "kisah_islami",
+        "cerita": {
+            "shot": [{
+                "_narasi": "Para sahabat berkumpul. Orang-orang berlarian di kejauhan.",
+                "benda": [{"jenis": "kerumunan"}],
+            }]
+        },
+    }
+    assert "BENDA_MANUSIA_TOKOH_SAKRAL" in {
+        item.kode for item in periksa_adab_tokoh(papan)
+    }
+
+
+@pytest.mark.parametrize(
+    ("narasi", "jenis"),
+    [
+        ("Rasulullah berdiri di atas bukit.", "pemimpin"),
+        ("Malaikat Jibril turun ke bumi.", "pemimpin"),
+        ("Para sahabat berjalan di padang.", "penggali"),
+        ("Nabi Musa memasuki lembah.", "penggali"),
+    ],
+)
+def test_renderer_manusia_tunggal_ditolak_setiap_kali_shot_menyebut_tokoh_sakral(narasi, jenis):
+    papan = {
+        "genre": "kisah_islami",
+        "cerita": {
+            "shot": [{
+                "_narasi": narasi,
+                "benda": [{"jenis": jenis}],
+            }]
+        },
+    }
+    kode = {item.kode for item in periksa_adab_tokoh(papan)}
+    assert "BENDA_MANUSIA_TOKOH_SAKRAL" in kode
+
+
+def test_pemimpin_manusia_tetap_diizinkan_pada_narasi_umum():
+    papan = {
+        "genre": "kisah_islami",
+        "cerita": {
+            "shot": [{
+                "_narasi": "Kepala desa mengatur pembangunan jembatan.",
+                "benda": [{"jenis": "pemimpin"}],
+            }]
+        },
+    }
+    assert periksa_adab_tokoh(papan) == []
+
+
+def test_kerumunan_tidak_otomatis_dilarang_hanya_karena_nabi_disebut():
+    papan = {
+        "genre": "kisah_islami",
+        "cerita": {
+            "shot": [{
+                "_narasi": "Nabi Nuh menyeru kaumnya dari atas bukit.",
+                "benda": [{"jenis": "kerumunan"}],
+            }]
+        },
+    }
+    assert periksa_adab_tokoh(papan) == []
