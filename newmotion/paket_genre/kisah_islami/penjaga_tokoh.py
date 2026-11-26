@@ -91,20 +91,20 @@ def _periksa_benda_manusia_dalam_konteks_sakral(rencana: Any) -> list[TemuanAdab
         return []
 
     pola_tokoh_sakral = (
-        r"(?:rasulullah|rasul|nabi(?:\\s+\\w+)?|malaikat(?:\\s+\\w+)?|jibril|mikail|israfil|"
+        r"(?:rasulullah|rasul|nabi(?:\s+\w+)?|malaikat(?:\s+\w+)?|jibril|mikail|israfil|"
         r"abu bakar|umar|utsman|usman|ali bin abi thalib|sahabat)"
     )
     pola_sahabat = re.compile(
-        r"\\b(sahabat|abu bakar|umar|utsman|usman|ali bin abi thalib)\\b",
+        r"\b(sahabat|abu bakar|umar|utsman|usman|ali bin abi thalib)\b",
         re.IGNORECASE,
     )
     pola_pemimpin_sakral = re.compile(
-        r"\\b" + pola_tokoh_sakral + r"\\b.{0,45}\\b(pemimpin|pemuka|raja|panglima)\\b|"
-        r"\\b(pemimpin|pemuka|raja|panglima)\\b.{0,45}\\b" + pola_tokoh_sakral + r"\\b",
+        r"\b" + pola_tokoh_sakral + r"\b.{0,45}\b(pemimpin|pemuka|raja|panglima)\b|"
+        r"\b(pemimpin|pemuka|raja|panglima)\b.{0,45}\b" + pola_tokoh_sakral + r"\b",
         re.IGNORECASE,
     )
     pola_penggali_sakral = re.compile(
-        r"\\b" + pola_tokoh_sakral + r"\\b.{0,35}\\b(penggali|menggali|digali|menggerogoti|mengikis)\\b",
+        r"\b" + pola_tokoh_sakral + r"\b.{0,35}\b(penggali|menggali|digali|menggerogoti|mengikis)\b",
         re.IGNORECASE,
     )
     jenis_manusia = {"pemimpin", "penggali", "kerumunan", "arus"}
@@ -135,7 +135,7 @@ def _periksa_benda_manusia_dalam_konteks_sakral(rencana: Any) -> list[TemuanAdab
                     salah_konteks = True
                     alasan = "sosok pemimpin berpotensi menjadi wujud tokoh sakral yang disebut langsung"
                     break
-                if jenis == "penggali" and pola_penggali.search(bagian) and pola_penggali_sakral.search(bagian):
+                if jenis == "penggali" and pola_penggali_sakral.search(bagian):
                     salah_konteks = True
                     alasan = "sosok penggali berpotensi menjadi wujud tokoh sakral yang disebut langsung"
                     break
