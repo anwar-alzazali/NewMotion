@@ -206,3 +206,62 @@ def test_bukti_teks_peristiwa_diperiksa_tanpa_memaksa_migrasi_fixture_lama():
         x.get("peristiwa_id") == "e1" and x["kode"] == "bukti_teks_belum_dicantumkan"
         for x in temuan
     )
+
+
+def test_transisi_keadaan_dicatat_dari_peristiwa_dan_dibawa_ke_keadaan_akhir():
+    naskah = _naskah()
+    naskah["adegan"][0]["peristiwa"][0]["perubahan_keadaan"] = {
+        "entitas_id": "pengendara", "dari": "mengendarai", "menjadi": "terjatuh",
+    }
+    naskah["adegan"].append({
+        "id": "beat-002", "teks": "Penolong membantu pengendara yang terjatuh.",
+        "tokoh_ids": ["penolong", "pengendara"],
+        "peristiwa": [{
+            "id": "e3", "aktor": "Penolong", "aksi": "menolong",
+            "sasaran": "Pengendara",
+            "perubahan_keadaan": {
+                "entitas_id": "pengendara", "dari": "terjatuh", "menjadi": "ditolong",
+            },
+        }],
+    })
+    spek, _, _ = arahkan_naskah(naskah)
+    blocking = spek["rencana_blocking"]
+    assert [x["peristiwa_id"] for x in blocking["transisi_keadaan"]] == ["e1", "e3"]
+    assert blocking["keadaan_akhir"] == {"pengendara": "ditolong"}
+    assert blocking["transisi_keadaan"][1]["dari"] == "terjatuh"
+
+
+def test_transisi_keadaan_yang_tidak_sambung_diberi_diagnostik():
+    naskah = _naskah()
+    naskah["adegan"][0]["peristiwa"][0]["perubahan_keadaan"] = {
+        "entitas_id": "pengendara", "dari": "mengendarai", "menjadi": "terjatuh",
+    }
+    naskah["adegan"].append({
+        "id": "beat-002", "teks": "Pengendara ditolong.",
+        "tokoh_ids": ["pengendara"],
+        "peristiwa": [{
+            "id": "e3", "aktor": "Pengendara", "aksi": "menunggu",
+            "perubahan_keadaan": {
+                "entitas_id": "pengendara", "dari": "berdiri", "menjadi": "ditolong",
+            },
+        }],
+    })
+    spek, _, _ = arahkan_naskah(naskah)
+    assert any(
+        x["kode"] == "asal_transisi_tidak_cocok_dengan_keadaan_terakhir"
+        and x["peristiwa_id"] == "e3"
+        for x in spek["rencana_blocking"]["diagnostik"]
+    )
+
+
+def test_perubahan_keadaan_tidak_lengkap_tidak_ditebak():
+    naskah = _naskah()
+    naskah["adegan"][0]["peristiwa"][0]["perubahan_keadaan"] = {
+        "entitas_id": "pengendara",
+    }
+    spek, _, _ = arahkan_naskah(naskah)
+    assert spek["rencana_blocking"]["transisi_keadaan"] == []
+    assert any(
+        x["kode"] == "transisi_keadaan_belum_lengkap"
+        for x in spek["rencana_blocking"]["diagnostik"]
+    )
