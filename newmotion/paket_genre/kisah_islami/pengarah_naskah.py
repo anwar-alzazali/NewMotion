@@ -365,7 +365,8 @@ def arahkan(naskah: dict, waktu_adegan: list[float] | None = None,
     sisi = R_vid.choice((-1, 1))
     varian0 = R_vid.randrange(12)
     shots = []
-    for idx, (a, (t0, dur)) in enumerate(zip(adegan, _waktu_adegan(adegan, waktu_adegan))):
+    jadwal = _waktu_adegan(adegan, waktu_adegan)
+    for idx, (a, (t0, dur)) in enumerate(zip(adegan, jadwal)):
         teks, nama = a.get("teks", ""), a.get("nama", f"s{idx}")
         posisi = _posisi(idx, total)
         R = AV.acak(judul, "adegan", idx)
@@ -500,6 +501,12 @@ def arahkan(naskah: dict, waktu_adegan: list[float] | None = None,
 
     spek = {"latar": "gelap", "musik": "santai" if total else False,
             "cerita": {"shot": shots}}
+    if waktu_adegan is None and jadwal:
+        # Tanpa narasi rekaman, papan.js tidak menghitung cerita.shot saat menebak durasi
+        # (hasilnya hanya ~4 dtk = shot pertama). Durasi perkiraan ditulis eksplisit agar
+        # pratinjau tanpa TTS memuat semua shot. Dengan audio, durasi tetap mengikuti suara.
+        mulai_akhir, durasi_akhir = jadwal[-1]
+        spek["durasi"] = round(mulai_akhir + durasi_akhir + 1.0, 2)
     if catatan:
         spek["_catatan_direktur"] = catatan
     return spek
