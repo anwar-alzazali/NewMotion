@@ -122,7 +122,12 @@ def naskah_untuk_pengarah(
         elif genre_efektif == "cerita_umum":
             from newmotion.paket_genre.cerita_umum.pemahaman_peristiwa import uraikan_peristiwa
 
-            hasil_pemahaman = uraikan_peristiwa(narasi.strip(), peran)
+            daftar_benda = naskah.get("benda", [])
+            hasil_pemahaman = uraikan_peristiwa(
+                narasi.strip(),
+                peran,
+                benda=daftar_benda if isinstance(daftar_benda, list) else [],
+            )
             for peristiwa in hasil_pemahaman["peristiwa"]:
                 peristiwa["id"] = f"{id_beat}-{peristiwa['id']}"
             adegan_item["peristiwa"] = hasil_pemahaman["peristiwa"]
@@ -163,6 +168,7 @@ def naskah_untuk_pengarah(
         "konteks_konten": hasil_klasifikasi["konteks_konten"],
         "adegan": adegan,
         "tokoh": list(tokoh_berdasarkan_nama.values()),
+        "benda": copy.deepcopy(naskah.get("benda", [])),
         "dalil_dipakai": dalil_dipakai,
     }
 
