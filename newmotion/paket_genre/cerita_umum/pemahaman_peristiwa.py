@@ -97,11 +97,16 @@ def _peristiwa_klausa(
     else:
         kandidat_aktor = subjek
         kandidat_sasaran = objek
-    if len(kandidat_aktor) != 1:
+    if len(kandidat_aktor) > 1:
         return None, "aktor_tidak_tunggal_atau_tidak_ditemukan"
     if len(kandidat_sasaran) > 1:
         return None, "sasaran_tokoh_ambigu"
-    aktor = kandidat_aktor[-1][2]
+    if not kandidat_aktor and aktor_default and not pasif:
+        aktor = aktor_default
+    elif kandidat_aktor:
+        aktor = kandidat_aktor[-1][2]
+    else:
+        return None, "aktor_tidak_tunggal_atau_tidak_ditemukan"
     sasaran = kandidat_sasaran[0][2] if kandidat_sasaran else None
     bukti = klausa
     hasil = {
