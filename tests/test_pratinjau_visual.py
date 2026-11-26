@@ -312,3 +312,15 @@ def test_referensi_sebab_akibat_tetap_valid_setelah_id_peristiwa_diprefix_beat()
         relasi = item.get("hubungan_sebab_akibat")
         if relasi:
             assert relasi["peristiwa_id"] in semua_id
+
+
+def test_papan_pratinjau_tanpa_audio_memuat_semua_shot():
+    # Tanpa durasi eksplisit, papan.js menebak ~4 dtk dan hanya shot pertama yang terekam.
+    import json
+    from pathlib import Path
+    from newmotion.application.pengarah_inti import arahkan_naskah
+
+    naskah = json.loads((Path(__file__).parent / "data" / "tolok_ukur" / "yajuj1.json").read_text(encoding="utf-8"))
+    spek, _, _ = arahkan_naskah(naskah)
+    akhir = max(s["at"] for s in spek["cerita"]["shot"])
+    assert spek["durasi"] > akhir + 2
