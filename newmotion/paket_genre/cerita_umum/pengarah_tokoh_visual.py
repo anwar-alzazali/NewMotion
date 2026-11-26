@@ -164,13 +164,15 @@ def arahkan_tokoh_visual(rencana_cerita, rencana_blocking, cerita):
                 motor = {
                     "id": id_motor, "jenis": "motor",
                     "x": [[0, x_awal_motor], [0.9, min(1000, x_awal_motor + 55)]],
-                    "y": [[0, 1550], [0.9, 1580]], "s": 0.8,
+                    "y": [[0, 1550], [0.9, 1580]],
+                    "miring": [[0, 0], [0.9, 28]], "s": 0.8,
                 }
                 benda_shot.append(motor)
                 if pemilik_motor:
                     motor_terakhir[pemilik_motor] = {
                         "id": id_motor, "jenis": "motor",
-                        "x": min(1000, x_awal_motor + 55), "y": 1580, "s": 0.8,
+                        "x": min(1000, x_awal_motor + 55), "y": 1580,
+                        "miring": 28, "s": 0.8,
                     }
 
             # Jika pemilik masih tampil di shot berikutnya, motor yang sudah
