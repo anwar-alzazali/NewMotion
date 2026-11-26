@@ -1404,7 +1404,7 @@
       const turun = halus(clamp((u - .72) / .28));
       const lengan = 8 + 112 * naik * (1 - turun);
       const siku = 4 + 116 * naik * (1 - turun);
-      if (u < .2) { const k = Math.sin(Math.PI * u / .4); return { turun: 22 * k, pp: 1 - .25 * k, rk: [8, -10 * k], lk: [8, -10 * k], ra: [8 + 18 * naik, 4 + 24 * naik], la: [8 + 18 * naik, 4 + 24 * naik] }; }
+      if (u < .2) { const k = Math.sin(Math.PI * u / .4); return { turun: 22 * k, pp: 1 - .25 * k, rk: [8, -10 * k], lk: [8, -10 * k], ra: [lengan, siku], la: [lengan, siku] }; }
       if (u < .75) { const k = (u - .2) / .55; return { turun: -120 * Math.sin(Math.PI * k), pp: .75, rk: [10, -25], lk: [10, -25], ra: [lengan, siku], la: [lengan, siku] }; }
       const k = 1 - (u - .75) / .25; return { turun: 18 * k, pp: 1 - .2 * k, rk: [8, -8 * k], lk: [8, -8 * k], ra: [lengan, siku], la: [lengan, siku] };
     }
@@ -1692,8 +1692,8 @@
     let k = profilAktif
       ? `<path d="M -4 ${-414 + nafas} L 34 ${-414 + nafas} L 42 ${-374 + nafas} L 2 ${-370 + nafas} Z" fill="${P ? KLB : BADAN}"/>`
       : `<rect x="-22" y="${-410 + nafas}" width="44" height="40" fill="${P ? KLB : BADAN}"/>`;
-    k += `<g transform="translate(${hx} ${hy}) rotate(${arah * 6 + tunduk * 8}) scale(${1.28 * KB * (1 + (H ? H.pop : 0))})">`;
-    const gaya = b.gaya || "umum", ANW = gaya !== "siluet", KL = gaya === "anwar" ? "#dca779" : KULIT, belakang = v(b.belakang, t, d, false);
+    k += `<g transform="translate(${hx} ${hy}) rotate(${arah * 6 + tunduk * 8 + (sudutTokoh === "tiga_perempat" ? 16 : 0)}) scale(${1.28 * KB * (1 + (H ? H.pop : 0))})">`;
+    const gaya = b.gaya || "umum", ANW = gaya !== "siluet", KL = gaya === "anwar" ? "#dca779" : KULIT, belakang = sudutTokoh === "belakang" || v(b.belakang, t, d, false);
     if (gaya === "siluet") {
       k += `<circle r="78" fill="${BAYANG}"/>`;
     } else if (belakang && b.rambut === "kerudung") { // perempuan dari belakang: kain kerudung menjuntai sampai bahu
