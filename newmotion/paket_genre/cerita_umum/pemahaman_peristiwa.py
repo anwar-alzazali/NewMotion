@@ -53,6 +53,9 @@ _PEMISAH_URUT = re.compile(r"\s+(?:lalu|kemudian|setelah\s+itu|sesudah\s+itu)\s+
 _PEMISAH_SIMULTAN = re.compile(r"\s+(?:dan|sementara)\s+", re.I)
 
 
+_AKSI_BUTUH_BENDA = {"menaiki", "mengendarai_motor"}
+
+
 def _normalisasi(teks: str) -> str:
     return " ".join(unicodedata.normalize("NFKC", teks).split())
 
@@ -192,6 +195,12 @@ def uraikan_peristiwa(\n    teks: str, peran: Sequence[str], benda: Sequence[Map
                     klausa, peran, nomor, aktor_default=aktor_default
                 )
                 if hasil:
+                    if hasil.get("aksi") in _AKSI_BUTUH_BENDA and not hasil.get("sasaran_benda_id"):
+                        diagnostik.append({
+                            "kode": "sasaran_benda_belum_terpetakan",
+                            "kalimat": nomor_kalimat,
+                            "bukti_teks": klausa.strip(),
+                        })
                     hasil["hubungan_temporal"] = (
                         "setelah" if nomor_bagian > 0 else
                         "simultan" if len(bagian_simultan) > 1 else "tidak_dinyatakan"
