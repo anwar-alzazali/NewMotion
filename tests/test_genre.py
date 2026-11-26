@@ -848,8 +848,12 @@ def test_paket_dapat_mengarahkan_rencana_visual_tokoh_secara_opt_in():
         assert diterima[0][1]["peristiwa"][0]["aktor_id"] == "tokoh-penolong"
         assert papan["rencana_visual_tokoh"]["status"] == "siap_diterjemahkan"
         assert papan["rencana_visual_tokoh"]["shot"][0]["tokoh"][0]["aksi"] == "jalan"
-        # Kait visual mengeluarkan rencana, bukan menyisipkan boneka secara diam-diam.
-        assert papan["cerita"]["shot"][0]["boneka"] == []
+        # Rencana visual opt-in diterjemahkan ke JSON renderer oleh sutradara.
+        boneka = papan["cerita"]["shot"][0]["boneka"]
+        assert len(boneka) == 1
+        assert boneka[0]["aktor_id"] == "tokoh-penolong"
+        assert boneka[0]["x"] == [[0, 200], [2, 500]]
+        assert papan["_rencana_visual_tokoh_diterapkan"] is True
     finally:
         from newmotion.domain import genre as modul_genre
         modul_genre._PAKET.pop(nama, None)
