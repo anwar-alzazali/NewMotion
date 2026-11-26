@@ -28,7 +28,34 @@ def naskah_untuk_pengarah(
     if not isinstance(beat, list) or not beat:
         raise ValueError("Naskah tidak memiliki beat untuk diarahkan.")
     adegan = []
-    tokoh_berdasarkan_nama: dict[str, dict[str, str]] = {}
+    tokoh_berdasarkan_nama: dict[str, dict] = {}
+    ids_tokoh: set[str] = set()
+    sumber_tokoh = naskah.get("tokoh", [])
+    if not isinstance(sumber_tokoh, list):
+        raise ValueError("Daftar tokoh pada naskah harus berupa daftar objek.")
+    for nomor_tokoh, sumber in enumerate(sumber_tokoh, 1):
+        if not isinstance(sumber, dict):
+            raise ValueError(f"Tokoh ke-{nomor_tokoh} harus berupa objek.")
+        nama_tokoh = sumber.get("nama")
+        if not isinstance(nama_tokoh, str) or not nama_tokoh.strip():
+            raise ValueError(f"Tokoh ke-{nomor_tokoh} harus memiliki nama.")
+        label = " ".join(nama_tokoh.split())
+        kunci = label.casefold()
+        if kunci in tokoh_berdasarkan_nama:
+            raise ValueError(f"Nama tokoh {label!r} ambigu karena terdaftar lebih dari sekali.")
+        identitas = sumber.get("id")
+        if not isinstance(identitas, str) or not identitas.strip():
+            sidik = hashlib.sha256(kunci.encode("utf-8")).hexdigest()[:12]
+            identitas = f"tokoh-{sidik}"
+        else:
+            identitas = identitas.strip()
+        if identitas in ids_tokoh:
+            raise ValueError(f"ID tokoh {identitas!r} digunakan lebih dari sekali.")
+        data_tokoh = copy.deepcopy(sumber)
+        data_tokoh["id"] = identitas
+        data_tokoh["nama"] = label
+        tokoh_berdasarkan_nama[kunci] = data_tokoh
+        ids_tokoh.add(identitas)
     ids_beat: set[str] = set()
     ids_quran = {
         d.get("id"): d for d in naskah.get("dalil", [])
@@ -62,9 +89,15 @@ def naskah_untuk_pengarah(
             kunci_peran = label.casefold()
             if kunci_peran not in tokoh_berdasarkan_nama:
                 sidik = hashlib.sha256(kunci_peran.encode("utf-8")).hexdigest()[:12]
+                identitas = f"tokoh-{sidik}"
+                if identitas in ids_tokoh:
+                    raise ValueError(
+                        f"ID tokoh hasil pembentukan untuk {label!r} bertabrakan dengan ID lain."
+                    )
                 tokoh_berdasarkan_nama[kunci_peran] = {
-                    "id": f"tokoh-{sidik}", "nama": label,
+                    "id": identitas, "nama": label,
                 }
+                ids_tokoh.add(identitas)
             peran_ids.append(tokoh_berdasarkan_nama[kunci_peran]["id"])
 
         dialog = b.get("dialog", [])
