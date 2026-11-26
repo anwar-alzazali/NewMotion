@@ -15,13 +15,13 @@ from collections.abc import Mapping
 # Urutan lebih spesifik diletakkan lebih dahulu agar "kapal Nabi Nuh" tetap satu bahtera.
 POLA_SUBJEK = (
     (re.compile(r"\b(kapal|bahtera|perahu)\b", re.I), "bahtera"),
-    (re.compile(r"\b(penggali|para penggali|orang yang menggali)\b", re.I), "penggali"),
-    (re.compile(r"\b(pemimpin|raja|panglima)\b", re.I), "pemimpin"),
+    (re.compile(r"\b(penggali|para penggali|orang yang menggali|menggali|menggerogoti)\b", re.I), "penggali"),
+    (re.compile(r"\b(pemimpin|pemuka|raja|panglima)\b", re.I), "pemimpin"),
     (re.compile(r"\b(dinding|tembok|benteng)\b", re.I), "ngarai"),
     (re.compile(r"\b(pagar)\b", re.I), "pagar"),
     (re.compile(r"\b(lubang|terowongan)\b", re.I), "ngarai"),
     (re.compile(r"\b(ombak|gelombang)\b", re.I), "ombak"),
-    (re.compile(r"\b(arus|aliran air)\b", re.I), "arus"),
+    (re.compile(r"\b(arus|aliran air|air)\b", re.I), "arus"),
     (re.compile(r"\b(hewan|binatang|ternak)\b", re.I), "hewan"),
     (re.compile(r"\b(unta)\b", re.I), "unta"),
     (re.compile(r"\b(gerbang|pintu gerbang)\b", re.I), "gerbang"),
@@ -81,7 +81,7 @@ def _properti_benda(jenis: str, teks: str, indeks: int, durasi: float, seed: int
                       "lx": 0, "ly": -190, "seed": seed % 997, "belakang": True})
         if POLA_PERUBAHAN["retak"].search(teks):
             dasar["lubang"] = 0.24
-        if POLA_PERUBAHAN["lubang"].search(teks):
+        if POLA_PERUBAHAN["lubang"].search(teks) or re.search(r"\b(hampir tembus|nyaris tembus)\b", teks, re.I):
             dasar["lubang"] = 0.62
         if POLA_PERUBAHAN["jebol"].search(teks):
             dasar["lubang"] = 1.0
@@ -90,7 +90,7 @@ def _properti_benda(jenis: str, teks: str, indeks: int, durasi: float, seed: int
         dasar.update({"x": 540, "y": 1320, "s": 1.05, "w": 1100, "model": "tembok",
                       "belakang": True})
     elif jenis == "penggali":
-        dasar.update({"x": x_sisi, "y": 1420, "s": 0.82, "aktif": 1, "n": 5,
+        dasar.update({"x": 540, "y": 1420, "s": 0.82, "aktif": 1, "n": 5,
                       "seed": seed % 997})
     elif jenis == "pemimpin":
         dasar.update({"x": x_sisi, "y": 1350, "s": 0.92, "angkat": 0.75})
