@@ -171,7 +171,8 @@ def test_pengendara_menghadap_samping_dan_memegang_setang():
         assert pengendara["profil"] == "kanan"
     assert 'b.profil === "kanan"' in sumber
     assert "profilMotor: (b.profil ===" in sumber
-    assert "const H = o.profilMotor ? [218, -284 + nafas + (sg < 0 ? -7 : 0)]" in sumber
+    # 27 Nov: tangan & kaki pengendara menempel ke titik kait motor (IK), diukur uji_tokoh A6
+    assert 'motor: { sudut: "samping"' in sumber and "ik2(S, q, 85, 80, false)" in sumber
     assert 'M -30 ${-396 + nafas} Q 22 ${-420 + nafas}' in sumber
     assert 'points="-4 ${hy0} -82 ${hy0 + 72} -142 ${hy0 + 108}"' in sumber
     assert 'M -4 ${-414 + nafas} L 34 ${-414 + nafas}' in sumber

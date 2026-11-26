@@ -9,6 +9,8 @@ Merender setiap pose/aksi dari beberapa sudut lewat jalur yang sama dengan video
     A3 arah searah               kepala, badan, dan kaki menghadap sudut yang sama
     A4 bagian per sudut          jumlah telinga sesuai sudut (depan/belakang 2, samping 1)
     A5 gerak tanpa loncatan      aksi berulang: sendi tidak meloncat jauh antar-frame 30 fps
+    A6 menempel di benda         tokoh berkait (motor, jok mobil, kursi...): tangan di pegangan, kaki di
+                                 pijakan (<= 14 px), badan tampak samping bila benda tampak samping
   Lapis B/C (mata)
     lembar_pose_*.png  pose x sudut      lembar_gerak.png  siklus aksi per waktu
     versi *_kecil.png  ukuran layar HP (keterbacaan)
@@ -132,6 +134,66 @@ def beri_label(png: bytes, baris, judul: str, tujuan: Path) -> None:
     img.save(tujuan)
     kecil = img.resize((LEBAR // 4, TINGGI // 4))
     kecil.save(tujuan.with_name(tujuan.stem + "_kecil.png"))
+
+
+# Adegan titik kait: tokoh menempel di benda (kendaraan & perabot). (nama, shot, sudut harus)
+TOKOH_KAIT = {k: v for k, v in TOKOH.items() if k != "bayangan"}
+ADEGAN_KAIT = [
+    ("motor", {"horizon": 1300, "palet": "siang", "benda": [{"jenis": "motor", "id": "m", "x": 540, "y": 1650, "s": 1.4}],
+               "boneka": [{**TOKOH_KAIT, "kait": "m"}]}, "samping"),
+    ("motor arah kiri", {"horizon": 1300, "palet": "siang",
+                         "benda": [{"jenis": "motor", "id": "m", "x": 540, "y": 1650, "s": 1.4, "arah": -1}],
+                         "boneka": [{**TOKOH_KAIT, "kait": "m"}]}, "samping"),
+    ("mobil", {"ruang": {"jenis": "mobil", "waktu": "sore"},
+                                   "benda": [{"jenis": "setir", "x": 900, "y": 1200, "s": 1}],
+                                   "boneka": [{**TOKOH_KAIT, "kait": "jok_depan"}, {**TOKOH_KAIT, "kait": "jok_belakang"}]}, "samping"),
+    ("kursi", {"ruang": {"jenis": "tamu"}, "benda": [{"jenis": "kursi", "id": "k", "x": 540, "y": 1700, "s": 1.2}],
+               "boneka": [{**TOKOH_KAIT, "kait": "k"}]}, "depan"),
+    ("sofa", {"ruang": {"jenis": "tamu"}, "benda": [{"jenis": "sofa", "id": "f", "x": 540, "y": 1700, "s": 1.1}],
+              "boneka": [{**TOKOH_KAIT, "kait": "f"}]}, "depan"),
+]
+BATAS_KAIT = 14.0
+
+
+def periksa_kait(catatan: list[dict], nama: str, sudut: str) -> list[dict]:
+    """A6: tokoh berkait menempel di benda dan sudutnya mengikuti benda."""
+    temuan = []
+    for c in catatan:
+        tambah = lambda kode, pesan: temuan.append({"kode": kode, "pose": nama, "sudut": sudut, "t": c["t"], "pesan": pesan})  # noqa: E731
+        g = c.get("kait_galat")
+        if sudut == "samping":
+            if not g:
+                tambah("A6_TIDAK_MENEMPEL", "tokoh tidak menerima titik kait benda")
+                continue
+            for bagian in ("pegang", "pijak"):
+                if g.get(bagian) is not None and g[bagian] > BATAS_KAIT:
+                    tambah("A6_TIDAK_MENEMPEL", f"{bagian} meleset {g[bagian]:.0f}px dari titik kait")
+            if not c.get("badan_samping"):
+                tambah("A6_SUDUT_BEDA", "benda tampak samping tetapi badan tokoh tampak depan")
+    return temuan
+
+
+def uji_kait(out: Path, chrome: str | None) -> list[dict]:
+    spek = {"latar": "gelap", "musik": False, "stempel": False, "dekor": False, "durasi": 2 * len(ADEGAN_KAIT),
+            "cerita": {"shot": [{"at": 2 * i, "debu": 0, **shot} for i, (_, shot, _) in enumerate(ADEGAN_KAIT)]}}
+    gambar = render(spek, [2 * i + 1 for i in range(len(ADEGAN_KAIT))], out, "kait", chrome)
+    temuan = []
+    from io import BytesIO
+
+    from PIL import Image, ImageDraw, ImageFont
+    w, h = LEBAR // 4, TINGGI // 4
+    kanvas = Image.new("RGB", (w * len(gambar), h + 40), "white")
+    d = ImageDraw.Draw(kanvas)
+    try:
+        f = ImageFont.truetype("DejaVuSans-Bold.ttf", 20)
+    except OSError:
+        f = ImageFont.load_default()
+    for i, ((png, catatan), (nama, _, sudut)) in enumerate(zip(gambar, ADEGAN_KAIT)):
+        temuan += periksa_kait(catatan, nama, sudut)
+        kanvas.paste(Image.open(BytesIO(png)).convert("RGB").resize((w, h)), (w * i, 40))
+        d.text((w * i + 8, 10), nama, font=f, fill="black")
+    kanvas.save(out / "lembar_kait.png")
+    return temuan
 
 
 # ---------------- lapis A ----------------
@@ -288,6 +350,8 @@ def main(argv=None) -> int:
             buf = BytesIO()
             kanvas.save(buf, format="PNG")
             beri_label(buf.getvalue(), baris, f"Lembar gerak — sudut {sudut}", out / f"lembar_gerak_{sudut}_{h // BARIS + 1}.png")
+
+    temuan += uji_kait(out, args.chrome)
 
     ring = ringkas(temuan)
     (out / "laporan.json").write_text(json.dumps({"acuan_tulang": acuan, "ringkasan": ring, "temuan": temuan},
