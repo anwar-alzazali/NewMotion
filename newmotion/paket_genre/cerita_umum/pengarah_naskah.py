@@ -36,11 +36,26 @@ def _profil_shot(adegan_item: dict, indeks: int) -> dict:
         item.get("aktor_id") for item in peristiwa
         if isinstance(item.get("aktor_id"), str)
     ]
+    sasaran_tokoh = [
+        item.get("sasaran_tokoh_id") for item in peristiwa
+        if isinstance(item.get("sasaran_tokoh_id"), str)
+    ]
     tokoh_beat = [
         item for item in adegan_item.get("tokoh_ids", [])
         if isinstance(item, str)
     ]
-    fokus = list(dict.fromkeys(aktor or tokoh_beat))
+    fokus = list(dict.fromkeys(aktor + sasaran_tokoh + tokoh_beat))
+    urutan_peristiwa = [
+        {
+            "urutan": nomor,
+            "peristiwa_id": item.get("id") or _id_peristiwa(adegan_item, indeks)[nomor - 1],
+            "aktor_id": item.get("aktor_id"),
+            "aksi": item.get("aksi"),
+            "sasaran": item.get("sasaran"),
+            "sasaran_tokoh_id": item.get("sasaran_tokoh_id"),
+        }
+        for nomor, item in enumerate(peristiwa, start=1)
+    ]
 
     if any(item in AKSI_JATUH for item in aksi):
         tujuan, skala, zoom = "menampilkan_perubahan_aksi", "aksi", [1.06, 1.16]
@@ -58,6 +73,7 @@ def _profil_shot(adegan_item: dict, indeks: int) -> dict:
         "tujuan": tujuan,
         "fokus_tokoh_ids": fokus,
         "peristiwa_ids": _id_peristiwa(adegan_item, indeks),
+        "urutan_peristiwa": urutan_peristiwa,
         "komposisi": {"skala": skala, "pusat": "tengah"},
         "dasar_keputusan": "aksi_dan_tokoh_eksplisit" if peristiwa or tokoh_beat else "beat_sumber",
         "zoom": zoom,
