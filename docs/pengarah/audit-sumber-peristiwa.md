@@ -114,3 +114,30 @@ Tes mencakup narasi “Pengendara jatuh lalu berdiri”, keterlacakan ID entitas
 urutan keadaan akhir, validasi ID yang tidak terdaftar, dan larangan menebak
 keadaan awal. Jalur pengurai tetap khusus `cerita_umum`; aturan Kisah Islami
 tidak diubah. Tidak ada render video dijalankan.
+
+
+
+## Perluasan tujuan aksi eksplisit (Tahap 18 — bagian tujuan)
+
+Pengurai cerita umum kini mengenali pola tujuan yang eksplisit dengan bentuk
+"aktor melakukan aksi utama untuk melakukan aksi tujuan", misalnya
+"Penolong berjalan untuk menolong Pengendara".
+
+Aturannya:
+- Aksi utama menjadi peristiwa yang benar-benar dinyatakan.
+- Aksi setelah kata "untuk" disimpan sebagai metadata `tujuan`, bukan sebagai
+  peristiwa yang dianggap sudah terjadi.
+- Sasaran tokoh pada tujuan disimpan sebagai nama yang masih harus diresolusikan
+  oleh lapisan semantik; tujuan tidak mengubah sasaran aksi utama.
+- Bentuk pasif dengan pelaku eksplisit tetap dapat memiliki tujuan, misalnya
+  "Pengendara ditolong oleh Penolong untuk berdiri".
+- Frasa "untuk ..." yang belum dapat diklasifikasikan menghasilkan diagnostik
+  `frasa_untuk_belum_diklasifikasikan`. Sufiks tersebut tidak boleh keliru
+  menjadi sasaran benda aksi utama.
+- Tujuan dengan lebih dari satu aksi yang dikenali ditolak sebagai ambigu.
+
+Batas bagian ini: kata kerja tujuan harus ada dalam kamus aksi; kata ganti,
+tujuan implisit, tujuan spasial yang kompleks, sebab-akibat, dan relasi antar
+peristiwa lintas kalimat belum ditafsirkan. Tujuan bukan bukti bahwa aksi tujuan
+sudah dilaksanakan. Tidak ada perubahan pada paket Kisah Islami dan tidak ada
+render video.
