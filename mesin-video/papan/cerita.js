@@ -1483,7 +1483,12 @@
     const pakaiP = !!P, wKaki = !P ? 44 : bawahP === "celana" ? 46 : bawahP === "gamis" ? 72 : 64, wnK = !P ? BADAN : bawahP === "gamis" ? BD : WC;
     const titik = [];
     let kaki = "";
-    if (samping) {
+    if (o.profilMotor) {
+      // Jalur kompatibilitas papan lama: pose pengendara lama tetap identik.
+      kaki += `<polyline points="-4 ${hy0} -82 ${hy0 + 72} -142 ${hy0 + 108}" fill="none" stroke="${warna(wnK, "#000000", 0.24)}" stroke-width="${wKaki}" stroke-linecap="round" stroke-linejoin="round"/>`;
+      kaki += `<polyline points="18 ${hy0} 92 ${hy0 + 70} 150 ${hy0 + 112}" fill="none" stroke="${wnK}" stroke-width="${wKaki}" stroke-linecap="round" stroke-linejoin="round"/>`;
+      kaki += `<path d="M 112 ${hy0 + 104} q 28 -12 60 4 l 12 18 q -34 10 -68 -4 Z" fill="#2a2024"/>`;
+    } else if (samping) {
       // Proyeksi profil: kedua tungkai berada pada bidang kedalaman yang sama,
       // dengan langkah maju-mundur yang bergantian. Panjang setiap tulang tetap 100 px.
       const fase = ((t * (aksi === "lari" ? 2.15 : 1.25) * Math.PI * 2 + (offset || 0)) % (Math.PI * 2) + Math.PI * 2) % (Math.PI * 2);
@@ -1545,22 +1550,27 @@
       if (bawahP === "sarung" && P.motif !== "polos") for (let i = 1; i < 4; i++) { const yy = mix(top, Math.max(bl[1], br[1]), i / 4); kaki += `<line x1="${mix(-74, bl[0], i / 4)}" y1="${yy}" x2="${mix(74, br[0], i / 4)}" y2="${yy}" stroke="${warna(wnK, "#ffffff", 0.35)}" stroke-width="7" opacity=".45"/>`; }
     }
     // Torso samping: dada dan pinggul mengarah ke depan perjalanan.
-    let bdn = samping
-      ? `<path d="M -24 ${-396 + nafas} Q 12 ${-420 + nafas} 34 ${-382 + nafas} L 32 ${-270 + nafas} Q 22 ${-222 + nafas} 4 ${-206 + nafas} L -22 ${-244 + nafas} Z" fill="${BD}" stroke="${warna(BD, "#000000", 0.18)}" stroke-width="4"/>`
-      : tigaPerempat
-        ? `<path d="M -48 ${-395 + nafas} Q -8 ${-426 + nafas} 46 ${-390 + nafas} L 70 ${-250 + nafas} Q 36 ${-208 + nafas} -24 ${-206 + nafas} L -54 ${-252 + nafas} Z" fill="${BD}" stroke="${warna(BD, "#000000", 0.18)}" stroke-width="4"/>`
-        : `<rect x="${-70 - 30 * GM}" y="${-395 + nafas}" width="${140 + 60 * GM}" height="215" rx="${58 + 20 * GM}" fill="${BD}"/>`;
-    if (P && !samping) bdn += bajuDetail(P, BD, nafas, GM);
+    let bdn = o.profilMotor
+      ? `<path d="M -30 ${-396 + nafas} Q 22 ${-420 + nafas} 52 ${-382 + nafas} L 68 ${-270 + nafas} Q 56 ${-222 + nafas} 8 ${-206 + nafas} L -28 ${-244 + nafas} Z" fill="${BD}" stroke="${warna(BD, "#000000", 0.18)}" stroke-width="4"/>`
+      : samping
+        ? `<path d="M -24 ${-396 + nafas} Q 12 ${-420 + nafas} 34 ${-382 + nafas} L 32 ${-270 + nafas} Q 22 ${-222 + nafas} 4 ${-206 + nafas} L -22 ${-244 + nafas} Z" fill="${BD}" stroke="${warna(BD, "#000000", 0.18)}" stroke-width="4"/>`
+        : tigaPerempat
+          ? `<path d="M -48 ${-395 + nafas} Q -8 ${-426 + nafas} 46 ${-390 + nafas} L 70 ${-250 + nafas} Q 36 ${-208 + nafas} -24 ${-206 + nafas} L -54 ${-252 + nafas} Z" fill="${BD}" stroke="${warna(BD, "#000000", 0.18)}" stroke-width="4"/>`
+          : `<rect x="${-70 - 30 * GM}" y="${-395 + nafas}" width="${140 + 60 * GM}" height="215" rx="${58 + 20 * GM}" fill="${BD}"/>`;
+    if (P && !samping && !o.profilMotor) bdn += bajuDetail(P, BD, nafas, GM);
     // lengan
     const lengan = (sg, s) => {
       let a1 = s[0], a2 = s[1]; if (sg > 0 && J.lambai) a2 += Math.sin(t * 9) * 26 * J.lambai;
       const sw = ayun * 0.6 * -sg;
-      const S = o.profilMotor ? [sg < 0 ? 26 : 34, -360 + nafas] :
+      const S = o.profilMotor ? [34 + (sg < 0 ? -8 : 8), -360 + nafas] :
+        o.profilMotorBaru ? [sg < 0 ? 26 : 34, -360 + nafas] :
         samping ? [sisi * (sg < 0 ? 10 : 18), -360 + nafas + (sg < 0 ? -13 : 0)] :
         tigaPerempat ? [sg < 0 ? -44 : 60, -360 + nafas] : [sg * (62 + 26 * GM), -360 + nafas];
-      const E = o.profilMotor ? [S[0] + 75, -320 + nafas] :
+      const E = o.profilMotor ? [112 + (sg < 0 ? -8 : 8), -320 + nafas] :
+        o.profilMotorBaru ? [S[0] + 75, -320 + nafas] :
         [S[0] + (samping ? sisi : sg) * Math.sin((a1 + sw) * R) * 85, S[1] + Math.cos((a1 + sw) * R) * 85];
-      const H = o.profilMotor ? [E[0] + 76, -293 + nafas] :
+      const H = o.profilMotor ? [218, -284 + nafas + (sg < 0 ? -7 : 0)] :
+        o.profilMotorBaru ? [E[0] + 76, -293 + nafas] :
         [E[0] + (samping ? sisi : sg) * Math.sin((a2 + sw) * R) * 80, E[1] + Math.cos((a2 + sw) * R) * 80];
       return { ats: `<line x1="${S[0]}" y1="${S[1]}" x2="${E[0]}" y2="${E[1]}" stroke="${BD}" stroke-width="36" stroke-linecap="round"/>`,
                bwh: `<line x1="${E[0]}" y1="${E[1]}" x2="${H[0]}" y2="${H[1]}" stroke="${BD}" stroke-width="34" stroke-linecap="round"/><circle cx="${H[0]}" cy="${H[1]}" r="19" fill="${pakaiP ? KLB : BD}" stroke="${INK}" stroke-width="4"/>`, S, E, H };
@@ -1702,12 +1712,14 @@
     const tangan = (x2, y2) => (P ? `<circle cx="${x2}" cy="${y2}" r="19" fill="${KLB}" stroke="${INK}" stroke-width="4"/>` : "");
     const lenganKiri = `<line x1="${-SH}" y1="${-360 + nafas}" x2="${-SH - 22 - ayun * 0.3}" y2="${-200 + nafas}" stroke="${BD}" stroke-width="36" stroke-linecap="round"/>` + tangan(-SH - 22 - ayun * 0.3, -192 + nafas);
     g += lenganKiri;
-    const sudutTokoh = b.sudut || (b.profil === "kiri" ? "samping_kiri" : b.profil === "kanan" || b.profil === true ? "samping" : v(b.belakang, t, d, false) ? "belakang" : "depan");
-    let RG = null; if (RIG) { RG = rangka(RIG, { P, BD, WC, KLB, nafas, ayun, bawahP, t: HD ? ta : t, gm: GM, aksi: RIG && RIG._aksi || b.aksi, id: b.npc != null ? b.npc : b.id, offset: b._gerak_offset, sudut: sudutTokoh, profilMotor: (sudutTokoh === "samping" || sudutTokoh === "samping_kiri") && RIG && RIG._aksi === "mengendarai_motor" }); g = RG.g; }
+    const sudutTokoh = b.sudut || (v(b.belakang, t, d, false) ? "belakang" : "depan");
+    let RG = null; if (RIG) { RG = rangka(RIG, { P, BD, WC, KLB, nafas, ayun, bawahP, t: HD ? ta : t, gm: GM, aksi: RIG && RIG._aksi || b.aksi, id: b.npc != null ? b.npc : b.id, offset: b._gerak_offset, sudut: sudutTokoh,
+      profilMotor: !b.sudut && (b.profil === "kanan" || b.profil === true) && RIG.turun >= 50,
+      profilMotorBaru: !!b.sudut && (sudutTokoh === "samping" || sudutTokoh === "samping_kiri") && RIG._aksi === "mengendarai_motor" }); g = RG.g; }
     let lenganKanan = RIG ? "" : `<line x1="${SH}" y1="${-360 + nafas}" x2="${SH + 22 + ayun * 0.3}" y2="${-200 + nafas}" stroke="${BD}" stroke-width="36" stroke-linecap="round"/>` + tangan(SH + 22 + ayun * 0.3, -192 + nafas);
     // kepala
     const hx = arah * 10, hy = -492 - (KB - 1) * 96 + nafas + tunduk * 14 + (H ? H.ky : 0), ex = arah * 24, ey = tunduk * 14 + (mata === "atas" ? -8 : mata === "bawah" ? 8 : 0);
-    const profilAktif = sudutTokoh === "samping" || sudutTokoh === "samping_kiri";
+    const profilAktif = sudutTokoh === "samping" || sudutTokoh === "samping_kiri" || (!b.sudut && (b.profil === "kanan" || b.profil === true));
     let k = profilAktif
       ? `<path d="M -4 ${-414 + nafas} L 34 ${-414 + nafas} L 42 ${-374 + nafas} L 2 ${-370 + nafas} Z" fill="${P ? KLB : BADAN}"/>`
       : `<rect x="-22" y="${-410 + nafas}" width="44" height="40" fill="${P ? KLB : BADAN}"/>`;
@@ -1787,7 +1799,7 @@
         k += `<path d="M -68 -48 Q 0 -68 68 -48 L 62 -88 Q 0 -110 -62 -88 Z" fill="${WPK}" stroke="${INK}" stroke-width="6"/><path d="M -58 -58 Q 0 -76 58 -58" stroke="${warna(WPK, "#000000", 0.18)}" stroke-width="5" fill="none"/>`;
       }
     }
-    const muka = ANW && !belakang && !profilAktif && gaya !== "dajjal" && !b.wajah_cahaya;
+    const muka = ANW && !belakang && !profilAktif && !b.profil && gaya !== "dajjal" && !b.wajah_cahaya;
     if (muka && gaya !== "siluet") k += `<path d="M 18 -80 A 75 82 0 0 1 18 80 A 58 82 0 0 0 18 -80 Z" fill="#3a1f2a" opacity=".13"/>`; // bayangan separuh wajah
     if (muka && (wajah === "lelah" || wajah === "takut" || wajah === "marah" || wajah === "malu" || keringat > 0) && gaya !== "siluet") k += `<ellipse cx="${ex - 44}" cy="${30 + ey}" rx="16" ry="9" fill="#ff6b6b" opacity="${0.25 + 0.3 * PANAS}"/><ellipse cx="${ex + 44}" cy="${30 + ey}" rx="16" ry="9" fill="#ff6b6b" opacity="${0.25 + 0.3 * PANAS}"/>`; // pipi memerah
     if (muka) {
@@ -1849,9 +1861,9 @@
     if (H) { x += H.dx; y += H.dy; s *= H.sc; isi = `<g transform="scale(${1 - H.sq * 0.7} ${1 + H.sq})">${isi}</g>`; }
     const byg = (C.bayangan === false || b.bayangan === false || gaya === "siluet" || naik < 0.98 || potong > 0 || gen > 0 || (RG && RG.guling)) ? "" : `<ellipse cx="0" cy="6" rx="${b.bayangan > 0 ? b.bayangan : 92}" ry="15" fill="#000" opacity=".2"/>`; // standar visual butir 5: bayangan lembut di pijakan (matikan: bayangan:false di boneka atau cerita)
     if (window.__catatBoneka) { // hanya aktif saat alat uji tokoh menyiapkannya; tidak memengaruhi render biasa
-      const pm = sudutTokoh === "samping" || sudutTokoh === "samping_kiri";
-      window.__catatBoneka.push({ id: b.id, t, x, y, s, tubuh, arah, tunduk, profil: pm ? sudutTokoh : null, sudut: sudutTokoh, belakang: sudutTokoh === "belakang",
-        badan_samping: pm, badan_tiga_perempat: sudutTokoh === "tiga_perempat", badan_belakang: sudutTokoh === "belakang",
+      const pm = sudutTokoh === "samping" || sudutTokoh === "samping_kiri" || !!(RG && RG.sendi && !b.sudut && (b.profil === "kanan" || b.profil === true) && RIG && RIG.turun >= 50);
+      window.__catatBoneka.push({ id: b.id, t, x, y, s, tubuh, arah, tunduk, profil: pm ? (sudutTokoh === "samping" || sudutTokoh === "samping_kiri" ? sudutTokoh : "samping") : null, sudut: sudutTokoh, belakang: sudutTokoh === "belakang",
+        badan_samping: pm, badan_tiga_perempat: !!b.sudut && sudutTokoh === "tiga_perempat", badan_belakang: !!b.sudut && sudutTokoh === "belakang",
         kepala_tiga_perempat: sudutTokoh === "tiga_perempat",
         rig: !!RIG, aksi: RIG && RIG._aksi || b.aksi || null, sendi: RG ? RG.sendi : null, guling: RG ? RG.guling || 0 : 0,
         telinga: (k.match(/cx="-?76" cy="6" r="15"/g) || []).length, kepala: [hx, hy] });
