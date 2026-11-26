@@ -46,6 +46,9 @@ def arahkan_tokoh_visual(rencana_cerita, rencana_blocking, cerita):
                 diagnostik.append({"kode": "peristiwa_tidak_cukup_untuk_visual", "peristiwa_id": id_peristiwa})
                 continue
             aksi = aksi_asli.strip().casefold().replace(" ", "_")
+            sasaran_objek = str(event.get("sasaran") or "").casefold()
+            if sasaran_objek in {"motor", "sepeda_motor"}:
+                motor_dibutuhkan = True
             if aktor_id in sudah:
                 diagnostik.append({"kode": "aktor_memiliki_beberapa_aksi_dalam_satu_shot", "aktor_id": aktor_id})
                 continue
@@ -64,7 +67,7 @@ def arahkan_tokoh_visual(rencana_cerita, rencana_blocking, cerita):
                     "pose": [[0, "berdiri"], [2.2, "berdiri"]],
                 })
             elif aksi in AKSI_MOTOR:
-                sasaran = str(event.get("sasaran") or "").casefold()
+                sasaran = sasaran_objek
                 if sasaran not in {"motor", "sepeda_motor"}:
                     diagnostik.append({"kode": "kendaraan_tidak_dinyatakan_eksplisit", "peristiwa_id": id_peristiwa})
                     continue
