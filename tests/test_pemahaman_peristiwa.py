@@ -237,3 +237,31 @@ def test_narasi_biasa_menghasilkan_tautan_benda_dan_objek_renderer():
     assert event["sasaran_benda_id"] == "motor-01"
     assert motor["jenis"] == "motor"
     assert motor["x"] == 520
+    assert spek["cerita"]["shot"][0]["boneka"][0]["kendaraan_id"] == "motor-01"
+
+
+def test_benda_tetap_divisualkan_jika_aksi_tokoh_belum_didukung():
+    from newmotion.application.pengarah_inti import arahkan_naskah
+
+    naskah = {
+        "judul": "Pengendara mengamati motor",
+        "genre": "cerita_umum",
+        "konteks_konten": "umum",
+        "dalil": [],
+        "benda": [{
+            "id": "motor-01",
+            "nama": "motor",
+            "jenis_renderer": "motor",
+            "posisi": {"x": 520, "y": 1500, "s": 0.8},
+        }],
+        "beat": [{
+            "id": "beat-amati",
+            "narasi": "Pengendara mengamati motor.",
+            "peran": ["Pengendara"],
+        }],
+    }
+    sumber = naskah_untuk_pengarah(naskah)
+    spek, _, _ = arahkan_naskah(sumber, genre_pilihan="cerita_umum")
+
+    assert spek["rencana_visual_tokoh"]["diagnostik"][0]["kode"] == "aksi_visual_belum_didukung"
+    assert spek["cerita"]["shot"][0]["benda"][0]["id"] == "motor-01"
