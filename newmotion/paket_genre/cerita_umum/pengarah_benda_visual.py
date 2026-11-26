@@ -124,6 +124,10 @@ def _benda_renderer(entitas, tokoh_visual_by_id=None):
         raise ValueError(f"lapisan benda {identitas!r} hanya menerima depan/belakang")
     if any(type(nilai) is not bool for nilai in lapisan.values()):
         raise ValueError(f"Nilai lapisan benda {identitas!r} harus boolean")
+    if lapisan.get("depan") is True and lapisan.get("belakang") is True:
+        raise ValueError(
+            f"Benda {identitas!r} tidak boleh sekaligus berada pada lapisan depan dan belakang"
+        )
     hasil = {
         "id": identitas,
         "jenis": jenis,
