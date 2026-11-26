@@ -163,7 +163,8 @@ def test_adapter_renderer_dijalankan_setelah_gerbang_adab():
     sumber = (
         Path(__file__).parents[1] / "mesin-video" / "papan_buat.py"
     ).read_text(encoding="utf-8")
-    posisi_gerbang = sumber.index("jaga_spek(spec)")
-    posisi_adapter = sumber.index("terapkan_rencana_visual_tokoh(spec)")
-    posisi_integrasi = sumber.index("integrasikan_spec(spec)")
+    awal_buat_html = sumber.index("def buat_html(")
+    posisi_gerbang = sumber.index("jaga_spek(spec)", awal_buat_html)
+    posisi_adapter = sumber.index("terapkan_rencana_visual_tokoh(spec)", awal_buat_html)
+    posisi_integrasi = sumber.index("integrasikan_spec(spec)", awal_buat_html)
     assert posisi_gerbang < posisi_adapter < posisi_integrasi
