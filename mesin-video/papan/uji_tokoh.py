@@ -31,18 +31,17 @@ AKAR = Path(__file__).resolve().parents[2]
 PAPAN = AKAR / "mesin-video" / "papan"
 sys.path.insert(0, str(AKAR / "mesin-video"))
 
-# Sudut yang wajib bisa digambar renderer. Nilai = kunci boneka yang dipakai cerita.js saat ini.
-# "tiga_perempat" sementara memakai `arah` (hanya kepala menoleh) karena badan 3/4 belum ada;
-# "samping_kiri" belum didukung renderer sama sekali -- dibiarkan agar kekurangannya terlihat.
+# Lima orientasi eksplisit. Kunci sudut diteruskan ke seluruh kerangka dan kepala,
+# bukan sekadar mengubah arah pandang kepala.
 SUDUT = [
-    ("depan", {}),
-    ("tiga_perempat", {"arah": 0.8}),
-    ("samping", {"profil": "kanan"}),
-    ("samping_kiri", {"profil": "kiri"}),
-    ("belakang", {"belakang": True}),
+    ("depan", {"sudut": "depan"}),
+    ("tiga_perempat", {"sudut": "tiga_perempat"}),
+    ("samping", {"sudut": "samping"}),
+    ("samping_kiri", {"sudut": "samping_kiri"}),
+    ("belakang", {"sudut": "belakang"}),
 ]
 TELINGA_HARUS = {"depan": 2, "tiga_perempat": 2, "samping": 1, "samping_kiri": 1, "belakang": 2}
-BADAN_HARUS = {"depan": "depan", "tiga_perempat": "depan", "samping": "samping",
+BADAN_HARUS = {"depan": "depan", "tiga_perempat": "tiga_perempat", "samping": "samping",
                "samping_kiri": "samping", "belakang": "belakang"}
 
 # Pose yang memang tidak berdiri di tanah dengan dua kaki (A2 tidak berlaku).
@@ -171,13 +170,16 @@ def periksa(catatan: list[dict], label: dict[int, tuple[str, str]], acuan: dict[
             terendah = max(F[1] for _, _, F in kaki)
             if abs(terendah) > 8:
                 tambah("A2_KAKI_MENAPAK", f"telapak terendah {terendah:+.0f}px dari tanah ({'melayang' if terendah < 0 else 'tenggelam'})")
-        kepala = "samping" if c.get("profil") else ("belakang" if c.get("belakang") else "depan")
-        badan = "samping" if c.get("badan_samping") else "depan"
+        kepala = ("samping" if c.get("profil") in ("samping", "samping_kiri", "kanan", True)
+              else "belakang" if c.get("belakang") else "depan")
+        badan = ("samping" if c.get("badan_samping") else
+                 "tiga_perempat" if c.get("badan_tiga_perempat") else
+                 "belakang" if c.get("badan_belakang") else "depan")
         harus = BADAN_HARUS.get(sudut, "depan")
         if harus == "samping" and badan != "samping":
             tambah("A3_ARAH_TIDAK_SEARAH", f"kepala {kepala}, badan & kaki {badan}")
-        if sudut == "samping_kiri" and c.get("profil") not in (None, "kanan", True):
-            tambah("A3_SUDUT_TIDAK_DIDUKUNG", f"profil {c.get('profil')!r} tidak dikenal renderer")
+        if sudut in ("samping", "samping_kiri") and c.get("profil") != sudut:
+            tambah("A3_SUDUT_TIDAK_DIDUKUNG", f"profil {c.get('profil')!r} tidak cocok dengan {sudut}")
         harus_telinga = TELINGA_HARUS.get(sudut)
         if harus_telinga is not None and c.get("telinga") != harus_telinga:
             tambah("A4_BAGIAN_SUDUT", f"telinga {c.get('telinga')}, seharusnya {harus_telinga}")
