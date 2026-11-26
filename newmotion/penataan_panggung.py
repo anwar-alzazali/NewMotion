@@ -356,6 +356,7 @@ def susun_rencana_blocking(rencana_cerita, cerita):
                 "sasaran_tokoh_id": sasaran_tokoh_id,
                 "sasaran_benda": item.get("sasaran_benda"),
                 "sasaran_benda_id": item.get("sasaran_benda_id"),
+                "sasaran_benda": item.get("sasaran_benda"),
                 "tujuan": item.get("tujuan"),
                 "perubahan_keadaan": item.get("perubahan_keadaan"),
                 "status": "siap_dipetakan_ke_visual" if siap_dipetakan else "perlu_pelengkapan_semantik",
