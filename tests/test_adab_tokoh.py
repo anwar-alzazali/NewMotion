@@ -190,3 +190,32 @@ def test_penjaga_adab_mengizinkan_pemuka_kaum_di_kalimat_terpisah():
     assert "BENDA_MANUSIA_TOKOH_SAKRAL" not in {
         item.kode for item in periksa_adab_tokoh(papan)
     }
+
+
+
+def test_penjaga_adab_mendeteksi_sosok_manusia_pada_narasi_malaikat():
+    papan = {
+        "genre": "kisah_islami",
+        "cerita": {
+            "shot": [{
+                "_narasi": "Malaikat Jibril datang sebagai pemimpin rombongan.",
+                "benda": [{"jenis": "pemimpin"}],
+            }]
+        },
+    }
+    kode = {item.kode for item in periksa_adab_tokoh(papan)}
+    assert "BENDA_MANUSIA_TOKOH_SAKRAL" in kode
+
+
+def test_penjaga_adab_mendeteksi_penggali_dalam_narasi_sahabat():
+    papan = {
+        "genre": "kisah_islami",
+        "cerita": {
+            "shot": [{
+                "_narasi": "Para sahabat menggali tanah bersama-sama.",
+                "benda": [{"jenis": "penggali"}],
+            }]
+        },
+    }
+    kode = {item.kode for item in periksa_adab_tokoh(papan)}
+    assert "BENDA_MANUSIA_TOKOH_SAKRAL" in kode
