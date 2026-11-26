@@ -154,3 +154,15 @@ def test_sutradara_menghasilkan_spek_json_dari_narasi_biasa():
         item["id"] for item in peristiwa
     ]
     assert hasil["rencana_cerita"]["adegan"][0]["diagnostik_pemahaman"]["status"] == "siap"
+
+
+def test_aksi_simultan_dapat_mewarisi_subjek_yang_dihilangkan():
+    hasil = uraikan_peristiwa(
+        "Penolong berjalan dan menolong Pengendara.",
+        ["Penolong", "Pengendara"],
+    )
+
+    assert [item["aksi"] for item in hasil["peristiwa"]] == ["berjalan", "menolong"]
+    assert [item["aktor"] for item in hasil["peristiwa"]] == ["Penolong", "Penolong"]
+    assert all(item["hubungan_temporal"] == "simultan" for item in hasil["peristiwa"])
+    assert hasil["status"] == "siap"
