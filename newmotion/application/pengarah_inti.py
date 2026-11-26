@@ -388,6 +388,22 @@ def arahkan_naskah(
                 f"Rencana visual tidak dapat diterapkan ke JSON renderer: {galat}"
             ) from galat
 
+    # Kamera dihitung setelah posisi tokoh diterjemahkan agar dapat mengikuti panggung nyata.
+    if paket.pengarah_kamera is not None:
+        try:
+            hasil_kamera = paket.pengarah_kamera(
+                copy.deepcopy(spesifikasi["rencana_cerita"]),
+                copy.deepcopy(spesifikasi["rencana_blocking"]),
+                spesifikasi["cerita"],
+            )
+        except (TypeError, ValueError) as galat:
+            raise GalatPengarahan(
+                f"Pengarah kamera tidak dapat menyusun keyframe: {galat}"
+            ) from galat
+        if not isinstance(hasil_kamera, Mapping):
+            raise GalatPengarahan("Pengarah kamera harus menghasilkan objek rencana")
+        spesifikasi["rencana_kamera"] = copy.deepcopy(dict(hasil_kamera))
+
     # Genre menjadi metadata otoritatif untuk gerbang penjaga pada renderer.
     spesifikasi["genre"] = paket.nama
     spesifikasi["konteks_konten"] = konteks_konten
