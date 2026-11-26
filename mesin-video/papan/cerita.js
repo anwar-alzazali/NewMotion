@@ -1517,9 +1517,14 @@
           const panjangLangkah = aksi === "lari" ? 70 : 58;
           F = [sisi * panjangLangkah * ayunKaki, -18 * Math.sin(Math.PI * ayunKaki)];
         } else {
-          const sudutKaki = sg < 0 ? s : J.rk;
-          F = [sisi * Math.min(72, Math.abs(Math.sin((sudutKaki[0] + sudutKaki[1]) * R) * 68)),
-               Math.min(0, J.turun)];
+          // Pose diam/menolong tetap memakai sasaran kaki dari pose, tetapi lutut dihitung
+          // ulang dengan panjang paha dan betis tetap 100 px.
+          const sw = sg < 0 ? ayun : -ayun;
+          const a1 = (sg * s[0] + sw) * R, a2 = (sg * s[1] + sw) * R;
+          const pp = sg < 0 ? (J.pp_ki == null ? J.pp : J.pp_ki) : (J.pp_ka == null ? J.pp : J.pp_ka);
+          const pk = sg < 0 ? (J.pk_ki == null ? J.pk : J.pk_ki) : (J.pk_ka == null ? J.pk : J.pk_ka);
+          const lututPose = [H[0] + Math.sin(a1) * 100 * pp, H[1] + Math.cos(a1) * 100 * pp];
+          F = [lututPose[0] + Math.sin(a2) * 100 * pk, lututPose[1] + Math.cos(a2) * 100 * pk];
         }
         const dx = F[0] - H[0], dy = F[1] - H[1], jarak = Math.max(1, Math.hypot(dx, dy));
         const d = Math.min(199.5, jarak), tengah = [(H[0] + F[0]) / 2, (H[1] + F[1]) / 2];
