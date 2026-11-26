@@ -521,6 +521,7 @@ def test_rencana_semantik_mengaitkan_aktor_dan_sasaran_ke_id_tokoh():
                     "aktor": "  PENOLONG ",
                     "aksi": "menghampiri",
                     "sasaran": "Pengendara",
+                    "bukti_teks": "Penolong menghampiri pengendara",
                 }],
             }],
         })
