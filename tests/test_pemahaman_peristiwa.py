@@ -590,3 +590,50 @@ def test_sebab_akibat_tidak_disamakan_dengan_tujuan():
     assert len(hasil["peristiwa"]) == 1
     assert "hubungan_sebab_akibat" not in hasil["peristiwa"][0]
     assert hasil["peristiwa"][0]["tujuan"]["aksi"] == "menolong"
+
+
+
+def test_rantai_sehingga_menghubungkan_tiga_peristiwa_berurutan():
+    hasil = uraikan_peristiwa(
+        "Tokoh tergelincir sehingga Tokoh jatuh sehingga Penolong menolong Tokoh.",
+        ["Tokoh", "Penolong"],
+    )
+
+    assert len(hasil["peristiwa"]) == 3
+    pertama, kedua, ketiga = hasil["peristiwa"]
+    assert pertama["aksi"] == "tergelincir"
+    assert kedua["aksi"] == "jatuh"
+    assert ketiga["aksi"] == "menolong"
+    assert kedua["hubungan_sebab_akibat"] == {
+        "jenis": "disebabkan_oleh",
+        "peristiwa_id": pertama["id"],
+    }
+    assert ketiga["hubungan_sebab_akibat"] == {
+        "jenis": "disebabkan_oleh",
+        "peristiwa_id": kedua["id"],
+    }
+
+
+def test_rantai_karena_mengikuti_arah_sebab_dari_klausa_kanan():
+    hasil = uraikan_peristiwa(
+        "Penolong menolong Tokoh karena Tokoh jatuh karena Tokoh tergelincir.",
+        ["Penolong", "Tokoh"],
+    )
+
+    assert len(hasil["peristiwa"]) == 3
+    pertolongan, jatuh, tergelincir = hasil["peristiwa"]
+    assert pertolongan["hubungan_sebab_akibat"]["peristiwa_id"] == jatuh["id"]
+    assert jatuh["hubungan_sebab_akibat"]["peristiwa_id"] == tergelincir["id"]
+
+
+def test_rantai_sebab_akibat_ditolak_utuh_jika_satu_klausa_tidak_dikenali():
+    hasil = uraikan_peristiwa(
+        "Tokoh tergelincir sehingga Tokoh jatuh sehingga Penolong tertawa.",
+        ["Tokoh", "Penolong"],
+    )
+
+    assert hasil["peristiwa"] == []
+    assert any(
+        item["kode"] == "rantai_sebab_akibat_tidak_dapat_dipetakan"
+        for item in hasil["diagnostik"]
+    )
