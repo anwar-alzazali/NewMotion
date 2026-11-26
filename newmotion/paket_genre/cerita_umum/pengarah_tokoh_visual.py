@@ -83,18 +83,18 @@ def arahkan_tokoh_visual(rencana_cerita, rencana_blocking, cerita):
                     for id_event in tautan.get("peristiwa_ids", [])
                     if peristiwa.get(id_event, {}).get("aktor_id") == sasaran_id
                 ), None)
-                if event_sasaran and sasaran_id not in posisi_terakhir:
-                    # Bila peristiwa sasaran sudah diproses, posisi_terakhir
-                    # sudah memuat titik akhirnya; jangan menerapkan gerak jatuh dua kali.
+                if event_sasaran:
                     aksi_sasaran = str(event_sasaran.get("aksi") or "").strip().casefold().replace(" ", "_")
                     objek_sasaran = str(event_sasaran.get("sasaran") or "").casefold()
                     if aksi_sasaran == "tergelincir" and objek_sasaran in {"motor", "sepeda_motor"}:
-                        x_awal_sasaran, _ = posisi_terakhir.get(
-                            sasaran_id,
-                            (_posisi_awal(list(tokoh_valid).index(sasaran_id)), 1510),
-                        )
-                        x_sasaran, y_sasaran = min(1000, x_awal_sasaran + 280), 1700
-                        # Penolong berada sedikit di belakang korban yang jatuh, bukan bertumpuk pada bidang yang sama.
+                        # Jika sasaran belum diproses, hitung titik jatuhnya sekali.
+                        if sasaran_id not in posisi_terakhir:
+                            x_awal_sasaran, _ = posisi_terakhir.get(
+                                sasaran_id,
+                                (_posisi_awal(list(tokoh_valid).index(sasaran_id)), 1510),
+                            )
+                            x_sasaran, y_sasaran = min(1000, x_awal_sasaran + 280), 1700
+                        # Penolong berhenti di bidang belakang korban, dengan jarak untuk menjangkau.
                         y_tujuan = y_sasaran - 80
                 # Berhenti di sisi sasaran, bukan tepat menumpuk di titik yang sama.
                 arah_ke_sasaran = 1 if x_sasaran >= x_tetap else -1
