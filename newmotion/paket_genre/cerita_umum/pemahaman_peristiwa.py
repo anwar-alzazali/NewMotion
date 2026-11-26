@@ -201,6 +201,11 @@ def _peristiwa_klausa(
         hasil["sasaran"] = sasaran
     if tujuan is not None:
         hasil["tujuan"] = tujuan
+    elif pemisah_tujuan:
+        hasil["_diagnostik_pemahaman"] = {
+            "kode": "frasa_untuk_belum_diklasifikasikan",
+            "bukti_teks": klausa[pemisah_tujuan.start():],
+        }
     if kandidat_benda:
         hasil["sasaran_benda_id"] = kandidat_benda[0][2]
         hasil["sasaran_benda"] = kandidat_benda[0][3]
@@ -254,6 +259,12 @@ def uraikan_peristiwa(
                     benda=benda,
                 )
                 if hasil:
+                    diagnostik_internal = hasil.pop("_diagnostik_pemahaman", None)
+                    if diagnostik_internal:
+                        diagnostik.append({
+                            **diagnostik_internal,
+                            "kalimat": nomor_kalimat,
+                        })
                     if hasil.get("aksi") in _AKSI_BUTUH_BENDA and not hasil.get("sasaran_benda_id"):
                         diagnostik.append({
                             "kode": "sasaran_benda_belum_terpetakan",
