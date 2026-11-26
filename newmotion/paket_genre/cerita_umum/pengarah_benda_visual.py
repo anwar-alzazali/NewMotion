@@ -35,10 +35,58 @@ KUNCI_PROPERTI_TERLINDUNGI = {
 }
 
 
-def _posisi_renderer(entitas):
+def _tambah_offset(nilai, offset):
+    if isinstance(nilai, (int, float)) and not isinstance(nilai, bool):
+        return round(nilai + offset, 3)
+    if isinstance(nilai, list) and nilai and all(
+        isinstance(titik, (list, tuple)) and len(titik) == 2
+        and isinstance(titik[0], (int, float))
+        and isinstance(titik[1], (int, float))
+        for titik in nilai
+    ):
+        return [
+            [titik[0], round(titik[1] + offset, 3)]
+            for titik in nilai
+        ]
+    raise ValueError("Lintasan posisi relatif harus berupa angka atau keyframe [waktu, nilai]")
+
+
+def _posisi_renderer(entitas, tokoh_visual_by_id=None):
     posisi = entitas.get("posisi")
     if not isinstance(posisi, Mapping):
-        return None
+        relasi = entitas.get("relasi_posisi")
+        if not isinstance(relasi, Mapping):
+            return None
+        tokoh_id = relasi.get("tokoh_id")
+        tokoh = (tokoh_visual_by_id or {}).get(tokoh_id)
+        if not isinstance(tokoh, Mapping):
+            return None
+        hubungan = relasi.get("hubungan")
+        if hubungan not in {"di_samping_kiri", "di_samping_kanan", "di_depan", "di_belakang", "mengikuti"}:
+            raise ValueError(f"Hubungan posisi benda {entitas.get('id')!r} tidak didukung")
+        offset_x = relasi.get("offset_x", {
+            "di_samping_kiri": -150,
+            "di_samping_kanan": 150,
+            "di_depan": 0,
+            "di_belakang": 0,
+            "mengikuti": 0,
+        }[hubungan])
+        offset_y = relasi.get("offset_y", {
+            "di_samping_kiri": 0,
+            "di_samping_kanan": 0,
+            "di_depan": 90,
+            "di_belakang": -90,
+            "mengikuti": 0,
+        }[hubungan])
+        if any(not isinstance(x, (int, float)) or isinstance(x, bool) for x in (offset_x, offset_y)):
+            raise ValueError(f"Offset posisi relatif benda {entitas.get('id')!r} harus angka")
+        if "x" not in tokoh or "y" not in tokoh:
+            return None
+        return {
+            "x": _tambah_offset(tokoh["x"], offset_x),
+            "y": _tambah_offset(tokoh["y"], offset_y),
+            "s": relasi.get("s", 1),
+        }
     if "x" not in posisi or "y" not in posisi:
         return None
     x, y = posisi["x"], posisi["y"]
@@ -52,14 +100,14 @@ def _posisi_renderer(entitas):
     return {"x": deepcopy(x), "y": deepcopy(y), "s": skala}
 
 
-def _benda_renderer(entitas):
+def _benda_renderer(entitas, tokoh_visual_by_id=None):
     identitas = entitas.get("id")
     jenis = entitas.get("jenis_renderer")
     if not isinstance(jenis, str) or jenis not in JENIS_RENDERER_DIDUKUNG:
         raise ValueError(
             f"Jenis renderer benda {identitas!r} tidak didukung: {jenis!r}"
         )
-    posisi = _posisi_renderer(entitas)
+    posisi = _posisi_renderer(entitas, tokoh_visual_by_id)
     if posisi is None:
         return None
     properti = entitas.get("properti", {})
@@ -90,8 +138,8 @@ def _benda_renderer(entitas):
     return hasil
 
 
-def arahkan_benda_visual(rencana_cerita, rencana_blocking, cerita):
-    """Petakan benda eksplisit ke shot yang memiliki tautan beat/peristiwa."""
+def arahkan_benda_visual(rencana_cerita, rencana_blocking, cerita, rencana_visual_tokoh=None):
+    """Petakan benda eksplisit ke shot; posisi dapat mengikuti lintasan tokoh."""
     daftar_benda = rencana_cerita.get("benda", [])
     daftar_adegan = rencana_cerita.get("adegan", [])
     benda_by_id = {item["id"]: item for item in daftar_benda if isinstance(item, Mapping)}
@@ -118,6 +166,15 @@ def arahkan_benda_visual(rencana_cerita, rencana_blocking, cerita):
         id_terkait = list(dict.fromkeys(id_terkait))
         if not id_terkait:
             continue
+        visual_tokoh_shot = {}
+        if isinstance(rencana_visual_tokoh, list):
+            entri_tokoh = next((
+                item for item in rencana_visual_tokoh
+                if isinstance(item, Mapping) and item.get("indeks") == indeks
+            ), {})
+            for arahan_tokoh in entri_tokoh.get("tokoh", []):
+                if isinstance(arahan_tokoh, Mapping) and isinstance(arahan_tokoh.get("tokoh_id"), str):
+                    visual_tokoh_shot[arahan_tokoh["tokoh_id"]] = arahan_tokoh
         benda_shot = []
         for benda_id in id_terkait:
             entitas = benda_by_id.get(benda_id)
@@ -129,7 +186,7 @@ def arahkan_benda_visual(rencana_cerita, rencana_blocking, cerita):
                     "benda_id": benda_id,
                 })
                 continue
-            visual = _benda_renderer(entitas)
+            visual = _benda_renderer(entitas, visual_tokoh_shot)
             if visual is None:
                 diagnostik.append({
                     "kode": "benda_perlu_penempatan",
