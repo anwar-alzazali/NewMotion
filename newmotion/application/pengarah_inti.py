@@ -417,6 +417,49 @@ def arahkan_naskah(
                 "Rencana visual tokoh harus memiliki daftar shot dan diagnostik"
             )
         spesifikasi["rencana_visual_tokoh"] = copy.deepcopy(dict(hasil_visual_tokoh))
+
+        # Benda lingkungan/props memiliki pengarah terpisah dari blocking tokoh.
+        # Kedua rencana digabung sebelum adapter tunggal menerapkan kontrak renderer.
+        if paket.pengarah_benda_visual is not None:
+            try:
+                hasil_visual_benda = paket.pengarah_benda_visual(
+                    copy.deepcopy(spesifikasi["rencana_cerita"]),
+                    copy.deepcopy(spesifikasi["rencana_blocking"]),
+                    copy.deepcopy(cerita),
+                )
+            except (TypeError, ValueError) as galat:
+                raise GalatPengarahan(
+                    f"Pengarah benda tidak dapat menyusun objek renderer: {galat}"
+                ) from galat
+            if not isinstance(hasil_visual_benda, Mapping):
+                raise GalatPengarahan("Pengarah benda harus menghasilkan objek rencana")
+            daftar_shot_benda = hasil_visual_benda.get("shot")
+            diagnostik_benda = hasil_visual_benda.get("diagnostik", [])
+            if not isinstance(daftar_shot_benda, list) or not isinstance(diagnostik_benda, list):
+                raise GalatPengarahan(
+                    "Rencana visual benda harus memiliki daftar shot dan diagnostik"
+                )
+            spesifikasi["rencana_visual_benda"] = copy.deepcopy(dict(hasil_visual_benda))
+            visual_by_index = {
+                item.get("indeks"): item
+                for item in shot_visual
+                if isinstance(item, dict) and type(item.get("indeks")) is int
+            }
+            for item_benda in daftar_shot_benda:
+                if not isinstance(item_benda, Mapping):
+                    raise GalatPengarahan("Entri shot pada rencana visual benda harus berupa objek")
+                indeks_benda = item_benda.get("indeks")
+                if type(indeks_benda) is not int or not 0 <= indeks_benda < len(shot):
+                    raise GalatPengarahan("Indeks shot pada rencana visual benda tidak valid")
+                target_visual = visual_by_index.get(indeks_benda)
+                if target_visual is None:
+                    target_visual = {"indeks": indeks_benda, "tokoh": [], "benda": []}
+                    shot_visual.append(target_visual)
+                    visual_by_index[indeks_benda] = target_visual
+                target_visual.setdefault("benda", []).extend(
+                    copy.deepcopy(item_benda.get("benda", []))
+                )
+
         # JSON keluaran sutradara sudah memuat instruksi renderer, bukan hanya rencana terpisah.
         try:
             terapkan_rencana_visual_tokoh(spesifikasi)
