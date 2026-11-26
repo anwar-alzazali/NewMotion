@@ -158,7 +158,7 @@ def test_peristiwa_mendapat_id_stabil_dan_tertaut_ke_beat_sumber():
     assert [x["id"] for x in peristiwa] == ["e1", "e2"]
     assert all(x["beat_id"] == "beat-001" for x in peristiwa)
     assert {
-        x["peristiwa_id"] for x in spek["rencana_blocking"]["peristiwa"]
+        x["id"] for x in spek["rencana_blocking"]["peristiwa"]
     } == {"e1", "e2"}
 
 
