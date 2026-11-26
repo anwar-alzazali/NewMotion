@@ -17,7 +17,8 @@ POLA_SUBJEK = (
     (re.compile(r"\b(kapal|bahtera|perahu)\b", re.I), "bahtera"),
     (re.compile(r"\b(penggali|para penggali|orang yang menggali)\b", re.I), "penggali"),
     (re.compile(r"\b(pemimpin|raja|panglima)\b", re.I), "pemimpin"),
-    (re.compile(r"\b(dinding|tembok|benteng)\b", re.I), "pagar"),
+    (re.compile(r"\b(dinding|tembok|benteng)\b", re.I), "ngarai"),
+    (re.compile(r"\b(pagar)\b", re.I), "pagar"),
     (re.compile(r"\b(lubang|terowongan)\b", re.I), "ngarai"),
     (re.compile(r"\b(ombak|gelombang)\b", re.I), "ombak"),
     (re.compile(r"\b(arus|aliran air)\b", re.I), "arus"),
@@ -73,20 +74,26 @@ def _properti_benda(jenis: str, teks: str, indeks: int, durasi: float, seed: int
                       "s": 1.0, "tinggi": 520, "depan": True, "seed": seed % 997})
     elif jenis == "arus":
         dasar.update({"x": 540, "y": 1460, "s": 0.9, "n": 14, "maju": 1.0})
-    elif jenis == "pagar":
-        dasar.update({"x": 540, "y": 1320, "s": 1.05, "w": 1.4, "belakang": True})
-        if POLA_PERUBAHAN["retak"].search(teks):
-            dasar["retak"] = 1
-        if POLA_PERUBAHAN["lubang"].search(teks):
-            dasar["buka"] = 0.48
-        if POLA_PERUBAHAN["jebol"].search(teks):
-            dasar["buka"] = 1
     elif jenis == "ngarai":
-        dasar.update({"x": 540, "y": 1320, "s": 0.95, "belakang": True})
+        # Renderer ngarai adalah dinding Zulkarnain; lubang dan jebol adalah
+        # parameter animasi resminya, bukan bentuk baru.
+        dasar.update({"x": 540, "y": 1320, "s": 0.95, "lubang": 0.12, "jebol": 0.0,
+                      "lx": 0, "ly": -190, "seed": seed % 997, "belakang": True})
+        if POLA_PERUBAHAN["retak"].search(teks):
+            dasar["lubang"] = 0.24
+        if POLA_PERUBAHAN["lubang"].search(teks):
+            dasar["lubang"] = 0.62
+        if POLA_PERUBAHAN["jebol"].search(teks):
+            dasar["lubang"] = 1.0
+            dasar["jebol"] = 1.0
+    elif jenis == "pagar":
+        dasar.update({"x": 540, "y": 1320, "s": 1.05, "w": 1100, "model": "tembok",
+                      "belakang": True})
     elif jenis == "penggali":
-        dasar.update({"x": x_sisi, "y": 1420, "s": 0.82, "gali": True})
+        dasar.update({"x": x_sisi, "y": 1420, "s": 0.82, "aktif": 1, "n": 5,
+                      "seed": seed % 997})
     elif jenis == "pemimpin":
-        dasar.update({"x": x_sisi, "y": 1350, "s": 0.92, "belakang": True})
+        dasar.update({"x": x_sisi, "y": 1350, "s": 0.92, "angkat": 0.75})
     elif jenis in {"hewan", "unta"}:
         dasar.update({"x": [[0, x_sisi - 100], [max(0.5, durasi * 0.8), x_sisi + 100]],
                       "y": 1390, "s": 0.82})
