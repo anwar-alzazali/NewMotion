@@ -31,4 +31,4 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install -e '.[uji]'
       - name: Uji relasi peristiwa dan kontrak pengarahan
-        run: python -m pytest tests/test_paket_cerita_umum.py tests/test_penataan_panggung.py -q
+        run: python -m pytest tests/test_paket_cerita_umum.py tests/test_penataan_panggung.py tests/test_generalisasi_spek_json.py -q
