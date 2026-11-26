@@ -1737,26 +1737,32 @@
       // Tampak samping: wajah mengarah ke depan perjalanan, bukan ke kamera.
       // (27 Nov) kepala bulat sebesar tampak depan, hidung membulat, telinga di tengah sisi kepala
       const kp = b.kulit || KL;
+      const k0 = k.length;
       k += cewek
-        ? `<path d="M -36 72 Q -82 50 -80 -8 Q -78 -86 2 -86 Q 56 -84 62 -30 L 64 -6 Q 78 6 74 14 Q 70 20 62 22 Q 66 32 62 40 Q 64 48 58 52 Q 54 74 32 80 Q 4 88 -36 72 Z" fill="${kp}" stroke="${INK}" stroke-width="7" stroke-linejoin="round"/>`
+        ? `<path d="M -36 74 Q -80 52 -80 -6 Q -78 -86 2 -86 Q 52 -84 58 -34 Q 62 -16 62 -4 Q 69 2 67 10 Q 65 16 60 18 Q 62 38 54 56 Q 42 80 18 84 Q -8 88 -36 74 Z" fill="${kp}" stroke="${INK}" stroke-width="7" stroke-linejoin="round"/>`
         : `<path d="M -36 72 Q -82 50 -80 -8 Q -78 -86 2 -86 Q 58 -84 64 -30 L 66 -8 Q 86 6 80 18 Q 76 26 64 26 Q 68 36 62 44 Q 60 72 34 82 Q 4 92 -36 72 Z" fill="${kp}" stroke="${INK}" stroke-width="7" stroke-linejoin="round"/>`;
       if (b.janggut) k += `<path d="M -8 38 Q 6 98 40 86 Q 62 76 62 54 Q 46 64 24 58 Q 6 52 -8 38 Z" fill="${b.janggut === true ? (b.warna_rambut || INK) : b.janggut}" stroke="${INK}" stroke-width="4"/>`;
       if (b.rambut === "kerudung") { // kerudung tampak samping: kain menutup rambut, telinga, dan leher; wajah terbuka
         const kd = b.kerudung || "#6aa6a0";
-        k += `<path d="M 58 -52 Q 36 -114 -26 -104 Q -102 -88 -100 0 Q -100 70 -86 118 L 52 118 Q 62 98 46 86 Q 20 80 4 58 Q -12 30 0 -12 Q 12 -46 58 -52 Z" fill="${kd}" stroke="${INK}" stroke-width="7" stroke-linejoin="round"/>`;
-        k += `<path d="M -66 -50 Q -78 30 -56 104" fill="none" stroke="${warna(kd, "#000000", 0.18)}" stroke-width="5"/><path d="M 40 -60 Q 2 -50 -8 -10" fill="none" stroke="${warna(kd, "#ffffff", 0.25)}" stroke-width="5" stroke-linecap="round"/>`;
+        // bentuk bulat membingkai wajah seperti tampak depan, menjuntai membulat di bawah dagu
+        k += `<path d="M 56 -50 Q 38 -108 -22 -104 Q -96 -98 -98 -14 Q -100 58 -70 100 Q -34 128 26 122 Q 66 116 62 92 Q 54 82 30 80 Q 2 70 -4 38 Q -10 0 4 -24 Q 22 -48 56 -50 Z" fill="${kd}" stroke="${INK}" stroke-width="7" stroke-linejoin="round"/>`;
+        k += `<path d="M -62 -46 Q -78 24 -52 96" fill="none" stroke="${warna(kd, "#000000", 0.16)}" stroke-width="5"/>`;
       } else {
         k += `<path d="M -84 14 Q -96 -92 4 -100 Q 70 -98 70 -42 Q 44 -64 10 -60 Q -22 -56 -40 -28 Q -50 -8 -58 16 Q -70 22 -84 14 Z" fill="${b.warna_rambut || INK}" stroke="${INK}" stroke-width="6"/>`;
         k += `<ellipse data-telinga="1" cx="-16" cy="10" rx="15" ry="20" fill="${kp}" stroke="${INK}" stroke-width="6"/><path d="M -12 2 Q -24 8 -14 20" fill="none" stroke="${INK}" stroke-width="4" stroke-linecap="round"/>`;
       }
       if (cewek) {
-        k += `<path d="M 20 -36 Q 34 -44 50 -36" fill="none" stroke="${INK}" stroke-width="4.5" stroke-linecap="round"/><circle cx="34" cy="-14" r="10" fill="#fff" stroke="${INK}" stroke-width="3"/><circle cx="38" cy="-14" r="5.5" fill="${INK}"/><circle cx="40" cy="-17" r="1.8" fill="#fff"/>`;
-        k += `<ellipse cx="22" cy="24" rx="12" ry="7" fill="#f2a0a0" opacity=".18"/>`;
-        k += `<path d="M 50 44 Q 56 48 62 44" fill="none" stroke="#7a3a3a" stroke-width="4" stroke-linecap="round"/>`;
+        // Selaras dengan tampak depan: mata bulat sebesar depan pada tinggi yang sama, alis tipis, senyum kecil.
+        k += `<path d="M 22 -28 Q 36 -36 50 -28" fill="none" stroke="${INK}" stroke-width="5" stroke-linecap="round"/>`;
+        k += `<ellipse cx="38" cy="2" rx="11" ry="15" fill="#fff" stroke="${INK}" stroke-width="3"/><circle cx="42" cy="3" r="8.5" fill="${INK}"/><circle cx="44.5" cy="-0.5" r="2.4" fill="#fff"/><circle cx="40" cy="6" r="1.6" fill="#fff" opacity=".9"/>`;
+        k += `<ellipse cx="18" cy="28" rx="13" ry="7" fill="#f2a0a0" opacity=".18"/>`;
+        k += `<path d="M 44 42 Q 51 47 57 41" fill="none" stroke="#7a3a3a" stroke-width="4.5" stroke-linecap="round"/>`;
       } else {
         k += `<path d="M 18 -36 Q 34 -42 48 -34" fill="none" stroke="${INK}" stroke-width="7" stroke-linecap="round"/><circle cx="34" cy="-14" r="9" fill="#fff" stroke="${INK}" stroke-width="3"/><circle cx="38" cy="-14" r="5" fill="${INK}"/>`;
         k += `<path d="M 44 50 Q 54 54 60 48" fill="none" stroke="${INK}" stroke-width="5" stroke-linecap="round"/>`;
       }
+      // berkerudung: kepala+kain diperkecil agar sebesar tampak depan (kain depan top -75, bawah 122)
+      if (b.rambut === "kerudung") k = k.slice(0, k0) + `<g transform="translate(2 10) scale(0.86)">` + k.slice(k0) + `</g>`;
     } else if (belakang) {
       k += `<circle data-telinga="1" cx="-76" cy="6" r="15" fill="${KL}" stroke="${INK}" stroke-width="6"/><circle data-telinga="1" cx="76" cy="6" r="15" fill="${KL}" stroke="${INK}" stroke-width="6"/><circle r="78" fill="${b.warna_rambut || INK}" stroke="${INK}" stroke-width="7"/><path d="M -60 50 Q 0 90 60 50 L 50 72 Q 0 96 -50 72 Z" fill="${KL}"/>`;
     } else if (gaya === "umum") {
