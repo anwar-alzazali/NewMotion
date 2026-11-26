@@ -168,7 +168,18 @@ def _gemini(model: str, sistem: str, pesan: str, gambar: Sequence[Gambar], maks:
         konfig["responseMimeType"] = "application/json"
     badan = {"systemInstruction": {"parts": [{"text": sistem}]},
              "contents": [{"role": "user", "parts": bagian}], "generationConfig": konfig}
-    j = http(f"{GEMINI_API}/models/{nama}:generateContent", badan, {"x-goog-api-key": kunci}, 300)
+    galat = None
+    for jeda in (0, 10, 30):  # server Gemini gratis sering penuh sesaat (503) atau kena batas (429)
+        time.sleep(jeda)
+        try:
+            j = http(f"{GEMINI_API}/models/{nama}:generateContent", badan, {"x-goog-api-key": kunci}, 300)
+            break
+        except RuntimeError as e:
+            galat = e
+            if not re.search(r"HTTP (429|500|503)", str(e)):
+                raise
+    else:
+        raise galat
     kandidat = (j.get("candidates") or [{}])[0]
     teks = "".join(p.get("text", "") for p in (kandidat.get("content") or {}).get("parts", []))
     if not teks.strip():
