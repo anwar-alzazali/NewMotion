@@ -36,6 +36,7 @@ def arahkan_tokoh_visual(rencana_cerita, rencana_blocking, cerita):
         arahan_tokoh = []
         sudah = set()
         motor_dibutuhkan = False
+        posisi_motor = None
         for id_peristiwa in tautan.get("peristiwa_ids", []):
             event = peristiwa.get(id_peristiwa)
             if not event:
@@ -99,7 +100,7 @@ def arahkan_tokoh_visual(rencana_cerita, rencana_blocking, cerita):
             if motor_dibutuhkan:
                 butir_shot["benda"] = [{
                     "id": f"motor-{tautan.get('beat_id')}", "jenis": "motor",
-                    "x": [[0, _posisi_awal(1)], [0.9, _posisi_awal(1) + 55]],
+                    "x": [[0, posisi_motor if posisi_motor is not None else 540], [0.9, min(1000, (posisi_motor if posisi_motor is not None else 540) + 55)]],
                     "y": [[0, 1550], [0.9, 1580]], "s": 0.8,
                 }]
             shot_plan.append(butir_shot)
