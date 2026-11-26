@@ -103,9 +103,9 @@ def arahkan_tokoh_visual(rencana_cerita, rencana_blocking, cerita):
                     "y": [[0, y_tetap], [2.5, y_sasaran]],
                     "sasaran_tokoh_id": sasaran_id,
                     "pose": (
-                        [[0, "jalan"], [2.2, "menolong"]]
+                        [[0, "jalan"], [2.5, "menolong"]]
                         if aksi == "berjalan_menolong"
-                        else [[0, "jalan" if aksi in AKSI_JALAN else "lari"], [2.2, "berdiri"]]
+                        else [[0, "jalan" if aksi in AKSI_JALAN else "lari"], [2.5, "berdiri"]]
                     ),
                 })
             elif aksi in AKSI_MOTOR:
