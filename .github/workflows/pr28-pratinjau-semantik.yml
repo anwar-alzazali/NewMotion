@@ -45,7 +45,7 @@ jobs:
 
       - name: Render naskah melalui Sutradara NewMotion
         env:
-          CERITA: \${{ inputs.cerita }}
+          CERITA: ${{ inputs.cerita }}
         shell: bash
         run: |
           set -euo pipefail
@@ -62,7 +62,7 @@ jobs:
 
       - name: Audit spesifikasi hasil pengarahan
         env:
-          CERITA: \${{ inputs.cerita }}
+          CERITA: ${{ inputs.cerita }}
         run: |
           python - <<'PY'
           import json
@@ -115,7 +115,7 @@ jobs:
 
       - name: Verifikasi MP4 dan ambil frame audit
         env:
-          CERITA: \${{ inputs.cerita }}
+          CERITA: ${{ inputs.cerita }}
         run: |
           python - <<'PY'
           import json
@@ -162,7 +162,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: pr28-pratinjau-semantik-\${{ inputs.cerita }}
+          name: pr28-pratinjau-semantik-${{ inputs.cerita }}
           path: hasil-pr28/
           if-no-files-found: warn
           retention-days: 14
