@@ -459,6 +459,9 @@ def arahkan_naskah(
                 target_visual.setdefault("benda", []).extend(
                     copy.deepcopy(item_benda.get("benda", []))
                 )
+            # Sinkronkan hasil gabungan; sebelumnya spesifikasi sudah menyalin rencana
+            # tokoh sehingga perubahan pada daftar lokal tidak ikut terbawa.
+            spesifikasi["rencana_visual_tokoh"]["shot"] = copy.deepcopy(shot_visual)
 
         # JSON keluaran sutradara sudah memuat instruksi renderer, bukan hanya rencana terpisah.
         try:
