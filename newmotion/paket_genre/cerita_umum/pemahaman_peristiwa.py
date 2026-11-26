@@ -236,16 +236,18 @@ def uraikan_peristiwa(
     peristiwa = []
     diagnostik = []
     nomor = 0
-    kalimat = [x.strip() for x in re.split(r"(?<=[.!?])\s+", _normalisasi(teks)) if x.strip()]
-    for nomor_kalimat, kalimat_item in enumerate(kalimat, 1):
-        bagian_urut = _PEMISAH_URUT.split(kalimat_item)
+    kalimat = [x.strip() for x in re.split(r"(?<=[.!?])\\s+", _normalisasi(teks)) if x.strip()]
+
+    def uraikan_rangkaian(teks_bagian: str, nomor_kalimat: int) -> list[dict]:
+        nonlocal nomor
+        hasil_rangkaian = []
+        bagian_urut = _PEMISAH_URUT.split(teks_bagian)
         aktor_sebelumnya = None
         for nomor_bagian, bagian in enumerate(bagian_urut):
             bagian_simultan = _PEMISAH_SIMULTAN.split(bagian)
             hasil_bagian = []
             for indeks_klausa, klausa in enumerate(bagian_simultan):
                 nomor += 1
-                # Klausa dapat mewarisi subjek hanya jika tidak menyebut aktor sendiri.
                 aktor_default = (
                     aktor_sebelumnya
                     if nomor_bagian > 0 and indeks_klausa == 0
@@ -282,13 +284,86 @@ def uraikan_peristiwa(
                         "kalimat": nomor_kalimat,
                         "bukti_teks": klausa.strip(),
                     })
-            peristiwa.extend(hasil_bagian)
+            hasil_rangkaian.extend(hasil_bagian)
             if hasil_bagian:
                 aktor_sebelumnya = hasil_bagian[-1]["aktor"]
+        return hasil_rangkaian
+
+    pemisah_sebab = re.compile(r"\\s+(karena|sehingga|akibatnya)\\s+", re.I)
+    for nomor_kalimat, kalimat_item in enumerate(kalimat, 1):
+        pemisah = list(pemisah_sebab.finditer(kalimat_item))
+        if len(pemisah) == 1:
+            penghubung = pemisah[0].group(1).casefold()
+            kiri = kalimat_item[:pemisah[0].start()].strip(" ,;")
+            kanan = kalimat_item[pemisah[0].end():].strip(" ,;")
+            if not kiri or not kanan:
+                diagnostik.append({
+                    "kode": "hubungan_sebab_akibat_tidak_lengkap",
+                    "kalimat": nomor_kalimat,
+                    "bukti_teks": kalimat_item,
+                })
+                continue
+            indeks_awal = len(peristiwa)
+            hasil_kiri = uraikan_rangkaian(kiri, nomor_kalimat)
+            hasil_kanan = uraikan_rangkaian(kanan, nomor_kalimat)
+            peristiwa.extend(hasil_kiri)
+            peristiwa.extend(hasil_kanan)
+            if penghubung == "karena":
+                indeks_akibat = indeks_awal
+                indeks_sebab = indeks_awal + len(hasil_kiri)
+                teks_sebab = kanan
+            else:
+                indeks_sebab = indeks_awal
+                indeks_akibat = indeks_awal + len(hasil_kiri)
+                teks_sebab = None
+            if (
+                indeks_akibat < len(peristiwa)
+                and indeks_sebab < len(peristiwa)
+                and hasil_kiri and hasil_kanan
+            ):
+                peristiwa[indeks_akibat]["hubungan_sebab_akibat"] = {
+                    "jenis": "disebabkan_oleh",
+                    "_indeks_sebab": indeks_sebab,
+                }
+            elif penghubung == "karena" and hasil_kiri and not hasil_kanan:
+                # Penyebab berupa keadaan/frasa, bukan peristiwa yang dikenali.
+                peristiwa[indeks_akibat]["sebab_teks"] = teks_sebab
+                diagnostik.append({
+                    "kode": "sebab_teks_tidak_dipetakan_ke_peristiwa",
+                    "kalimat": nomor_kalimat,
+                    "bukti_teks": teks_sebab,
+                })
+            else:
+                diagnostik.append({
+                    "kode": "hubungan_sebab_akibat_tidak_dapat_dipetakan",
+                    "kalimat": nomor_kalimat,
+                    "bukti_teks": kalimat_item,
+                })
+            continue
+        if len(pemisah) > 1:
+            diagnostik.append({
+                "kode": "hubungan_sebab_akibat_ambigu",
+                "kalimat": nomor_kalimat,
+                "bukti_teks": kalimat_item,
+            })
+            continue
+        peristiwa.extend(uraikan_rangkaian(kalimat_item, nomor_kalimat))
 
     for nomor_event, item in enumerate(peristiwa, 1):
         item["id"] = f"peristiwa-{nomor_event:03d}"
         item["urutan"] = nomor_event
+    for item in peristiwa:
+        relasi = item.get("hubungan_sebab_akibat")
+        if isinstance(relasi, dict) and "_indeks_sebab" in relasi:
+            indeks_sebab = relasi.pop("_indeks_sebab")
+            if 0 <= indeks_sebab < len(peristiwa):
+                relasi["peristiwa_id"] = peristiwa[indeks_sebab]["id"]
+            else:
+                item.pop("hubungan_sebab_akibat", None)
+                diagnostik.append({
+                    "kode": "referensi_sebab_akibat_tidak_valid",
+                    "bukti_teks": item.get("bukti_teks", ""),
+                })
     return {
         "status": "siap" if peristiwa and not diagnostik else (
             "sebagian" if peristiwa else "perlu_pemeriksaan"
