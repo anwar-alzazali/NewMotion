@@ -96,6 +96,10 @@ def _rencana_cerita(naskah: Mapping[str, Any], shot: list[dict]) -> dict[str, An
             "dialog": copy.deepcopy(adegan.get("dialog", [])),
             "benda_ids": copy.deepcopy(adegan.get("benda_ids", [])),
         }
+        if "diagnostik_pemahaman" in adegan:
+            butir["diagnostik_pemahaman"] = copy.deepcopy(
+                adegan["diagnostik_pemahaman"]
+            )
         if not isinstance(butir["benda_ids"], list):
             raise GalatPengarahan(f"Beat {identitas!r} benda_ids harus berupa daftar")
         for benda_id in butir["benda_ids"]:
