@@ -74,7 +74,7 @@ def test_adapter_meneruskan_motor_jadwal_tergelincir_dan_aksi_menolong():
     pengendara = next(item for item in shot["boneka"] if item["aktor_id"] == "pengendara")
     assert penolong["jalan"] == 1.0
     assert penolong["sasaran_id"] == 1
-    assert penolong["karakter"]["gerak"] == [[0, "jalan"], [2.2, "menolong"]]
+    assert penolong["karakter"]["gerak"] == [[0, "jalan"], [2.5, "menolong"]]
     assert pengendara["kendaraan_id"] == motor["id"]
     assert motor["x"][0][1] == pengendara["x"][0][1]
     assert pengendara["lepas_kendaraan_at"] == 0.9
