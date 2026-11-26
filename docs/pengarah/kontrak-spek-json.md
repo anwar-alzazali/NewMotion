@@ -103,3 +103,27 @@ Status segmentasi juga harus membedakan dua keadaan:
 - `shot_renderer_satu_tahap_semantik`: satu tahap semantik tetap satu shot.
 - `shot_renderer_dibagi_dari_tahap_semantik`: satu shot sumber benar-benar dipecah
   menjadi beberapa shot renderer.
+
+
+## Kontrak kamera dan lingkungan renderer
+
+Pengarah cerita umum menerima metadata opsional `kamera` dan `lingkungan` pada
+level naskah, lalu mengizinkan metadata level adegan mengoverride nilai global.
+Metadata ini adalah konteks eksplisit, bukan hasil tebakan dari kata kunci.
+
+- `kamera`: hanya `x`, `y`, `z`, `hentak`, dan `guncang`, sesuai pembaca kamera
+  pada `mesin-video/papan/cerita.js`. Tanpa metadata eksplisit, pengarah memakai
+  profil framing deterministik menurut tujuan shot.
+- `lingkungan`: hanya `ruang`, `palet`, `langit`, `malam`, `horizon`, `matahari`,
+  `debu`, `hujan`, `panas`, `naungan`, `kerumunan`, `retak`, dan `resap`.
+  Palet dan jenis ruang harus dikenal renderer.
+- Nilai adegan mengoverride nilai global untuk kunci yang sama; kunci lain dari
+  metadata global tetap diwariskan.
+- Properti lingkungan yang tidak disebutkan tidak dibuat otomatis. Jika naskah tidak
+  menyatakan lokasi, waktu, cuaca, atau kondisi atmosfer, JSON tidak boleh mengarang
+  ruang, hujan, kerumunan, atau palet tertentu.
+- Kunci yang tidak didukung renderer ditolak, bukan diteruskan diam-diam.
+
+Profil kamera berbasis aksi saat ini hanya menetapkan framing dasar dan zoom. Ini
+belum sama dengan pelacakan kamera sinematik berdasarkan lintasan aktor; kemampuan
+tersebut tetap menjadi kesenjangan terpisah.
