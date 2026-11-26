@@ -248,3 +248,42 @@ def test_posisi_benda_relatif_mengikuti_keyframe_tokoh():
         [t, round(y + 25, 3)] for t, y in aktor["y"]
     ]
     assert tas["s"] == 0.7
+
+
+def test_benda_peristiwa_dipasang_pada_tahap_yang_memiliki_peristiwa_itu():
+    tas = {
+        "id": "tas-01",
+        "nama": "Tas",
+        "jenis_renderer": "kantong",
+        "relasi_posisi": {
+            "tokoh_id": "aktor-a",
+            "hubungan": "mengikuti",
+        },
+    }
+    naskah = _naskah([tas])
+    naskah["adegan"][0]["teks"] = (
+        "Aktor A berlari sambil membawa tas lalu menunggu."
+    )
+    naskah["adegan"][0]["peristiwa"] = [
+        {
+            "id": "event-01",
+            "aktor": "Aktor A",
+            "aksi": "berlari",
+            "sasaran": "tas",
+            "sasaran_benda_id": "tas-01",
+            "bukti_teks": "Aktor A berlari sambil membawa tas",
+        },
+        {
+            "id": "event-02",
+            "aktor": "Aktor A",
+            "aksi": "menunggu",
+            "setelah_peristiwa_id": "event-01",
+            "bukti_teks": "lalu menunggu",
+        },
+    ]
+    spek, _, _ = arahkan_naskah(naskah)
+    shot = spek["cerita"]["shot"]
+
+    assert len(shot) == 2
+    assert any(item["id"] == "tas-01" for item in shot[0]["benda"])
+    assert not any(item["id"] == "tas-01" for item in shot[1]["benda"])
