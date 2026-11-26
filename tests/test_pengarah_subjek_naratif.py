@@ -54,3 +54,25 @@ def test_angka_dan_momen_klimaks_mendapat_teks_dan_aksen_kamera():
 def test_hasil_deterministik_tanpa_judul_cerita():
     teks = "Kapal berlayar di tengah ombak."
     assert arahkan_subjek(teks, 5.0) == arahkan_subjek(teks, 5.0)
+
+
+
+def test_kata_kerja_menggali_memunculkan_penggali():
+    assert "penggali" in _jenis("Mereka menggali dinding setiap hari.")
+
+
+def test_efek_keringat_resapan_dan_naungan_masuk_ke_shot():
+    from newmotion.paket_genre.kisah_islami.pengarah_naskah import arahkan
+
+    spek = arahkan({
+        "judul": "Perubahan keadaan lingkungan",
+        "adegan": [
+            {"nama": "keringat", "teks": "Keringat meresap ke dalam tanah."},
+            {"nama": "naungan", "teks": "Tujuh golongan mendapat naungan."},
+        ],
+    })
+    pertama, kedua = spek["cerita"]["shot"]
+    assert pertama["resap"]["p"] > 0
+    assert pertama["boneka"][0]["keringat"] == 1
+    assert pertama["boneka"][0]["genangan"] > 0
+    assert kedua["naungan"]["kuat"] == 1
