@@ -67,12 +67,38 @@ def arahkan_tokoh_visual(rencana_cerita, rencana_blocking, cerita):
             butir = {"tokoh_id": aktor_id, "x": x_tetap, "y": y_tetap}
             if aksi in AKSI_JALAN or aksi in AKSI_LARI:
                 sasaran_id = event.get("sasaran_tokoh_id")
-                x_tujuan = _posisi_awal(list(tokoh_valid).index(sasaran_id)) if sasaran_id in tokoh_valid else 540
+                x_sasaran, y_sasaran = (
+                    posisi_terakhir.get(
+                        sasaran_id,
+                        (_posisi_awal(list(tokoh_valid).index(sasaran_id)), 1510),
+                    )
+                    if sasaran_id in tokoh_valid else (540, y_tetap)
+                )
+                # Sasaran yang juga bergerak pada beat ini harus didekati pada
+                # posisi akhirnya, bukan posisi awalnya. Ini membuat penolong
+                # mengejar pengendara setelah motor tergelincir.
+                event_sasaran = next((
+                    peristiwa.get(id_event)
+                    for id_event in tautan.get("peristiwa_ids", [])
+                    if peristiwa.get(id_event, {}).get("aktor_id") == sasaran_id
+                ), None)
+                if event_sasaran:
+                    aksi_sasaran = str(event_sasaran.get("aksi") or "").strip().casefold().replace(" ", "_")
+                    objek_sasaran = str(event_sasaran.get("sasaran") or "").casefold()
+                    if aksi_sasaran == "tergelincir" and objek_sasaran in {"motor", "sepeda_motor"}:
+                        x_awal_sasaran, _ = posisi_terakhir.get(
+                            sasaran_id,
+                            (_posisi_awal(list(tokoh_valid).index(sasaran_id)), 1510),
+                        )
+                        x_sasaran, y_sasaran = min(1000, x_awal_sasaran + 85), 1620
+                # Berhenti di sisi sasaran, bukan tepat menumpuk di titik yang sama.
+                arah_ke_sasaran = 1 if x_sasaran >= x_tetap else -1
+                x_tujuan = max(80, min(1000, x_sasaran - arah_ke_sasaran * 70))
                 x_mulai = x_tetap if aktor_id in posisi_terakhir else (900 if x_tujuan < x_tetap else 150)
                 butir.update({
                     "aksi": "lari" if aksi in AKSI_LARI else "jalan",
                     "x": [[0, x_mulai], [2.5, x_tujuan]],
-                    "y": [[0, y_tetap], [2.5, y_tetap]],
+                    "y": [[0, y_tetap], [2.5, y_sasaran]],
                     "sasaran_tokoh_id": sasaran_id,
                     "pose": (
                         [[0, "jalan"], [2.2, "menolong"]]
