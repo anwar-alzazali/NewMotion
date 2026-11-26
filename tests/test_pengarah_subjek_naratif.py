@@ -168,3 +168,47 @@ def test_pengarah_menyimpan_narasi_sumber_untuk_penjaga_adab():
         benda.get("jenis") in {"pemimpin", "penggali", "kerumunan", "arus"}
         for benda in shot.get("benda", [])
     )
+
+
+
+def test_konteks_dinding_zulkarnain_dapat_diteruskan_lintas_adegan():
+    from newmotion.paket_genre.kisah_islami.pengarah_subjek import arahkan_subjek
+
+    konteks = (
+        "Zulkarnain membangun dinding besi di celah dua gunung. "
+        "Ya'juj dan Ma'juj menggali dinding itu setiap hari."
+    )
+    hasil = arahkan_subjek("Mereka menggali setiap hari sampai hampir tembus.", 4.0, konteks=konteks)
+    jenis = {benda["jenis"] for benda in hasil["benda"]}
+    assert {"ngarai", "penggali"} <= jenis
+
+
+def test_konteks_yajuj_mengizinkan_dinding_disebut_kembali_tanpa_mengarang_bentuk_lain():
+    from newmotion.paket_genre.kisah_islami.pengarah_subjek import arahkan_subjek
+
+    konteks = "Zulkarnain membangun dinding besi di celah dua gunung untuk menahan Ya'juj dan Ma'juj."
+    jenis = {
+        benda["jenis"]
+        for benda in arahkan_subjek("Dinding itu kembali utuh keesokan harinya.", 4.0, konteks=konteks)["benda"]
+    }
+    assert "ngarai" in jenis
+    assert "rumah" not in jenis
+
+
+def test_pemimpin_yajuj_tetap_dapat_diarahkan_meski_allah_disebut_di_kalimat_berdekatan():
+    from newmotion.paket_genre.kisah_islami.pengarah_subjek import arahkan_subjek
+
+    jenis = _jenis("Allah menetapkan waktunya. Hari itu pemimpin mereka berkata: pulanglah.")
+    assert "pemimpin" in jenis
+
+
+def test_penggalian_kubur_tetap_tidak_diarahkan_meski_konteks_kisah_menyebut_zulkarnain():
+    from newmotion.paket_genre.kisah_islami.pengarah_subjek import arahkan_subjek
+
+    konteks = "Zulkarnain membangun dinding besi di celah dua gunung. Kemudian mereka menggali kubur."
+    jenis = {
+        benda["jenis"]
+        for benda in arahkan_subjek("Mereka menggali kubur.", 4.0, konteks=konteks)["benda"]
+    }
+    assert "ngarai" not in jenis
+    assert "penggali" not in jenis
