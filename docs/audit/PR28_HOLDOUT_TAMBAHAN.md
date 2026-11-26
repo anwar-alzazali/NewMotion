@@ -15,3 +15,11 @@ Aturan:
 3. Jalankan pengarah dan ukur hasil holdout setelah koreksi umum selesai.
 4. Laporkan skor dan diagnostik shot yang keliru/tidak tergambar. Jika ada masalah, jangan ubah aturan dengan pengecualian judul cerita; perbaiki aturan umum lalu tandai bahwa holdout telah dibuka.
 5. Holdout ini adalah validasi prospektif untuk revisi audit sekarang; tidak menghapus fakta bahwa Nuh 2, Dabbah 2, dan Kubur 1 telah dilihat pada iterasi sebelumnya.
+
+## Cara pembentukan fixture setelah daftar dikunci
+
+- `doa2.json`: teks diambil berurutan dari subtitle bertimestamp pada papan sumber.
+- `bangkrut1.json` dan `wali1.json`: teks diambil berurutan dari token kata bertimestamp pada `cerita.tengah`.
+- Setiap potongan sumber menjadi satu adegan naskah; judul berasal dari nama papan, tanpa aturan pengarah khusus per judul.
+- Fixture ini dipakai untuk membandingkan baseline `main` dan branch PR #28 dengan alat ukur PR #29 yang sama.
+- Skor tetap hanya indikator kedalaman struktur dan kesesuaian leksikal; bukan bukti kualitas visual. Tidak ada render otomatis dari workflow ini.
