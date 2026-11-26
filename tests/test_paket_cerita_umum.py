@@ -117,3 +117,8 @@ def test_posisi_dan_keadaan_tokoh_berlanjut_ke_shot_berikutnya():
     assert hasil_kedua["penolong"]["x"] == hasil_pertama["penolong"]["x"][-1][1]
     assert hasil_kedua["pengendara"]["x"] == hasil_pertama["pengendara"]["x"][-1][1]
     assert hasil_kedua["pengendara"]["y"] == hasil_pertama["pengendara"]["y"][-1][1]
+    motor_pertama = next(x for x in spek["cerita"]["shot"][0]["benda"] if x["jenis"] == "motor")
+    motor_kedua = next(x for x in spek["cerita"]["shot"][1]["benda"] if x["jenis"] == "motor")
+    assert motor_kedua["id"] == motor_pertama["id"]
+    assert motor_kedua["x"] == motor_pertama["x"][-1][1]
+    assert motor_kedua["y"] == motor_pertama["y"][-1][1]
