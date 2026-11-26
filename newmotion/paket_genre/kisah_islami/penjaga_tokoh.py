@@ -91,15 +91,15 @@ def _periksa_benda_manusia_dalam_konteks_sakral(rencana: Any) -> list[TemuanAdab
         return []
 
     pola_sakral = re.compile(
-        r"\\b(allah|tuhan|rasulullah|rasul|nabi|muhammad|malaikat|jibril|mikail|israfil)\\b",
+        r"\b(allah|tuhan|rasulullah|rasul|nabi|muhammad|malaikat|jibril|mikail|israfil)\b",
         re.IGNORECASE,
     )
     pola_sahabat = re.compile(
-        r"\\b(sahabat|abu bakar|umar|utsman|usman|ali bin abi thalib)\\b",
+        r"\b(sahabat|abu bakar|umar|utsman|usman|ali bin abi thalib)\b",
         re.IGNORECASE,
     )
-    pola_pemimpin = re.compile(r"\\b(pemimpin|pemuka|raja|panglima)\\b", re.IGNORECASE)
-    pola_penggali = re.compile(r"\\b(penggali|menggali|digali|menggerogoti)\\b", re.IGNORECASE)
+    pola_pemimpin = re.compile(r"\b(pemimpin|pemuka|raja|panglima)\b", re.IGNORECASE)
+    pola_penggali = re.compile(r"\b(penggali|menggali|digali|menggerogoti)\b", re.IGNORECASE)
     jenis_manusia = {"pemimpin", "penggali", "kerumunan", "arus"}
     temuan: list[TemuanAdab] = []
 
@@ -111,7 +111,7 @@ def _periksa_benda_manusia_dalam_konteks_sakral(rencana: Any) -> list[TemuanAdab
             continue
         kalimat = [
             bagian.strip()
-            for bagian in re.split(r"(?<=[.!?;])\\s+|\\n+", narasi)
+            for bagian in re.split(r"(?<=[.!?;])\s+|\n+", narasi)
             if bagian.strip()
         ]
         benda = shot.get("benda") if isinstance(shot.get("benda"), list) else []
