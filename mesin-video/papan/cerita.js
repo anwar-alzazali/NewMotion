@@ -1405,7 +1405,7 @@
       const lengan = 8 + 112 * naik * (1 - turun);
       const siku = 4 + 116 * naik * (1 - turun);
       if (u < .2) { const k = Math.sin(Math.PI * u / .4); return { turun: 22 * k, pp: 1 - .25 * k, rk: [8, -10 * k], lk: [8, -10 * k], ra: [lengan, siku], la: [lengan, siku] }; }
-      if (u < .75) { const k = (u - .2) / .55; return { turun: -120 * Math.sin(Math.PI * k), pp: .75, rk: [10, -25], lk: [10, -25], ra: [lengan, siku], la: [lengan, siku] }; }
+      if (u < .75) { const k = (u - .2) / .55; return { turun: 22 - 142 * Math.sin(Math.PI * k), pp: .75, rk: [10, -25], lk: [10, -25], ra: [lengan, siku], la: [lengan, siku] }; }
       const k = 1 - (u - .75) / .25; return { turun: 18 * k, pp: 1 - .2 * k, rk: [8, -8 * k], lk: [8, -8 * k], ra: [lengan, siku], la: [lengan, siku] };
     }
     if (nama === "melambai") return { ra: [150, 160 + 25 * Math.sin(t * 2 * Math.PI * 1.6)], kepala: 4 };
@@ -1717,7 +1717,7 @@
       // Profil kiri dan kanan memakai geometri wajah yang sama; sisi kiri dicerminkan pada tahap komposisi.
       // Tampak samping: wajah mengarah ke depan perjalanan, bukan ke kamera.
       k += `<path d="M -62 -54 Q -38 -94 8 -82 Q 48 -78 52 -40 L 54 -10 L 78 8 L 56 24 Q 60 58 34 76 Q 4 94 -34 70 Q -66 48 -62 -54 Z" fill="${b.kulit || KL}" stroke="${INK}" stroke-width="7"/>`;
-      k += `<path d="M -64 -44 Q -58 -108 8 -104 Q 62 -100 66 -48 Q 38 -68 10 -60 Q -24 -54 -64 -20 Z" fill="${b.warna_rambut || INK}" stroke="${INK}" stroke-width="6"/>`;
+      k += `<path d="M -64 -44 Q -58 -108 8 -104 Q 62 -100 66 -48 Q 38 -68 10 -60 Q -24 -54 -64 -20 Z" fill="${b.rambut === "kerudung" ? (b.kerudung || BAYANG) : (b.warna_rambut || INK)}" stroke="${INK}" stroke-width="6"/>`;
       k += `<circle cx="-76" cy="6" r="15" fill="${b.kulit || KL}" stroke="${INK}" stroke-width="6"/><circle cx="30" cy="-18" r="8" fill="#fff" stroke="${INK}" stroke-width="3"/><circle cx="34" cy="-18" r="4.5" fill="${INK}"/><path d="M 50 42 Q 62 46 68 38" fill="none" stroke="${INK}" stroke-width="5" stroke-linecap="round"/>`;
     } else if (belakang) {
       k += `<circle cx="-76" cy="6" r="15" fill="${KL}" stroke="${INK}" stroke-width="6"/><circle cx="76" cy="6" r="15" fill="${KL}" stroke="${INK}" stroke-width="6"/><circle r="78" fill="${b.warna_rambut || INK}" stroke="${INK}" stroke-width="7"/><path d="M -60 50 Q 0 90 60 50 L 50 72 Q 0 96 -50 72 Z" fill="${KL}"/>`;
