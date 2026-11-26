@@ -123,6 +123,8 @@ def naskah_untuk_pengarah(
             from newmotion.paket_genre.cerita_umum.pemahaman_peristiwa import uraikan_peristiwa
 
             hasil_pemahaman = uraikan_peristiwa(narasi.strip(), peran)
+            for peristiwa in hasil_pemahaman["peristiwa"]:
+                peristiwa["id"] = f"{id_beat}-{peristiwa['id']}"
             adegan_item["peristiwa"] = hasil_pemahaman["peristiwa"]
             adegan_item["diagnostik_pemahaman"] = {
                 "status": hasil_pemahaman["status"],
