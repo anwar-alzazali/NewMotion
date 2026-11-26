@@ -88,3 +88,18 @@ membuat PR terpisah untuk Tahap 2, 3, atau 4.
 Setiap tahap harus menyertakan tes CI dan ringkasan audit yang membedakan hal yang
 terbukti, temuan `periksa`, dan pekerjaan yang belum dilakukan. PR tetap draft dan
 tidak digabung ke `main` sebelum seluruh tahap serta audit berurutan selesai.
+
+
+## Klarifikasi kontrak waktu shot renderer
+
+Untuk renderer `mesin-video/papan/cerita.js`, batas shot ditentukan oleh urutan
+nilai absolut `at`: akhir shot aktif adalah `at` shot berikutnya. Keyframe kamera
+dan properti visual lain dibaca dalam waktu lokal relatif terhadap awal shot.
+Karena itu, adapter harus menggeser `at` saat membagi shot. Field `durasi` yang
+disertakan NewMotion adalah metadata perencanaan dan tidak boleh dianggap sebagai
+kontrol durasi playback pada renderer tersebut.
+
+Status segmentasi juga harus membedakan dua keadaan:
+- `shot_renderer_satu_tahap_semantik`: satu tahap semantik tetap satu shot.
+- `shot_renderer_dibagi_dari_tahap_semantik`: satu shot sumber benar-benar dipecah
+  menjadi beberapa shot renderer.
