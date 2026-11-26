@@ -77,6 +77,7 @@ def test_adapter_meneruskan_motor_jadwal_tergelincir_dan_aksi_menolong():
     assert penolong["karakter"]["gerak"] == [[0, "jalan"], [2.5, "menolong"]]
     assert pengendara["kendaraan_id"] == motor["id"]
     assert motor["x"][0][1] == pengendara["x"][0][1]
+    assert motor["miring"][-1][1] == 28
     assert pengendara["lepas_kendaraan_at"] == 0.9
     assert pengendara["karakter"]["gerak"] == [[0, "mengendarai_motor"], [0.65, "tergelincir"]]
 
@@ -143,3 +144,4 @@ def test_posisi_dan_keadaan_tokoh_berlanjut_ke_shot_berikutnya():
     assert motor_kedua["id"] == motor_pertama["id"]
     assert motor_kedua["x"] == motor_pertama["x"][-1][1]
     assert motor_kedua["y"] == motor_pertama["y"][-1][1]
+    assert motor_kedua["miring"] == motor_pertama["miring"][-1][1] == 28
