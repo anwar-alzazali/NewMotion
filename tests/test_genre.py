@@ -759,3 +759,147 @@ def test_gerbang_renderer_memblokir_roster_semantik_yang_melanggar_adab(monkeypa
                 }]
             },
         })
+
+
+def test_paket_tanpa_kait_visual_tokoh_menahan_roster_dari_renderer():
+    from newmotion.application.pengarah_inti import arahkan_naskah
+
+    nama = "genre_tanpa_visual_tokoh_uji"
+    paket = PaketGenre(
+        nama=nama,
+        pengarah_naskah=lambda data: {
+            "cerita": {"shot": [{"at": 0, "_adegan": 0, "boneka": [], "benda": []}]}
+        },
+    )
+    daftarkan(paket)
+    try:
+        papan, _, _ = arahkan_naskah({
+            "judul": "Pemeran belum didukung",
+            "genre": nama,
+            "konteks_konten": "umum",
+            "tokoh": [{"id": "tokoh-a", "nama": "Aktor"}],
+            "adegan": [{"id": "beat-001", "teks": "Aktor masuk.", "tokoh_ids": ["tokoh-a"]}],
+        })
+        assert papan["rencana_visual_tokoh"]["status"] == "belum_didukung_paket"
+        assert papan["rencana_visual_tokoh"]["shot"] == []
+        assert papan["rencana_visual_tokoh"]["diagnostik"][0]["kode"] == (
+            "paket_belum_menyediakan_pengarah_tokoh_visual"
+        )
+        assert papan["cerita"]["shot"][0]["boneka"] == []
+    finally:
+        from newmotion.domain import genre as modul_genre
+        modul_genre._PAKET.pop(nama, None)
+
+
+def test_paket_dapat_mengarahkan_rencana_visual_tokoh_secara_opt_in():
+    from newmotion.application.pengarah_inti import arahkan_naskah
+
+    nama = "genre_dengan_visual_tokoh_uji"
+    diterima = []
+
+    def pengarah_visual(rencana_cerita, rencana_blocking, cerita):
+        diterima.append((rencana_cerita, rencana_blocking, cerita))
+        return {
+            "status": "siap_diterjemahkan",
+            "shot": [{
+                "indeks": 0,
+                "tokoh": [{
+                    "tokoh_id": "tokoh-penolong",
+                    "aksi": "jalan",
+                    "x": [[0, 200], [2, 500]],
+                    "y": 1450,
+                }],
+            }],
+            "diagnostik": [],
+        }
+
+    paket = PaketGenre(
+        nama=nama,
+        pengarah_naskah=lambda data: {
+            "cerita": {"shot": [{"at": 0, "_adegan": 0, "boneka": [], "benda": []}]}
+        },
+        pengarah_tokoh_visual=pengarah_visual,
+    )
+    daftarkan(paket)
+    try:
+        papan, _, _ = arahkan_naskah({
+            "judul": "Penolong",
+            "genre": nama,
+            "konteks_konten": "umum",
+            "tokoh": [{"id": "tokoh-penolong", "nama": "Penolong"}],
+            "adegan": [{
+                "id": "beat-001",
+                "teks": "Penolong berjalan.",
+                "tokoh_ids": ["tokoh-penolong"],
+                "peristiwa": [{
+                    "aktor": "Penolong",
+                    "aksi": "jalan",
+                }],
+            }],
+        })
+        assert diterima
+        assert diterima[0][0]["tokoh"][0]["id"] == "tokoh-penolong"
+        assert diterima[0][1]["peristiwa"][0]["aktor_id"] == "tokoh-penolong"
+        assert papan["rencana_visual_tokoh"]["status"] == "siap_diterjemahkan"
+        assert papan["rencana_visual_tokoh"]["shot"][0]["tokoh"][0]["aksi"] == "jalan"
+        # Kait visual mengeluarkan rencana, bukan menyisipkan boneka secara diam-diam.
+        assert papan["cerita"]["shot"][0]["boneka"] == []
+    finally:
+        from newmotion.domain import genre as modul_genre
+        modul_genre._PAKET.pop(nama, None)
+
+
+def test_paket_menolak_kait_pengarah_visual_tokoh_bukan_fungsi():
+    with pytest.raises(TypeError, match="pengarah_tokoh_visual"):
+        PaketGenre(
+            nama="genre_visual_tokoh_salah_uji",
+            pengarah_tokoh_visual="bukan-fungsi",
+        )
+
+
+def test_pengarah_visual_tokoh_menolak_hasil_dengan_kontrak_tidak_lengkap():
+    from newmotion.application.pengarah_inti import GalatPengarahan, arahkan_naskah
+
+    nama = "genre_visual_tokoh_tidak_valid_uji"
+    paket = PaketGenre(
+        nama=nama,
+        pengarah_naskah=lambda data: {
+            "cerita": {"shot": [{"at": 0, "_adegan": 0, "boneka": [], "benda": []}]}
+        },
+        pengarah_tokoh_visual=lambda *args: {"status": "siap", "shot": "bukan-daftar"},
+    )
+    daftarkan(paket)
+    try:
+        with pytest.raises(GalatPengarahan, match="daftar shot dan diagnostik"):
+            arahkan_naskah({
+                "judul": "Kontrak visual salah",
+                "genre": nama,
+                "konteks_konten": "umum",
+                "adegan": [{"id": "beat-001", "teks": "Tokoh hadir."}],
+            })
+    finally:
+        from newmotion.domain import genre as modul_genre
+        modul_genre._PAKET.pop(nama, None)
+
+
+def test_kisah_islami_tidak_mengaktifkan_pengarah_pemeran_cerita_otomatis():
+    from newmotion.application.pengarah_inti import arahkan_naskah
+
+    papan, _, _ = arahkan_naskah({
+        "judul": "Avatar tetap",
+        "genre": "kisah_islami",
+        "konteks_konten": "islami",
+        "tokoh": [{"id": "tokoh-umum", "nama": "Pengendara", "kategori": "tokoh_umum"}],
+        "adegan": [{
+            "id": "beat-001",
+            "teks": "Pengendara melintas.",
+            "tokoh_ids": ["tokoh-umum"],
+        }],
+    })
+    assert papan["rencana_visual_tokoh"]["status"] == "belum_didukung_paket"
+    assert papan["rencana_visual_tokoh"]["shot"] == []
+    assert all(
+        boneka.get("id") == "kamu"
+        for shot in papan["cerita"]["shot"]
+        for boneka in shot.get("boneka", [])
+    )
