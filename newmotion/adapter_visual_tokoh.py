@@ -72,6 +72,10 @@ def terapkan_rencana_visual_tokoh(spec):
     """
     if not isinstance(spec, dict):
         raise GalatAdapterVisualTokoh("Spesifikasi harus berupa objek")
+    # Pengarahan memanggil adapter saat JSON disusun; renderer dapat memanggilnya lagi.
+    # Penanda ini mencegah tokoh dan benda digandakan.
+    if spec.get("_rencana_visual_tokoh_diterapkan") is True:
+        return []
     rencana = spec.get("rencana_visual_tokoh")
     if not isinstance(rencana, Mapping):
         return []
@@ -234,4 +238,5 @@ def terapkan_rencana_visual_tokoh(spec):
             "jumlah_tokoh_ditambahkan": len(boneka_baru),
             "aktor_ids": [b["aktor_id"] for b in boneka_baru],
         })
+    spec["_rencana_visual_tokoh_diterapkan"] = True
     return hasil
