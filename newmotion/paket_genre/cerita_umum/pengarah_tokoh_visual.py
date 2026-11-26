@@ -91,6 +91,12 @@ def arahkan_tokoh_visual(rencana_cerita, rencana_blocking, cerita):
             sudah.add(aktor_id)
             nomor = list(tokoh_valid).index(aktor_id)
             x_tetap, y_tetap = posisi_terakhir.get(aktor_id, (_posisi_awal(nomor), 1510))
+            sasaran_benda_id = event.get("sasaran_benda_id")
+            motor_id_eksplisit = (
+                sasaran_benda_id
+                if isinstance(sasaran_benda_id, str) and sasaran_objek in {"motor", "sepeda_motor"}
+                else None
+            )
             if aksi == "tergelincir" and sasaran_objek in {"motor", "sepeda_motor"}:
                 posisi_motor = x_tetap
             butir = {"tokoh_id": aktor_id, "x": x_tetap, "y": y_tetap}
@@ -145,9 +151,12 @@ def arahkan_tokoh_visual(rencana_cerita, rencana_blocking, cerita):
                 if sasaran not in {"motor", "sepeda_motor"}:
                     diagnostik.append({"kode": "kendaraan_tidak_dinyatakan_eksplisit", "peristiwa_id": id_peristiwa})
                     continue
-                motor_dibutuhkan = True
+                motor_dibutuhkan = motor_id_eksplisit is None
                 posisi_motor = 500
-                butir.update({"x": 500, "y": 1510, "kendaraan_id": f"motor-{tautan.get('beat_id')}"})
+                butir.update({
+                    "x": 500, "y": 1510,
+                    "kendaraan_id": motor_id_eksplisit or f"motor-{tautan.get('beat_id')}",
+                })
             elif aksi in AKSI_INTERAKSI:
                 # Interaksi harus membawa relasi sasaran sampai ke kontrak boneka renderer.
                 # Sasaran yang tidak bergerak tetap ditambahkan sebagai pemeran pendukung di bawah.
@@ -160,7 +169,7 @@ def arahkan_tokoh_visual(rencana_cerita, rencana_blocking, cerita):
                     butir["pose"] = [[0, pose_terakhir[aktor_id]]]
                 if aksi == "tergelincir" and sasaran_objek in {"motor", "sepeda_motor"}:
                     butir.update({
-                        "kendaraan_id": f"motor-{tautan.get('beat_id')}",
+                        "kendaraan_id": motor_id_eksplisit or f"motor-{tautan.get('beat_id')}",
                         "lepas_kendaraan_at": 0.9,
                         "x": [[0, x_tetap], [1.2, min(1000, x_tetap + 280)]],
                         "y": [[0, 1504], [1.2, 1700]],
