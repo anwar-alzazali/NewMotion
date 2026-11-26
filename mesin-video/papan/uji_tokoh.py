@@ -35,7 +35,7 @@ sys.path.insert(0, str(AKAR / "mesin-video"))
 
 # Sudut yang wajib bisa digambar renderer. Nilai = kunci boneka yang dipakai cerita.js saat ini.
 # "tiga_perempat" sementara memakai `arah` (hanya kepala menoleh) karena badan 3/4 belum ada;
-# "samping_kiri" belum didukung renderer sama sekali -- dibiarkan agar kekurangannya terlihat.
+# "samping_kiri" = cermin tampak kanan (27 Nov).
 SUDUT = [
     ("depan", {}),
     ("tiga_perempat", {"arah": 0.8}),
@@ -242,7 +242,7 @@ def periksa(catatan: list[dict], label: dict[int, tuple[str, str]], acuan: dict[
         harus = BADAN_HARUS.get(sudut, "depan")
         if harus == "samping" and badan != "samping":
             tambah("A3_ARAH_TIDAK_SEARAH", f"kepala {kepala}, badan & kaki {badan}")
-        if sudut == "samping_kiri" and c.get("profil") not in (None, "kanan", True):
+        if sudut == "samping_kiri" and c.get("profil") not in (None, "kanan", "kiri", True):
             tambah("A3_SUDUT_TIDAK_DIDUKUNG", f"profil {c.get('profil')!r} tidak dikenal renderer")
         harus_telinga = TELINGA_HARUS.get(sudut)
         if harus_telinga is not None and c.get("telinga") != harus_telinga:
