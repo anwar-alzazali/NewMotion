@@ -1402,8 +1402,8 @@
       // melayang, lalu turun. Tidak ada perubahan sudut 8 -> 150 derajat seketika.
       const naik = halus(clamp(u / .24));
       const turun = halus(clamp((u - .72) / .28));
-      const lengan = 8 + 112 * naik * (1 - turun);
-      const siku = 4 + 116 * naik * (1 - turun);
+      const lengan = 8 + 140 * naik * (1 - turun);
+      const siku = 4 + 150 * naik * (1 - turun);
       if (u < .2) { const k = Math.sin(Math.PI * u / .4); return { turun: 22 * k, pp: 1 - .25 * k, rk: [8, -10 * k], lk: [8, -10 * k], ra: [lengan, siku], la: [lengan, siku] }; }
       if (u < .75) { const k = (u - .2) / .55; return { turun: 22 - 142 * Math.sin(Math.PI * k), pp: .75, rk: [10, -25], lk: [10, -25], ra: [lengan, siku], la: [lengan, siku] }; }
       const k = 1 - (u - .75) / .25; return { turun: 18 * k, pp: 1 - .2 * k, rk: [8, -8 * k], lk: [8, -8 * k], ra: [lengan, siku], la: [lengan, siku] };
