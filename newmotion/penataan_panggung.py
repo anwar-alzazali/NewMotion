@@ -313,6 +313,8 @@ def susun_rencana_blocking(rencana_cerita, cerita):
 
     peristiwa_berdasarkan_beat = {}
     daftar_peristiwa = []
+    transisi_keadaan = []
+    keadaan_terakhir = {}
     diagnostik = []
     for nomor_adegan, beat in enumerate(adegan, start=1):
         if not isinstance(beat, dict):
@@ -350,6 +352,44 @@ def susun_rencana_blocking(rencana_cerita, cerita):
                 "perubahan_keadaan": item.get("perubahan_keadaan"),
                 "status": "siap_dipetakan_ke_visual" if siap_dipetakan else "perlu_pelengkapan_semantik",
             }
+            perubahan = item.get("perubahan_keadaan")
+            if perubahan is not None:
+                if not isinstance(perubahan, dict):
+                    diagnostik.append({
+                        "kode": "perubahan_keadaan_tidak_valid",
+                        "beat_id": beat_id,
+                        "peristiwa_id": id_peristiwa,
+                    })
+                else:
+                    entitas_id = perubahan.get("entitas_id")
+                    dari = perubahan.get("dari")
+                    menjadi = perubahan.get("menjadi")
+                    if not isinstance(entitas_id, str) or not entitas_id.strip() or menjadi is None:
+                        diagnostik.append({
+                            "kode": "transisi_keadaan_belum_lengkap",
+                            "beat_id": beat_id,
+                            "peristiwa_id": id_peristiwa,
+                        })
+                    else:
+                        sebelumnya = keadaan_terakhir.get(entitas_id)
+                        if "dari" in perubahan and sebelumnya is not None and dari != sebelumnya:
+                            diagnostik.append({
+                                "kode": "asal_transisi_tidak_cocok_dengan_keadaan_terakhir",
+                                "beat_id": beat_id,
+                                "peristiwa_id": id_peristiwa,
+                                "entitas_id": entitas_id,
+                                "keadaan_terakhir": sebelumnya,
+                                "keadaan_dari": dari,
+                            })
+                        transisi_keadaan.append({
+                            "entitas_id": entitas_id,
+                            "dari": dari,
+                            "menjadi": menjadi,
+                            "beat_id": beat_id,
+                            "peristiwa_id": id_peristiwa,
+                            "urutan": len(transisi_keadaan) + 1,
+                        })
+                        keadaan_terakhir[entitas_id] = menjadi
             daftar_peristiwa.append(butir)
             ids.append(id_peristiwa)
             if not siap_dipetakan:
@@ -394,6 +434,8 @@ def susun_rencana_blocking(rencana_cerita, cerita):
             "Pengarah visual harus memetakannya ke boneka dan benda renderer."
         ),
         "peristiwa": daftar_peristiwa,
+        "transisi_keadaan": transisi_keadaan,
+        "keadaan_akhir": dict(keadaan_terakhir),
         "shot": tautan_shot,
         "diagnostik": diagnostik,
     }
