@@ -39,9 +39,9 @@ def test_paket_cerita_umum_membuat_lintasan_penolong_dan_menautkan_sasaran():
     arahan_shot = spek["rencana_visual_tokoh"]["shot"][0]["tokoh"]
     penolong = next(x for x in arahan_shot if x["tokoh_id"] == "penolong")
     pengendara = next(x for x in arahan_shot if x["tokoh_id"] == "pengendara")
-    assert pengendara["x"][-1][1] == 455
+    assert pengendara["x"][-1][1] == 650
     assert penolong["x"][0][1] == 100
-    assert penolong["x"][-1][1] == 235
+    assert penolong["x"][-1][1] == 430
     assert penolong["x"][-1][1] - penolong["x"][0][1] >= 100
     assert penolong["y"][-1][1] == pengendara["y"][-1][1] == 1620
     assert pengendara["x"][-1][1] - penolong["x"][-1][1] >= 200
@@ -55,7 +55,7 @@ def test_posisi_penolong_tetap_mengacu_posisi_akhir_meski_urutan_peristiwa_berbe
         item["tokoh_id"]: item
         for item in spek["rencana_visual_tokoh"]["shot"][0]["tokoh"]
     }
-    assert arahan["pengendara"]["x"][-1][1] == 455
+    assert arahan["pengendara"]["x"][-1][1] == 650
     assert arahan["penolong"]["x"][-1][1] == 385
     assert arahan["penolong"]["y"][-1][1] == 1620
 
