@@ -78,10 +78,12 @@ def _periksa_roster_semantik(rencana: dict) -> list[TemuanAdab]:
 
 
 def _periksa_benda_manusia_dalam_konteks_sakral(rencana: Any) -> list[TemuanAdab]:
-    """Pastikan properti bersosok manusia tidak mengambil identitas tokoh sakral.
+    """Cegah renderer manusia mengambil identitas tokoh sakral dalam satu shot.
 
-    Pengarah menyimpan narasi sumber di shot._narasi agar penjaga genre dapat
-    memeriksa relasi semantik benda dan narasi sebelum renderer dijalankan.
+    Pemeriksaan ini sengaja berbasis keberadaan tokoh sakral pada narasi shot,
+    bukan kedekatan kata kerja/jabatan. Renderer tunggal seperti pemimpin dan
+    penggali tidak boleh dipakai ketika shot menyebut nabi, rasul, malaikat,
+    atau sahabat. Siluet kelompok tetap memiliki aturan khusus untuk sahabat.
     """
     if not isinstance(rencana, dict):
         return []
@@ -90,24 +92,19 @@ def _periksa_benda_manusia_dalam_konteks_sakral(rencana: Any) -> list[TemuanAdab
     if not isinstance(shot_list, list):
         return []
 
-    pola_tokoh_sakral = (
-        r"(?:rasulullah|rasul|nabi(?:\s+\w+)?|malaikat(?:\s+\w+)?|jibril|mikail|israfil|"
-        r"abu bakar|umar|utsman|usman|ali bin abi thalib|sahabat)"
+    pola_tokoh_sakral = re.compile(
+        r"\b(?:rasulullah|rasul|nabi(?:\s+\w+)?|malaikat(?:\s+\w+)?|"
+        r"jibril|mikail|israfil|abu bakar|umar|utsman|usman|"
+        r"ali bin abi thalib|sahabat)\b",
+        re.IGNORECASE,
     )
     pola_sahabat = re.compile(
-        r"\b(sahabat|abu bakar|umar|utsman|usman|ali bin abi thalib)\b",
+        r"\b(?:sahabat|abu bakar|umar|utsman|usman|ali bin abi thalib)\b",
         re.IGNORECASE,
     )
-    pola_pemimpin_sakral = re.compile(
-        r"\b" + pola_tokoh_sakral + r"\b.{0,45}\b(pemimpin|pemuka|raja|panglima)\b|"
-        r"\b(pemimpin|pemuka|raja|panglima)\b.{0,45}\b" + pola_tokoh_sakral + r"\b",
-        re.IGNORECASE,
-    )
-    pola_penggali_sakral = re.compile(
-        r"\b" + pola_tokoh_sakral + r"\b.{0,35}\b(penggali|menggali|digali|menggerogoti|mengikis)\b",
-        re.IGNORECASE,
-    )
-    jenis_manusia = {"pemimpin", "penggali", "kerumunan", "arus"}
+    jenis_manusia_tunggal = {"pemimpin", "penggali"}
+    jenis_kelompok = {"kerumunan", "arus"}
+    jenis_manusia = jenis_manusia_tunggal | jenis_kelompok
     temuan: list[TemuanAdab] = []
 
     for nomor, shot in enumerate(shot_list):
@@ -116,11 +113,9 @@ def _periksa_benda_manusia_dalam_konteks_sakral(rencana: Any) -> list[TemuanAdab
         narasi = shot.get("_narasi") or shot.get("narasi") or shot.get("subtitle")
         if not isinstance(narasi, str) or not narasi.strip():
             continue
-        kalimat = [
-            bagian.strip()
-            for bagian in re.split(r"(?<=[.!?;])\s+|\n+", narasi)
-            if bagian.strip()
-        ]
+
+        menyebut_tokoh_sakral = bool(pola_tokoh_sakral.search(narasi))
+        menyebut_sahabat = bool(pola_sahabat.search(narasi))
         benda = shot.get("benda") if isinstance(shot.get("benda"), list) else []
         for item in benda:
             if not isinstance(item, dict):
@@ -128,34 +123,25 @@ def _periksa_benda_manusia_dalam_konteks_sakral(rencana: Any) -> list[TemuanAdab
             jenis = item.get("jenis")
             if jenis not in jenis_manusia:
                 continue
-            salah_konteks = False
-            alasan = ""
-            if jenis in {"kerumunan", "arus"} and pola_sahabat.search(narasi):
-                salah_konteks = True
-                alasan = "shot menyebut sahabat; siluet kelompok tidak boleh mengambil identitas mereka"
 
-            for bagian in kalimat:
-                if salah_konteks:
-                    break
-                if jenis == "pemimpin" and pola_pemimpin_sakral.search(bagian):
-                    salah_konteks = True
-                    alasan = "sosok pemimpin berpotensi menjadi wujud tokoh sakral yang disebut langsung"
-                    break
-                if jenis == "penggali" and pola_penggali_sakral.search(bagian):
-                    salah_konteks = True
-                    alasan = "sosok penggali berpotensi menjadi wujud tokoh sakral yang disebut langsung"
-                    break
-                if jenis in {"kerumunan", "arus"} and pola_sahabat.search(bagian):
-                    salah_konteks = True
-                    alasan = "kerumunan berpotensi menggambarkan sahabat sebagai siluet"
-                    break
-            if salah_konteks:
+            alasan = ""
+            if jenis in jenis_manusia_tunggal and menyebut_tokoh_sakral:
+                alasan = (
+                    "renderer manusia tunggal tidak boleh dipakai dalam shot "
+                    "yang menyebut tokoh sakral; identitas sosok tidak dapat dipastikan"
+                )
+            elif jenis in jenis_kelompok and menyebut_sahabat:
+                alasan = (
+                    "shot menyebut sahabat; siluet kelompok tidak boleh "
+                    "mengambil identitas mereka"
+                )
+
+            if alasan:
                 temuan.append(TemuanAdab(
                     "GAGAL", "BENDA_MANUSIA_TOKOH_SAKRAL",
                     f"shot {nomor}: benda {jenis!r} tidak aman untuk narasi ini: {alasan}",
                 ))
     return temuan
-
 
 def periksa_adab_tokoh(rencana: Any) -> list[TemuanAdab]:
     """Periksa identitas tokoh dan cara tampilnya sebelum job diteruskan ke renderer.
