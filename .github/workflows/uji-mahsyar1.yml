@@ -11,15 +11,9 @@ on:
       - 'mesin-video/papan/papan.css'
       - 'mesin-video/papan/karakter/**'
       - 'mesin-video/papan/font/**'
-  pull_request:
-    types: [opened, synchronize, reopened]
-    paths:
-      - 'mesin-video/papan_buat.py'
-      - 'mesin-video/papan/cerita.js'
-      - 'mesin-video/papan/papan.js'
-      - 'mesin-video/papan/papan.css'
-      - 'mesin-video/papan/karakter/**'
-      - 'mesin-video/papan/font/**'
+  # Render visual Mahsyar hanya dijalankan manual atau pada cabang khusus
+  # yang memang ditetapkan untuk pembaruan hasil render. PR kode tidak memicu
+  # render ulang video yang sudah ada.
   workflow_dispatch:
 
 permissions:
