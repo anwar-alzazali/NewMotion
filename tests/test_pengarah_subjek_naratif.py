@@ -45,7 +45,7 @@ def test_narasi_kubur1_tidak_menggambar_malaikat():
 
 
 def test_angka_dan_momen_klimaks_mendapat_teks_dan_aksen_kamera():
-    hasil = arahkan_subjek("Sembilan ratus lima puluh tahun berlalu, lalu dinding itu jebol.", 5.0)
+    hasil = arahkan_subjek("Sembilan ratus lima puluh tahun berlalu, lalu dinding besi di celah dua gunung itu jebol.", 5.0)
     # Kata angka yang ditulis huruf tidak ditebak menjadi angka; kata klimaks tetap ditandai.
     assert hasil["klimaks"] is True
     assert any(b["jenis"] == "ngarai" and b["jebol"] == 1 for b in hasil["benda"])
