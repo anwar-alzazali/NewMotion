@@ -96,7 +96,7 @@ def arahkan_tokoh_visual(rencana_cerita, rencana_blocking, cerita):
                 # Berhenti di sisi sasaran, bukan tepat menumpuk di titik yang sama.
                 arah_ke_sasaran = 1 if x_sasaran >= x_tetap else -1
                 x_tujuan = max(80, min(1000, x_sasaran - arah_ke_sasaran * 220))
-                x_mulai = x_tetap if aktor_id in posisi_terakhir else (900 if x_tujuan < x_tetap else 150)
+                x_mulai = x_tetap if aktor_id in posisi_terakhir else (900 if x_tujuan < x_tetap else 100)
                 butir.update({
                     "aksi": "lari" if aksi in AKSI_LARI else "jalan",
                     "x": [[0, x_mulai], [2.5, x_tujuan]],
