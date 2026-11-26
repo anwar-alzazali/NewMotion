@@ -52,7 +52,6 @@ _AKSI_REGEX = re.compile(
 _PEMISAH_URUT = re.compile(r"\s+(?:lalu|kemudian|setelah\s+itu|sesudah\s+itu)\s+", re.I)
 _PEMISAH_SIMULTAN = re.compile(r"\s+(?:dan|sementara)\s+", re.I)
 
-
 _AKSI_BUTUH_BENDA = {"menaiki", "mengendarai_motor"}
 
 
@@ -72,7 +71,6 @@ def _posisi_peran(teks: str, peran: Sequence[str]) -> list[tuple[int, int, str]]
     return sorted(hasil)
 
 
-
 def _posisi_benda(teks: str, benda: Sequence[Mapping]) -> list[tuple[int, int, str, str]]:
     """Cari hanya benda yang sudah terdaftar eksplisit pada roster naskah."""
     hasil = []
@@ -90,16 +88,18 @@ def _posisi_benda(teks: str, benda: Sequence[Mapping]) -> list[tuple[int, int, s
         for label in sorted(set(nama_alias), key=len, reverse=True):
             label = _normalisasi(label)
             if label:
-                pola = re.compile(r"(?<![\\w])" + re.escape(label) + r"(?![\\w])", re.I)
+                pola = re.compile(r"(?<![\w])" + re.escape(label) + r"(?![\w])", re.I)
                 for cocok in pola.finditer(teks):
                     hasil.append((cocok.start(), cocok.end(), identitas, label))
     unik = {(item[0], item[1], item[2]): item for item in hasil}
     return sorted(unik.values())
 
 
-
 def _peristiwa_klausa(
-    klausa: str, peran: Sequence[str], nomor: int, aktor_default: str | None = None,
+    klausa: str,
+    peran: Sequence[str],
+    nomor: int,
+    aktor_default: str | None = None,
     benda: Sequence[Mapping] = (),
 ) -> tuple[dict | None, str | None]:
     klausa = _normalisasi(klausa).strip(" ,;")
@@ -119,7 +119,7 @@ def _peristiwa_klausa(
     bentuk = verba.group(1).casefold()
     pasif = bentuk.startswith("di")
     if pasif:
-        oleh = re.search(r"\\boleh\\b", klausa[verba.end():], re.I)
+        oleh = re.search(r"\boleh\b", klausa[verba.end():], re.I)
         if oleh:
             kandidat_aktor = _posisi_peran(klausa[verba.end() + oleh.end():], peran)
             kandidat_sasaran = subjek
@@ -145,12 +145,11 @@ def _peristiwa_klausa(
     else:
         return None, "aktor_tidak_tunggal_atau_tidak_ditemukan"
     sasaran = kandidat_sasaran[0][2] if kandidat_sasaran else None
-    bukti = klausa
     hasil = {
         "id": f"peristiwa-{nomor:03d}",
         "aktor": aktor,
         "aksi": _POLA_AKSI[bentuk],
-        "bukti_teks": bukti,
+        "bukti_teks": klausa,
         "hubungan_temporal": "simultan",
     }
     if sasaran:
@@ -161,7 +160,11 @@ def _peristiwa_klausa(
     return hasil, None
 
 
-def uraikan_peristiwa(\n    teks: str, peran: Sequence[str], benda: Sequence[Mapping] = ()\n) -> dict:
+def uraikan_peristiwa(
+    teks: str,
+    peran: Sequence[str],
+    benda: Sequence[Mapping] = (),
+) -> dict:
     """Urai pola narasi yang didukung; sisanya menjadi diagnostik, bukan tebakan."""
     if not isinstance(teks, str) or not teks.strip():
         raise ValueError("Teks narasi harus berupa string yang tidak kosong.")
@@ -182,8 +185,7 @@ def uraikan_peristiwa(\n    teks: str, peran: Sequence[str], benda: Sequence[Map
             hasil_bagian = []
             for indeks_klausa, klausa in enumerate(bagian_simultan):
                 nomor += 1
-                # Klausa simultan boleh mewarisi subjek klausa sebelumnya hanya
-                # jika klausa itu sendiri tidak menyebut aktor sebelum verba.
+                # Klausa dapat mewarisi subjek hanya jika tidak menyebut aktor sendiri.
                 aktor_default = (
                     aktor_sebelumnya
                     if nomor_bagian > 0 and indeks_klausa == 0
@@ -192,7 +194,9 @@ def uraikan_peristiwa(\n    teks: str, peran: Sequence[str], benda: Sequence[Map
                     else None
                 )
                 hasil, alasan = _peristiwa_klausa(
-                    klausa, peran, nomor, aktor_default=aktor_default
+                    klausa, peran, nomor,
+                    aktor_default=aktor_default,
+                    benda=benda,
                 )
                 if hasil:
                     if hasil.get("aksi") in _AKSI_BUTUH_BENDA and not hasil.get("sasaran_benda_id"):
