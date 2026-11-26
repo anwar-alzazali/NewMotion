@@ -40,8 +40,9 @@ def test_paket_cerita_umum_membuat_lintasan_penolong_dan_menautkan_sasaran():
     penolong = next(x for x in arahan_shot if x["tokoh_id"] == "penolong")
     pengendara = next(x for x in arahan_shot if x["tokoh_id"] == "pengendara")
     assert pengendara["x"][-1][1] == 455
-    assert penolong["x"][-1][1] == 385
+    assert penolong["x"][-1][1] == 235
     assert penolong["y"][-1][1] == pengendara["y"][-1][1] == 1620
+    assert pengendara["x"][-1][1] - penolong["x"][-1][1] >= 200
 
 
 def test_posisi_penolong_tetap_mengacu_posisi_akhir_meski_urutan_peristiwa_berbeda():
