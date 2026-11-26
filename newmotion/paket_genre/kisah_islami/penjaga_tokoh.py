@@ -162,6 +162,13 @@ def _periksa_benda_manusia_dalam_konteks_sakral(rencana: Any) -> list[TemuanAdab
                     "GAGAL", "BENDA_MANUSIA_TOKOH_SAKRAL",
                     f"shot {nomor}: benda {jenis!r} tidak aman untuk narasi ini: {alasan}",
                 ))
+        # Figuran berwajah (npc) di shot yang menyebut tokoh sakral bisa terbaca sebagai sosok itu.
+        boneka = shot.get("boneka") if isinstance(shot.get("boneka"), list) else []
+        if menyebut_tokoh_sakral and any(isinstance(o, dict) and o.get("npc") is not None for o in boneka):
+            temuan.append(TemuanAdab(
+                "GAGAL", "FIGURAN_TOKOH_SAKRAL",
+                f"shot {nomor}: figuran berwajah tidak boleh tampil di shot yang menyebut tokoh sakral",
+            ))
     return temuan
 
 def periksa_adab_tokoh(rencana: Any) -> list[TemuanAdab]:

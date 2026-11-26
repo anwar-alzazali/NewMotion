@@ -18,6 +18,7 @@ from typing import Any
 
 from newmotion.application.katalog_renderer import teks_katalog
 from newmotion.application.katalog_suara import teks_katalog_suara
+from newmotion.application.kemampuan_tokoh import teks_kemampuan_tokoh
 
 from .rencana_sutradara import terapkan_rencana, validasi_rencana
 
@@ -25,7 +26,8 @@ SKILL = Path(__file__).resolve().parent / "skill" / "sutradara.md"
 
 
 def skill_sutradara() -> str:
-    return SKILL.read_text(encoding="utf-8").replace("{KATALOG}", teks_katalog()).replace("{KATALOG_SUARA}", teks_katalog_suara())
+    return (SKILL.read_text(encoding="utf-8").replace("{KATALOG}", teks_katalog())
+            .replace("{KATALOG_SUARA}", teks_katalog_suara()).replace("{KEMAMPUAN_TOKOH}", teks_kemampuan_tokoh()))
 
 
 def _narasi(naskah: Mapping) -> list[str]:

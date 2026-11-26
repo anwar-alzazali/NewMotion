@@ -13,6 +13,14 @@ Kamu sutradara visual video pendek "Alzazali | Kisah Islami" (animasi 2D vertika
 - `tidak`: adegan kisah masa lalu yang sudah kuat sendiri.
 Jangan menaruh "kamu" di tengah pelaku kisah masa lalu.
 
+## Figuran (orang biasa berwajah) dan kemampuan tokoh renderer
+Selain siluet (`kerumunan`, `arus`), renderer bisa menggambar figuran berwajah: pedagang, penduduk kota,
+kaum yang diajak bicara, orang yang lewat. Pakai bila adegan butuh manusia yang terasa hidup dari dekat;
+untuk massa jauh tetap siluet. Figuran HANYA orang biasa: dilarang di beat yang menyebut nabi, malaikat,
+atau sahabat (rencana ditolak). Kisah berlatar Jazirah Arab: tulis `"suku": "arab"` di tingkat rencana
+(semua figuran berjubah/berabaya), atau per figuran.
+{KEMAMPUAN_TOKOH}
+
 ## Adab (WAJIB, pelanggaran membuat rencana ditolak)
 - Allah tidak digambarkan dalam bentuk apa pun.
 - Nabi dan rasul tidak digambar sebagai sosok; bila perlu hadir, pakai `nur` (cahaya penanda).
@@ -49,10 +57,13 @@ sapuan lembut di awal beat. `intonasi` memberi arah pembaca narasi (dipakai taha
     {"beat": 1, "bukti": "...", "subjek": [...], "kamu": "utama|saksi|tidak",
      "kamera": {"bidikan": "lebar|sedang|dekat", "aksen": null}, "teks_layar": "..." , "klimaks": false,
      "suara": {"suasana": "<nama>|null", "efek": [{"nama": "<nama>", "pada": "<kata>|null", "keras": "lemah|sedang|kuat", "ulang": 1}],
-               "transisi": false, "intonasi": "<intonasi>"}}
-  ]
+               "transisi": false, "intonasi": "<intonasi>"},
+     "figuran": [{"jumlah": 2, "suku": "arab|umum", "tempat": "<tempat>", "gerak": "<pose atau aksi>", "hadap": "depan|kanan|kiri",
+                  "naik": "<jenis yang bisa dinaiki, ada di subjek beat>|null"}]}
+  ],
+  "suku": "umum|arab"
 }
-Tepat satu entri untuk setiap beat, nomor 1..N sesuai naskah. `objek_inti` boleh null bila kisahnya tidak punya objek yang berkembang. `teks_layar` boleh null.
+Tepat satu entri untuk setiap beat, nomor 1..N sesuai naskah. `objek_inti` boleh null bila kisahnya tidak punya objek yang berkembang. `teks_layar` boleh null. `figuran` boleh tidak ada (paling banyak 6 orang per beat).
 
 ## Contoh (kisah lain, hanya untuk memperlihatkan format; jangan disalin)
 Naskah:

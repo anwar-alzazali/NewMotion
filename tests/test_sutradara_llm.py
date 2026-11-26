@@ -148,3 +148,45 @@ def test_waktu_efek_memakai_waktu_kata_tts_bila_ada():
 def test_skill_memuat_katalog_suara():
     skill = S.skill_sutradara()
     assert "{KATALOG_SUARA}" not in skill and "- drone_gelap:" in skill and "rimshot" not in skill
+
+
+def test_figuran_rencana_jadi_boneka_dan_dijaga_adab():
+    from newmotion.paket_genre.kisah_islami.penjaga_tokoh import periksa_adab_tokoh
+
+    r = copy.deepcopy(RENCANA)
+    r["suku"] = "arab"
+    r["beat"][8]["figuran"] = [{"jumlah": 3, "tempat": "kanan", "gerak": "lari", "hadap": "kiri"}]
+    assert S.validasi_lengkap(r, NASKAH) == []
+    spek, _, _ = arahkan_naskah(terapkan_rencana(NASKAH, r))
+    assert spek["cerita"]["suku"] == "arab"
+    fig = [b for sh in spek["cerita"]["shot"] if sh["_adegan"] == 8 for b in sh["boneka"] if "npc" in b]
+    assert len(fig) >= 3 and all(b["pose"] == "lari" and b["profil"] == "kiri" for b in fig)
+    # penjaga: figuran di shot yang menyebut nabi -> gagal
+    sh = copy.deepcopy(spek["cerita"]["shot"][8])
+    sh["_narasi"] = "Nabi Musa berdiri di tepi laut."
+    assert any(t.kode == "FIGURAN_TOKOH_SAKRAL" for t in periksa_adab_tokoh({"cerita": {"shot": [sh]}}))
+
+
+def test_figuran_ditolak_bila_beat_menyebut_tokoh_sakral_atau_gerak_tak_dikenal():
+    naskah = copy.deepcopy(NASKAH)
+    naskah["adegan"][1]["teks"] = "Nabi Musa berdiri di tepi laut. " + naskah["adegan"][1]["teks"]
+    r = copy.deepcopy(RENCANA)
+    r["beat"][1]["figuran"] = [{"jumlah": 2, "gerak": "terbang"}]
+    galat = validasi_rencana(r, [a["teks"] for a in naskah["adegan"]])
+    assert any("adab" in g for g in galat)
+    r["beat"][2]["figuran"] = [{"jumlah": 2, "gerak": "terbang", "naik": "motor"}]
+    galat = validasi_rencana(r, NARASI)
+    assert any("gerak" in g for g in galat) and any("naik" in g for g in galat)
+
+
+def test_figuran_naik_benda_menempel_lewat_kait():
+    from newmotion.paket_genre.kisah_islami.rencana_sutradara import figuran_dari_rencana
+
+    benda = [{"jenis": "motor", "x": 540, "y": 1600}]
+    [o] = figuran_dari_rencana({"figuran": [{"naik": "motor", "suku": "arab"}]}, benda, 3)
+    assert o["kait"] == benda[0]["id"] and o["suku"] == "arab"
+
+
+def test_skill_memuat_kemampuan_tokoh():
+    skill = S.skill_sutradara()
+    assert "{KEMAMPUAN_TOKOH}" not in skill and "motor (samping)" in skill and "- aksi berulang:" in skill
