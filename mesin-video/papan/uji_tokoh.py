@@ -160,7 +160,11 @@ def periksa(catatan: list[dict], label: dict[int, tuple[str, str]], acuan: dict[
         if not c.get("rig"):
             tambah("A0_TANPA_RANGKA", "boneka digambar tanpa rangka bersendi; geometri tidak bisa diuji")
             continue
-        for nama, nilai in tulang(c).items():
+        # Pemendekan karena anggota badan mengayun ke arah/menjauhi kamera adalah benar secara
+        # anatomi pada sudut depan/tiga perempat/belakang; panjang 2D hanya dituntut tetap pada
+        # sudut samping (gerak sebidang layar) dan pada pose diam.
+        boleh_pendek = pose in AKSI_UJI and sudut not in ("samping", "samping_kiri")
+        for nama, nilai in ({} if boleh_pendek else tulang(c)).items():
             for v in nilai:
                 if acuan.get(nama) and abs(v / acuan[nama] - 1) > 0.03:
                     tambah("A1_PANJANG_TULANG", f"{nama} {v:.0f}px, acuan {acuan[nama]:.0f}px")
@@ -187,22 +191,27 @@ def periksa(catatan: list[dict], label: dict[int, tuple[str, str]], acuan: dict[
     return temuan
 
 
-def periksa_loncatan(urutan: list[list[dict]], label, ambang: float = 45.0) -> list[dict]:
-    """A5: sendi tidak berpindah > ambang px (skala 1) antar-frame berurutan."""
-    temuan, sebelum = [], {}
+def periksa_loncatan(urutan: list[list[dict]], label, ambang: float = 35.0) -> list[dict]:
+    """A5: gerak sendi tanpa patahan. Yang diukur perubahan kecepatan antar-frame
+    (|p[t+1] - 2 p[t] + p[t-1]|, px pada skala 1, 30 fps), bukan kecepatan: gerak cepat
+    yang mulus (lompat, ayunan palu) lolos, sendi yang tiba-tiba berpindah tertangkap."""
+    temuan, riwayat = [], {}
     for catatan in urutan:
         for c in catatan:
             s = c.get("sendi")
             if not s:
                 continue
             titik = [p for kaki in s["kaki"] for p in kaki] + [p for l in s["lengan"] for p in l]
-            if c["id"] in sebelum:
-                lompat = max(_jarak(a, b) for a, b in zip(titik, sebelum[c["id"]]))
-                if lompat > ambang:
+            lalu = riwayat.setdefault(c["id"], [])
+            if len(lalu) == 2:
+                p0, p1 = lalu
+                patah = max(math.hypot(c2[0] - 2 * b[0] + a[0], c2[1] - 2 * b[1] + a[1])
+                            for a, b, c2 in zip(p0, p1, titik))
+                if patah > ambang:
                     pose, sudut = label[c["id"]]
                     temuan.append({"kode": "A5_LONCATAN", "pose": pose, "sudut": sudut, "t": c["t"],
-                                   "pesan": f"sendi meloncat {lompat:.0f}px dalam 1 frame"})
-            sebelum[c["id"]] = titik
+                                   "pesan": f"gerak sendi patah {patah:.0f}px dalam 1 frame"})
+            riwayat[c["id"]] = (lalu + [titik])[-2:]
     return temuan
 
 

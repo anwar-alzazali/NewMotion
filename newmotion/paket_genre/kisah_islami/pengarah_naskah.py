@@ -45,6 +45,7 @@ ROOT = Path(__file__).resolve().parents[3]
 from .dalil import ambil_ayat
 from . import arah_visual as AV
 from .pengarah_subjek import arahkan_subjek
+from .rencana_sutradara import subjek_dari_rencana
 
 # ---------------------------------------------------------------------------
 # Pagar keselamatan: deteksi frasa, bukan keputusan AI. (Lihat catatan sakral di atas --
@@ -328,7 +329,9 @@ def _boneka_kamu(tampilan: dict, letak: dict, wajah: str, pose: str, ds: float, 
 # Subjek yang membawa lanskapnya sendiri: `ngarai` sudah berupa dinding di celah dua tebing,
 # `istana`/`gerbang` adalah bangunan besar. Latar tema yang bertabrakan dengannya dibuang
 # (renderer menggambar benda `belakang` lebih dulu, sehingga gunung latar menimpa dinding).
-SUBJEK_PANGGUNG = frozenset({"ngarai", "istana", "gerbang"})
+SUBJEK_PANGGUNG = frozenset({"ngarai", "istana", "gerbang", "rumah", "rumah_kampung", "masjid",
+                             "masjid_kampung", "gedung", "kantor_gedung", "sekolah", "rumah_sakit_gedung",
+                             "bahtera", "gapura", "menara"})
 LATAR_BERTABRAKAN = frozenset({"gunung", "tebing", "kota", "bukit"})
 # Subjek suasana/latar: "kamu" tetap tokoh utama (mis. Mahsyar: "keringatmu sampai mana?").
 SUBJEK_SUASANA = frozenset({"kerumunan", "ombak", "gunung", "rumah", "makam", "pancar"})
@@ -361,9 +364,37 @@ def _ikat_posisi_subjek(shot: dict, subjek: list[dict]) -> None:
             o.update({"x": 300, "y": 1700, "s": 1.2, "depan": True})
 
 
+def _kamera_bidikan(subjek: dict, kamera: dict, ds: float) -> dict:
+    """Bidikan dari rencana sutradara: lebar / sedang / dekat ke pusat subjek, plus aksen."""
+    def _x(o):
+        x = o.get("x", 540)
+        while isinstance(x, list) and x:
+            x = x[0][1] if isinstance(x[0], list) else x[0]
+        return float(x) if isinstance(x, (int, float)) else 540.0
+
+    pelaku = [o for o in subjek["benda"] if not o.get("belakang")] or subjek["benda"]
+    pusat = round(statistics.fmean(_x(o) for o in pelaku)) if pelaku else 540
+    bidikan = subjek.get("bidikan", "lebar")
+    if bidikan == "dekat":
+        baru = {"z": [1.5, 1.6], "x": pusat, "y": 1220}
+    elif bidikan == "sedang":
+        baru = {"z": [1.18, 1.25], "x": round((pusat + 540) / 2), "y": 1120}
+    else:
+        baru = {"z": [1.0, 1.06], "x": 540, "y": 1000}
+    for kunci in ("hentak", "guncang"):
+        if kunci in kamera:
+            baru[kunci] = kamera[kunci]
+    tk = round(min(ds * 0.35, 1.4), 2)
+    if subjek.get("aksen") == "hentak":
+        baru["hentak"] = [[tk, 0.11]]
+    elif subjek.get("aksen") == "guncang":
+        baru["guncang"] = [[tk, 30]]
+    return baru
+
+
 def _susun_ulang_untuk_subjek(benda: list[dict], subjek: list[dict], b: dict, kamera: dict,
                               look: dict, wajah: str, pose: str, ds: float, tx: str,
-                              posisi: str, R) -> tuple[list[dict], dict, dict]:
+                              posisi: str, R, paksa_saksi: bool = False) -> tuple[list[dict], dict, dict]:
     """Jadikan subjek narasi fokus shot, bukan tempelan di atas templat "kamu".
 
     - Latar tema yang bertabrakan dengan subjek panggung (dinding, istana, gerbang) dibuang.
@@ -374,7 +405,7 @@ def _susun_ulang_untuk_subjek(benda: list[dict], subjek: list[dict], b: dict, ka
     """
     jenis_subjek = {x.get("jenis") for x in subjek}
     if jenis_subjek & SUBJEK_PANGGUNG:
-        benda = [x for x in benda if x.get("jenis") not in LATAR_BERTABRAKAN]
+        benda = [x for x in benda if x.get("jenis") not in LATAR_BERTABRAKAN or any(x is o for o in subjek)]
 
     def _x_awal(o: dict) -> float:
         x = o.get("x", 540)
@@ -382,7 +413,7 @@ def _susun_ulang_untuk_subjek(benda: list[dict], subjek: list[dict], b: dict, ka
             x = x[0][1] if isinstance(x[0], list) else x[0]
         return float(x) if isinstance(x, (int, float)) else 540.0
 
-    pelaku = [o for o in subjek if o.get("jenis") not in SUBJEK_SUASANA]
+    pelaku = list(subjek) if paksa_saksi else [o for o in subjek if o.get("jenis") not in SUBJEK_SUASANA]
     if not pelaku:
         return benda, b, kamera
     pusat = statistics.fmean(_x_awal(o) for o in pelaku)
@@ -566,18 +597,41 @@ def arahkan(naskah: dict, waktu_adegan: list[float] | None = None,
                     benda.append({"jenis": "sajadah", "x": letak["x"], "y": letak["y"] + 14, "s": round(letak["s"] * 0.9, 2)})
             # Subjek yang disebut narasi harus hadir di shot yang mengucapkannya.
             # Pemetaan dimiliki paket genre, terpisah dari leksikon alat ukur.
-            subjek = arahkan_subjek(tx, ds, idx * 100 + j, konteks=teks_gabungan)
-            jenis_ada = {x.get("jenis") for x in benda}
-            benda += [x for x in subjek["benda"] if x.get("jenis") not in jenis_ada]
+            # Rencana sutradara (LLM) bila ada: keputusan makna per beat. Tanpanya: aturan subjek.
+            rb = a.get("rencana") if isinstance(a.get("rencana"), dict) else None
+            subjek = (subjek_dari_rencana(rb, tx, ds, seed0 + idx * 100 + j) if rb
+                      else arahkan_subjek(tx, ds, idx * 100 + j, konteks=teks_gabungan))
+            if rb:
+                # Rencana sutradara: subjek menggantikan latar berjenis sama (mis. gunung tujuan
+                # berlindung menggantikan gunung latar), bukan diabaikan karena jenisnya sudah ada.
+                jenis_subjek = {x.get("jenis") for x in subjek["benda"]}
+                benda = [x for x in benda if x.get("jenis") not in jenis_subjek] + list(subjek["benda"])
+            else:
+                jenis_ada = {x.get("jenis") for x in benda}
+                benda += [x for x in subjek["benda"] if x.get("jenis") not in jenis_ada]
             if subjek["benda"]:
                 _ikat_posisi_subjek(s, subjek["benda"])
-                benda, b, kamera = _susun_ulang_untuk_subjek(benda, subjek["benda"], b, kamera,
-                                                              look, wajah, pose, ds, tx, posisi, R)
-                s["kamera"] = kamera
+                if not rb or subjek["kamu"] == "saksi":
+                    benda, b, kamera = _susun_ulang_untuk_subjek(benda, subjek["benda"], b, kamera, look, wajah,
+                                                                  pose, ds, tx, posisi, R, paksa_saksi=bool(rb))
+                else:
+                    if {x.get("jenis") for x in subjek["benda"]} & SUBJEK_PANGGUNG:
+                        benda = [x for x in benda if x.get("jenis") not in LATAR_BERTABRAKAN
+                                 or any(x is o for o in subjek["benda"])]
+                    if subjek["kamu"] == "utama":
+                        # "kamu" tokoh utama: lapisan depan (mis. ombak) tidak boleh menutupi wajahnya
+                        for o in benda:
+                            if o in subjek["benda"]:
+                                o.pop("depan", None)
+                for o in benda:
+                    o.pop("_di_lubang", None)
+            if rb:
+                kamera = _kamera_bidikan(subjek, kamera, ds)
+            s["kamera"] = kamera
             s["benda"] = benda
             if subjek["teks"]:
                 s["teks"] = (s.get("teks") or []) + subjek["teks"]
-            if subjek["klimaks"]:
+            if subjek["klimaks"] and not (rb and subjek.get("aksen")):
                 kamera["hentak"] = [[round(min(ds * 0.35, 1.4), 2), 0.11]]
                 kamera["guncang"] = [[round(min(ds * 0.35, 1.4), 2), 24]]
             # Efek lingkungan dan respons tubuh yang disebut eksplisit oleh narasi.
@@ -593,7 +647,7 @@ def arahkan(naskah: dict, waktu_adegan: list[float] | None = None,
                 s["retak"] = {"x": 540, "y": 1500, "p": 0.7}
             if re.search(r"\b(hujan|tercurah)\b", teks, re.I):
                 s["hujan"] = 0.8
-            s["boneka"] = [b]
+            s["boneka"] = [] if rb and subjek["kamu"] == "tidak" else [b]
             # Kerumunan latar hanya di tema "padang terbuka" (di kota/kampung/ruang dalam
             # kerumunan siluet di cakrawala terlihat janggal).
             if (tema in AV.TEMA_BOLEH_KERUMUNAN and not ruang
@@ -604,7 +658,7 @@ def arahkan(naskah: dict, waktu_adegan: list[float] | None = None,
             # Teks besar di layar hanya utk adegan hook & penutup (konvensi video lama: hook & CTA
             # besar, adegan tengah mengandalkan subtitle narasi saja) -- tetap tampil di semua
             # potongan adegan itu, hanya potongan pertama yang memudar masuk.
-            if posisi in ("hook", "penutup") and a.get("kunci"):
+            if posisi in ("hook", "penutup") and a.get("kunci") and not rb:
                 baris_teks = a["kunci"][:2]
                 s["teks"] = [{"at": 0.1 if j == 0 else 0, "teks": "\n".join(baris_teks), "y": 320,
                               "ukuran": _ukuran_teks_aman(baris_teks)}]

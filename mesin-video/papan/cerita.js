@@ -1398,15 +1398,25 @@
       rk: [8 + 4 * s, -6 * Math.max(0, s)], lk: [8 - 4 * s, -6 * Math.max(0, -s)] };
     if (nama === "lompat") {
       const u = ((t % 1.2) + 1.2) % 1.2 / 1.2;
-      // Gerak lengan memakai satu kurva kontinu: ancang-ancang, tolakan,
-      // melayang, lalu turun. Tidak ada perubahan sudut 8 -> 150 derajat seketika.
-      const naik = halus(clamp(u / .24));
-      const turun = halus(clamp((u - .72) / .28));
-      const lengan = 8 + 140 * naik * (1 - turun);
-      const siku = 4 + 150 * naik * (1 - turun);
-      if (u < .2) { const k = Math.sin(Math.PI * u / .4); return { turun: 22 * k, pp: 1 - .25 * k, rk: [8, -10 * k], lk: [8, -10 * k], ra: [lengan, siku], la: [lengan, siku] }; }
-      if (u < .75) { const k = (u - .2) / .55; return { turun: 22 - 142 * Math.sin(Math.PI * k), pp: .75, rk: [10, -25], lk: [10, -25], ra: [lengan, siku], la: [lengan, siku] }; }
-      const k = 1 - (u - .75) / .25; return { turun: 18 * k, pp: 1 - .2 * k, rk: [8, -8 * k], lk: [8, -8 * k], ra: [lengan, siku], la: [lengan, siku] };
+      const persiapan = halus(clamp(u / .2));
+      const pendaratan = halus(clamp((u - .75) / .25));
+      const lengan = 8 + 140 * halus(clamp(u / .24)) * (1 - halus(clamp((u - .72) / .28)));
+      const siku = 4 + 150 * halus(clamp(u / .24)) * (1 - halus(clamp((u - .72) / .28)));
+      const lutut = (awal, akhir, f) => mix(awal, akhir, f);
+      const rk = [lutut(8, 10, persiapan), lutut(0, -25, persiapan)];
+      const lk = [lutut(8, 10, persiapan), lutut(0, -25, persiapan)];
+      const pp = u < .2 ? 1 - .25 * persiapan : u < .75 ? .75 : .75 + .25 * pendaratan;
+      let turun;
+      if (u < .2) turun = 22 * persiapan;
+      else if (u < .75) {
+        const lintasan = halus(clamp((u - .2) / .55));
+        turun = 22 - 142 * Math.sin(Math.PI * lintasan);
+      } else turun = 22 * (1 - pendaratan);
+      if (u >= .75) {
+        rk[0] = lk[0] = lutut(10, 8, pendaratan);
+        rk[1] = lk[1] = lutut(-25, 0, pendaratan);
+      }
+      return { turun, pp, rk, lk, ra: [lengan, siku], la: [lengan, siku] };
     }
     if (nama === "melambai") return { ra: [150, 160 + 25 * Math.sin(t * 2 * Math.PI * 1.6)], kepala: 4 };
     if (nama === "menggeleng") return { toleh: .8 * Math.sin(t * 2 * Math.PI * 1.6) };
@@ -1492,27 +1502,29 @@
       // Proyeksi profil: kedua tungkai berada pada bidang kedalaman yang sama,
       // dengan langkah maju-mundur yang bergantian. Panjang setiap tulang tetap 100 px.
       const fase = ((t * (aksi === "lari" ? 2.15 : 1.25) * Math.PI * 2 + (offset || 0)) % (Math.PI * 2) + Math.PI * 2) % (Math.PI * 2);
-      const langkah = Math.sin(fase), jalan = aksi === "jalan" || aksi === "lari";
+      const jalan = aksi === "jalan" || aksi === "lari";
       [-1, 1].forEach((sg) => {
         const s = sg < 0 ? J.lk : J.rk;
         const pp = sg < 0 ? (J.pp_ki == null ? J.pp : J.pp_ki) : (J.pp_ka == null ? J.pp : J.pp_ka);
         const pk = sg < 0 ? (J.pk_ki == null ? J.pk : J.pk_ki) : (J.pk_ka == null ? J.pk : J.pk_ka);
-        let fx, lift = 0;
+        const H = [jalan ? 0 : sisi * (sg < 0 ? -5 : 5), hy0];
+        let F;
         if (jalan) {
-          const maju = (sg < 0 ? langkah : -langkah);
-          fx = sisi * 38 * maju;
-          if (aksi === "jalan") lift = (maju < 0 ? 1 : 0) * Math.abs(langkah) * 8;
-          else lift = Math.max(0, Math.cos(fase + (sg < 0 ? 0 : Math.PI))) * 30;
+          // Satu kaki menjadi tumpuan tepat di tanah; kaki lain mengayun ke depan,
+          // lalu bertukar. Ayunan tetap di dalam jangkauan dua tulang 100 px.
+          const langkah = Math.sin(fase + (sg > 0 ? Math.PI : 0));
+          const ayunKaki = Math.max(0, langkah);
+          const panjangLangkah = aksi === "lari" ? 70 : 58;
+          F = [sisi * panjangLangkah * ayunKaki, -18 * Math.sin(Math.PI * ayunKaki)];
         } else {
           const sudutKaki = sg < 0 ? s : J.rk;
-          fx = sisi * Math.min(72, Math.abs(Math.sin((sudutKaki[0] + sudutKaki[1]) * R) * 68));
+          F = [sisi * Math.min(72, Math.abs(Math.sin((sudutKaki[0] + sudutKaki[1]) * R) * 68)),
+               Math.min(0, J.turun)];
         }
-        const H = [sisi * (sg < 0 ? -5 : 5), hy0];
-        const F = [fx, Math.min(0, J.turun) - lift - (jalan && aksi === "jalan" ? 8 : 0)];
         const dx = F[0] - H[0], dy = F[1] - H[1], jarak = Math.max(1, Math.hypot(dx, dy));
         const d = Math.min(199.5, jarak), tengah = [(H[0] + F[0]) / 2, (H[1] + F[1]) / 2];
         const tinggi = Math.sqrt(Math.max(0, 10000 - d * d / 4));
-        const arahDepan = sisi;
+        const arahDepan = sisi * (sg < 0 ? 1 : -1);
         const K = [tengah[0] + arahDepan * Math.abs(dy) / jarak * tinggi,
                     tengah[1] - Math.abs(dx) / jarak * tinggi];
         titik.push([H, K, F]);
@@ -1553,10 +1565,15 @@
     let bdn = o.profilMotor
       ? `<path d="M -30 ${-396 + nafas} Q 22 ${-420 + nafas} 52 ${-382 + nafas} L 68 ${-270 + nafas} Q 56 ${-222 + nafas} 8 ${-206 + nafas} L -28 ${-244 + nafas} Z" fill="${BD}" stroke="${warna(BD, "#000000", 0.18)}" stroke-width="4"/>`
       : samping
-        ? `<path d="M -24 ${-396 + nafas} Q 12 ${-420 + nafas} 34 ${-382 + nafas} L 32 ${-270 + nafas} Q 22 ${-222 + nafas} 4 ${-206 + nafas} L -22 ${-244 + nafas} Z" fill="${BD}" stroke="${warna(BD, "#000000", 0.18)}" stroke-width="4"/>`
+        ? `<path d="M -34 ${-398 + nafas} Q 10 ${-432 + nafas} 48 ${-386 + nafas} L 54 ${-270 + nafas} Q 36 ${-220 + nafas} 8 ${-204 + nafas} L -32 ${-246 + nafas} Z" fill="${BD}" stroke="${warna(BD, "#000000", 0.18)}" stroke-width="4"/>`
         : tigaPerempat
-          ? `<path d="M -48 ${-395 + nafas} Q -8 ${-426 + nafas} 46 ${-390 + nafas} L 70 ${-250 + nafas} Q 36 ${-208 + nafas} -24 ${-206 + nafas} L -54 ${-252 + nafas} Z" fill="${BD}" stroke="${warna(BD, "#000000", 0.18)}" stroke-width="4"/>`
+          ? `<path d="M -34 ${-402 + nafas} Q 8 ${-442 + nafas} 54 ${-390 + nafas} L 76 ${-254 + nafas} Q 44 ${-210 + nafas} -8 ${-204 + nafas} L -46 ${-252 + nafas} Z" fill="${BD}" stroke="${warna(BD, "#000000", 0.18)}" stroke-width="4"/>`
           : `<rect x="${-70 - 30 * GM}" y="${-395 + nafas}" width="${140 + 60 * GM}" height="215" rx="${58 + 20 * GM}" fill="${BD}"/>`;
+    if (tigaPerempat) {
+      // Bidang dada dekat dan sisi jauh dibuat berbeda agar sudut 3/4 tetap terbaca di layar kecil.
+      bdn += `<path d="M 22 ${-386 + nafas} Q 52 ${-360 + nafas} 58 ${-300 + nafas} L 44 ${-230 + nafas} Q 20 ${-214 + nafas} 4 ${-220 + nafas} Z" fill="${warna(BD, "#000000", 0.16)}" opacity=".72"/>`;
+      bdn += `<path d="M -26 ${-382 + nafas} Q -2 ${-392 + nafas} 18 ${-380 + nafas}" fill="none" stroke="${warna(BD, "#ffffff", 0.22)}" stroke-width="7" stroke-linecap="round"/>`;
+    }
     if (P && !samping && !o.profilMotor) bdn += bajuDetail(P, BD, nafas, GM);
     // lengan
     const lengan = (sg, s) => {
@@ -1564,7 +1581,7 @@
       const sw = ayun * 0.6 * -sg;
       const S = o.profilMotor ? [34 + (sg < 0 ? -8 : 8), -360 + nafas] :
         o.profilMotorBaru ? [sg < 0 ? 26 : 34, -360 + nafas] :
-        samping ? [sisi * (sg < 0 ? 10 : 18), -360 + nafas + (sg < 0 ? -13 : 0)] :
+        samping ? [sisi * (sg < 0 ? 16 : 38), -360 + nafas + (sg < 0 ? -18 : 0)] :
         tigaPerempat ? [sg < 0 ? -44 : 60, -360 + nafas] : [sg * (62 + 26 * GM), -360 + nafas];
       const E = o.profilMotor ? [112 + (sg < 0 ? -8 : 8), -320 + nafas] :
         o.profilMotorBaru ? [S[0] + 75, -320 + nafas] :
@@ -1585,7 +1602,7 @@
       const dx = Rk.H[0] - L.H[0], dy = Rk.H[1] - L.H[1];
       const len = Math.max(1, Math.hypot(dx, dy)), ux = dx / len, uy = dy / len;
       const hx = Rk.H[0] + ux * 112, hy = Rk.H[1] + uy * 112;
-      const sudut = Math.atan2(ux, -uy) * 180 / Math.PI;
+      const sudut = samping ? sisi * 28 : Math.atan2(ux, -uy) * 180 / Math.PI;
       barang = `<g transform="translate(${hx} ${hy}) rotate(${sudut})">
         <path d="M 0 0 L 0 ${len + 126}" stroke="#4c3322" stroke-width="22" stroke-linecap="round"/>
         <path d="M 0 0 L 0 ${len + 126}" stroke="#9a6b3e" stroke-width="14" stroke-linecap="round"/>
@@ -1676,6 +1693,8 @@
     const GM = v(b.gemuk, t, d, 0), SH = 62 + 26 * GM, KB = b.kepala_besar || 1;
     const kaki = (dx, a, w = BADAN, tb = 44) => `<line x1="${dx}" y1="-200" x2="${dx + Math.sin((a * Math.PI) / 180) * 200}" y2="${-200 + Math.cos((a * Math.PI) / 180) * 200}" stroke="${w}" stroke-width="${tb}" stroke-linecap="round"/>`;
     const RIG = b.pose != null || HD || b.sudut != null ? poseKini(b, HD ? ta : t, HD) : null;
+    if (RIG && (b.sudut === "samping" || b.sudut === "samping_kiri") &&
+        (RIG._aksi === "jalan" || RIG._aksi === "lari")) RIG.turun = 0;
     if (RIG && b._gabungan) { x += RIG.geser || 0; arah += (RIG.toleh || 0) * 4; tunduk += (RIG.angguk || 0) * 3; }
     // AKSI GALI: pose kerja adalah aksi berulang, bukan pose statis.
     // Fase diberi offset per NPC agar pekerja tidak mengayun serempak.
@@ -1688,6 +1707,11 @@
       RIG.badan = 5 + 8 * hantam - 3 * ayunGali;
       RIG.turun = 3 + 9 * hantam;
       RIG.lk = [4, 0]; RIG.rk = [-4, 0];
+      if (b.sudut === "samping" || b.sudut === "samping_kiri") {
+        // Pada profil, kedua tangan berada di depan dada; beliung tidak melintas di kepala.
+        RIG.ra = [42 + 3 * ayunGali, 70 - 4 * hantam];
+        RIG.la = [38 + 3 * ayunGali, 64 - 4 * hantam];
+      }
       RIG.pegang = "beliung";
     }
     if (RIG && HD) { const ph = (b.id || 0) * 1.37, q = ta - RIG._tk; RIG.badan += H.brot; RIG.kepala += H.krot; RIG.la = [RIG.la[0], RIG.la[1] + 2 * Math.sin(t * 1.1 + ph)]; RIG.ra = [RIG.ra[0], RIG.ra[1] - 2 * Math.sin(t * 1.3 + ph)];
