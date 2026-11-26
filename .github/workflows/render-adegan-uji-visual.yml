@@ -5,6 +5,7 @@ on:
     paths:
       - 'newmotion/adapter_visual_tokoh.py'
       - 'newmotion/paket_genre/cerita_umum/**'
+      - 'mesin-video/papan/cerita.js'
       - 'tests/test_paket_cerita_umum.py'
       - 'tests/data/cerita_umum_motor_penolong.json'
       - '.github/workflows/render-adegan-uji-visual.yml'
