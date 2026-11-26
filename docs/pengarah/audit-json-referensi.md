@@ -51,12 +51,14 @@ Implementasi yang diperiksa adalah
 `newmotion/paket_genre/cerita_umum/pengarah_naskah.py`.
 
 Saat ini pengarah tersebut:
-- menghasilkan tepat satu shot untuk setiap beat/adegan sumber;
-- menghitung durasi shot dari panjang teks dengan batas minimum dan maksimum;
-- memakai nilai horizon dan langit tetap;
-- memakai kamera dengan posisi tetap dan rentang zoom yang sama;
-- mengeluarkan `benda: []` dan `boneka: []` pada setiap shot;
-- belum menghasilkan objek lingkungan, komposisi foreground/background, keyframe kamera yang kontekstual, maupun arahan gerak tokoh.
+- masih menghasilkan satu shot awal untuk setiap beat/adegan; pemecahan shot berdasarkan subperistiwa belum diterapkan;
+- menghitung durasi awal shot dari panjang teks dengan batas minimum dan maksimum;
+- memberi setiap shot ID stabil, tujuan naratif, fokus tokoh, daftar ID peristiwa, dan urutan peristiwa;
+- menautkan aktor, aksi, sasaran, serta sasaran tokoh pada urutan peristiwa tanpa mengubah urutan sumber;
+- memilih skala komposisi dan rentang zoom berdasarkan aksi eksplisit (jatuh, interaksi, perpindahan, atau peristiwa umum);
+- masih memakai posisi kamera, horizon, dan langit dasar yang tetap; zoom baru berupa rentang, belum lintasan kamera sinematik lengkap;
+- menerima benda, tokoh, lintasan, dan pose melalui rencana visual eksplisit serta adapter, bukan dengan menciptakan aset dari kata kunci;
+- belum menghasilkan lingkungan atmosferik kompleks dan komposisi foreground/background setara referensi.
 
 Orkestrator inti menambahkan `rencana_cerita`, `rencana_blocking`, dan
 `rencana_visual_tokoh`. Untuk paket yang secara eksplisit menyediakan pengarah visual
@@ -76,27 +78,29 @@ diturunkan secara kontekstual dari peristiwa.
 
 | Dimensi | Referensi mesin-video | NewMotion cerita umum saat ini | Status |
 |---|---|---|---|
-| Identitas beat/peristiwa | Terwakili dalam urutan shot dan data adegan; tidak selalu memakai ID semantik eksplisit | ID beat/peristiwa stabil dan relasi aktor/sasaran tersedia pada rencana semantik | Sebagian |
-| Jumlah dan segmentasi shot | 12–20 shot pada contoh yang diperiksa | Satu shot per beat | Belum setara |
+| Identitas beat/peristiwa | Terwakili dalam urutan shot dan data adegan; tidak selalu memakai ID semantik eksplisit | ID beat/peristiwa stabil; urutan, aktor, aksi, sasaran, dan fokus tokoh tertaut pada metadata shot | Sebagian |
+| Jumlah dan segmentasi shot | 12–20 shot pada contoh yang diperiksa | Satu shot awal per beat; urutan subperistiwa tercatat tetapi belum dipecah menjadi shot terpisah | Belum setara |
 | Lingkungan dan atmosfer | Banyak parameter per shot dan variasi antar-shot | Horizon/langit tetap | Kesenjangan besar |
 | Objek dan kontinuitas benda | 73–98 objek pada Nuh/Ya'juj; Mahsyar memakai elemen lingkungan/kerumunan | Daftar benda kosong dari pengarah umum | Kesenjangan besar |
 | Tokoh dan ekspresi | Boneka, pose, ekspresi, atribut fisik dan keyframe | Tokoh/lintasan/pose dari rencana eksplisit sudah diterjemahkan ke shot; detail ekspresi dan atribut belum setara | Sebagian |
-| Kamera | Keyframe kamera per shot dengan variasi x/y/z dan efek | Posisi tetap, zoom sempit yang sama | Kesenjangan besar |
-| Gerak dan interaksi | Properti gerak objek/tokoh dan perubahan antar-shot | Blocking mulai mencatat aksi dan transisi; terjemahan visual masih terbatas | Sebagian |
+| Kamera | Keyframe kamera per shot dengan variasi x/y/z dan efek | Posisi dasar tetap; rentang zoom dibedakan menurut jenis aksi | Sebagian |
+| Gerak dan interaksi | Properti gerak objek/tokoh dan perubahan antar-shot | Blocking dan adapter memetakan lintasan/pose untuk peristiwa eksplisit; urutan aksi tersedia, segmentasi temporal belum lengkap | Sebagian |
 | Diagnostik | Tidak selalu tersedia sebagai lapisan semantik eksplisit pada file lama | Diagnostik relasi dan transisi tersedia | Lebih baik pada sisi audit semantik |
 
 ## Kesimpulan tahap
 
 **Belum layak menyatakan spek JSON NewMotion mendekati kedalaman referensi.**
 
-Tahap 1–3 telah membangun fondasi penting: kontrak, keterlacakan peristiwa, dan
-transisi keadaan. Namun keluaran renderer cerita umum masih berupa papan minimal:
-satu shot per beat, kamera nyaris tetap, tanpa objek, dan tanpa tokoh visual.
+Fondasi kontrak, keterlacakan peristiwa, transisi keadaan, adapter visual, dan
+pengarahan dasar per shot sudah tersedia. Keluaran sekarang telah memuat fokus,
+tujuan shot, urutan peristiwa, komposisi dasar, serta zoom kontekstual. Namun
+segmentasi subperistiwa, keyframe kamera lengkap, lingkungan atmosferik, dan
+kekayaan objek/atribut visual masih tertinggal dari referensi.
 
 Karena itu, pekerjaan berikutnya bukan merender Nuh/Ya'juj/Mahsyar lagi. Yang perlu
-dikerjakan adalah memperkaya algoritme pengarah agar menghasilkan spesifikasi shot
-yang diturunkan dari peristiwa dan keadaan cerita, lalu mengukur JSON hasilnya terhadap
-matriks di atas.
+dikerjakan adalah membangun segmentasi shot berbasis perubahan aksi/keadaan yang
+benar-benar terpisah, lalu memperkaya kamera dan lingkungan secara deterministik serta
+mengukur JSON hasilnya terhadap matriks di atas.
 
 ## Gerbang penerimaan sebelum render
 
