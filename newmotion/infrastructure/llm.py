@@ -190,12 +190,19 @@ def _gemini(model: str, sistem: str, pesan: str, gambar: Sequence[Gambar], maks:
 
 def panggil(tahap: str, sistem: str, pesan: str, *, gambar: Sequence[Gambar] = (), json: bool = False,
             maks_token: int = 8000, validasi: Callable[[Any], list[str]] | None = None,
-            http=_http, konfigurasi: dict | None = None) -> Jawaban:
+            http=_http, konfigurasi: dict | None = None, ulang_validasi: int = 1) -> Jawaban:
     """Panggil rantai model tahap ini sampai ada jawaban yang terbaca dan lolos validasi."""
     k = konfigurasi if konfigurasi is not None else _muat_konfigurasi()
     riwayat: list[str] = []
     galat_sebelumnya: list[str] = []
-    for model in rantai_model(tahap, k):
+    # Model yang ditolak validator dicoba sekali lagi dengan daftar galatnya sebelum pindah ke
+    # cadangan: kesalahan format biasanya bisa diperbaiki model yang sama (wali1, 27 Nov).
+    antrean = [m for m in rantai_model(tahap, k) for _ in range(ulang_validasi + 1)]
+    ditolak_terakhir = None
+    for i, model in enumerate(antrean):
+        if i and antrean[i - 1] == model and ditolak_terakhir != model:
+            continue  # percobaan ulang hanya bila percobaan sebelumnya ditolak validator/JSON
+        ditolak_terakhir = None
         isi = pesan
         if galat_sebelumnya:
             isi += ("\n\nPercobaan sebelumnya ditolak validator karena:\n- " + "\n- ".join(galat_sebelumnya[:20])
@@ -220,12 +227,14 @@ def panggil(tahap: str, sistem: str, pesan: str, *, gambar: Sequence[Gambar] = (
             except (json_mod.JSONDecodeError, ValueError) as e:
                 riwayat.append(f"{nama}: JSON tidak terbaca ({str(e)[:80]})")
                 galat_sebelumnya = ["keluaran bukan JSON valid"]
+                ditolak_terakhir = model
                 continue
         if validasi is not None:
             galat = validasi(j.data if json else teks)
             if galat:
-                riwayat.append(f"{nama}: ditolak validator ({len(galat)} galat)")
+                riwayat.append(f"{nama}: ditolak validator ({len(galat)} galat: {'; '.join(galat[:3])[:300]})")
                 galat_sebelumnya = galat
+                ditolak_terakhir = model
                 continue
         j.percobaan = riwayat + [f"{nama}: diterima ({time.monotonic() - mulai:.1f} dtk)"]
         return j

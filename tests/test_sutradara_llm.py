@@ -8,7 +8,10 @@ import pytest
 from newmotion.application.katalog_renderer import katalog, katalog_subjek
 from newmotion.application.pengarah_inti import arahkan_naskah
 from newmotion.paket_genre.kisah_islami import sutradara_llm as S
-from newmotion.paket_genre.kisah_islami.rencana_sutradara import terapkan_rencana, validasi_rencana
+from newmotion.paket_genre.kisah_islami.rencana_sutradara import (
+    terapkan_rencana,
+    validasi_rencana,
+)
 
 DATA = Path(__file__).parent / "data"
 NASKAH = json.loads((DATA / "tolok_ukur" / "yajuj1.json").read_text(encoding="utf-8"))
@@ -106,3 +109,42 @@ def test_gunung_subjek_tidak_dibuang_bersama_latar():
     spek, _, _ = arahkan_naskah(terapkan_rencana(naskah, r))
     gunung = [b for s in spek["cerita"]["shot"] for b in s["benda"] if b["jenis"] == "gunung"]
     assert gunung and all(g["x"] == 780 for g in gunung)  # hanya gunung subjek (kanan) yang tersisa
+
+
+def test_suara_rencana_jadi_rekaman():
+    spek, _, _ = arahkan_naskah(terapkan_rencana(NASKAH, RENCANA))
+    assert spek["musik"] is False and spek["volume_efek"] == 0
+    rek = spek["rekaman"]
+    drone = [r for r in rek if r["berkas"].endswith("drone_gelap.mp3")]
+    assert len(drone) == 1 and drone[0]["ulang"] and drone[0]["sampai"]  # suasana sama digabung, lalu berhenti
+    assert sum(r["berkas"].endswith("braam.mp3") for r in rek) == 2
+    gali = sorted(r["at"] for r in rek if r["berkas"].endswith("timbangan_denting.mp3") and r["at"] < 6)
+    assert len(gali) == 6 and round(gali[1] - gali[0], 2) == 0.6           # ritme ulang
+    assert all(r["at"] == sorted(x["at"] for x in rek)[i] for i, r in enumerate(rek))
+    assert terapkan_rencana(NASKAH, RENCANA)["adegan"][10]["intonasi"] == "haru"
+
+
+def test_suara_ditolak_bila_tidak_di_katalog_atau_kata_tidak_ada():
+    r = copy.deepcopy(RENCANA)
+    r["beat"][0]["suara"] = {"suasana": "musik_pop", "efek": [{"nama": "rimshot"}, {"nama": "braam", "pada": "meledak"}],
+                             "intonasi": "ceria"}
+    galat = validasi_rencana(r, NARASI)
+    assert any("suasana" in g for g in galat) and any("rimshot" in g for g in galat)
+    assert any("efek.pada" in g for g in galat) and any("intonasi" in g for g in galat)
+
+
+def test_waktu_efek_memakai_waktu_kata_tts_bila_ada():
+    from newmotion.paket_genre.kisah_islami.rencana_sutradara import (
+        rekaman_dari_rencana,
+    )
+
+    adegan = [{"teks": "Mereka menembusnya, dan keluar.",
+               "rencana": {"suara": {"efek": [{"nama": "braam", "pada": "menembusnya"}]}}}]
+    kira = rekaman_dari_rencana(adegan, [(10.0, 4.0)])[0]["at"]
+    pasti = rekaman_dari_rencana(adegan, [(10.0, 4.0)], [[[10.0, "Mereka"], [10.7, "menembusnya,"]]])[0]["at"]
+    assert 10.0 < kira < 12.0 and pasti == 10.7
+
+
+def test_skill_memuat_katalog_suara():
+    skill = S.skill_sutradara()
+    assert "{KATALOG_SUARA}" not in skill and "- drone_gelap:" in skill and "rimshot" not in skill

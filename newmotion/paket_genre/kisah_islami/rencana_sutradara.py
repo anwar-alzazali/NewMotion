@@ -26,6 +26,13 @@ from collections.abc import Mapping
 from typing import Any
 
 from newmotion.application.katalog_renderer import katalog_subjek
+from newmotion.application.katalog_suara import (
+    INTONASI,
+    KERAS,
+    VOL_SUASANA,
+    berkas,
+    katalog_suara,
+)
 
 from .pengarah_subjek import _properti_benda
 
@@ -42,6 +49,7 @@ TEMPAT_DASAR = {
 }
 RELASI = ("di_lubang",)  # tempat "di_lubang:<jenis>" (mis. penggali di lubang dinding)
 MAKS_TEKS_LAYAR = 40
+JEDA_ULANG = 0.6  # detik antar-bunyi efek berulang (mis. ayunan beliung)
 
 
 def _polos(s: str) -> str:
@@ -115,6 +123,9 @@ def validasi_rencana(rencana: Any, narasi_beat: list[str]) -> list[str]:
                 elif not (_angka(v) or isinstance(v, (str, bool))
                           or (isinstance(v, list) and len(v) == 2 and all(_angka(x) for x in v))):
                     g.append(f"{lbl}: nilai keadaan {j}.{k} harus angka, teks, atau [awal, akhir]")
+                elif isinstance(v, list) and k not in kat[j].get("animasi", ()):
+                    g.append(f"{lbl}: {j}.{k} tidak bisa dianimasikan; pakai satu nilai "
+                             f"(yang bisa [awal, akhir]: {', '.join(kat[j].get('animasi', ())) or '-'})")
         if b.get("kamu", "utama") not in PERAN_KAMU:
             g.append(f"{lbl}: kamu harus salah satu {PERAN_KAMU}")
         kamera = b.get("kamera") or {}
@@ -126,7 +137,82 @@ def validasi_rencana(rencana: Any, narasi_beat: list[str]) -> list[str]:
             g.append(f"{lbl}: teks_layar maksimal {MAKS_TEKS_LAYAR} huruf dan 3 baris")
         if not isinstance(b.get("klimaks", False), bool):
             g.append(f"{lbl}: klimaks harus true/false")
+        if "suara" in b:
+            g += _validasi_suara(b["suara"], narasi, lbl)
     return g
+
+
+def _validasi_suara(sr: Any, narasi_polos: str, lbl: str) -> list[str]:
+    if not isinstance(sr, Mapping):
+        return [f"{lbl}: suara harus objek"]
+    k = katalog_suara()
+    g = []
+    if sr.get("suasana") not in (None, *k["suasana"]):
+        g.append(f"{lbl}: suasana {sr.get('suasana')!r} tidak ada di katalog suara (atau null)")
+    if sr.get("intonasi", "tenang") not in INTONASI:
+        g.append(f"{lbl}: intonasi harus salah satu {INTONASI}")
+    efek = sr.get("efek", [])
+    if not isinstance(efek, list) or len(efek) > 3:
+        return g + [f"{lbl}: suara.efek harus daftar maksimal 3"]
+    for e in efek:
+        if not isinstance(e, Mapping) or e.get("nama") not in k["efek"]:
+            g.append(f"{lbl}: efek {(e or {}).get('nama') if isinstance(e, Mapping) else e!r} tidak ada di katalog suara")
+            continue
+        pada = e.get("pada")
+        if pada is not None and (not isinstance(pada, str) or not pada.strip() or _polos(pada) not in narasi_polos):
+            g.append(f"{lbl}: efek.pada harus kata/potongan persis dari narasi beat itu (atau null = awal beat)")
+        if e.get("keras", "sedang") not in KERAS:
+            g.append(f"{lbl}: efek.keras harus {tuple(KERAS)}")
+        if not (isinstance(e.get("ulang", 1), int) and 1 <= e.get("ulang", 1) <= 12):
+            g.append(f"{lbl}: efek.ulang harus bilangan 1..12 (ritme berulang, jeda 0,6 dtk)")
+    if not isinstance(sr.get("transisi", False), bool):
+        g.append(f"{lbl}: suara.transisi harus true/false")
+    return g
+
+
+def _waktu_pada(pada: str | None, teks: str, t0: float, dur: float, kata: list | None) -> float:
+    """Detik absolut kata `pada` di beat: dari waktu kata TTS bila ada, selain itu perkiraan proporsional."""
+    if not pada:
+        return round(t0 + 0.05, 2)
+    kepala = _polos(pada).split()[0] if _polos(pada).split() else ""
+    for t, k in kata or []:
+        if _polos(str(k)).startswith(kepala):
+            return round(float(t), 2)
+    posisi = _polos(teks).find(_polos(pada))
+    return round(t0 + dur * max(0, posisi) / max(1, len(_polos(teks))), 2)
+
+
+def rekaman_dari_rencana(adegan: list[Mapping], jadwal: list[tuple[float, float]],
+                         waktu_kata: list | None = None) -> list[dict]:
+    """Suara rencana tiap beat -> daftar `rekaman` papan. Suasana yang sama di beat berurutan
+    digabung menjadi satu putaran; berganti/berhenti dengan silang 0,6 dtk."""
+    keluar: list[dict] = []
+    aktif: dict | None = None
+    for i, (a, (t0, dur)) in enumerate(zip(adegan, jadwal)):
+        sr = (a.get("rencana") or {}).get("suara")
+        if sr is None:
+            continue
+        nama = sr.get("suasana")
+        if aktif and aktif["_nama"] != nama:
+            aktif["sampai"] = round(t0 + 0.6, 2)
+            aktif = None
+        if nama and not aktif:
+            aktif = {"_nama": nama, "berkas": berkas(nama), "at": round(t0, 2), "vol": VOL_SUASANA,
+                     "ulang": True, "masuk": 0.8, "keluar": 1.2}
+            keluar.append(aktif)
+        kata = waktu_kata[i] if waktu_kata and i < len(waktu_kata) else None
+        if sr.get("transisi") and i > 0:
+            keluar.append({"berkas": berkas("whoosh"), "vol": 0.25, "at": round(max(0, t0 - 0.05), 2), "masuk": 0.02})
+        for e in sr.get("efek", []):
+            at = _waktu_pada(e.get("pada"), a.get("teks", ""), t0, dur, kata)
+            for u in range(int(e.get("ulang", 1))):
+                if at + u * JEDA_ULANG >= t0 + dur:
+                    break  # ritme berhenti di akhir beat
+                keluar.append({"berkas": berkas(e["nama"]), "vol": KERAS[e.get("keras", "sedang")],
+                               "at": round(at + u * JEDA_ULANG, 2), "masuk": 0.02})
+    for r in keluar:
+        r.pop("_nama", None)
+    return sorted(keluar, key=lambda r: r["at"])
 
 
 def _nilai(v: Any, ds: float) -> Any:
@@ -171,6 +257,8 @@ def terapkan_rencana(naskah: dict, rencana: Mapping) -> dict:
     for i, a in enumerate(hasil.get("adegan", []), 1):
         if i in per_beat:
             a["rencana"] = copy.deepcopy(dict(per_beat[i]))
+            if isinstance(a["rencana"].get("suara"), Mapping) and a["rencana"]["suara"].get("intonasi"):
+                a["intonasi"] = a["rencana"]["suara"]["intonasi"]  # dibaca tahap TTS
     if rencana.get("objek_inti"):
         hasil["objek_inti"] = copy.deepcopy(dict(rencana["objek_inti"]))
     return hasil

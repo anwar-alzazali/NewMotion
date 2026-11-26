@@ -32,10 +32,12 @@ def _baca(jalur: str) -> dict[str, dict]:
         akhir = cocok[i + 1].start() if i + 1 < len(cocok) else min(len(teks), m.end() + 4000)
         badan = teks[m.end():akhir]
         param = sorted(set(re.findall(r"\bo\.([a-z_][a-z_0-9]*)", badan)) - UMUM)
+        # parameter yang dibaca lewat v(o.x, t, ...) bisa dianimasikan [awal, akhir]
+        animasi = sorted(set(re.findall(r"\bv\(o\.([a-z_][a-z_0-9]*)", badan)) & set(param))
         ket = (m.group(2) or "").strip()
         for nama in re.findall(r'"([a-z_0-9]+)"', m.group(1)):
             if nama not in katalog:
-                katalog[nama] = {"keterangan": ket[:220], "parameter": param}
+                katalog[nama] = {"keterangan": ket[:220], "parameter": param, "animasi": animasi}
     return katalog
 
 
@@ -50,9 +52,13 @@ def katalog_subjek(jalur: Path = CERITA_JS) -> dict[str, dict]:
 
 
 def teks_katalog(jalur: Path = CERITA_JS) -> str:
-    """Katalog ringkas untuk dimasukkan ke skill (satu baris per jenis)."""
+    """Katalog ringkas untuk dimasukkan ke skill (satu baris per jenis). Tanda * = bisa [awal, akhir]."""
     baris = []
     for nama, d in sorted(katalog_subjek(jalur).items()):
-        param = f" [keadaan: {', '.join(d['parameter'][:8])}]" if d["parameter"] else ""
+        if d["parameter"]:
+            ket = [p + ("*" if p in d["animasi"] else "") for p in d["parameter"][:8]]
+            param = f" [keadaan: {', '.join(ket)}]"
+        else:
+            param = ""
         baris.append(f"- {nama}: {d['keterangan'] or '-'}{param}")
     return "\n".join(baris)

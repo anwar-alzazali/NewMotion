@@ -24,19 +24,30 @@ Jangan menaruh "kamu" di tengah pelaku kisah masa lalu.
 ## Bahasa panggung
 Setiap subjek: `{"jenis": <dari katalog>, "tempat": <tempat>, "keadaan": {<parameter katalog>: nilai}}`.
 - `tempat`: `tengah`, `kiri`, `kanan`, `jauh` (kecil di latar), `depan_kiri`, `depan_kanan` (besar di depan), atau `di_lubang:ngarai` (pelaku bekerja di lubang dinding).
-- `keadaan`: hanya parameter yang tertulis untuk jenis itu di katalog. Nilai boleh angka, teks pilihan, atau `[awal, akhir]` agar berubah halus sepanjang beat (mis. `"lubang": [0.3, 0.9]`).
+- `keadaan`: hanya parameter yang tertulis untuk jenis itu di katalog. Nilai boleh angka, teks pilihan, atau `[awal, akhir]` agar berubah halus sepanjang beat (mis. `"lubang": [0.3, 0.9]`); `[awal, akhir]` hanya untuk parameter bertanda `*` di katalog.
 - `kamera.bidikan`: `lebar` (situasi), `sedang`, `dekat` (detail/emosi). `kamera.aksen`: `null`, `hentak`, atau `guncang`.
 - `bukti`: salin PERSIS potongan kalimat narasi beat itu yang menjadi dasar keputusanmu.
 
 ## Katalog jenis benda renderer (hanya ini yang boleh dipakai)
 {KATALOG}
 
+## Suara (dramaturgi, bukan kewajiban ramai)
+Setiap beat boleh punya `suara`. Suasana mengisi ruang di bawah narasi dan berlanjut ke beat berikutnya
+selama namanya sama; tulis `null` untuk diam. Efek dipakai hanya di kejadian yang layak diberi bunyi,
+diletakkan pada kata pemicunya (`pada`, potongan persis dari narasi beat itu). Keheningan juga efek:
+jangan isi setiap beat. Efek "kuat" paling banyak dua atau tiga di seluruh video, biasanya pembuka dan
+klimaks. `ulang` (1..12) membuat ritme berulang berjeda 0,6 dtk, mis. ayunan alat kerja. `transisi: true` memberi
+sapuan lembut di awal beat. `intonasi` memberi arah pembaca narasi (dipakai tahap suara).
+{KATALOG_SUARA}
+
 ## Format keluaran (JSON saja)
 {
   "objek_inti": {"jenis": "<jenis>", "perkembangan": "<satu kalimat>"},
   "beat": [
     {"beat": 1, "bukti": "...", "subjek": [...], "kamu": "utama|saksi|tidak",
-     "kamera": {"bidikan": "lebar|sedang|dekat", "aksen": null}, "teks_layar": "..." , "klimaks": false}
+     "kamera": {"bidikan": "lebar|sedang|dekat", "aksen": null}, "teks_layar": "..." , "klimaks": false,
+     "suara": {"suasana": "<nama>|null", "efek": [{"nama": "<nama>", "pada": "<kata>|null", "keras": "lemah|sedang|kuat", "ulang": 1}],
+               "transisi": false, "intonasi": "<intonasi>"}}
   ]
 }
 Tepat satu entri untuk setiap beat, nomor 1..N sesuai naskah. `objek_inti` boleh null bila kisahnya tidak punya objek yang berkembang. `teks_layar` boleh null.
@@ -49,7 +60,7 @@ Naskah:
 Rencana:
 {"objek_inti": {"jenis": "retakan", "perkembangan": "tanah tenang, lalu merekah lebar menelan Qarun"},
  "beat": [
-  {"beat": 1, "bukti": "memamerkan hartanya kepada kaumnya", "subjek": [{"jenis": "kota", "tempat": "jauh"}, {"jenis": "pemimpin", "tempat": "depan_kiri", "keadaan": {"angkat": 0.7}}, {"jenis": "kerumunan", "tempat": "kanan"}], "kamu": "tidak", "kamera": {"bidikan": "lebar", "aksen": null}, "teks_layar": "HARTA QARUN", "klimaks": false},
-  {"beat": 2, "bukti": "andai kami punya seperti itu", "subjek": [{"jenis": "kerumunan", "tempat": "tengah"}, {"jenis": "kota", "tempat": "jauh"}], "kamu": "saksi", "kamera": {"bidikan": "sedang", "aksen": null}, "teks_layar": null, "klimaks": false},
-  {"beat": 3, "bukti": "bumi terbelah", "subjek": [{"jenis": "kota", "tempat": "jauh"}, {"jenis": "retakan", "tempat": "tengah", "keadaan": {"buka": [0.1, 1.0], "goyang": 1}}], "kamu": "tidak", "kamera": {"bidikan": "lebar", "aksen": "guncang"}, "teks_layar": "DITELAN BUMI", "klimaks": true}
+  {"beat": 1, "bukti": "memamerkan hartanya kepada kaumnya", "subjek": [{"jenis": "kota", "tempat": "jauh"}, {"jenis": "pemimpin", "tempat": "depan_kiri", "keadaan": {"angkat": 0.7}}, {"jenis": "kerumunan", "tempat": "kanan"}], "kamu": "tidak", "kamera": {"bidikan": "lebar", "aksen": null}, "teks_layar": "HARTA QARUN", "klimaks": false, "suara": {"suasana": "kerumunan_cemas", "efek": [{"nama": "koin_jatuh", "pada": "hartanya", "keras": "lemah"}], "intonasi": "tenang"}},
+  {"beat": 2, "bukti": "andai kami punya seperti itu", "subjek": [{"jenis": "kerumunan", "tempat": "tengah"}, {"jenis": "kota", "tempat": "jauh"}], "kamu": "saksi", "kamera": {"bidikan": "sedang", "aksen": null}, "teks_layar": null, "klimaks": false, "suara": {"suasana": "kerumunan_cemas", "efek": [], "intonasi": "bisik"}},
+  {"beat": 3, "bukti": "bumi terbelah", "subjek": [{"jenis": "kota", "tempat": "jauh"}, {"jenis": "retakan", "tempat": "tengah", "keadaan": {"buka": [0.1, 1.0], "goyang": 1}}], "kamu": "tidak", "kamera": {"bidikan": "lebar", "aksen": "guncang"}, "teks_layar": "DITELAN BUMI", "klimaks": true, "suara": {"suasana": null, "efek": [{"nama": "tanah_retak", "pada": "terbelah", "keras": "kuat"}], "intonasi": "tegas"}}
  ]}

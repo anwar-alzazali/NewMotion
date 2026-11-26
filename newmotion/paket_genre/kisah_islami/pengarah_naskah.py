@@ -364,6 +364,46 @@ def _ikat_posisi_subjek(shot: dict, subjek: list[dict]) -> None:
             o.update({"x": 300, "y": 1700, "s": 1.2, "depan": True})
 
 
+def _awal(v, bawaan):
+    """Nilai awal dari angka atau kunci waktu [[t, nilai], ...]."""
+    while isinstance(v, list) and v:
+        v = v[0][1] if isinstance(v[0], list) else v[0]
+    return float(v) if isinstance(v, (int, float)) else bawaan
+
+
+def _maks(v, bawaan):
+    if isinstance(v, list) and v:
+        return max(_maks(x, bawaan) for x in v)
+    return float(v) if isinstance(v, (int, float)) else bawaan
+
+
+def _ikat_langit(shot: dict, subjek: list[dict]) -> None:
+    """Benda langit duduk di langit relatif terhadap cakrawala shot, bukan di tanah.
+
+    Tanpa ini matahari/bulan subjek mendapat y tanah bawaan dan tertutup tanah/kerumunan
+    (ditemukan pemeriksa visual pada Mahsyar: klimaks "matahari didekatkan" tanpa matahari)."""
+    h = float(shot.get("horizon") or 1100)
+    for o in subjek:
+        j = o.get("jenis")
+        if j == "surya":
+            # piringan (ukuran terbesarnya) hampir utuh di atas cakrawala, digambar di depan
+            # gunung latar: matahari subjek adalah pusat perhatian, bukan hiasan di balik bukit.
+            r = _maks(o.get("r"), 300)
+            o.update({"y": round(h - max(r * 0.85, 230.0)), "s": 1})  # kecil: di atas kepala tokoh depan
+            o.pop("belakang", None)
+            continue
+        elif j == "bulan":
+            o.update({"y": round(h - 560), "s": o.get("s", 1)})
+        elif j == "awan":
+            o.update({"y": round(h - 680)})
+        elif j == "bintang":
+            o.update({"x": 540, "y": 0, "s": 1})
+        else:
+            continue
+        o.pop("depan", None)
+        o["belakang"] = True
+
+
 def _kamera_bidikan(subjek: dict, kamera: dict, ds: float) -> dict:
     """Bidikan dari rencana sutradara: lebar / sedang / dekat ke pusat subjek, plus aksen."""
     def _x(o):
@@ -611,6 +651,7 @@ def arahkan(naskah: dict, waktu_adegan: list[float] | None = None,
                 benda += [x for x in subjek["benda"] if x.get("jenis") not in jenis_ada]
             if subjek["benda"]:
                 _ikat_posisi_subjek(s, subjek["benda"])
+                _ikat_langit(s, subjek["benda"])
                 if not rb or subjek["kamu"] == "saksi":
                     benda, b, kamera = _susun_ulang_untuk_subjek(benda, subjek["benda"], b, kamera, look, wajah,
                                                                   pose, ds, tx, posisi, R, paksa_saksi=bool(rb))
@@ -673,6 +714,13 @@ def arahkan(naskah: dict, waktu_adegan: list[float] | None = None,
         # pratinjau tanpa TTS memuat semua shot. Dengan audio, durasi tetap mengikuti suara.
         mulai_akhir, durasi_akhir = jadwal[-1]
         spek["durasi"] = round(mulai_akhir + durasi_akhir + 1.0, 2)
+    if any("suara" in (a.get("rencana") or {}) for a in adegan):
+        # Rencana sutradara mengatur suara: rekaman aset, tanpa musik/efek sintetis otomatis
+        # (sama dengan video referensi Nuh/Ya'juj/Mahsyar).
+        from .rencana_sutradara import rekaman_dari_rencana
+
+        spek.update(musik=False, volume_efek=0,
+                    rekaman=rekaman_dari_rencana(adegan, jadwal, waktu_kata))
     if catatan:
         spek["_catatan_direktur"] = catatan
     return spek

@@ -590,7 +590,7 @@
       for (let r = br - 1; r >= 0; r--) for (let i = 0; i < n; i++) { const px = (i - (n - 1) / 2) * jr + (r % 2) * jr * 0.5, py = -r * 120, k = 1 - r * 0.14;
         g += `<g transform="translate(${px} ${py}) scale(${k})"><path d="M -62 0 L -62 -150 Q -62 -212 0 -216 Q 62 -212 62 -150 L 62 0 Z" fill="${c}"/><circle cx="0" cy="-258" r="44" fill="${c}"/><path d="M -62 -150 Q -62 -212 0 -216 Q 62 -212 62 -150" stroke="#ffd98a" stroke-width="5" fill="none" opacity=".55"/><path d="M -40 -276 A 44 44 0 0 1 40 -276" stroke="#ffd98a" stroke-width="5" fill="none" opacity=".55"/></g>`; }
     } else if (j === "surya") { // matahari besar di cakrawala (piringan + pendar emas + sinar tipis); o.r jari-jari, o.terang 0-1
-      const r = o.r || 300, tr = v(o.terang, t, d, 1), id = "sy" + Math.round(x);
+      const r = v(o.r, t, d, 300), tr = v(o.terang, t, d, 1), id = "sy" + Math.round(x);
       g = `<defs><radialGradient id="${id}"><stop offset="0" stop-color="#fff6d8"/><stop offset=".55" stop-color="#ffd27a"/><stop offset="1" stop-color="#ff9a3a"/></radialGradient><radialGradient id="${id}g"><stop offset="0" stop-color="#ffcf7a" stop-opacity=".7"/><stop offset=".5" stop-color="#ff9a3a" stop-opacity=".22"/><stop offset="1" stop-color="#ff9a3a" stop-opacity="0"/></radialGradient></defs>`;
       g += `<circle r="${r * 3.4}" fill="url(#${id}g)" opacity="${tr}"/>`;
       for (let i = 0; i < 14; i++) { const a2 = (i / 14) * Math.PI * 2 + t * 0.03; g += `<path d="M ${Math.cos(a2) * r * 1.08} ${Math.sin(a2) * r * 1.08} L ${Math.cos(a2 + 0.05) * r * 2.6} ${Math.sin(a2 + 0.05) * r * 2.6} L ${Math.cos(a2 - 0.05) * r * 2.6} ${Math.sin(a2 - 0.05) * r * 2.6} Z" fill="#ffd98a" opacity="${0.1 * tr}"/>`; }
@@ -1212,7 +1212,7 @@
           g += alt ? `<rect x="${px - 24}" y="${py - 6}" width="48" height="12" rx="6" fill="${c1}" transform="rotate(${rot} ${px} ${py})"/>` : `<ellipse cx="${px}" cy="${py}" rx="27" ry="14" fill="none" stroke="${c1}" stroke-width="9" transform="rotate(${rot} ${px} ${py})"/>`; }
         g += `<line x1="${ca * r0}" y1="${sa * r0}" x2="${ca * L0}" y2="${sa * L0}" stroke="#ffb05a" stroke-width="2" opacity="${0.18 * far}"/>`; }
     } else if (j === "massa_api") { // (16 Nov) massa api raksasa berdenyut (neraka didatangkan); r jari-jari, kuat 0-1
-      const r = o.r || 260, kk = v(o.kuat, t, d, 1), id = "ma" + Math.round(x + y);
+      const r = v(o.r, t, d, 260), kk = v(o.kuat, t, d, 1), id = "ma" + Math.round(x + y);
       g = `<defs><radialGradient id="${id}"><stop offset="0" stop-color="#fff2c4"/><stop offset=".3" stop-color="#ffb347"/><stop offset=".65" stop-color="#ff4a12"/><stop offset="1" stop-color="#5a0a02" stop-opacity="0"/></radialGradient></defs>`;
       g += `<circle r="${r * 3}" fill="#ff4a12" opacity="${0.12 * kk}"/>`;
       for (let i = 0; i < 18; i++) { const a = (i / 18) * Math.PI * 2, h = r * (0.55 + 0.35 * Math.sin(t * 6 + i * 1.7)), ca = Math.cos(a), sa = Math.sin(a);
