@@ -74,6 +74,7 @@ def arahkan_tokoh_visual(rencana_cerita, rencana_blocking, cerita):
                     )
                     if sasaran_id in tokoh_valid else (540, y_tetap)
                 )
+                y_tujuan = y_sasaran
                 # Sasaran yang juga bergerak pada beat ini harus didekati pada
                 # posisi akhirnya, bukan posisi awalnya. Ini membuat penolong
                 # mengejar pengendara setelah motor tergelincir.
@@ -92,7 +93,9 @@ def arahkan_tokoh_visual(rencana_cerita, rencana_blocking, cerita):
                             sasaran_id,
                             (_posisi_awal(list(tokoh_valid).index(sasaran_id)), 1510),
                         )
-                        x_sasaran, y_sasaran = min(1000, x_awal_sasaran + 280), 1620
+                        x_sasaran, y_sasaran = min(1000, x_awal_sasaran + 280), 1700
+                        # Penolong berada sedikit di belakang korban yang jatuh, bukan bertumpuk pada bidang yang sama.
+                        y_tujuan = y_sasaran - 80
                 # Berhenti di sisi sasaran, bukan tepat menumpuk di titik yang sama.
                 arah_ke_sasaran = 1 if x_sasaran >= x_tetap else -1
                 x_tujuan = max(80, min(1000, x_sasaran - arah_ke_sasaran * 220))
@@ -100,7 +103,7 @@ def arahkan_tokoh_visual(rencana_cerita, rencana_blocking, cerita):
                 butir.update({
                     "aksi": "lari" if aksi in AKSI_LARI else "jalan",
                     "x": [[0, x_mulai], [2.5, x_tujuan]],
-                    "y": [[0, y_tetap], [2.5, y_sasaran]],
+                    "y": [[0, y_tetap], [2.5, y_tujuan]],
                     "sasaran_tokoh_id": sasaran_id,
                     "pose": (
                         [[0, "jalan"], [2.5, "menolong"]]
@@ -129,7 +132,7 @@ def arahkan_tokoh_visual(rencana_cerita, rencana_blocking, cerita):
                         "kendaraan_id": f"motor-{tautan.get('beat_id')}",
                         "lepas_kendaraan_at": 0.9,
                         "x": [[0, x_tetap], [1.2, min(1000, x_tetap + 280)]],
-                        "y": [[0, 1504], [1.2, 1620]],
+                        "y": [[0, 1504], [1.2, 1700]],
                         "pose": [[0, "mengendarai_motor"], [0.65, "tergelincir"]],
                     })
             else:
