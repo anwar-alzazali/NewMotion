@@ -82,7 +82,7 @@ def arahkan_tokoh_visual(rencana_cerita, rencana_blocking, cerita):
                 diagnostik.append({"kode": "peristiwa_tidak_cukup_untuk_visual", "peristiwa_id": id_peristiwa})
                 continue
             aksi = aksi_asli.strip().casefold().replace(" ", "_")
-            sasaran_objek = str(event.get("sasaran") or "").casefold()
+            sasaran_objek = str(event.get("sasaran_benda") or event.get("sasaran") or "").casefold()
             if (
                 sasaran_objek in {"motor", "sepeda_motor"}
                 and not isinstance(event.get("sasaran_benda_id"), str)
