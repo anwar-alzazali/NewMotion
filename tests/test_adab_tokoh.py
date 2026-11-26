@@ -235,3 +235,19 @@ def test_penjaga_adab_tidak_menolak_pemimpin_yajuj_hanya_karena_allah_disebut():
     assert "BENDA_MANUSIA_TOKOH_SAKRAL" not in {
         item.kode for item in periksa_adab_tokoh(papan)
     }
+
+
+
+def test_penjaga_adab_mendeteksi_siluet_kelompok_jika_sahabat_disebut_di_shot_yang_sama():
+    papan = {
+        "genre": "kisah_islami",
+        "cerita": {
+            "shot": [{
+                "_narasi": "Para sahabat berkumpul. Orang-orang berlarian di kejauhan.",
+                "benda": [{"jenis": "kerumunan"}],
+            }]
+        },
+    }
+    assert "BENDA_MANUSIA_TOKOH_SAKRAL" in {
+        item.kode for item in periksa_adab_tokoh(papan)
+    }
