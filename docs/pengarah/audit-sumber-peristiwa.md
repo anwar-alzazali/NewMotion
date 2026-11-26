@@ -15,101 +15,56 @@ menautkan bukti narasi, lalu menghasilkan spek JSON yang bisa diaudit.
    meneruskan `dialog` dan teks narasi.
 3. Field `peristiwa`, `aksi`, `sasaran`, `tujuan`, dan
    `perubahan_keadaan` hanya disalin jika sudah tersedia pada beat sumber.
-4. Komentar implementasi secara eksplisit menyatakan tahap ini tidak menebak
-   pelaku, sasaran, aksi, atau perubahan keadaan.
-5. `newmotion/paket_genre/cerita_umum/pengarah_naskah.py:arahkan` kemudian
-   membangun profil shot dari daftar peristiwa yang sudah ada. Jika daftar itu
-   kosong, shot tetap dibuat tetapi tidak memiliki urutan peristiwa.
-6. `newmotion/application/pengarah_inti.py` memvalidasi dan menautkan ID,
-   aktor, sasaran, bukti teks, blocking, dan adapter visual. Validasi ini
-   memastikan konsistensi data yang diberikan; bukan ekstraksi peristiwa dari
-   kalimat narasi.
+4. `pengarah_naskah.py` membangun profil shot dari daftar peristiwa yang sudah ada.
+   Jika daftar itu kosong, shot tetap dibuat tetapi tidak memiliki urutan peristiwa.
+5. `pengarah_inti.py` memvalidasi dan menautkan ID, aktor, sasaran, bukti teks,
+   blocking, dan adapter visual. Validasi ini bukan ekstraksi narasi bebas.
 
 ## Kesimpulan audit
 
-**Kesenjangan utama belum tertutup: ekstraksi semantik narasi menjadi peristiwa.**
-
-Tes generalisasi yang sudah lulus membangun fixture dengan field `peristiwa`
-yang telah ditulis sebelumnya. Tes tersebut membuktikan pengarah dapat
-menerjemahkan peristiwa terstruktur untuk kategori yang diuji. Tes itu tidak
-membuktikan sutradara mampu menemukan sendiri aktor, aksi, sasaran, urutan,
-tujuan, atau perubahan keadaan dari narasi bebas.
-
-Dengan demikian, keberhasilan Tahap 1–14 tidak boleh ditafsirkan sebagai bukti
-bahwa sutradara telah memahami naskah secara mandiri atau telah menghasilkan
-JSON lengkap dari narasi biasa.
-
-## Batas implementasi berikutnya
-
-Tahap berikutnya harus membangun **pengurai narasi-ke-peristiwa** di lapisan
-pemahaman cerita, sebelum blocking dan pengarah visual. Pengurai tersebut harus:
-
-- menghasilkan ID peristiwa stabil dan bukti frasa yang benar-benar ada pada
-  teks sumber;
-- membedakan aktor, aksi, sasaran tokoh, sasaran benda, dan tujuan gerak;
-- menjaga urutan temporal; aksi simultan tidak boleh dipecah secara spekulatif;
-- mengenali negasi dan bentuk pasif/aktif agar peran pelaku tidak terbalik;
-- menghubungkan perubahan keadaan hanya jika pemicunya didukung teks;
-- memberi status `periksa` atau `tidak_didukung` untuk ambiguitas, bukan
-  membuat adegan rekaan;
-- tetap deterministik dan tidak memanggil LLM pada runtime;
-- menguji beberapa pola kalimat dan cerita berbeda, bukan hanya fixture motor,
-  jembatan, atau penolong;
-- tidak mengubah paket Kisah Islami atau melewati penjaga adab/dalil.
-
-Jangan menambah aturan visual khusus untuk menutupi kegagalan pemahaman cerita.
-Jika narasi belum dapat diurai dengan bukti yang cukup, hasil JSON harus
-menampilkan kekurangan itu secara eksplisit.
-
+Sebelum Tahap 15, ekstraksi semantik narasi menjadi peristiwa belum tersedia.
+Tes generalisasi yang memakai field `peristiwa` siap-pakai tidak membuktikan
+kemampuan sutradara memahami narasi biasa secara mandiri.
 
 ## Implementasi awal pengurai (Tahap 15)
 
-Pengurai awal kini tersedia di
-`newmotion/paket_genre/cerita_umum/pemahaman_peristiwa.py` dan dipanggil
-oleh `naskah_untuk_pengarah` hanya untuk genre `cerita_umum` ketika beat
-belum memiliki field `peristiwa`. Data peristiwa eksplisit dari sumber tetap
-diprioritaskan. Paket Kisah Islami tidak memakai pengurai ini.
+Pengurai deterministik konservatif berada di
+`newmotion/paket_genre/cerita_umum/pemahaman_peristiwa.py`. Integrasi hanya aktif
+pada genre `cerita_umum` ketika beat belum memiliki field `peristiwa`.
+Peristiwa eksplisit tetap menjadi otoritas dan jalur Kisah Islami tidak diubah.
 
-Cakupan pola yang sudah diimplementasikan:
-
+Cakupan pola:
 - aksi aktif dengan aktor dan sasaran tokoh yang terdaftar;
 - kalimat pasif dengan pelaku eksplisit melalui frasa `oleh`;
 - aksi berurutan melalui `lalu`, `kemudian`, atau `setelah itu`, termasuk
-  elipsis subjek yang masih jelas dari klausa sebelumnya;
-- aksi simultan melalui `dan` atau `sementara` jika tiap klausa menyebut
-  pelakunya;
-- negasi dan kalimat pasif tanpa pelaku ditandai sebagai diagnostik, bukan aksi.
+  elipsis subjek jika subjek klausa sebelumnya tunggal dan jelas;
+- aksi simultan melalui `dan` atau `sementara`, termasuk elipsis subjek
+  pada klausa lanjutan jika pelaku sebelumnya tunggal dan jelas;
+- negasi dan kalimat pasif tanpa pelaku menghasilkan diagnostik, bukan aksi.
 
-ID peristiwa hasil ekstraksi diberi awalan ID beat agar unik lintas beat.
-Bukti teks disimpan dan diverifikasi lagi oleh orkestrator inti. Diagnostik
-pemahaman ikut disimpan pada `rencana_cerita`.
+ID peristiwa diberi namespace ID beat. Bukti teks disimpan dan diverifikasi oleh
+orkestrator inti. Diagnostik pemahaman ikut disimpan pada `rencana_cerita`.
+Tes baru mencakup kasus simultan seperti “Penolong berjalan dan menolong
+Pengendara”, dengan aktor yang sama pada kedua aksi.
 
-**Batas yang belum selesai:** ini tata bahasa deterministik konservatif, bukan
-pemahaman bahasa Indonesia umum. Aksi di luar kamus, sasaran benda, kata ganti
-seperti "ia/dia", kalimat kompleks, perubahan keadaan, tujuan gerak, koreferensi
-lintas kalimat, dan banyak bentuk pasif masih perlu dikembangkan. Klausa dengan
-lebih dari satu aksi yang belum dapat dipisah secara aman akan ditandai untuk
-pemeriksaan. Jangan menganggap status awal ini setara pemahaman narasi lengkap.
+## Batas yang belum selesai
 
-Tes baru menguji pola aktif, pasif, urutan, simultan, negasi, pasif tanpa pelaku,
-integrasi beat tanpa field peristiwa, perlindungan jalur Kisah Islami, serta
-pembuatan spek JSON akhir dari narasi biasa. Semua hasil tetap harus menunggu
-CI pada head terbaru sebelum dinyatakan lulus.
+Ini bukan pemahaman bahasa Indonesia umum. Aksi di luar kamus, sasaran benda,
+kata ganti, kalimat kompleks, perubahan keadaan, tujuan gerak, koreferensi lintas
+kalimat, dan banyak bentuk pasif masih belum didukung. Klausa ambigu atau memiliki
+lebih dari satu aksi yang belum dapat dipisah dengan aman harus ditandai untuk
+pemeriksaan, bukan dilengkapi dengan tebakan.
 
 ## Gerbang penerimaan
 
-Tahap pengurai narasi-ke-peristiwa belum boleh dinyatakan selesai sampai tes
-membuktikan:
+1. Uji peristiwa dari narasi tanpa field `peristiwa` yang dipasok sebelumnya.
+2. Pastikan setiap peristiwa memiliki bukti yang cocok dengan teks sumber.
+3. Pastikan aktor/sasaran tidak tertukar dan ambiguitas didiagnosis.
+4. Uji negasi, pasif, urutan, simultan, serta elipsis subjek.
+5. Pastikan JSON valid, deterministik, dan tertaut ke beat.
+6. Pastikan jalur Kisah Islami tetap lulus.
+7. Pastikan workflow kontrak JSON dan runtime lulus pada head terbaru.
 
-1. peristiwa dapat dibentuk dari narasi tanpa field `peristiwa` yang
-   dipasok sebelumnya;
-2. setiap peristiwa mempunyai bukti teks yang cocok dengan sumber;
-3. aktor/sasaran/tujuan tidak tertukar dan ambiguitas ditandai;
-4. negasi, kalimat pasif, urutan, dan aksi simultan diuji;
-5. keluaran tetap JSON-valid, deterministik, dan tertaut ke beat;
-6. jalur Kisah Islami tetap lulus;
-7. workflow runtime dan kontrak JSON lulus.
-
-Tidak ada render video pada tahap pemahaman ini. Render baru dipertimbangkan
-setelah JSON yang dihasilkan sutradara sendiri lulus audit kedalaman lintas
-cerita.
+Perubahan tes pengurai kini juga memicu workflow kontrak JSON. Tidak ada render
+video pada tahap ini. Render baru dipertimbangkan setelah JSON hasil sutradara
+lulus audit kedalaman lintas cerita.
