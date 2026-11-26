@@ -28,9 +28,13 @@ def _terapkan_tampilan(boneka, karakter):
 
     mode = karakter.get("mode")
     if mode is not None:
-        if mode not in {"pakaian", "siluet"}:
-            raise ValueError("karakter.mode harus pakaian atau siluet")
+        if mode not in {"pakaian", "siluet", "wajah_cahaya"}:
+            raise ValueError("karakter.mode harus pakaian, siluet, atau wajah_cahaya")
         boneka["gaya"] = "siluet" if mode == "siluet" else "umum"
+        if mode == "wajah_cahaya":
+            # Sahabat tetap bertubuh manusia, tetapi renderer tidak boleh
+            # memperlihatkan mata, hidung, atau mulut pada sudut mana pun.
+            boneka["wajah_cahaya"] = True
     if "hidup" in karakter:
         boneka["hidup"] = bool(karakter["hidup"])
 
@@ -90,9 +94,14 @@ def _terapkan_tampilan(boneka, karakter):
     arah = karakter.get("arah")
     if arah == "belakang":
         boneka["belakang"] = True
+        boneka["sudut"] = "belakang"
     elif arah == "depan":
         boneka["belakang"] = False
-    elif arah not in (None, "samping", "tiga_perempat"):
+        boneka["sudut"] = "depan"
+    elif arah in {"samping", "samping_kiri", "tiga_perempat"}:
+        boneka["belakang"] = False
+        boneka["sudut"] = arah
+    elif arah is not None:
         raise ValueError("karakter.arah tidak dikenal")
 
 
