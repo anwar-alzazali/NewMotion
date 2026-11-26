@@ -672,3 +672,90 @@ def test_sutradara_meneruskan_peristiwa_semantik_ke_rencana_blocking():
         from newmotion.domain import genre as modul_genre
         modul_genre._PAKET.pop(nama, None)
 
+
+
+def test_penjaga_kisah_islami_memeriksa_roster_tokoh_semantik():
+    from newmotion.paket_genre.kisah_islami.penjaga_tokoh import periksa_adab_tokoh
+
+    hasil = periksa_adab_tokoh({
+        "rencana_cerita": {
+            "tokoh": [{
+                "id": "pengendara-01",
+                "nama": "Pengendara",
+                "kategori": "tokoh_umum",
+                "tampil": "tubuh",
+            }]
+        }
+    })
+    assert hasil == []
+
+
+@pytest.mark.parametrize(
+    ("tokoh", "kode"),
+    [
+        ({"id": "nabi-01", "nama": "Nabi Hud", "kategori": "nabi", "tampil": "tubuh"},
+         "CARA_TAMPIL_TOKOH_SUCI"),
+        ({"id": "malaikat-01", "nama": "Malaikat", "kategori": "malaikat", "tampil": "tubuh"},
+         "CARA_TAMPIL_TOKOH_SUCI"),
+        ({"id": "sahabat-01", "nama": "Sahabat", "kategori": "sahabat", "tampil": "tubuh"},
+         "CARA_TAMPIL_TOKOH_SUCI"),
+        ({"id": "allah-01", "nama": "Allah", "kategori": "tokoh_umum", "tampil": "tubuh"},
+         "ALLAH_TIDAK_DIVISUALKAN"),
+        ({"id": "orang-01", "nama": "Orang biasa", "kategori": "tokoh_umum", "tampil": "wajah_cahaya"},
+         "BENTUK_CAHAYA_SALAH"),
+    ],
+)
+def test_penjaga_roster_semantik_menolak_pelanggaran_adab(tokoh, kode):
+    from newmotion.paket_genre.kisah_islami.penjaga_tokoh import periksa_adab_tokoh
+
+    temuan = periksa_adab_tokoh({"rencana_cerita": {"tokoh": [tokoh]}})
+    assert kode in {item.kode for item in temuan}
+
+
+@pytest.mark.parametrize(
+    ("kategori", "tampil"),
+    [
+        ("nabi", "nur"),
+        ("rasul", "nur"),
+        ("malaikat", "cahaya_malaikat"),
+        ("sahabat", "wajah_cahaya"),
+    ],
+)
+def test_penjaga_roster_semantik_menerima_tampilan_sakral_yang_diizinkan(kategori, tampil):
+    from newmotion.paket_genre.kisah_islami.penjaga_tokoh import periksa_adab_tokoh
+
+    hasil = periksa_adab_tokoh({
+        "rencana_cerita": {
+            "tokoh": [{
+                "id": "tokoh-sakral",
+                "nama": "Tokoh",
+                "kategori": kategori,
+                "tampil": tampil,
+            }]
+        }
+    })
+    assert hasil == []
+
+
+def test_gerbang_renderer_memblokir_roster_semantik_yang_melanggar_adab(monkeypatch):
+    import importlib.util
+
+    akar = Path(__file__).resolve().parents[1]
+    sumber = akar / "mesin-video" / "papan_buat.py"
+    spec_modul = importlib.util.spec_from_file_location("newmotion_uji_papan_buat_roster", sumber)
+    modul_render = importlib.util.module_from_spec(spec_modul)
+    spec_modul.loader.exec_module(modul_render)
+
+    with pytest.raises(modul_render.SpekDitolak):
+        modul_render.jaga_spek({
+            "genre": "kisah_islami",
+            "konteks_konten": "islami",
+            "rencana_cerita": {
+                "tokoh": [{
+                    "id": "nabi-01",
+                    "nama": "Nabi Hud",
+                    "kategori": "nabi",
+                    "tampil": "tubuh",
+                }]
+            },
+        })
