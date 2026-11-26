@@ -69,6 +69,32 @@ def _posisi_peran(teks: str, peran: Sequence[str]) -> list[tuple[int, int, str]]
     return sorted(hasil)
 
 
+
+def _posisi_benda(teks: str, benda: Sequence[Mapping]) -> list[tuple[int, int, str, str]]:
+    """Cari hanya benda yang sudah terdaftar eksplisit pada roster naskah."""
+    hasil = []
+    for entitas in benda:
+        if not isinstance(entitas, Mapping):
+            continue
+        identitas = entitas.get("id")
+        nama = entitas.get("nama")
+        if not isinstance(identitas, str) or not identitas.strip():
+            continue
+        nama_alias = [nama] if isinstance(nama, str) else []
+        alias = entitas.get("alias", [])
+        if isinstance(alias, (list, tuple)):
+            nama_alias.extend(x for x in alias if isinstance(x, str))
+        for label in sorted(set(nama_alias), key=len, reverse=True):
+            label = _normalisasi(label)
+            if label:
+                pola = re.compile(r"(?<![\\w])" + re.escape(label) + r"(?![\\w])", re.I)
+                for cocok in pola.finditer(teks):
+                    hasil.append((cocok.start(), cocok.end(), identitas, label))
+    unik = {(item[0], item[1], item[2]): item for item in hasil}
+    return sorted(unik.values())
+
+
+
 def _peristiwa_klausa(
     klausa: str, peran: Sequence[str], nomor: int, aktor_default: str | None = None
 ) -> tuple[dict | None, str | None]:
