@@ -72,7 +72,7 @@ def _periksa_tokoh_semantik(rencana: dict) -> list[TemuanAdab]:
                 "GAGAL", "CARA_TAMPIL_TOKOH_SUCI",
                 f"{nama} ({kategori}) wajib tampil '{wajib}', bukan '{tampil}'",
             ))
-        elif not wajib and tampil in {"nur", "cahaya_malaikat", "wajah_cahaya"}:
+        elif not wajib and isinstance(tampil, str) and tampil in {"nur", "cahaya_malaikat", "wajah_cahaya"}:
             temuan.append(TemuanAdab(
                 "GAGAL", "BENTUK_CAHAYA_SALAH",
                 f"{nama} ({kategori or 'kategori tidak diisi'}) tidak boleh memakai bentuk khusus '{tampil}'",
@@ -155,7 +155,7 @@ def periksa_adab_tokoh(rencana: Any) -> list[TemuanAdab]:
         if wajib and tampil != wajib:
             temuan.append(TemuanAdab("GAGAL", "CARA_TAMPIL_TOKOH_SUCI",
                                      f"{nama} ({kategori}) wajib tampil '{wajib}', bukan '{tampil}'"))
-        if not wajib and tampil in {"nur", "cahaya_malaikat", "wajah_cahaya"}:
+        if not wajib and isinstance(tampil, str) and tampil in {"nur", "cahaya_malaikat", "wajah_cahaya"}:
             temuan.append(TemuanAdab("GAGAL", "BENTUK_CAHAYA_SALAH",
                                      f"{nama} ({kategori or 'kategori tidak diisi'}) tidak boleh memakai bentuk khusus '{tampil}'"))
 
