@@ -18,6 +18,7 @@ _POLA_AKSI = {
     "berlari": "berlari",
     "lari": "berlari",
     "mendekati": "mendekati",
+    "menghampiri": "mendekati",
     "menolong": "menolong",
     "ditolong": "menolong",
     "membantu": "menolong",
@@ -68,7 +69,9 @@ def _posisi_peran(teks: str, peran: Sequence[str]) -> list[tuple[int, int, str]]
     return sorted(hasil)
 
 
-def _peristiwa_klausa(klausa: str, peran: Sequence[str], nomor: int) -> tuple[dict | None, str | None]:
+def _peristiwa_klausa(
+    klausa: str, peran: Sequence[str], nomor: int, aktor_default: str | None = None
+) -> tuple[dict | None, str | None]:
     klausa = _normalisasi(klausa).strip(" ,;")
     if not klausa:
         return None, None
@@ -128,12 +131,20 @@ def uraikan_peristiwa(teks: str, peran: Sequence[str]) -> dict:
     kalimat = [x.strip() for x in re.split(r"(?<=[.!?])\s+", _normalisasi(teks)) if x.strip()]
     for nomor_kalimat, kalimat_item in enumerate(kalimat, 1):
         bagian_urut = _PEMISAH_URUT.split(kalimat_item)
+        aktor_sebelumnya = None
         for nomor_bagian, bagian in enumerate(bagian_urut):
             bagian_simultan = _PEMISAH_SIMULTAN.split(bagian)
             hasil_bagian = []
-            for klausa in bagian_simultan:
+            for indeks_klausa, klausa in enumerate(bagian_simultan):
                 nomor += 1
-                hasil, alasan = _peristiwa_klausa(klausa, peran, nomor)
+                aktor_default = (
+                    aktor_sebelumnya
+                    if nomor_bagian > 0 and indeks_klausa == 0
+                    else None
+                )
+                hasil, alasan = _peristiwa_klausa(
+                    klausa, peran, nomor, aktor_default=aktor_default
+                )
                 if hasil:
                     hasil["hubungan_temporal"] = (
                         "setelah" if nomor_bagian > 0 else
@@ -147,6 +158,8 @@ def uraikan_peristiwa(teks: str, peran: Sequence[str]) -> dict:
                         "bukti_teks": klausa.strip(),
                     })
             peristiwa.extend(hasil_bagian)
+            if hasil_bagian:
+                aktor_sebelumnya = hasil_bagian[-1]["aktor"]
 
     for nomor_event, item in enumerate(peristiwa, 1):
         item["id"] = f"peristiwa-{nomor_event:03d}"
