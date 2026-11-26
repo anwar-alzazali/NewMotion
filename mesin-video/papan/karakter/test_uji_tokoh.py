@@ -48,5 +48,23 @@ def test_pose_duduk_tidak_dituntut_menapak():
 def test_loncatan_antar_frame_terdeteksi():
     a, b = _catat(), _catat()
     b["sendi"]["lengan"][1][2] = [300, -195]
-    temuan = U.periksa_loncatan([[a], [b]], {0: ("lompat", "depan")})
+    temuan = U.periksa_loncatan([[a], [a], [b]], {0: ("lompat", "depan")})
     assert temuan and temuan[0]["kode"] == "A5_LONCATAN"
+
+
+def test_gerak_cepat_yang_mulus_bukan_loncatan():
+    frame = []
+    for i in range(4):  # tangan bergerak 60 px/frame dengan kecepatan tetap
+        c = _catat()
+        c["sendi"]["lengan"][1][2] = [62 + 60 * i, -195]
+        frame.append([c])
+    assert U.periksa_loncatan(frame, {0: ("lompat", "depan")}) == []
+
+
+def test_pemendekan_saat_aksi_dari_depan_boleh_tapi_tidak_dari_samping():
+    c = _catat()
+    c["sendi"]["kaki"][0][1] = [-26, -106]  # paha 94 px (kaki mengayun ke arah kamera)
+    kode = lambda pose, sudut: {x["kode"] for x in U.periksa([c], {0: (pose, sudut)}, ACUAN)}  # noqa: E731
+    assert "A1_PANJANG_TULANG" not in kode("jalan", "depan")
+    assert "A1_PANJANG_TULANG" in kode("jalan", "samping")
+    assert "A1_PANJANG_TULANG" in kode("berdiri", "depan")
