@@ -84,3 +84,23 @@ kedalaman JSON dengan referensi.
 
 Tahap ini tidak mengubah kebijakan genre Kisah Islami, tidak menyalin koordinat JSON
 referensi, tidak menambah LLM runtime, dan tidak menjalankan render video.
+
+
+## Pembaruan setelah Tahap 10 — kamera dan lingkungan
+
+Audit renderer pada `mesin-video/papan/cerita.js` membuktikan dukungan untuk kamera
+`x/y/z`, efek `hentak/guncang`, serta properti lingkungan seperti `palet`, `ruang`,
+`langit`, `horizon`, `debu`, `hujan`, `panas`, `matahari`, `naungan`,
+`kerumunan`, `retak`, dan `resap`. Rincian bukti dan pola empat JSON referensi ada
+pada `docs/pengarah/audit-kamera-lingkungan.md`.
+
+Pengarah cerita umum kini memilih framing dasar kamera menurut tujuan shot dan menerima
+metadata kamera/lingkungan eksplisit pada level naskah atau adegan. Metadata adegan
+mengoverride metadata global. Kunci yang tidak didukung serta palet/jenis ruang yang
+tidak dikenal ditolak. Tanpa metadata lingkungan, pengarah tidak menciptakan cuaca,
+kerumunan, ruang, atau palet spesifik.
+
+Status kamera berubah dari statis penuh menjadi **parsial**. Kamera belum melacak
+lintasan aktor secara otomatis dan belum memilih shot/reverse-shot berdasarkan geometri
+blocking. Lingkungan masih bergantung pada metadata eksplisit; inferensi konteks dari
+narasi bebas dan katalog objek/lingkungan umum tetap menjadi kesenjangan.
