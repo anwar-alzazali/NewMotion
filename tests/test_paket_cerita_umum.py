@@ -335,3 +335,44 @@ def test_transisi_keadaan_berantai_membentuk_tahap_aksi_berbeda():
     assert len(tahapan) == 2
     assert tahapan[1]["dasar_pemisahan"] == "transisi_keadaan_berurutan"
 
+
+
+
+def test_tahap_temporal_memecah_shot_renderer_dan_menjaga_kontinuitas():
+    naskah = _naskah()
+    naskah["adegan"][0]["peristiwa"][1]["setelah_peristiwa_id"] = "e1"
+
+    spek, _, jumlah = arahkan_naskah(naskah)
+    shot = spek["cerita"]["shot"]
+
+    assert jumlah == 2
+    assert len(shot) == 2
+    assert [item["pengarahan"]["tahap_urutan"] for item in shot] == [1, 2]
+    assert shot[0]["pengarahan"]["peristiwa_ids"] == ["e1"]
+    assert shot[1]["pengarahan"]["peristiwa_ids"] == ["e2"]
+    assert shot[0]["at"] == 0
+    assert shot[1]["at"] == shot[0]["durasi"]
+    assert shot[0]["durasi"] + shot[1]["durasi"] == 5.0
+
+    pertama = {item["aktor_id"]: item for item in shot[0]["boneka"]}
+    kedua = {item["aktor_id"]: item for item in shot[1]["boneka"]}
+    assert "pengendara" in pertama
+    assert "penolong" in kedua and "pengendara" in kedua
+    assert kedua["pengendara"]["x"] == pertama["pengendara"]["x"][-1][1]
+    assert kedua["pengendara"]["y"] == pertama["pengendara"]["y"][-1][1]
+    assert kedua["penolong"]["sasaran_id"] == 1
+
+    motor_pertama = next(item for item in shot[0]["benda"] if item["jenis"] == "motor")
+    motor_kedua = next(item for item in shot[1]["benda"] if item["jenis"] == "motor")
+    assert motor_kedua["id"] == motor_pertama["id"]
+    assert motor_kedua["x"] == motor_pertama["x"][-1][1]
+    assert motor_kedua["y"] == motor_pertama["y"][-1][1]
+
+
+def test_tahap_simultan_tetap_satu_shot_renderer():
+    spek, _, jumlah = arahkan_naskah(_naskah())
+    assert jumlah == 1
+    assert len(spek["cerita"]["shot"]) == 1
+    assert spek["cerita"]["shot"][0]["pengarahan"]["status_segmentasi"] == (
+        "shot_renderer_dibentuk_dari_tahap_semantik"
+    )
