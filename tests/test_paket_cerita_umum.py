@@ -268,3 +268,30 @@ def test_perubahan_keadaan_tidak_lengkap_tidak_ditebak():
         x["kode"] == "transisi_keadaan_belum_lengkap"
         for x in spek["rencana_blocking"]["diagnostik"]
     )
+
+def test_pengarah_menetapkan_tujuan_shot_dan_zoom_dari_peristiwa_eksplisit():
+    naskah = _naskah()
+    naskah["adegan"].append({
+        "id": "beat-002",
+        "teks": "Penolong menolong pengendara.",
+        "tokoh_ids": ["penolong", "pengendara"],
+        "peristiwa": [{
+            "id": "e3", "aktor": "Penolong", "aksi": "menolong",
+            "sasaran": "Pengendara",
+        }],
+    })
+    spek, _, _ = arahkan_naskah(naskah)
+    pertama, kedua = spek["cerita"]["shot"]
+
+    assert pertama["pengarahan"]["tujuan"] == "menampilkan_perubahan_aksi"
+    assert pertama["pengarahan"]["peristiwa_ids"] == ["e1", "e2"]
+    assert pertama["pengarahan"]["fokus_tokoh_ids"] == ["penolong", "pengendara"]
+    assert pertama["kamera"]["z"] == [1.06, 1.16]
+
+    assert kedua["pengarahan"]["tujuan"] == "menampilkan_interaksi"
+    assert kedua["pengarahan"]["peristiwa_ids"] == ["e3"]
+    assert kedua["kamera"]["z"] == [1.04, 1.12]
+    # Tidak menambah properti lingkungan atau benda yang tidak dinyatakan naskah.
+    assert pertama["benda"] == []
+    assert kedua["benda"] == []
+
