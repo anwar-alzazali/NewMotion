@@ -61,6 +61,7 @@ Pada hasil akhir `newmotion ukur`, tidak ada lagi shot tolok ukur yang tercatat 
 - Tidak ada LLM saat runtime.
 - Tidak ada jenis benda renderer baru; semua jenis yang dipakai sudah ada di `mesin-video/papan/cerita.js`.
 - Workflow render tetap manual. Pratinjau tidak dibuat karena akses yang tersedia pada sesi ini tidak menyediakan pemicu `workflow_dispatch`; tidak ada workflow render yang dijalankan.
+- Check eksternal Cloudflare Workers untuk Worker `mesin-konten` berstatus gagal. Konfigurasi build yang terbaca menunjuk repo `mesin-video` pada branch `main`, bukan kode NewMotion di PR ini; detail kegagalan build tidak tersedia pada keluaran check GitHub. Ini tetap check merah yang perlu diperiksa terpisah sebelum merge.
 - Belum dilakukan audit visual frame-by-frame. Skor otomatis bukan bukti bahwa blocking, perspektif, dan gerak sudah artistik benar.
 
 ## Kesimpulan
