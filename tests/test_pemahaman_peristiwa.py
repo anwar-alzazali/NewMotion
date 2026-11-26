@@ -228,6 +228,7 @@ def test_narasi_biasa_menghasilkan_tautan_benda_dan_objek_renderer():
     sumber = naskah_untuk_pengarah(naskah)
     spek, genre, _ = arahkan_naskah(sumber, genre_pilihan="cerita_umum")
     event = spek["rencana_cerita"]["adegan"][0]["peristiwa"][0]
+    event_blocking = spek["rencana_blocking"]["peristiwa"][0]
     motor = next(
         item for item in spek["cerita"]["shot"][0]["benda"]
         if item["id"] == "motor-01"
@@ -235,6 +236,8 @@ def test_narasi_biasa_menghasilkan_tautan_benda_dan_objek_renderer():
 
     assert genre == "cerita_umum"
     assert event["sasaran_benda_id"] == "motor-01"
+    assert event_blocking["sasaran_benda"] == "motor"
+    assert event_blocking["sasaran_benda_id"] == "motor-01"
     assert motor["jenis"] == "motor"
     assert motor["x"] == 520
     assert spek["cerita"]["shot"][0]["boneka"][0]["kendaraan_id"] == "motor-01"
