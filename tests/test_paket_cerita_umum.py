@@ -34,6 +34,14 @@ def test_paket_cerita_umum_membuat_lintasan_penolong_dan_menautkan_sasaran():
     assert arahan["aksi"] == "jalan"
     assert arahan["sasaran_tokoh_id"] == "pengendara"
     assert arahan["x"][0][1] != arahan["x"][-1][1]
+    # Penolong tiba di sisi posisi akhir pengendara setelah tergelincir,
+    # bukan berhenti di posisi awal pengendara sebelum jatuh.
+    arahan_shot = spek["rencana_visual_tokoh"]["shot"][0]["tokoh"]
+    penolong = next(x for x in arahan_shot if x["tokoh_id"] == "penolong")
+    pengendara = next(x for x in arahan_shot if x["tokoh_id"] == "pengendara")
+    assert pengendara["x"][-1][1] == 455
+    assert penolong["x"][-1][1] == 385
+    assert penolong["y"][-1][1] == pengendara["y"][-1][1] == 1620
 
 
 def test_paket_cerita_umum_tidak_mengambil_alih_kebijakan_kisah_islami():
