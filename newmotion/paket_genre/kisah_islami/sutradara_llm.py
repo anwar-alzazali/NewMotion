@@ -73,6 +73,8 @@ def main(argv=None) -> int:
     ap.add_argument("naskah")
     ap.add_argument("-o", "--keluaran", required=True)
     ap.add_argument("--rencana", help="pakai rencana yang sudah ada (tanpa memanggil LLM)")
+    ap.add_argument("--periksa", type=int, default=0, metavar="N",
+                    help="putaran periksa visual (vision) + revisi rencana, maksimal N revisi (0 = mati)")
     args = ap.parse_args(argv)
     out = Path(args.keluaran)
     out.mkdir(parents=True, exist_ok=True)
@@ -89,6 +91,20 @@ def main(argv=None) -> int:
         rencana = j.data
         info.update(model=j.model, penyedia=j.penyedia, token_masuk=j.token_masuk,
                     token_keluar=j.token_keluar, biaya_usd=j.biaya_usd, percobaan=j.percobaan)
+    if args.periksa > 0:
+        import shutil
+
+        from .periksa_visual import berputar
+
+        rencana, _, log = berputar(naskah, rencana, out / "periksa", putaran=args.periksa)
+        info["periksa"] = [{k: v for k, v in e.items() if k not in ("temuan", "lembar")}
+                           | {"lulus": (e.get("temuan") or {}).get("lulus"),
+                              "jumlah_temuan": len((e.get("temuan") or {}).get("temuan", []))} for e in log]
+        info["biaya_usd"] = round(info.get("biaya_usd", 0) + sum(e.get("biaya_usd", 0) + e.get("biaya_revisi_usd", 0)
+                                                                for e in log), 4)
+        (out / "periksa.json").write_text(json.dumps(log, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
+        for i, p in enumerate((log[-1].get("lembar") or []) if log else [], 1):
+            shutil.copy(p, out / f"lembar_{i}.jpg")
     spek, _, n = arahkan_naskah(terapkan_rencana(naskah, rencana))
     ukur = U.laporan(spek)
     info.update(shot=n, skor_gabungan=ukur["skor_gabungan"], skor_aspek=ukur["skor_aspek"])
