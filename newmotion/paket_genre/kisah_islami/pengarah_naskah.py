@@ -334,6 +334,33 @@ LATAR_BERTABRAKAN = frozenset({"gunung", "tebing", "kota", "bukit"})
 SUBJEK_SUASANA = frozenset({"kerumunan", "ombak", "gunung", "rumah", "makam", "pancar"})
 
 
+HORIZON_DINDING = 1500  # kaki dinding Zulkarnain di cakrawala (papan Ya'juj 1/2)
+
+
+def _ikat_posisi_subjek(shot: dict, subjek: list[dict]) -> None:
+    """Posisi subjek ditetapkan relatif satu sama lain, bukan angka lepas per benda.
+
+    - Kaki dinding (`ngarai`) berdiri di garis cakrawala; tanah tidak menutupinya.
+    - Titik gali `penggali` = lubang dinding (x + lx, y + ly), jadi beliung mengayun ke lubang.
+    - `pemimpin` berdiri di depan, di samping dinding, menghadap para penggali.
+    Mengubah benda subjek di tempat; dipanggil sebelum benda dimasukkan ke shot.
+    """
+    dinding = next((o for o in subjek if o.get("jenis") == "ngarai"), None)
+    if dinding is None:
+        return
+    shot["horizon"] = HORIZON_DINDING
+    skala = float(dinding.get("s", 1) if not isinstance(dinding.get("s"), list) else 1)
+    dinding.update({"x": 540, "y": HORIZON_DINDING})
+    dinding.pop("belakang", None)
+    lubang_x = 540 + (dinding.get("lx") or 0) * skala
+    lubang_y = HORIZON_DINDING + (dinding.get("ly") if dinding.get("ly") is not None else -190) * skala
+    for o in subjek:
+        if o.get("jenis") == "penggali":
+            o.update({"x": round(lubang_x), "y": round(lubang_y), "s": skala})
+        elif o.get("jenis") == "pemimpin":
+            o.update({"x": 300, "y": 1700, "s": 1.2, "depan": True})
+
+
 def _susun_ulang_untuk_subjek(benda: list[dict], subjek: list[dict], b: dict, kamera: dict,
                               look: dict, wajah: str, pose: str, ds: float, tx: str,
                               posisi: str, R) -> tuple[list[dict], dict, dict]:
@@ -542,6 +569,7 @@ def arahkan(naskah: dict, waktu_adegan: list[float] | None = None,
             jenis_ada = {x.get("jenis") for x in benda}
             benda += [x for x in subjek["benda"] if x.get("jenis") not in jenis_ada]
             if subjek["benda"]:
+                _ikat_posisi_subjek(s, subjek["benda"])
                 benda, b, kamera = _susun_ulang_untuk_subjek(benda, subjek["benda"], b, kamera,
                                                               look, wajah, pose, ds, tx, posisi, R)
                 s["kamera"] = kamera

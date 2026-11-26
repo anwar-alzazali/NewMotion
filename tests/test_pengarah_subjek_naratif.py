@@ -258,3 +258,14 @@ def test_dinding_kembali_utuh_tanpa_lubang():
     teks = "Esoknya, dinding itu sudah kembali utuh."
     ngarai = [b for b in arahkan_subjek(teks, 4.0, 0, konteks=konteks + " " + teks)["benda"] if b["jenis"] == "ngarai"]
     assert ngarai and ngarai[0]["lubang"] == 0.0
+
+
+def test_penggali_menggali_di_lubang_dinding():
+    # Papan Ya'juj 1: kaki dinding di cakrawala, titik gali = lubang (kaki - 190 * s).
+    shots = _arahkan_satu("Setiap hari mereka menggali dinding besi Zulkarnain, sampai hampir tembus.")
+    shot = next(s for s in shots if any(b["jenis"] == "penggali" for b in s["benda"]))
+    dinding = next(b for b in shot["benda"] if b["jenis"] == "ngarai")
+    gali = next(b for b in shot["benda"] if b["jenis"] == "penggali")
+    assert dinding["y"] == shot["horizon"]
+    assert gali["x"] == dinding["x"] + (dinding.get("lx") or 0) * dinding["s"]
+    assert gali["y"] == round(dinding["y"] + dinding.get("ly", -190) * dinding["s"])
