@@ -127,3 +127,24 @@ Metadata ini adalah konteks eksplisit, bukan hasil tebakan dari kata kunci.
 Profil kamera berbasis aksi saat ini hanya menetapkan framing dasar dan zoom. Ini
 belum sama dengan pelacakan kamera sinematik berdasarkan lintasan aktor; kemampuan
 tersebut tetap menjadi kesenjangan terpisah.
+
+
+## Kontrak kamera mengikuti panggung
+
+Paket genre dapat menyediakan kait opsional `pengarah_kamera`. Inti memanggilnya
+setelah adapter visual mengisi boneka renderer. Pengarah kamera hanya membaca posisi
+aktual tokoh fokus dan membuat keyframe kamera; ia tidak mengubah blocking atau
+menciptakan lintasan aktor.
+
+- Fokus diambil dari `pengarahan.fokus_tokoh_ids`.
+- Keyframe kamera x/y dihitung dari pusat bounding-box kelompok tokoh pada waktu
+  keyframe yang tersedia.
+- Sumbu x/y yang secara eksplisit diberikan naskah tidak boleh ditimpa; sumbu lain
+  boleh mengikuti panggung.
+- Tanpa lintasan dinamis, profil kamera dasar dipertahankan.
+- Kamera z dan efek hentak/guncang tidak diubah oleh pengarah pelacakan ini.
+- Kait ini opsional per paket genre. Paket Kisah Islami tidak mengaktifkannya.
+
+Hasil pelacakan disimpan pada `rencana_kamera` dan status per shot. Pusat bounding-box
+adalah tahap awal; ia belum menggantikan komposisi sinematik yang mempertimbangkan
+kedalaman, occlusion, ruang kosong, lensa, dialog, atau shot/reverse-shot.
