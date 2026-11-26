@@ -60,7 +60,8 @@ def naskah_untuk_pengarah(
     ids_quran = {
         d.get("id"): d for d in naskah.get("dalil", [])
         if isinstance(d, dict) and d.get("jenis") == "quran"
-        and isinstance(d.get("surah"), int) and str(d.get("ayat", "")).isdigit()
+        and isinstance(d.get("surah"), int)
+        and re.fullmatch(r"\d+(-\d+)?", str(d.get("ayat", "")).replace(" ", ""))
         and d.get("status") == "terverifikasi"
     }
     dalil_dipakai = []
@@ -122,7 +123,7 @@ def naskah_untuk_pengarah(
             d = ids_quran.get(id_dalil)
             if d:
                 dalil_dipakai.append({
-                    "surah": d["surah"], "ayat": d["ayat"], "di_adegan": nama,
+                    "surah": d["surah"], "ayat": str(d["ayat"]).replace(" ", ""), "di_adegan": nama,
                 })
     from newmotion.application.pengklasifikasi_konten import klasifikasikan_konten
 
@@ -167,6 +168,8 @@ def buat_pratinjau(id_: str, *, folder: Path = ANTREAN, keluaran: Path | None = 
         raise ValueError("Pratinjau visual sudah dibuat dan sedang/selesai ditinjau; cegah render ganda.")
     if status.get("tahap", {}).get("tinjau") != "selesai":
         raise ValueError("Pratinjau visual hanya boleh dibuat setelah naskah disetujui.")
+    if status.get("tahap", {}).get("dalil") != "selesai":
+        raise ValueError("Pratinjau visual diblokir: dalil naskah belum lolos verifikasi semua.")
     naskah = json.loads(naskah_path.read_text(encoding="utf-8"))
     from newmotion.application.pengarah_inti import arahkan_naskah
 

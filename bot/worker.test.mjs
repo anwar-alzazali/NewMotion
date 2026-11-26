@@ -49,7 +49,17 @@ import { kartuStatus, tombolKartu, idAntrean, statusBaru } from "./worker.js";
 test("kartu status bot identik dengan versi Python (fixture bersama)", () => {
   const f = JSON.parse(readFileSync(new URL("../tests/data/kartu_status.json", import.meta.url)));
   assert.equal(kartuStatus(f.status), f.teks);
-  assert.ok(tombolKartu(f.status).flat().some((b) => b.callback_data === `nl:${f.status.id}`));
+  // Fixture berstatus dalil gagal: tidak boleh ada Lanjut, hanya Revisi/Batal.
+  const tombol = tombolKartu(f.status).flat().map((b) => b.callback_data);
+  assert.ok(!tombol.includes(`nl:${f.status.id}`));
+  assert.ok(tombol.includes(`nr:${f.status.id}`) && tombol.includes(`nb:${f.status.id}`));
+});
+
+test("tombol Lanjut hanya muncul bila semua dalil lolos", () => {
+  const st = { id: "uji-dalil", tahap: { tinjau: "jalan", dalil: "selesai" }, ket: {} };
+  assert.equal(tombolKartu(st)[0][0].callback_data, "nl:uji-dalil");
+  for (const dalil of ["gagal", "jalan", "belum"])
+    assert.ok(!tombolKartu({ ...st, tahap: { ...st.tahap, dalil } }).flat().some((b) => b.callback_data === "nl:uji-dalil"));
 });
 
 test("id antrean aman, pendek, dan tombolnya terbaca", () => {

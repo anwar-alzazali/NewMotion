@@ -61,9 +61,13 @@ export function tombolKartu(st) {
     return [[{ text: "🔁 Ulangi pratinjau visual", callback_data: `nu:${i}` }],
             [{ text: "🏠 Menu", callback_data: "menu" }]];
   }
-  if (["belum", "jalan"].includes(st.tahap.tinjau) && ["selesai", "gagal"].includes(st.tahap.dalil))
+  if (["belum", "jalan"].includes(st.tahap.tinjau) && st.tahap.dalil === "selesai")
     return [[{ text: "✅ Lanjut", callback_data: `nl:${i}` }, { text: "✏️ Revisi", callback_data: `nr:${i}` }],
             [{ text: "❌ Batal", callback_data: `nb:${i}` }, { text: "🏠 Menu", callback_data: "menu" }]];
+  // Dalil gagal: naskah tidak boleh lanjut ke visual. Pilihan hanya revisi atau batal.
+  if (["belum", "jalan"].includes(st.tahap.tinjau) && st.tahap.dalil === "gagal")
+    return [[{ text: "✏️ Revisi dalil", callback_data: `nr:${i}` }, { text: "❌ Batal", callback_data: `nb:${i}` }],
+            [{ text: "🏠 Menu", callback_data: "menu" }]];
   return [[{ text: "🏠 Menu", callback_data: "menu" }]];
 }
 export function statusBaru(id, judul, sumber, chat) {
@@ -288,6 +292,10 @@ async function ubahAntrean(env, q, t) {
   }
   if (t.aksi === "nl" && st.tahap.tinjau !== "jalan") {
     return TG(env, "answerCallbackQuery", { callback_query_id: q.id, text: "Naskah ini sudah diproses; pratinjau tidak dibuat ulang." });
+  }
+  // Pengaman sisi server: tombol Lanjut lama (sebelum perbaikan) tetap tidak boleh meloloskan dalil gagal.
+  if (t.aksi === "nl" && st.tahap.dalil !== "selesai") {
+    return TG(env, "answerCallbackQuery", { callback_query_id: q.id, text: "Dalil belum lolos semua. Revisi naskahnya dulu.", show_alert: true });
   }
   if (t.aksi === "nr") {
     await TG(env, "answerCallbackQuery", { callback_query_id: q.id });
