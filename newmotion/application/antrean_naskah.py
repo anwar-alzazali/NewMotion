@@ -504,9 +504,13 @@ def tg(metode: str, badan: dict) -> dict:
 
 def tombol_kartu(st: dict) -> list:
     i = st["id"]
-    if st["tahap"]["tinjau"] in ("belum", "jalan") and st["tahap"]["dalil"] in ("selesai", "gagal"):
+    if st["tahap"]["tinjau"] in ("belum", "jalan") and st["tahap"]["dalil"] == "selesai":
         return [[{"text": "✅ Lanjut", "callback_data": f"nl:{i}"}, {"text": "✏️ Revisi", "callback_data": f"nr:{i}"}],
                 [{"text": "❌ Batal", "callback_data": f"nb:{i}"}, {"text": "🏠 Menu", "callback_data": "menu"}]]
+    # Dalil gagal: naskah tidak boleh lanjut ke visual (sama dengan tombolKartu di bot/worker.js).
+    if st["tahap"]["tinjau"] in ("belum", "jalan") and st["tahap"]["dalil"] == "gagal":
+        return [[{"text": "✏️ Revisi dalil", "callback_data": f"nr:{i}"}, {"text": "❌ Batal", "callback_data": f"nb:{i}"}],
+                [{"text": "🏠 Menu", "callback_data": "menu"}]]
     return [[{"text": "🏠 Menu", "callback_data": "menu"}]]
 
 
@@ -546,7 +550,13 @@ def teks_tinjauan(n: dict) -> list[str]:
                 s += f": “{d['terjemah'][:220]}{'…' if len(d['terjemah']) > 220 else ''}”"
             sudah.add(r)
         out.append(s)
-    out.append("\nCek: apakah setiap kalimat sesuai makna dalilnya? Lalu ketuk ✅ Lanjut / ✏️ Revisi / ❌ Batal di kartu status.")
+    gagal = [d.get("label", d.get("id")) for d in n.get("dalil", [])
+             if not (d.get("status") == "terverifikasi" and d.get("derajat", "sahih") in ("sahih", "hasan"))]
+    if gagal:
+        out.append(f"\n⛔ {len(gagal)} dalil belum lolos ({', '.join(map(str, gagal))}). Naskah tidak bisa lanjut ke visual; "
+                   "ketuk ✏️ Revisi dalil untuk mengganti/membuang dalil itu, atau ❌ Batal.")
+    else:
+        out.append("\nCek: apakah setiap kalimat sesuai makna dalilnya? Lalu ketuk ✅ Lanjut / ✏️ Revisi / ❌ Batal di kartu status.")
     potong, buf = [], ""
     for bagian in out:  # batas pesan Telegram 4096
         if len(buf) + len(bagian) > 3800:

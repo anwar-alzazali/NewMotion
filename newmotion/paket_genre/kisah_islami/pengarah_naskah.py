@@ -218,6 +218,17 @@ ZOOM_PER_POSISI = {
 LANGIT_PER_POSISI = {"hook": 0.08, "isi": 0.14, "klimaks": 0.05, "penutup": 0.22}
 
 
+def _rentang_ayat(ayat) -> list[int]:
+    """'50' -> [50]; '94-95' -> [94, 95]. Rentang terbalik/terlalu panjang ditolak (kartu dilewati)."""
+    bagian = str(ayat).replace(" ", "").split("-")
+    if not 1 <= len(bagian) <= 2 or not all(x.isdigit() for x in bagian):
+        raise ValueError(f"nomor ayat tidak sah: {ayat!r}")
+    awal, akhir = int(bagian[0]), int(bagian[-1])
+    if awal < 1 or akhir < awal or akhir - awal > 9:
+        raise ValueError(f"rentang ayat tidak wajar: {ayat!r}")
+    return list(range(awal, akhir + 1))
+
+
 def _ambil_dalil_untuk_adegan(nama_adegan: str, dalil_dipakai: list[dict]) -> dict | None:
     """Cari dalil_dipakai yang menunjuk adegan ini, lalu AMBIL ULANG teks Arab+terjemahan
     dari API resmi SEKARANG (tidak pernah percaya cache naskah lama). Gagal verifikasi ->
@@ -226,11 +237,15 @@ def _ambil_dalil_untuk_adegan(nama_adegan: str, dalil_dipakai: list[dict]) -> di
         if d.get("di_adegan") != nama_adegan:
             continue
         try:
-            ayat = ambil_ayat(int(d["surah"]), int(d["ayat"]))
+            surah, rentang = int(d["surah"]), _rentang_ayat(d["ayat"])
+            daftar = [ambil_ayat(surah, a) for a in rentang]
+            nomor = f"{rentang[0]}-{rentang[-1]}" if len(rentang) > 1 else str(rentang[0])
+            terjemah = [x.get("terjemah") or x.get("terjemahan") for x in daftar]
             return {
-                "kitab": f"QS {d['surah']}:{d['ayat']}",
-                "arab": ayat["teks_arab"],
-                "teks": ayat.get("terjemah") or ayat.get("terjemahan") or "(terjemahan tidak tersedia)",
+                "kitab": f"QS {surah}:{nomor}",
+                # Ayat dalam rentang digabung berurutan; penjaga dalil memverifikasi gabungan yang sama.
+                "arab": " ".join(x["teks_arab"] for x in daftar),
+                "teks": " ".join(t for t in terjemah if t) or "(terjemahan tidak tersedia)",
                 "label": "QUR'AN",
             }
         except Exception:
@@ -395,7 +410,8 @@ def arahkan(naskah: dict, waktu_adegan: list[float] | None = None,
             s = shot_dasar(t0)
             s["kamera"] = {"z": [z0, z1], "x": 540, "y": 1000 + (idx % 2) * 40}
             n_kata_arab = len(str(dalil["arab"]).split())
-            arab_ukuran = 56 if n_kata_arab <= 20 else (46 if n_kata_arab <= 30 else 38)
+            # Rentang ayat bisa jauh lebih panjang dari satu ayat: tambah satu tingkat lebih kecil.
+            arab_ukuran = 56 if n_kata_arab <= 20 else (46 if n_kata_arab <= 30 else (38 if n_kata_arab <= 45 else 32))
             s["benda"] = dasar + [{
                 "jenis": "kartu_dalil", "x": 540, "y": 960, "at": 0.15,
                 "kitab": dalil["kitab"], "teks": dalil["teks"], "arab": dalil["arab"],
