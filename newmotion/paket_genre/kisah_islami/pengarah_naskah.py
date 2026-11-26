@@ -684,6 +684,10 @@ def arahkan(naskah: dict, waktu_adegan: list[float] | None = None,
             if re.search(r"\b(hujan|tercurah)\b", teks, re.I):
                 s["hujan"] = 0.8
             s["boneka"] = [] if rb and subjek["kamu"] == "tidak" else [b]
+            if rb and rb.get("figuran"):  # figuran orang biasa dari rencana sutradara (validator menjaga adab)
+                from .rencana_sutradara import figuran_dari_rencana
+
+                s["boneka"] = s["boneka"] + figuran_dari_rencana(rb, s["benda"], idx * 10 + j)
             # Kerumunan latar hanya di tema "padang terbuka" (di kota/kampung/ruang dalam
             # kerumunan siluet di cakrawala terlihat janggal).
             if (tema in AV.TEMA_BOLEH_KERUMUNAN and not ruang
@@ -703,6 +707,8 @@ def arahkan(naskah: dict, waktu_adegan: list[float] | None = None,
 
     spek = {"latar": "gelap", "musik": "santai" if total else False,
             "cerita": {"shot": shots}}
+    if naskah.get("suku") == "arab":
+        spek["cerita"]["suku"] = "arab"
     if waktu_adegan is None and jadwal:
         # Tanpa narasi rekaman, papan.js tidak menghitung cerita.shot saat menebak durasi
         # (hasilnya hanya ~4 dtk = shot pertama). Durasi perkiraan ditulis eksplisit agar

@@ -26,6 +26,7 @@ from collections.abc import Mapping
 from typing import Any
 
 from newmotion.application.katalog_renderer import katalog_subjek
+from newmotion.application.kemampuan_tokoh import HADAP, SUKU, gerak_sah, kemampuan
 from newmotion.application.katalog_suara import (
     INTONASI,
     KERAS,
@@ -139,7 +140,81 @@ def validasi_rencana(rencana: Any, narasi_beat: list[str]) -> list[str]:
             g.append(f"{lbl}: klimaks harus true/false")
         if "suara" in b:
             g += _validasi_suara(b["suara"], narasi, lbl)
+        if "figuran" in b:
+            g += _validasi_figuran(b["figuran"], jenis_beat, narasi_beat[n - 1], lbl)
+    if rencana.get("suku", "umum") not in SUKU:
+        g.append(f"suku harus salah satu {SUKU}")
     return g
+
+
+MAKS_FIGURAN = 6
+POLA_SAKRAL = re.compile(r"\b(?:rasulullah|rasul|nabi|malaikat|jibril|mikail|israfil|sahabat|abu bakar|umar|"
+                         r"utsman|usman|ali bin abi thalib)\b", re.IGNORECASE)
+
+
+def _validasi_figuran(fig: Any, jenis_beat: set, narasi: str, lbl: str) -> list[str]:
+    """Figuran = orang biasa (bukan siluet). Tidak boleh di beat yang menyebut tokoh sakral:
+    figuran bisa terbaca sebagai sosok nabi/sahabat/malaikat."""
+    if not isinstance(fig, list):
+        return [f"{lbl}: figuran harus daftar"]
+    if fig and POLA_SAKRAL.search(narasi):
+        return [f"{lbl}: figuran tidak boleh di beat yang menyebut nabi, malaikat, atau sahabat (adab); pakai kerumunan siluet atau tanpa tokoh"]
+    g, total, kait = [], 0, kemampuan()["kait"]
+    for f in fig:
+        if not isinstance(f, Mapping):
+            g.append(f"{lbl}: figuran harus objek")
+            continue
+        n = f.get("jumlah", 1)
+        if not isinstance(n, int) or not 1 <= n <= MAKS_FIGURAN:
+            g.append(f"{lbl}: figuran.jumlah 1..{MAKS_FIGURAN}")
+            n = 1
+        total += n
+        if f.get("suku", "umum") not in SUKU:
+            g.append(f"{lbl}: figuran.suku harus {SUKU}")
+        if f.get("tempat", "tengah") not in TEMPAT_DASAR:
+            g.append(f"{lbl}: figuran.tempat harus salah satu {tuple(TEMPAT_DASAR)}")
+        if f.get("gerak", "berdiri") not in gerak_sah():
+            g.append(f"{lbl}: figuran.gerak {f.get('gerak')!r} tidak dikenal renderer")
+        if f.get("hadap", "depan") not in HADAP:
+            g.append(f"{lbl}: figuran.hadap harus {HADAP}")
+        if f.get("naik") is not None:
+            if f["naik"] not in kait:
+                g.append(f"{lbl}: figuran.naik hanya untuk {tuple(kait)}")
+            elif f["naik"] not in jenis_beat:
+                g.append(f"{lbl}: figuran.naik {f['naik']!r} harus ada di subjek beat ini")
+            elif n != 1:
+                g.append(f"{lbl}: figuran yang naik/duduk di benda jumlahnya 1")
+    if total > MAKS_FIGURAN:
+        g.append(f"{lbl}: total figuran maksimal {MAKS_FIGURAN} per beat")
+    return g
+
+
+LETAK_FIGURAN = {  # (x, y kaki, skala, jauh)
+    "tengah": (540, 1720, 0.78, False), "kiri": (280, 1720, 0.78, False), "kanan": (800, 1720, 0.78, False),
+    "jauh": (540, 1330, 0.45, True), "depan_kiri": (230, 1900, 1.0, False), "depan_kanan": (850, 1900, 1.0, False),
+}
+
+
+def figuran_dari_rencana(rb: Mapping, benda: list[dict], kunci: int) -> list[dict]:
+    """Rencana figuran satu beat -> boneka figuran (npc) dengan posisi, gerak, hadap, dan kait."""
+    keluar: list[dict] = []
+    for i, f in enumerate(rb.get("figuran") or []):
+        x0, y0, sk, blk = LETAK_FIGURAN[f.get("tempat", "tengah")]
+        n = int(f.get("jumlah", 1))
+        for k in range(n):
+            o = {"npc": kunci * 10 + i * 3 + k, "pose": f.get("gerak", "berdiri"),
+                 "x": round(x0 + (k - (n - 1) / 2) * 150 * sk), "y": y0 + (k % 2) * 18, "s": sk}
+            if f.get("suku"):  # tanpa suku: ikut suku cerita
+                o["suku"] = f["suku"]
+            if f.get("hadap") in ("kanan", "kiri"):
+                o["profil"] = f["hadap"]
+            if f.get("naik"):
+                target = next((b for b in benda if b.get("jenis") == f["naik"]), None)
+                if target is not None:
+                    target.setdefault("id", f"kait_{kunci}_{i}")
+                    o = {k2: o[k2] for k2 in ("npc", "suku") if k2 in o} | {"kait": target["id"]}
+            keluar.append(o)
+    return keluar
 
 
 def _validasi_suara(sr: Any, narasi_polos: str, lbl: str) -> list[str]:
@@ -261,4 +336,6 @@ def terapkan_rencana(naskah: dict, rencana: Mapping) -> dict:
                 a["intonasi"] = a["rencana"]["suara"]["intonasi"]  # dibaca tahap TTS
     if rencana.get("objek_inti"):
         hasil["objek_inti"] = copy.deepcopy(dict(rencana["objek_inti"]))
+    if rencana.get("suku") in ("arab",):
+        hasil["suku"] = rencana["suku"]
     return hasil
