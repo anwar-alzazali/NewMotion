@@ -14,33 +14,33 @@ from collections.abc import Mapping
 # Alias bahasa -> jenis renderer yang sudah tersedia di mesin-video/papan/cerita.js.
 # Urutan lebih spesifik diletakkan lebih dahulu agar "kapal Nabi Nuh" tetap satu bahtera.
 POLA_SUBJEK = (
-    (re.compile(r"\\b(kapal|bahtera|perahu)\\b", re.I), "bahtera"),
-    (re.compile(r"\\b(penggali|para penggali|orang yang menggali)\\b", re.I), "penggali"),
-    (re.compile(r"\\b(pemimpin|raja|panglima)\\b", re.I), "pemimpin"),
-    (re.compile(r"\\b(dinding|tembok|benteng)\\b", re.I), "pagar"),
-    (re.compile(r"\\b(lubang|terowongan)\\b", re.I), "ngarai"),
-    (re.compile(r"\\b(ombak|gelombang)\\b", re.I), "ombak"),
-    (re.compile(r"\\b(arus|aliran air)\\b", re.I), "arus"),
-    (re.compile(r"\\b(hewan|binatang|ternak)\\b", re.I), "hewan"),
-    (re.compile(r"\\b(unta)\\b", re.I), "unta"),
-    (re.compile(r"\\b(gerbang|pintu gerbang)\\b", re.I), "gerbang"),
-    (re.compile(r"\\b(istana|keraton)\\b", re.I), "istana"),
-    (re.compile(r"\\b(rumah|pondok)\\b", re.I), "rumah"),
+    (re.compile(r"\b(kapal|bahtera|perahu)\b", re.I), "bahtera"),
+    (re.compile(r"\b(penggali|para penggali|orang yang menggali)\b", re.I), "penggali"),
+    (re.compile(r"\b(pemimpin|raja|panglima)\b", re.I), "pemimpin"),
+    (re.compile(r"\b(dinding|tembok|benteng)\b", re.I), "pagar"),
+    (re.compile(r"\b(lubang|terowongan)\b", re.I), "ngarai"),
+    (re.compile(r"\b(ombak|gelombang)\b", re.I), "ombak"),
+    (re.compile(r"\b(arus|aliran air)\b", re.I), "arus"),
+    (re.compile(r"\b(hewan|binatang|ternak)\b", re.I), "hewan"),
+    (re.compile(r"\b(unta)\b", re.I), "unta"),
+    (re.compile(r"\b(gerbang|pintu gerbang)\b", re.I), "gerbang"),
+    (re.compile(r"\b(istana|keraton)\b", re.I), "istana"),
+    (re.compile(r"\b(rumah|pondok)\b", re.I), "rumah"),
 )
 
 POLA_PERUBAHAN = {
-    "air": re.compile(r"\\b(berlayar|melaju|bergerak|mengapung)\\b", re.I),
-    "gelombang": re.compile(r"\\b(menghempas|menggulung|menerjang|membesar)\\b", re.I),
-    "retak": re.compile(r"\\b(retak|retakan|pecah)\\b", re.I),
-    "lubang": re.compile(r"\\b(lubang|terkikis|terbuka|membesar)\\b", re.I),
-    "jebol": re.compile(r"\\b(jebol|runtuh|roboh|hancur)\\b", re.I),
-    "gali": re.compile(r"\\b(menggali|menggerogoti|mengikis)\\b", re.I),
-    "jatuh": re.compile(r"\\b(jatuh|terjun|tergelincir|tenggelam)\\b", re.I),
+    "air": re.compile(r"\b(berlayar|melaju|bergerak|mengapung)\b", re.I),
+    "gelombang": re.compile(r"\b(menghempas|menggulung|menerjang|membesar)\b", re.I),
+    "retak": re.compile(r"\b(retak|retakan|pecah)\b", re.I),
+    "lubang": re.compile(r"\b(lubang|terkikis|terbuka|membesar)\b", re.I),
+    "jebol": re.compile(r"\b(jebol|runtuh|roboh|hancur)\b", re.I),
+    "gali": re.compile(r"\b(menggali|menggerogoti|mengikis)\b", re.I),
+    "jatuh": re.compile(r"\b(jatuh|terjun|tergelincir|tenggelam)\b", re.I),
 }
 
 KATA_KUNCI_LAYAR = (
-    re.compile(r"\\b(\\d+(?:[.,]\\d+)?\\s*(?:tahun|bulan|hari|malam|meter|kilometer|orang|tahun))\\b", re.I),
-    re.compile(r"\\b(jebol|terbelah|kiamat|banjir besar|hari kebangkitan)\\b", re.I),
+    re.compile(r"\b(\d+(?:[.,]\d+)?\s*(?:tahun|bulan|hari|malam|meter|kilometer|orang|tahun))\b", re.I),
+    re.compile(r"\b(jebol|terbelah|kiamat|banjir besar|hari kebangkitan)\b", re.I),
 )
 
 
@@ -66,7 +66,7 @@ def _properti_benda(jenis: str, teks: str, indeks: int, durasi: float, seed: int
             "y": [[0, 1300], [max(0.5, durasi * 0.85), 1270]],
             "s": 0.82, "goyang": 1.0, "cahaya": 0.35,
         })
-        if re.search(r"\\b(ombak|gelombang|badai|banjir)\\b", teks, re.I):
+        if re.search(r"\b(ombak|gelombang|badai|banjir)\b", teks, re.I):
             dasar["goyang"] = 2.2
     elif jenis == "ombak":
         dasar.update({"x": 540, "y": [[0, 1480], [max(0.5, durasi * 0.8), 1220]],
@@ -112,5 +112,5 @@ def arahkan_subjek(teks: str, durasi: float, indeks: int = 0) -> dict:
             if label.casefold() not in {x["teks"].casefold() for x in teks_layar}:
                 teks_layar.append({"at": 0.15, "teks": label.upper(), "y": 340, "ukuran": 62})
     klimaks = bool(POLA_PERUBAHAN["jebol"].search(teks) or
-                   re.search(r"\\b(terbelah|meledak|tenggelam|jatuh|ditelan)\\b", teks, re.I))
+                   re.search(r"\b(terbelah|meledak|tenggelam|jatuh|ditelan)\b", teks, re.I))
     return {"benda": benda, "teks": teks_layar, "klimaks": klimaks}
