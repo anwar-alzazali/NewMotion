@@ -113,21 +113,38 @@ def _peristiwa_klausa(
         return None, None
     if re.search(r"\b(?:tidak|bukan|belum|jangan)\b", klausa, re.I):
         return None, "klausa_negatif_tidak_dijadikan_aksi"
-    aksi = list(_AKSI_REGEX.finditer(klausa))
+    # Frasa tujuan "untuk <aksi>" bukan aksi yang sudah terjadi.
+    # Pisahkan hanya jika verba tujuan dikenal dan muncul di awal frasa tujuan.
+    klausa_utama = klausa
+    klausa_tujuan = None
+    pemisah_tujuan = re.search(r"\\buntuk\\s+", klausa, re.I)
+    if pemisah_tujuan:
+        calon_tujuan = klausa[pemisah_tujuan.end():].strip()
+        aksi_tujuan = list(_AKSI_REGEX.finditer(calon_tujuan))
+        if (
+            len(aksi_tujuan) == 1
+            and not calon_tujuan[:aksi_tujuan[0].start()].strip()
+        ):
+            klausa_utama = klausa[:pemisah_tujuan.start()].strip()
+            klausa_tujuan = calon_tujuan
+        elif len(aksi_tujuan) > 1:
+            return None, "tujuan_aksi_ambigu"
+
+    aksi = list(_AKSI_REGEX.finditer(klausa_utama))
     if len(aksi) != 1:
         if len(aksi) > 1:
             return None, "lebih_dari_satu_aksi_dalam_klausa"
         return None, "pola_aksi_belum_dikenali"
     verba = aksi[0]
-    subjek = _posisi_peran(klausa[:verba.start()], peran)
-    objek = _posisi_peran(klausa[verba.end():], peran)
-    objek_benda = _posisi_benda(klausa[verba.end():], benda)
+    subjek = _posisi_peran(klausa_utama[:verba.start()], peran)
+    objek = _posisi_peran(klausa_utama[verba.end():], peran)
+    objek_benda = _posisi_benda(klausa_utama[verba.end():], benda)
     bentuk = verba.group(1).casefold()
     pasif = bentuk.startswith("di")
     if pasif:
         oleh = re.search(r"\boleh\b", klausa[verba.end():], re.I)
         if oleh:
-            kandidat_aktor = _posisi_peran(klausa[verba.end() + oleh.end():], peran)
+            kandidat_aktor = _posisi_peran(klausa_utama[verba.end() + oleh.end():], peran)
             kandidat_sasaran = subjek
             kandidat_benda = []
         else:
@@ -144,6 +161,26 @@ def _peristiwa_klausa(
         return None, "sasaran_benda_ambigu"
     if kandidat_sasaran and kandidat_benda:
         return None, "sasaran_tokoh_dan_benda_ambigu"
+    tujuan = None
+    if klausa_tujuan is not None:
+        verba_tujuan = _AKSI_REGEX.search(klausa_tujuan)
+        if verba_tujuan is None:
+            return None, "tujuan_aksi_belum_dikenali"
+        teks_sasaran_tujuan = klausa_tujuan[verba_tujuan.end():]
+        sasaran_tujuan = _posisi_peran(teks_sasaran_tujuan, peran)
+        benda_tujuan = _posisi_benda(teks_sasaran_tujuan, benda)
+        if len(sasaran_tujuan) > 1:
+            return None, "sasaran_tujuan_tokoh_ambigu"
+        if len(benda_tujuan) > 1:
+            return None, "sasaran_tujuan_benda_ambigu"
+        if sasaran_tujuan and benda_tujuan:
+            return None, "sasaran_tujuan_tokoh_dan_benda_ambigu"
+        tujuan = {"aksi": _POLA_AKSI[verba_tujuan.group(1).casefold()]}
+        if sasaran_tujuan:
+            tujuan["sasaran"] = sasaran_tujuan[0][2]
+        if benda_tujuan:
+            tujuan["sasaran_benda_id"] = benda_tujuan[0][2]
+            tujuan["sasaran_benda"] = benda_tujuan[0][3]
     if not kandidat_aktor and aktor_default and not pasif:
         aktor = aktor_default
     elif kandidat_aktor:
@@ -160,6 +197,8 @@ def _peristiwa_klausa(
     }
     if sasaran:
         hasil["sasaran"] = sasaran
+    if tujuan is not None:
+        hasil["tujuan"] = tujuan
     if kandidat_benda:
         hasil["sasaran_benda_id"] = kandidat_benda[0][2]
         hasil["sasaran_benda"] = kandidat_benda[0][3]
