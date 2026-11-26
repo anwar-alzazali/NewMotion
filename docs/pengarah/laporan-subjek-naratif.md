@@ -53,7 +53,7 @@ Pada hasil akhir `newmotion ukur`, tidak ada lagi shot tolok ukur yang tercatat 
 
 ## Pengujian dan batasan
 
-- `pytest`: lulus, seluruh 298 tes pada run yang melaporkan hasil awal; run terakhir pada commit PR juga lulus setelah penambahan tes regresi.
+- `pytest`: lulus, seluruh 302 tes pada run terakhir.
 - `node --test` di `bot/`: 12 lulus, 0 gagal.
 - Uji adab tokoh: 18 lulus, 0 gagal.
 - `newmotion ukur`: lulus dan dijalankan pada CI.
