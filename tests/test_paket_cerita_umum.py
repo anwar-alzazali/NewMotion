@@ -44,6 +44,19 @@ def test_paket_cerita_umum_membuat_lintasan_penolong_dan_menautkan_sasaran():
     assert penolong["y"][-1][1] == pengendara["y"][-1][1] == 1620
 
 
+def test_posisi_penolong_tetap_mengacu_posisi_akhir_meski_urutan_peristiwa_berbeda():
+    naskah = _naskah()
+    naskah["adegan"][0]["peristiwa"].reverse()
+    spek, _, _ = arahkan_naskah(naskah)
+    arahan = {
+        item["tokoh_id"]: item
+        for item in spek["rencana_visual_tokoh"]["shot"][0]["tokoh"]
+    }
+    assert arahan["pengendara"]["x"][-1][1] == 455
+    assert arahan["penolong"]["x"][-1][1] == 385
+    assert arahan["penolong"]["y"][-1][1] == 1620
+
+
 def test_paket_cerita_umum_tidak_mengambil_alih_kebijakan_kisah_islami():
     assert ambil("cerita_umum").pengarah_tokoh_visual is not None
     paket_islami = ambil("kisah_islami")
