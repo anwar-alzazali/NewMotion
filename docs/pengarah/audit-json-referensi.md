@@ -58,10 +58,19 @@ Saat ini pengarah tersebut:
 - mengeluarkan `benda: []` dan `boneka: []` pada setiap shot;
 - belum menghasilkan objek lingkungan, komposisi foreground/background, keyframe kamera yang kontekstual, maupun arahan gerak tokoh.
 
-Orkestrator inti kemudian menambahkan `rencana_cerita`, `rencana_blocking`, dan
-`rencana_visual_tokoh`. Lapisan semantik ini sudah memberi identitas peristiwa dan
-transisi keadaan, tetapi belum otomatis membuat isi shot renderer menjadi setara detail
-referensi.
+Orkestrator inti menambahkan `rencana_cerita`, `rencana_blocking`, dan
+`rencana_visual_tokoh`. Untuk paket yang secara eksplisit menyediakan pengarah visual
+tokoh (saat ini cerita umum), adapter `terapkan_rencana_visual_tokoh` kini dipanggil
+saat JSON pengarahan dibangun. Akibatnya, tokoh, lintasan, pose, dan benda yang memang
+dinyatakan oleh rencana visual sudah masuk ke `cerita.shot` sebelum renderer dipanggil.
+Adapter memiliki penanda idempotensi agar pemanggilan ulang oleh renderer tidak
+menggandakan isi. Paket `kisah_islami` tidak memakai kait visual tokoh umum ini sehingga
+pagar adabnya tidak dilewati.
+
+Perubahan tersebut memperbaiki satu celah integrasi, tetapi belum membuat keluaran
+setara referensi. Pengarah naskah cerita umum masih membuat satu shot per beat dengan
+kamera, horizon, dan langit tetap. Objek lingkungan, atmosfer, dan komposisi shot belum
+diturunkan secara kontekstual dari peristiwa.
 
 ## Matriks kesenjangan
 
@@ -71,7 +80,7 @@ referensi.
 | Jumlah dan segmentasi shot | 12–20 shot pada contoh yang diperiksa | Satu shot per beat | Belum setara |
 | Lingkungan dan atmosfer | Banyak parameter per shot dan variasi antar-shot | Horizon/langit tetap | Kesenjangan besar |
 | Objek dan kontinuitas benda | 73–98 objek pada Nuh/Ya'juj; Mahsyar memakai elemen lingkungan/kerumunan | Daftar benda kosong dari pengarah umum | Kesenjangan besar |
-| Tokoh dan ekspresi | Boneka, pose, ekspresi, atribut fisik dan keyframe | Rencana visual tokoh terpisah; belum masuk ke shot renderer secara otomatis | Kesenjangan besar |
+| Tokoh dan ekspresi | Boneka, pose, ekspresi, atribut fisik dan keyframe | Tokoh/lintasan/pose dari rencana eksplisit sudah diterjemahkan ke shot; detail ekspresi dan atribut belum setara | Sebagian |
 | Kamera | Keyframe kamera per shot dengan variasi x/y/z dan efek | Posisi tetap, zoom sempit yang sama | Kesenjangan besar |
 | Gerak dan interaksi | Properti gerak objek/tokoh dan perubahan antar-shot | Blocking mulai mencatat aksi dan transisi; terjemahan visual masih terbatas | Sebagian |
 | Diagnostik | Tidak selalu tersedia sebagai lapisan semantik eksplisit pada file lama | Diagnostik relasi dan transisi tersedia | Lebih baik pada sisi audit semantik |
@@ -112,3 +121,31 @@ Sebelum uji render cerita baru:
 - `anwar-alzazali/mesin-video:papan/kisah/yajuj2.json`
 
 Tidak ada render yang dijalankan dalam audit ini.
+
+## Pembaruan audit setelah integrasi visual tokoh
+
+Pada commit `d6e47cd` dan `4d66ca0` (disusul tes pada `84c5287`), adapter visual
+kini mengisi JSON renderer dari rencana visual eksplisit sebelum proses render. Tes
+memastikan tokoh penolong, lintasan berjalan, motor yang dinyatakan dalam cerita, dan
+kontinuitas antar-shot hadir pada JSON serta adapter idempoten. Ketiga workflow GitHub
+Actions pada commit `84c5287` lulus. Tidak ada video referensi yang dirender ulang.
+
+### Kesenjangan yang masih harus ditutup
+
+1. **Segmentasi shot:** satu beat masih dipetakan menjadi satu shot. Perlu pemecahan
+   berdasarkan perubahan peristiwa/keadaan yang benar-benar ada, dengan ID sumber tetap
+   tertaut; jangan menambah shot hanya demi mengejar angka referensi.
+2. **Kamera:** pengarah cerita umum masih memakai x/y/z dan horizon statis. Renderer
+   mendukung keyframe kamera `x`, `y`, `z`, serta efek `guncang`/`hentak` pada
+   spesifikasi tertentu. Arahan harus dipilih dari kebutuhan peristiwa, bukan angka acak.
+3. **Lingkungan:** renderer mendukung lapisan seperti `langit`, `palet`, `debu`,
+   `hujan`, `panas`, `matahari`, `naungan`, dan `kerumunan`; pemilihannya harus
+   berasal dari konteks tempat/waktu/kejadian yang eksplisit atau menghasilkan diagnostik.
+4. **Benda:** objek hanya boleh dibuat jika disebut/diidentifikasi oleh cerita atau
+   paket genre. Kontinuitas benda harus memakai ID stabil dan perubahan keadaan.
+5. **Tujuan shot:** setiap shot perlu menyimpan alasan/fokus naratif dan daftar peristiwa
+   yang dicakup agar keputusan kamera/komposisi dapat diaudit.
+
+Tahap berikutnya adalah mengembangkan pengarah shot deterministik untuk lima hal di atas,
+memakai kontrak renderer yang benar-benar didukung `papan/cerita.js`. Uji tetap berupa
+JSON dan tes kontrak; render ditahan sampai gerbang penerimaan terpenuhi.
