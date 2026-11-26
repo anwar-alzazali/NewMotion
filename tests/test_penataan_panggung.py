@@ -367,3 +367,96 @@ def test_rencana_blocking_menolak_entitas_transisi_yang_tidak_terdaftar():
     assert hasil["transisi_keadaan"] == []
     assert hasil["keadaan_akhir"] == {}
     assert hasil["diagnostik"][0]["kode"] == "entitas_perubahan_keadaan_tidak_terdaftar"
+
+
+
+def test_transisi_keadaan_berlanjut_lintas_beat_dengan_id_entitas_yang_sama():
+    from newmotion.penataan_panggung import susun_rencana_blocking
+
+    hasil = susun_rencana_blocking(
+        {
+            "tokoh": [{"id": "tokoh-a"}],
+            "benda": [],
+            "adegan": [
+                {
+                    "id": "beat-jatuh",
+                    "peristiwa": [{
+                        "id": "event-jatuh",
+                        "aktor_id": "tokoh-a",
+                        "aksi": "jatuh",
+                        "perubahan_keadaan": {
+                            "entitas_id": "tokoh-a",
+                            "menjadi": "terjatuh",
+                        },
+                    }],
+                },
+                {
+                    "id": "beat-berdiri",
+                    "peristiwa": [{
+                        "id": "event-berdiri",
+                        "aktor_id": "tokoh-a",
+                        "aksi": "berdiri",
+                        "perubahan_keadaan": {
+                            "entitas_id": "tokoh-a",
+                            "menjadi": "berdiri",
+                        },
+                    }],
+                },
+            ],
+        },
+        {"shot": [
+            {"_beat_id": "beat-jatuh"},
+            {"_beat_id": "beat-berdiri"},
+        ]},
+    )
+
+    assert [item["dari"] for item in hasil["transisi_keadaan"]] == [
+        None, "terjatuh"
+    ]
+    assert [item["menjadi"] for item in hasil["transisi_keadaan"]] == [
+        "terjatuh", "berdiri"
+    ]
+    assert hasil["keadaan_akhir"] == {"tokoh-a": "berdiri"}
+
+
+def test_transisi_keadaan_menolak_asal_yang_bertentangan_dengan_keadaan_terakhir():
+    from newmotion.penataan_panggung import susun_rencana_blocking
+
+    hasil = susun_rencana_blocking(
+        {
+            "tokoh": [{"id": "tokoh-a"}],
+            "benda": [],
+            "adegan": [{
+                "id": "beat-keadaan",
+                "peristiwa": [
+                    {
+                        "id": "event-jatuh",
+                        "aktor_id": "tokoh-a",
+                        "aksi": "jatuh",
+                        "perubahan_keadaan": {
+                            "entitas_id": "tokoh-a",
+                            "menjadi": "terjatuh",
+                        },
+                    },
+                    {
+                        "id": "event-berdiri",
+                        "aktor_id": "tokoh-a",
+                        "aksi": "berdiri",
+                        "perubahan_keadaan": {
+                            "entitas_id": "tokoh-a",
+                            "dari": "berjalan",
+                            "menjadi": "berdiri",
+                        },
+                    },
+                ],
+            }],
+        },
+        {"shot": [{"_beat_id": "beat-keadaan"}]},
+    )
+
+    assert len(hasil["transisi_keadaan"]) == 1
+    assert hasil["keadaan_akhir"] == {"tokoh-a": "terjatuh"}
+    assert any(
+        item["kode"] == "asal_transisi_tidak_cocok_dengan_keadaan_terakhir"
+        for item in hasil["diagnostik"]
+    )
