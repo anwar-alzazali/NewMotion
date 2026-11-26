@@ -178,3 +178,33 @@ def test_jenis_motor_dikenali_sebagai_objek_renderer_yang_sah():
 
     assert visual["jenis"] == "motor"
     assert visual["miring"] == [[0, 0], [1.0, 18]]
+
+
+def test_motor_eksplisit_dipakai_tokoh_dan_tidak_digandakan():
+    motor = {
+        "id": "motor-01",
+        "nama": "Sepeda motor",
+        "jenis_renderer": "motor",
+        "posisi": {"x": 520, "y": 1550, "s": 0.8},
+        "properti": {"miring": [[0, 0], [1.0, 18]]},
+    }
+    naskah = _naskah([motor])
+    event = naskah["adegan"][0]["peristiwa"][0]
+    event.update({
+        "aksi": "mengendarai_motor",
+        "sasaran": "motor",
+        "sasaran_benda_id": "motor-01",
+        "bukti_teks": "Aktor A menunggu di dekat jembatan",
+    })
+    spek, _, _ = arahkan_naskah(naskah)
+    shot = spek["cerita"]["shot"][0]
+    motor_renderer = [
+        item for item in shot["benda"] if item["jenis"] == "motor"
+    ]
+    pengendara = next(
+        item for item in shot["boneka"] if item["aktor_id"] == "aktor-a"
+    )
+
+    assert len(motor_renderer) == 1
+    assert motor_renderer[0]["id"] == "motor-01"
+    assert pengendara["kendaraan_id"] == "motor-01"
