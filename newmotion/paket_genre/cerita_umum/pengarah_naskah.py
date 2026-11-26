@@ -91,6 +91,7 @@ def arahkan(naskah: dict) -> dict:
         profil = _profil_shot(adegan_item, indeks)
         shot.append({
             "at": round(waktu, 2),
+            "durasi": round(durasi, 2),
             "_adegan": indeks,
             "horizon": 1100,
             "langit": 0.18,
