@@ -48,7 +48,7 @@ BADAN_HARUS = {"depan": "depan", "tiga_perempat": "depan", "samping": "samping",
                "samping_kiri": "samping", "belakang": "belakang"}
 
 # Pose yang memang tidak berdiri di tanah dengan dua kaki (A2 tidak berlaku).
-TIDAK_MENAPAK = {"duduk", "duduk_tutup_wajah", "duduk_hp", "rebahan", "rebahan_hp", "peluk_lutut",
+TIDAK_MENAPAK = {"duduk", "duduk_samping", "duduk_tutup_wajah", "duduk_hp", "rebahan", "rebahan_hp", "peluk_lutut",
                  "mengendarai_motor", "lompat", "tergelincir", "bangkit", "lari"}  # lari & lompat: fase melayang wajar
 AKSI_UJI = ["jalan", "lari", "gali", "palu", "joget", "lompat", "melambai", "menggeleng", "mengangguk", "tertawa"]
 

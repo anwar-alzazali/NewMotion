@@ -1519,7 +1519,7 @@
     const { P, BD, WC, KLB, nafas, ayun, bawahP, t, aksi, id, offset } = o, GM = o.gm || 0, R = Math.PI / 180, hy0 = -200 + J.turun;
     const pakaiP = !!P, wKaki = !P ? 44 : bawahP === "celana" ? 46 : bawahP === "gamis" ? 72 : 64, wnK = !P ? BADAN : bawahP === "gamis" ? BD : WC;
     const titik = [];
-    let kaki = "";
+    let kaki = "", geserY = 0; // geserY: badan ikut turun/naik bila kaki samping digeser ke tanah
     if (o.profilMotor && o.kait) {
       // Kaki tampak samping menempel di pijakan benda: paha sepanjang dudukan, lutut menekuk (IK).
       const pj = o.kait.pijak || [[150, hy0 + 150], [162, hy0 + 150]];
@@ -1530,10 +1530,30 @@
         kaki += `<path d="M ${F[0] - 22} ${F[1] - 8} q 30 -12 62 4 l 10 14 q -36 10 -72 -2 Z" fill="#2a2024"/>`;
       });
     } else if (o.profilMotor) {
-      // Kaki tampak samping: paha dan betis menekuk mengikuti posisi duduk di jok.
-      kaki += `<polyline points="-4 ${hy0} -82 ${hy0 + 72} -142 ${hy0 + 108}" fill="none" stroke="${warna(wnK, "#000000", 0.24)}" stroke-width="${wKaki}" stroke-linecap="round" stroke-linejoin="round"/>`;
-      kaki += `<polyline points="18 ${hy0} 92 ${hy0 + 70} 150 ${hy0 + 112}" fill="none" stroke="${wnK}" stroke-width="${wKaki}" stroke-linecap="round" stroke-linejoin="round"/>`;
-      kaki += `<path d="M 112 ${hy0 + 104} q 28 -12 60 4 l 12 18 q -34 10 -68 -4 Z" fill="#2a2024"/>`;
+      // (27 Nov) Kaki tampak samping umum. Pose ditulis untuk tampak depan; dipetakan ke bidang samping:
+      // paha yang memendek (pp) di tampak depan = paha terangkat ke depan (acos pp); kaki lawan mengayun ke belakang;
+      // betis menekuk ke belakang menurut pk dan tekukan lutut (s[1] negatif). Sudut + = ke depan (arah hadap).
+      const angkat = (q) => (1 - clamp(q == null ? 1 : q, 0, 1)) * 120 * R; // linear: acos curam di dekat 1 membuat langkah tersentak
+      const ppKi = Math.min(J.pp, J.pp_ki == null ? 1 : J.pp_ki), ppKa = Math.min(J.pp, J.pp_ka == null ? 1 : J.pp_ka);
+      [[-1, ppKi, ppKa, J.lk, J.pk_ki == null ? J.pk : J.pk_ki], [1, ppKa, ppKi, J.rk, J.pk_ka == null ? J.pk : J.pk_ka]].forEach(([sg, pp, ppLawan, s2, pk]) => {
+        const sw = (sg < 0 ? ayun : -ayun) * R;
+        const p1 = angkat(pp) - 0.5 * Math.max(0, angkat(ppLawan) - angkat(pp)) + sw, p2 = p1 - (pk < 1 ? angkat(pk) : 0) - Math.max(0, -(s2 ? s2[1] : 0)) * 1.4 * R;
+        const tekuk = pp <= 0.6 && J.turun >= 50 ? Math.min(p2, 0.12) : p2; // duduk: betis turun tegak
+        const H = [sg < 0 ? -6 : 10, hy0], K = [H[0] + Math.sin(p1) * 100, H[1] + Math.cos(p1) * 100], F = [K[0] + Math.sin(tekuk) * 100, K[1] + Math.cos(tekuk) * 100];
+        titik.push([H, K, F]);
+      });
+      // berdiri/jalan: kaki yang menapak tepat di tanah (langkah miring memendekkan jangkauan vertikal)
+      const tapak = J.turun < 50 && aksi !== "lompat" ? -Math.max(...titik.map(([, , F]) => F[1])) : 0;
+      if (tapak) { titik.forEach((tk) => tk.forEach((q) => { q[1] += tapak; })); geserY = tapak; }
+      titik.forEach(([H, K, F], i) => { const sg = i ? 1 : -1;
+        kaki += `<polyline points="${H} ${K} ${F}" fill="none" stroke="${sg < 0 ? warna(wnK, "#000000", 0.24) : wnK}" stroke-width="${wKaki}" stroke-linecap="round" stroke-linejoin="round"/>`;
+        kaki += `<path d="M ${F[0] - 24} ${F[1] - 8} q 30 -12 62 4 l 10 14 q -36 10 -72 -2 Z" fill="#2a2024"/>`;
+      });
+      if (P && bawahP !== "celana") { // gamis/sarung tampak samping: kain dari pinggul menutup kaki
+        const xs = titik.flatMap(([, K, F]) => [K[0], F[0]]), yb = Math.max(...titik.map(([, , F]) => F[1])) - (bawahP === "gamis" ? 6 : 30);
+        const top = hy0 + geserY - (bawahP === "gamis" ? 160 : 25);
+        kaki += `<path d="M -40 ${top + nafas} L 50 ${top + nafas} L ${Math.max(...xs) + 26} ${yb} Q ${(Math.max(...xs) + Math.min(...xs)) / 2} ${yb + 10} ${Math.min(...xs) - 26} ${yb} Z" fill="${wnK}" stroke="${warna(wnK, "#000000", 0.25)}" stroke-width="3"/>`;
+      }
     } else {
       [-1, 1].forEach((sg) => {
         const s = sg < 0 ? J.lk : J.rk, sw = sg < 0 ? ayun : -ayun;
@@ -1571,6 +1591,12 @@
       // Bahu dan kedua lengan berada di bidang samping torso; lengan jauh sedikit lebih tinggi.
       let E = o.profilMotor ? [112 + (sg < 0 ? -8 : 8), -320 + nafas] : [S[0] + sg * Math.sin((a1 + sw) * R) * 85, S[1] + Math.cos((a1 + sw) * R) * 85];
       let H = o.profilMotor ? [218, -284 + nafas + (sg < 0 ? -7 : 0)] : [E[0] + sg * Math.sin((a2 + sw) * R) * 80, E[1] + Math.cos((a2 + sw) * R) * 80];
+      if (o.profilMotor && !o.kait) { // (27 Nov) lengan tampak samping: angkat ke samping (depan) = angkat ke depan; ayun jalan berlawanan kaki
+        const ayunSisi = sg * ((J.pp_ki == null ? J.pp : J.pp_ki) - (J.pp_ka == null ? J.pp : J.pp_ka)) * 80 + ayun * 0.6 * sg;
+        const b1 = (Math.abs(a1) + ayunSisi) * R, b2 = (Math.abs(a2) + ayunSisi) * R;
+        E = [S[0] + Math.sin(b1) * 85, S[1] + Math.cos(b1) * 85];
+        H = [E[0] + Math.sin(b2) * 80, E[1] + Math.cos(b2) * 80];
+      }
       if (o.profilMotor && o.kait) {
         // Tangan ke pegangan benda (setang/setir); tanpa pegangan: bertumpu di paha.
         const tg = o.kait.pegang ? o.kait.pegang[sg < 0 ? 0 : 1] || o.kait.pegang[0] : [78 + (sg < 0 ? -8 : 8), hy0 - 30];
@@ -1619,8 +1645,10 @@
       const sudut = J.ra[1] * 0.45 - 10;
       barang = `<g transform="translate(${Rk.H[0]} ${Rk.H[1]}) rotate(${sudut})"><path d="M 0 42 L 0 -86" stroke="#76502f" stroke-width="15" stroke-linecap="round"/><path d="M -32 -86 L 32 -86 L 26 -58 L -26 -58 Z" fill="#7d8790" stroke="#34333a" stroke-width="6" stroke-linejoin="round"/></g>`;
     }
-    const T = `translate(0 ${J.turun}) rotate(${J.badan} 0 -200)`;
-    const g = kaki + `<g transform="${T}">${bdn}${L.ats}${Rk.ats}${J.depan > 0.5 ? "" : L.bwh + Rk.bwh + barang}</g>`;
+    const T = `translate(0 ${J.turun + geserY}) rotate(${J.badan} 0 -200)`;
+    const g = o.profilMotor && J.depan <= 0.5
+      ? kaki + `<g transform="${T}">${L.ats}${L.bwh}${bdn}${Rk.ats}${Rk.bwh}${barang}</g>` // samping: lengan jauh di balik badan
+      : kaki + `<g transform="${T}">${bdn}${L.ats}${Rk.ats}${J.depan > 0.5 ? "" : L.bwh + Rk.bwh + barang}</g>`;
     const depan = J.depan > 0.5 ? `<g transform="${T}">${L.bwh}${Rk.bwh}${barang}</g>` : "";
     // sendi (koordinat lokal, sebelum T untuk lengan) dipakai alat uji tokoh (mesin-video/papan/uji_tokoh.py)
     const sendi = { kaki: titik, lengan: [[L.S, L.E, L.H], [Rk.S, Rk.E, Rk.H]], turun: J.turun, badan: J.badan };
@@ -1679,7 +1707,7 @@
     const BD = P ? (P.warna || "#ece6d6") : BADAN, WC = P ? (P.bawah_warna || "#2f4a6a") : BADAN, bawahP = P ? (P.bawah || (P.jenis === "gamis" || P.jenis === "daster" ? "gamis" : "sarung")) : "";
     const GM = v(b.gemuk, t, d, 0), SH = 62 + 26 * GM, KB = b.kepala_besar || 1;
     const kaki = (dx, a, w = BADAN, tb = 44) => `<line x1="${dx}" y1="-200" x2="${dx + Math.sin((a * Math.PI) / 180) * 200}" y2="${-200 + Math.cos((a * Math.PI) / 180) * 200}" stroke="${w}" stroke-width="${tb}" stroke-linecap="round"/>`;
-    const RIG = b.pose != null || HD ? poseKini(b, HD ? ta : t, HD) : null;
+    const RIG = b.pose != null || HD || b.profil ? poseKini(b, HD ? ta : t, HD) : null; // tampak samping selalu bersendi (badan ikut menyamping)
     if (RIG && b._gabungan) { x += RIG.geser || 0; arah += (RIG.toleh || 0) * 4; tunduk += (RIG.angguk || 0) * 3; }
     // AKSI GALI: pose kerja adalah aksi berulang, bukan pose statis.
     // Fase diberi offset per NPC agar pekerja tidak mengayun serempak.
@@ -1718,7 +1746,7 @@
     g += lenganKiri;
     const kaitL = b._kaitDunia ? (() => { const cm = b.cermin || b.profil === "kiri" ? -1 : 1, L = (p) => [cm * (p[0] - x) / s, (p[1] - y) / s - tubuh], K = b._kaitDunia;
       return { pijak: K.pijak && K.pijak.map(L), pegang: K.pegang && K.pegang.map(L) }; })() : null;
-    let RG = null; if (RIG) { RG = rangka(RIG, { P, BD, WC, KLB, nafas, ayun, bawahP, t: HD ? ta : t, gm: GM, aksi: RIG && RIG._aksi || b.aksi, id: b.npc != null ? b.npc : b.id, offset: b._gerak_offset, profilMotor: (b.profil === "kanan" || b.profil === true || b.profil === "kiri") && RIG && RIG.turun >= 50,
+    let RG = null; if (RIG) { RG = rangka(RIG, { P, BD, WC, KLB, nafas, ayun, bawahP, t: HD ? ta : t, gm: GM, aksi: RIG && RIG._aksi || b.aksi, id: b.npc != null ? b.npc : b.id, offset: b._gerak_offset, profilMotor: (b.profil === "kanan" || b.profil === true || b.profil === "kiri") && !!RIG && !RIG.guling,
       kait: kaitL }); g = RG.g; }
     let lenganKanan = RIG ? "" : `<line x1="${SH}" y1="${-360 + nafas}" x2="${SH + 22 + ayun * 0.3}" y2="${-200 + nafas}" stroke="${BD}" stroke-width="36" stroke-linecap="round"/>` + tangan(SH + 22 + ayun * 0.3, -192 + nafas);
     // kepala
@@ -1896,7 +1924,7 @@
     if (H) { x += H.dx; y += H.dy; s *= H.sc; isi = `<g transform="scale(${1 - H.sq * 0.7} ${1 + H.sq})">${isi}</g>`; }
     const byg = (C.bayangan === false || b.bayangan === false || gaya === "siluet" || naik < 0.98 || potong > 0 || gen > 0 || (RG && RG.guling)) ? "" : `<ellipse cx="0" cy="6" rx="${b.bayangan > 0 ? b.bayangan : 92}" ry="15" fill="#000" opacity=".2"/>`; // standar visual butir 5: bayangan lembut di pijakan (matikan: bayangan:false di boneka atau cerita)
     if (window.__catatBoneka) { // hanya aktif saat alat uji tokoh menyiapkannya; tidak memengaruhi render biasa
-      const pm = (b.profil === "kanan" || b.profil === true || b.profil === "kiri") && !!RIG && RIG.turun >= 50;
+      const pm = (b.profil === "kanan" || b.profil === true || b.profil === "kiri") && !!RIG && !RIG.guling;
       window.__catatBoneka.push({ id: b.id, t, x, y, s, tubuh, arah, tunduk, profil: b.profil || null, belakang: !!belakang,
         badan_samping: pm, rig: !!RIG, aksi: RIG && RIG._aksi || b.aksi || null, sendi: RG ? RG.sendi : null, guling: RG ? RG.guling || 0 : 0,
         telinga: (k.match(/data-telinga="1"/g) || []).length, kepala: [hx, hy],
