@@ -68,3 +68,22 @@ pemeriksaan, bukan dilengkapi dengan tebakan.
 Perubahan tes pengurai kini juga memicu workflow kontrak JSON. Tidak ada render
 video pada tahap ini. Render baru dipertimbangkan setelah JSON hasil sutradara
 lulus audit kedalaman lintas cerita.
+
+
+## Perluasan berikutnya — resolusi sasaran benda (Tahap 16)
+
+Pengurai narasi kini menerima roster benda eksplisit dari naskah. Nama dan alias
+benda hanya dapat diresolusikan jika entitas memiliki ID pada roster. Jika
+narasi menyebut “Pengendara menaiki motor” dan roster memuat motor ber-ID,
+peristiwa mendapat `sasaran_benda_id`; ID tersebut diteruskan ke orkestrator,
+blocking, dan adapter visual benda yang sudah ada.
+
+Pengurai tidak membuat entitas dari kata benda bebas. Kata “motor” tanpa entitas
+motor pada roster tidak menghasilkan ID benda atau objek renderer. Dua entitas
+dengan nama/alias yang sama menghasilkan diagnostik ambiguitas, bukan memilih
+salah satu. Resolusi ini tidak menentukan posisi benda; posisi eksplisit atau
+relasi posisi yang valid tetap menjadi prasyarat adapter renderer.
+
+Tes integrasi menguji alur narasi biasa → ID sasaran benda → objek renderer,
+serta kasus tanpa roster dan nama benda ambigu. Status tahap ini menunggu
+keempat workflow CI pada head terbaru. Tidak ada render video.
