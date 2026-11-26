@@ -60,7 +60,7 @@ def test_sumbu_kamera_eksplisit_tidak_ditimpa_sumbu_lain_boleh_mengikuti():
 
     assert shot["kamera"]["x"] == 610
     assert isinstance(shot["kamera"]["y"], list)
-    assert shot["pengarahan"]["status_kamera"] == "kamera_x_mengikuti_panggung"
+    assert shot["pengarahan"]["status_kamera"] == "kamera_y_mengikuti_panggung"
 
 
 def test_kamera_tetap_jika_tidak_ada_lintasan_tokoh():
