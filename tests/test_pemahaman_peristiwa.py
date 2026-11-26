@@ -481,3 +481,27 @@ def test_tujuan_aksi_pada_kalimat_pasif_tetap_mempertahankan_pelaku():
     assert peristiwa["sasaran"] == "Pengendara"
     assert peristiwa["aksi"] == "menolong"
     assert peristiwa["tujuan"] == {"aksi": "berdiri"}
+
+
+
+def test_tujuan_aksi_dapat_menautkan_benda_roster_tanpa_menganggapnya_terjadi():
+    benda = [{
+        "id": "motor-01",
+        "nama": "motor",
+        "jenis_renderer": "motor",
+    }]
+    hasil = uraikan_peristiwa(
+        "Pengendara berjalan untuk menaiki motor.",
+        ["Pengendara"],
+        benda,
+    )
+
+    assert hasil["status"] == "siap"
+    assert len(hasil["peristiwa"]) == 1
+    peristiwa = hasil["peristiwa"][0]
+    assert peristiwa["aksi"] == "berjalan"
+    assert peristiwa["tujuan"] == {
+        "aksi": "menaiki",
+        "sasaran_benda_id": "motor-01",
+        "sasaran_benda": "motor",
+    }
