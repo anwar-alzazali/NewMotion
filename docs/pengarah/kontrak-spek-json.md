@@ -62,21 +62,24 @@ Satu keluaran dinilai lengkap hanya jika:
 - Tidak memicu render video referensi yang sudah pernah dijalankan. Tahap pembandingan
   awal berfokus pada JSON; render hanya dilakukan setelah kontrak JSON lulus.
 
-## Urutan PR bertumpuk
+## Urutan tahap bertumpuk dalam satu PR
 
-Semua cabang berikut diturunkan dari cabang sebelumnya. PR berikutnya menargetkan PR
-induknya sampai rangkaian selesai; jangan menggabungkan ke `main` secara terpisah.
+Seluruh tahap pekerjaan spek JSON berada dalam **satu PR dan satu branch utama**.
+Setiap tahap ditambahkan sebagai commit lanjutan di atas tahap sebelumnya; jangan
+membuat PR terpisah untuk Tahap 2, 3, atau 4.
 
-1. **01 — Kontrak spek JSON dan baseline kelengkapan** (PR pertama): kriteria lapisan,
+1. **Tahap 1 — Kontrak spek JSON dan baseline kelengkapan**: kriteria lapisan,
    audit struktur keluaran aktual, dan tes kontrak.
-2. **02 — Ketepatan relasi peristiwa**: aktor–aksi–sasaran–tujuan, bukti frasa,
+2. **Tahap 2 — Ketepatan relasi peristiwa**: aktor–aksi–sasaran–tujuan, bukti frasa,
    negasi, kalimat pasif/majemuk, dan diagnostik ambiguitas.
-3. **03 — Keadaan, blocking, dan kontinuitas**: transisi berbasis peristiwa, lintasan,
+3. **Tahap 3 — Keadaan, blocking, dan kontinuitas**: transisi berbasis peristiwa, lintasan,
    benda, serta kesinambungan antar-beat/shot.
-4. **04 — Uji referensi lintas cerita**: bandingkan JSON hasil pengarahan dengan contoh
+4. **Tahap 4 — Uji referensi lintas cerita**: bandingkan JSON hasil pengarahan dengan contoh
    Nuh, Ya'juj, dan Mahsyar; ukur kelengkapan tiap lapisan dan catat bagian yang belum
    didukung. Jangan mengubah sumber referensi.
+5. **Tahap lanjutan — Penyempurnaan**: lengkapi kesenjangan yang ditemukan, jalankan
+   pengujian JSON lintas cerita, lalu audit akhir sebelum uji render.
 
-Setiap PR harus menyertakan tes pada CI dan ringkasan audit yang membedakan hal yang
-terbukti, temuan `periksa`, dan pekerjaan yang belum dilakukan. Tidak ada PR yang
-digabung sebelum audit berurutan dari cabang paling bawah.
+Setiap tahap harus menyertakan tes CI dan ringkasan audit yang membedakan hal yang
+terbukti, temuan `periksa`, dan pekerjaan yang belum dilakukan. PR tetap draft dan
+tidak digabung ke `main` sebelum seluruh tahap serta audit berurutan selesai.
