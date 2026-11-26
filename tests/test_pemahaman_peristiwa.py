@@ -189,8 +189,9 @@ def test_sasaran_benda_dipetakan_hanya_dari_roster_eksplisit():
 def test_benda_yang_tidak_terdaftar_tidak_ditebak_dari_kata_narasi():
     hasil = uraikan_peristiwa("Pengendara menaiki motor.", ["Pengendara"])
 
-    assert hasil["status"] == "siap"
+    assert hasil["status"] == "sebagian"
     assert "sasaran_benda_id" not in hasil["peristiwa"][0]
+    assert hasil["diagnostik"][0]["kode"] == "sasaran_benda_belum_terpetakan"
 
 
 def test_sasaran_benda_ambigu_ditandai_tanpa_memilih_salah_satu():
