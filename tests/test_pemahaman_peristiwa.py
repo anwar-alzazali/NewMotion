@@ -400,3 +400,65 @@ def test_nama_entitas_keadaan_yang_bertabrakan_ditandai_ambigu():
     kode = {item["kode"] for item in spek["rencana_cerita"]["diagnostik"]}
     assert "entitas_perubahan_keadaan_ambigu" in kode
     assert "entitas_id" not in spek["rencana_cerita"]["adegan"][0]["peristiwa"][0]["perubahan_keadaan"]
+
+
+
+def test_tujuan_aksi_dipisahkan_dari_aksi_yang_benar_benar_terjadi():
+    hasil = uraikan_peristiwa(
+        "Penolong berjalan untuk menolong Pengendara.",
+        ["Penolong", "Pengendara"],
+    )
+
+    assert hasil["status"] == "siap"
+    assert len(hasil["peristiwa"]) == 1
+    peristiwa = hasil["peristiwa"][0]
+    assert peristiwa["aksi"] == "berjalan"
+    assert peristiwa["tujuan"] == {
+        "aksi": "menolong",
+        "sasaran": "Pengendara",
+    }
+    assert peristiwa["bukti_teks"] == "Penolong berjalan untuk menolong Pengendara"
+    assert "menolong" != peristiwa["aksi"]
+
+
+def test_tujuan_aksi_dapat_menautkan_benda_dari_roster_tanpa_mengubahnya_menjadi_aksi():
+    benda = [{
+        "id": "motor-01",
+        "nama": "motor",
+        "jenis_renderer": "motor",
+    }]
+    hasil = uraikan_peristiwa(
+        "Penolong berjalan untuk menjaga motor.",
+        ["Penolong"],
+        benda,
+    )
+    # "menjaga" belum termasuk kamus aksi; frasa ini tidak boleh ditebak sebagai tujuan.
+    assert hasil["peristiwa"][0]["aksi"] == "berjalan"
+    assert "tujuan" not in hasil["peristiwa"][0]
+
+
+def test_tujuan_aksi_diteruskan_ke_rencana_semantik_dan_blocking():
+    from newmotion.application.pengarah_inti import arahkan_naskah
+
+    naskah = {
+        "judul": "Penolong berjalan untuk menolong Pengendara",
+        "genre": "cerita_umum",
+        "konteks_konten": "umum",
+        "dalil": [],
+        "beat": [{
+            "id": "beat-tujuan",
+            "narasi": "Penolong berjalan untuk menolong Pengendara.",
+            "peran": ["Penolong", "Pengendara"],
+        }],
+    }
+    sumber = naskah_untuk_pengarah(naskah)
+    spek, _, _ = arahkan_naskah(sumber, genre_pilihan="cerita_umum")
+
+    peristiwa = spek["rencana_cerita"]["adegan"][0]["peristiwa"][0]
+    peristiwa_blocking = spek["rencana_blocking"]["peristiwa"][0]
+    assert peristiwa["aksi"] == "berjalan"
+    assert peristiwa["tujuan"] == {
+        "aksi": "menolong",
+        "sasaran": "Pengendara",
+    }
+    assert peristiwa_blocking["tujuan"] == peristiwa["tujuan"]
