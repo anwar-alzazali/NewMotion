@@ -85,9 +85,11 @@ jobs:
           assert pengendara.get("lepas_kendaraan_at") == 0.9, "Waktu lepas pengendara tidak benar"
           assert penolong.get("jalan") == 1.0, "Penolong tidak memakai kanal gerak jalan"
           assert penolong.get("sasaran_id") == 1, "Penolong tidak mengarah ke pengendara"
+          assert pengendara["y"][-1][1] - penolong["y"][-1][1] >= 80, "Penolong tidak berada pada bidang belakang korban"
           penolong_akhir = next(x for x in kedua["boneka"] if x.get("aktor_id") == "penolong")
           pengendara_akhir = next(x for x in kedua["boneka"] if x.get("aktor_id") == "pengendara")
           assert penolong_akhir["x"] == penolong["x"][-1][1], "Posisi penolong tidak kontinu"
+          assert penolong_akhir["y"] == penolong["y"][-1][1], "Kedalaman penolong tidak kontinu"
           assert pengendara_akhir["x"] == pengendara["x"][-1][1], "Posisi pengendara tidak kontinu"
           motor_awal = next(x for x in pertama["benda"] if x.get("jenis") == "motor")
           motor_lanjut = next(x for x in kedua["benda"] if x.get("jenis") == "motor")
