@@ -50,3 +50,27 @@ def test_loncatan_antar_frame_terdeteksi():
     b["sendi"]["lengan"][1][2] = [300, -195]
     temuan = U.periksa_loncatan([[a], [b]], {0: ("lompat", "depan")})
     assert temuan and temuan[0]["kode"] == "A5_LONCATAN"
+
+
+
+def test_lima_sudut_benar_dikenali_alat_ukur():
+    kasus = [
+        (_catat(sudut="samping", profil="samping", badan_samping=True, telinga=1), ("berdiri", "samping")),
+        (_catat(sudut="samping_kiri", profil="samping_kiri", badan_samping=True, telinga=1), ("berdiri", "samping_kiri")),
+        (_catat(sudut="tiga_perempat", badan_tiga_perempat=True, kepala_tiga_perempat=True, telinga=2), ("berdiri", "tiga_perempat")),
+        (_catat(sudut="belakang", belakang=True, badan_belakang=True, telinga=2), ("berdiri", "belakang")),
+    ]
+    for catatan, label in kasus:
+        assert U.periksa([catatan], {0: label}, ACUAN) == []
+
+
+def test_tiga_perempat_tidak_boleh_hanya_memutar_kepala():
+    c = _catat(kepala_tiga_perempat=True, badan_tiga_perempat=False)
+    kode = {x["kode"] for x in U.periksa([c], {0: ("berdiri", "tiga_perempat")}, ACUAN)}
+    assert "A3_ARAH_TIDAK_SEARAH" in kode
+
+
+def test_samping_kiri_tidak_boleh_dilabeli_profil_kanan():
+    c = _catat(profil="kanan", badan_samping=True, telinga=1)
+    kode = {x["kode"] for x in U.periksa([c], {0: ("berdiri", "samping_kiri")}, ACUAN)}
+    assert "A3_SUDUT_TIDAK_DIDUKUNG" in kode
