@@ -53,7 +53,6 @@ class PaketGenre:
     penjaga_dalil: Callable[..., Any] | None = None
     pengarah_naskah: Callable[..., Any] | None = None
     pengarah_tokoh_visual: Callable[..., Any] | None = None
-    pengarah_kamera: Callable[..., Any] | None = None
     penyesuaian_adegan: Callable[..., Any] | None = None
     skema_tambahan: Mapping[str, Any] = field(default_factory=dict)
     bawaan: Mapping[str, Any] = field(default_factory=dict)
@@ -61,6 +60,8 @@ class PaketGenre:
     panduan_gaya: str | None = None
     resep: str | None = None
     modul_legacy: Mapping[str, str] = field(default_factory=dict)
+    # Kait kamera ditambahkan di akhir agar urutan argumen posisi lama tetap kompatibel.
+    pengarah_kamera: Callable[..., Any] | None = None
 
     def __post_init__(self) -> None:
         if not isinstance(self.nama, str) or not _POLA_NAMA.fullmatch(self.nama):
