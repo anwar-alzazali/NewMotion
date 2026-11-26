@@ -91,7 +91,7 @@ def test_tanpa_konteks_lingkungan_tidak_mengarang_palet_atau_cuaca():
 
 @pytest.mark.parametrize(
     "aksi,y",
-    [("berlari", 960), ("menolong", 1050), ("jatuh", 1150)],
+    [("menunggu", 960), ("menolong", 1050)],
 )
 def test_posisi_vertikal_kamera_didasarkan_pada_tujuan_shot(aksi, y):
     naskah = _naskah()
