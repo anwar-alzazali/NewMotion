@@ -7,7 +7,8 @@ from __future__ import annotations
 
 from collections.abc import Mapping
 
-AKSI_JALAN = {"jalan", "berjalan", "berjalan_menolong", "mendekati", "menolong"}
+AKSI_JALAN = {"jalan", "berjalan", "berjalan_menolong", "mendekati"}
+AKSI_INTERAKSI = {"menolong"}
 AKSI_LARI = {"lari", "berlari"}
 AKSI_MOTOR = {"naik_motor", "mengendarai_motor", "mengendarai"}
 AKSI_DIAM = {"tergelincir", "jatuh", "berhenti", "menunggu", "duduk"}
@@ -29,6 +30,9 @@ def arahkan_tokoh_visual(rencana_cerita, rencana_blocking, cerita):
     }
     shot_plan = []
     diagnostik = []
+    # Keadaan terakhir per ID tokoh dibawa antar-shot; identitas stabil menjadi kuncinya.
+    posisi_terakhir = {}
+    pose_terakhir = {}
     for tautan in (rencana_blocking or {}).get("shot", []):
         indeks = tautan.get("indeks")
         if type(indeks) is not int or indeks >= len(cerita.get("shot", [])):
@@ -55,21 +59,22 @@ def arahkan_tokoh_visual(rencana_cerita, rencana_blocking, cerita):
                 continue
             sudah.add(aktor_id)
             nomor = list(tokoh_valid).index(aktor_id)
-            x_tetap = _posisi_awal(nomor)
+            x_tetap, y_tetap = posisi_terakhir.get(aktor_id, (_posisi_awal(nomor), 1510))
             if aksi == "tergelincir" and sasaran_objek in {"motor", "sepeda_motor"}:
                 posisi_motor = x_tetap
-            butir = {"tokoh_id": aktor_id, "x": x_tetap, "y": 1510}
+            butir = {"tokoh_id": aktor_id, "x": x_tetap, "y": y_tetap}
             if aksi in AKSI_JALAN or aksi in AKSI_LARI:
                 sasaran_id = event.get("sasaran_tokoh_id")
                 x_tujuan = _posisi_awal(list(tokoh_valid).index(sasaran_id)) if sasaran_id in tokoh_valid else 540
-                x_mulai = 900 if x_tujuan < x_tetap else 150
+                x_mulai = x_tetap if aktor_id in posisi_terakhir else (900 if x_tujuan < x_tetap else 150)
                 butir.update({
                     "aksi": "lari" if aksi in AKSI_LARI else "jalan",
                     "x": [[0, x_mulai], [2.5, x_tujuan]],
+                    "y": [[0, y_tetap], [2.5, y_tetap]],
                     "sasaran_tokoh_id": sasaran_id,
                     "pose": (
                         [[0, "jalan"], [2.2, "menolong"]]
-                        if aksi in {"berjalan_menolong", "menolong"}
+                        if aksi == "berjalan_menolong"
                         else [[0, "jalan" if aksi in AKSI_JALAN else "lari"], [2.2, "berdiri"]]
                     ),
                 })
@@ -81,8 +86,14 @@ def arahkan_tokoh_visual(rencana_cerita, rencana_blocking, cerita):
                 motor_dibutuhkan = True
                 posisi_motor = 500
                 butir.update({"x": 500, "y": 1510, "kendaraan_id": f"motor-{tautan.get('beat_id')}"})
+            elif aksi in AKSI_INTERAKSI:
+                # Menolong adalah interaksi di lokasi yang sudah dicapai, bukan berjalan ulang.
+                butir["aksi"] = aksi
+                butir["pose"] = [[0, "menolong"]]
             elif aksi in AKSI_DIAM:
                 butir["aksi"] = aksi
+                if aktor_id in pose_terakhir and aksi in {"menunggu", "berhenti", "duduk"}:
+                    butir["pose"] = [[0, pose_terakhir[aktor_id]]]
                 if aksi == "tergelincir" and sasaran_objek in {"motor", "sepeda_motor"}:
                     butir.update({
                         "kendaraan_id": f"motor-{tautan.get('beat_id')}",
@@ -98,6 +109,18 @@ def arahkan_tokoh_visual(rencana_cerita, rencana_blocking, cerita):
                 arahan_tokoh.insert(0, butir)
             else:
                 arahan_tokoh.append(butir)
+            # Simpan posisi akhir lintasan untuk shot berikutnya.
+            def _akhir(nilai):
+                if isinstance(nilai, list) and nilai:
+                    titik = nilai[-1]
+                    return titik[1] if isinstance(titik, (list, tuple)) and len(titik) >= 2 else titik
+                return nilai
+            posisi_terakhir[aktor_id] = (_akhir(butir.get("x", x_tetap)), _akhir(butir.get("y", y_tetap)))
+            jadwal_pose = butir.get("pose")
+            if isinstance(jadwal_pose, list) and jadwal_pose:
+                pose_terakhir[aktor_id] = jadwal_pose[-1][1] if isinstance(jadwal_pose[-1], (list, tuple)) else jadwal_pose[-1]
+            elif aksi == "tergelincir":
+                pose_terakhir[aktor_id] = "tergelincir"
         if arahan_tokoh:
             butir_shot = {"indeks": indeks, "tokoh": arahan_tokoh}
             if motor_dibutuhkan:
