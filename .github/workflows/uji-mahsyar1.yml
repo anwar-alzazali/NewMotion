@@ -1,19 +1,8 @@
 name: Uji render naskah Mahsyar 1
 
 on:
-  push:
-    branches:
-      - feature/pemisahan-genre-dari-inti
-    paths:
-      - 'mesin-video/papan_buat.py'
-      - 'mesin-video/papan/cerita.js'
-      - 'mesin-video/papan/papan.js'
-      - 'mesin-video/papan/papan.css'
-      - 'mesin-video/papan/karakter/**'
-      - 'mesin-video/papan/font/**'
-  # Render visual Mahsyar hanya dijalankan manual atau pada cabang khusus
-  # yang memang ditetapkan untuk pembaruan hasil render. PR kode tidak memicu
-  # render ulang video yang sudah ada.
+  # Render visual hanya manual. Naskah, audio, dan aset Mahsyar 1 kini tersimpan di repo ini
+  # (disalin dari mesin-video 26 Nov 2026), jadi tidak lagi bergantung pada repo mesin-video.
   workflow_dispatch:
 
 permissions:
@@ -21,21 +10,11 @@ permissions:
 
 jobs:
   render-mahsyar1:
-    # PR pemisahan paket/pengarah tidak mengubah visual; hindari render ulang Mahsyar 1 yang sudah disetujui.
-    if: github.event_name != 'pull_request' || github.head_ref != 'feature/pemisahan-pengarah-kisah-islami'
     runs-on: ubuntu-latest
     timeout-minutes: 45
     steps:
       - name: Ambil NewMotion
         uses: actions/checkout@v4
-
-      - name: Ambil sumber naskah, audio, dan aset asli mesin-video
-        uses: actions/checkout@v4
-        with:
-          repository: anwar-alzazali/mesin-video
-          ref: main
-          path: sumber-mesin-video
-          token: ${{ secrets.MESIN_VIDEO_READ_TOKEN }}
 
       - name: Siapkan runtime render
         run: |
@@ -45,15 +24,9 @@ jobs:
           python -m pip install -e '.[render]'
           python -m playwright install --with-deps chromium
 
-      - name: Pasang naskah dan aset referensi Mahsyar 1
+      - name: Periksa naskah dan aset referensi Mahsyar 1
         run: |
-          test -s sumber-mesin-video/naskah/mahsyar1.txt
-          test -s sumber-mesin-video/papan/kisah/mahsyar1.json
-          mkdir -p mesin-video/papan/kisah mesin-video/audio_manual/mahsyar1_ozhy mesin-video/aset
-          cp sumber-mesin-video/papan/kisah/mahsyar1.json mesin-video/papan/kisah/mahsyar1.json
-          cp sumber-mesin-video/audio_manual/mahsyar1_ozhy/narasi.mp3 mesin-video/audio_manual/mahsyar1_ozhy/
-          cp sumber-mesin-video/audio_manual/mahsyar1_ozhy/narasi.waktu.json mesin-video/audio_manual/mahsyar1_ozhy/
-          cp -a sumber-mesin-video/aset/suara mesin-video/aset/
+          test -s mesin-video/naskah/mahsyar1.txt
           python - <<'PY'
           import json
           from pathlib import Path
@@ -62,7 +35,7 @@ jobs:
           assert spec.get("cerita", {}).get("shot"), "Shot Mahsyar 1 kosong"
           assert (Path("mesin-video/audio_manual/mahsyar1_ozhy/narasi.mp3")).stat().st_size > 0
           print(f"Input siap: {len(spec['cerita']['shot'])} shot")
-          print(f"Naskah: {Path('sumber-mesin-video/naskah/mahsyar1.txt').read_text(encoding='utf-8').splitlines()[0]}")
+          print(f"Naskah: {Path('mesin-video/naskah/mahsyar1.txt').read_text(encoding='utf-8').splitlines()[0]}")
           PY
 
       - name: Render naskah Mahsyar 1 dengan renderer NewMotion

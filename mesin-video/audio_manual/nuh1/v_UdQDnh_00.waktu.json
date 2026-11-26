@@ -1,0 +1,829 @@
+{
+ "model": "eleven_v4",
+ "suara": "UdQDnhmw5mrED2XYPXhu",
+ "huruf": 848,
+ "kata": [
+  {
+   "teks": "Saat",
+   "t0": 0.0,
+   "t1": 0.32
+  },
+  {
+   "teks": "banjir",
+   "t0": 0.4,
+   "t1": 0.64
+  },
+  {
+   "teks": "besar",
+   "t0": 0.72,
+   "t1": 0.96
+  },
+  {
+   "teks": "Nabi",
+   "t0": 1.0,
+   "t1": 1.2
+  },
+  {
+   "teks": "Nuh,",
+   "t0": 1.28,
+   "t1": 1.84
+  },
+  {
+   "teks": "kamu",
+   "t0": 1.88,
+   "t1": 2.16
+  },
+  {
+   "teks": "ada",
+   "t0": 2.24,
+   "t1": 2.4
+  },
+  {
+   "teks": "di",
+   "t0": 2.44,
+   "t1": 2.48
+  },
+  {
+   "teks": "kapal",
+   "t0": 2.6,
+   "t1": 2.8
+  },
+  {
+   "teks": "itu.",
+   "t0": 2.88,
+   "t1": 3.4
+  },
+  {
+   "teks": "Itu",
+   "t0": 3.6,
+   "t1": 3.88
+  },
+  {
+   "teks": "kata",
+   "t0": 3.92,
+   "t1": 4.16
+  },
+  {
+   "teks": "Al-Qur'an.",
+   "t0": 4.2,
+   "t1": 4.72
+  },
+  {
+   "teks": "Maksudnya,",
+   "t0": 5.12,
+   "t1": 5.88
+  },
+  {
+   "teks": "nenek",
+   "t0": 6.0,
+   "t1": 6.24
+  },
+  {
+   "teks": "moyangmu.",
+   "t0": 6.28,
+   "t1": 6.88
+  },
+  {
+   "teks": "Dan",
+   "t0": 7.36,
+   "t1": 7.44
+  },
+  {
+   "teks": "penumpangnya,",
+   "t0": 7.52,
+   "t1": 8.4
+  },
+  {
+   "teks": "hanya",
+   "t0": 8.56,
+   "t1": 8.88
+  },
+  {
+   "teks": "segelintir",
+   "t0": 8.96,
+   "t1": 9.36
+  },
+  {
+   "teks": "orang.",
+   "t0": 9.44,
+   "t1": 10.04
+  },
+  {
+   "teks": "Sembilan",
+   "t0": 10.32,
+   "t1": 10.64
+  },
+  {
+   "teks": "ratus",
+   "t0": 10.8,
+   "t1": 11.04
+  },
+  {
+   "teks": "lima",
+   "t0": 11.2,
+   "t1": 11.32
+  },
+  {
+   "teks": "puluh",
+   "t0": 11.36,
+   "t1": 11.6
+  },
+  {
+   "teks": "tahun,",
+   "t0": 11.68,
+   "t1": 12.4
+  },
+  {
+   "teks": "Nabi",
+   "t0": 12.44,
+   "t1": 12.64
+  },
+  {
+   "teks": "Nuh",
+   "t0": 12.72,
+   "t1": 12.96
+  },
+  {
+   "teks": "tinggal",
+   "t0": 13.04,
+   "t1": 13.44
+  },
+  {
+   "teks": "di",
+   "t0": 13.48,
+   "t1": 13.52
+  },
+  {
+   "teks": "tengah",
+   "t0": 13.6,
+   "t1": 13.76
+  },
+  {
+   "teks": "kaumnya,",
+   "t0": 13.84,
+   "t1": 14.56
+  },
+  {
+   "teks": "mengajak",
+   "t0": 14.6,
+   "t1": 15.12
+  },
+  {
+   "teks": "mereka.",
+   "t0": 15.24,
+   "t1": 15.6
+  },
+  {
+   "teks": "Yang",
+   "t0": 16.08,
+   "t1": 16.16
+  },
+  {
+   "teks": "beriman,",
+   "t0": 16.24,
+   "t1": 16.8
+  },
+  {
+   "teks": "hanya",
+   "t0": 17.04,
+   "t1": 17.2
+  },
+  {
+   "teks": "sedikit.",
+   "t0": 17.28,
+   "t1": 17.84
+  },
+  {
+   "teks": "Beliau",
+   "t0": 18.4,
+   "t1": 18.8
+  },
+  {
+   "teks": "membuat",
+   "t0": 18.853,
+   "t1": 19.12
+  },
+  {
+   "teks": "kapal.",
+   "t0": 19.2,
+   "t1": 19.68
+  },
+  {
+   "teks": "Setiap",
+   "t0": 20.08,
+   "t1": 20.48
+  },
+  {
+   "teks": "pemuka",
+   "t0": 20.52,
+   "t1": 20.88
+  },
+  {
+   "teks": "kaumnya",
+   "t0": 20.96,
+   "t1": 21.28
+  },
+  {
+   "teks": "lewat,",
+   "t0": 21.36,
+   "t1": 21.92
+  },
+  {
+   "teks": "mereka",
+   "t0": 22.04,
+   "t1": 22.24
+  },
+  {
+   "teks": "mengejek.",
+   "t0": 22.32,
+   "t1": 22.88
+  },
+  {
+   "teks": "Lalu",
+   "t0": 23.36,
+   "t1": 23.68
+  },
+  {
+   "teks": "pintu-pintu",
+   "t0": 23.76,
+   "t1": 24.24
+  },
+  {
+   "teks": "langit",
+   "t0": 24.32,
+   "t1": 24.64
+  },
+  {
+   "teks": "dibuka,",
+   "t0": 24.68,
+   "t1": 25.44
+  },
+  {
+   "teks": "dengan",
+   "t0": 25.48,
+   "t1": 25.76
+  },
+  {
+   "teks": "air",
+   "t0": 25.92,
+   "t1": 26.16
+  },
+  {
+   "teks": "yang",
+   "t0": 26.24,
+   "t1": 26.32
+  },
+  {
+   "teks": "tercurah.",
+   "t0": 26.44,
+   "t1": 26.96
+  },
+  {
+   "teks": "Dan",
+   "t0": 27.36,
+   "t1": 27.52
+  },
+  {
+   "teks": "bumi",
+   "t0": 27.6,
+   "t1": 27.92
+  },
+  {
+   "teks": "memancarkan",
+   "t0": 28.0,
+   "t1": 28.64
+  },
+  {
+   "teks": "mata",
+   "t0": 28.68,
+   "t1": 28.88
+  },
+  {
+   "teks": "air.",
+   "t0": 28.96,
+   "t1": 29.52
+  },
+  {
+   "teks": "Sepasang",
+   "t0": 29.76,
+   "t1": 30.32
+  },
+  {
+   "teks": "dari",
+   "t0": 30.373,
+   "t1": 30.48
+  },
+  {
+   "teks": "tiap",
+   "t0": 30.56,
+   "t1": 30.72
+  },
+  {
+   "teks": "jenis",
+   "t0": 30.8,
+   "t1": 30.96
+  },
+  {
+   "teks": "hewan",
+   "t0": 31.04,
+   "t1": 31.36
+  },
+  {
+   "teks": "naik,",
+   "t0": 31.44,
+   "t1": 31.92
+  },
+  {
+   "teks": "bersama",
+   "t0": 32.04,
+   "t1": 32.32
+  },
+  {
+   "teks": "mereka",
+   "t0": 32.4,
+   "t1": 32.72
+  },
+  {
+   "teks": "yang",
+   "t0": 32.8,
+   "t1": 32.88
+  },
+  {
+   "teks": "beriman.",
+   "t0": 32.96,
+   "t1": 33.52
+  },
+  {
+   "teks": "Kapal",
+   "t0": 33.92,
+   "t1": 34.16
+  },
+  {
+   "teks": "itu",
+   "t0": 34.24,
+   "t1": 34.4
+  },
+  {
+   "teks": "berlayar,",
+   "t0": 34.48,
+   "t1": 35.2
+  },
+  {
+   "teks": "di",
+   "t0": 35.24,
+   "t1": 35.28
+  },
+  {
+   "teks": "tengah",
+   "t0": 35.36,
+   "t1": 35.6
+  },
+  {
+   "teks": "ombak",
+   "t0": 35.68,
+   "t1": 36.08
+  },
+  {
+   "teks": "laksana",
+   "t0": 36.12,
+   "t1": 36.48
+  },
+  {
+   "teks": "gunung.",
+   "t0": 36.56,
+   "t1": 36.96
+  },
+  {
+   "teks": "Dan",
+   "t0": 37.44,
+   "t1": 37.52
+  },
+  {
+   "teks": "yang",
+   "t0": 37.6,
+   "t1": 37.76
+  },
+  {
+   "teks": "paling",
+   "t0": 37.92,
+   "t1": 38.24
+  },
+  {
+   "teks": "menyesakkan…",
+   "t0": 38.32,
+   "t1": 39.44
+  },
+  {
+   "teks": "anak",
+   "t0": 39.52,
+   "t1": 39.68
+  },
+  {
+   "teks": "beliau",
+   "t0": 39.76,
+   "t1": 40.0
+  },
+  {
+   "teks": "sendiri,",
+   "t0": 40.08,
+   "t1": 40.72
+  },
+  {
+   "teks": "menolak",
+   "t0": 40.8,
+   "t1": 41.12
+  },
+  {
+   "teks": "naik.",
+   "t0": 41.2,
+   "t1": 41.52
+  },
+  {
+   "teks": "Katanya:",
+   "t0": 41.92,
+   "t1": 42.4
+  },
+  {
+   "teks": "aku",
+   "t0": 42.8,
+   "t1": 43.04
+  },
+  {
+   "teks": "akan",
+   "t0": 43.12,
+   "t1": 43.28
+  },
+  {
+   "teks": "berlindung",
+   "t0": 43.36,
+   "t1": 43.76
+  },
+  {
+   "teks": "ke",
+   "t0": 43.84,
+   "t1": 43.92
+  },
+  {
+   "teks": "gunung.",
+   "t0": 44.04,
+   "t1": 44.32
+  },
+  {
+   "teks": "Ombak",
+   "t0": 44.8,
+   "t1": 45.2
+  },
+  {
+   "teks": "memisahkan",
+   "t0": 45.28,
+   "t1": 45.92
+  },
+  {
+   "teks": "keduanya.",
+   "t0": 46.0,
+   "t1": 46.56
+  },
+  {
+   "teks": "Hari",
+   "t0": 47.04,
+   "t1": 47.28
+  },
+  {
+   "teks": "itu,",
+   "t0": 47.44,
+   "t1": 47.68
+  },
+  {
+   "teks": "yang",
+   "t0": 47.92,
+   "t1": 48.0
+  },
+  {
+   "teks": "menyelamatkan",
+   "t0": 48.08,
+   "t1": 48.8
+  },
+  {
+   "teks": "bukan",
+   "t0": 48.88,
+   "t1": 49.2
+  },
+  {
+   "teks": "keturunan.",
+   "t0": 49.28,
+   "t1": 49.92
+  },
+  {
+   "teks": "Tapi",
+   "t0": 50.24,
+   "t1": 50.48
+  },
+  {
+   "teks": "mau",
+   "t0": 50.56,
+   "t1": 50.72
+  },
+  {
+   "teks": "naik,",
+   "t0": 50.8,
+   "t1": 51.2
+  },
+  {
+   "teks": "atau",
+   "t0": 51.36,
+   "t1": 51.56
+  },
+  {
+   "teks": "tidak.",
+   "t0": 51.6,
+   "t1": 52.0
+  },
+  {
+   "teks": "Kirim",
+   "t0": 52.4,
+   "t1": 52.72
+  },
+  {
+   "teks": "ke",
+   "t0": 52.8,
+   "t1": 52.88
+  },
+  {
+   "teks": "orang",
+   "t0": 53.0,
+   "t1": 53.12
+  },
+  {
+   "teks": "yang",
+   "t0": 53.2,
+   "t1": 53.28
+  },
+  {
+   "teks": "sedang",
+   "t0": 53.36,
+   "t1": 53.6
+  },
+  {
+   "teks": "merasa",
+   "t0": 53.68,
+   "t1": 53.92
+  },
+  {
+   "teks": "sendirian,",
+   "t0": 54.0,
+   "t1": 54.72
+  },
+  {
+   "teks": "di",
+   "t0": 54.76,
+   "t1": 54.8
+  },
+  {
+   "teks": "jalan",
+   "t0": 54.96,
+   "t1": 55.2
+  },
+  {
+   "teks": "yang",
+   "t0": 55.28,
+   "t1": 55.36
+  },
+  {
+   "teks": "benar.",
+   "t0": 55.44,
+   "t1": 55.96
+  },
+  {
+   "teks": "Kalau",
+   "t0": 56.16,
+   "t1": 56.32
+  },
+  {
+   "teks": "kamu",
+   "t0": 56.4,
+   "t1": 56.56
+  },
+  {
+   "teks": "hidup",
+   "t0": 56.64,
+   "t1": 56.88
+  },
+  {
+   "teks": "saat",
+   "t0": 56.96,
+   "t1": 57.2
+  },
+  {
+   "teks": "itu,",
+   "t0": 57.36,
+   "t1": 57.84
+  },
+  {
+   "teks": "yakin",
+   "t0": 57.88,
+   "t1": 58.32
+  },
+  {
+   "teks": "kamu",
+   "t0": 58.48,
+   "t1": 58.64
+  },
+  {
+   "teks": "ikut",
+   "t0": 58.72,
+   "t1": 58.88
+  },
+  {
+   "teks": "naik?",
+   "t0": 58.96,
+   "t1": 59.44
+  }
+ ],
+ "subtitle": [
+  [
+   0.0,
+   1.84,
+   "Saat banjir besar Nabi Nuh,"
+  ],
+  [
+   1.88,
+   3.4,
+   "kamu ada di kapal itu."
+  ],
+  [
+   3.6,
+   4.72,
+   "Itu kata Al-Qur'an."
+  ],
+  [
+   5.12,
+   5.88,
+   "Maksudnya,"
+  ],
+  [
+   6.0,
+   6.88,
+   "nenek moyangmu."
+  ],
+  [
+   7.36,
+   8.4,
+   "Dan penumpangnya,"
+  ],
+  [
+   8.56,
+   10.04,
+   "hanya segelintir orang."
+  ],
+  [
+   10.32,
+   12.4,
+   "Sembilan ratus lima puluh tahun,"
+  ],
+  [
+   12.44,
+   14.56,
+   "Nabi Nuh tinggal di tengah kaumnya,"
+  ],
+  [
+   14.6,
+   15.6,
+   "mengajak mereka."
+  ],
+  [
+   16.08,
+   16.8,
+   "Yang beriman,"
+  ],
+  [
+   17.04,
+   17.84,
+   "hanya sedikit."
+  ],
+  [
+   18.4,
+   19.68,
+   "Beliau membuat kapal."
+  ],
+  [
+   20.08,
+   21.92,
+   "Setiap pemuka kaumnya lewat,"
+  ],
+  [
+   22.04,
+   22.88,
+   "mereka mengejek."
+  ],
+  [
+   23.36,
+   25.44,
+   "Lalu pintu-pintu langit dibuka,"
+  ],
+  [
+   25.48,
+   26.96,
+   "dengan air yang tercurah."
+  ],
+  [
+   27.36,
+   29.52,
+   "Dan bumi memancarkan mata air."
+  ],
+  [
+   29.76,
+   31.92,
+   "Sepasang dari tiap jenis hewan naik,"
+  ],
+  [
+   32.04,
+   33.52,
+   "bersama mereka yang beriman."
+  ],
+  [
+   33.92,
+   35.2,
+   "Kapal itu berlayar,"
+  ],
+  [
+   35.24,
+   36.96,
+   "di tengah ombak laksana gunung."
+  ],
+  [
+   37.44,
+   40.0,
+   "Dan yang paling menyesakkan… anak beliau"
+  ],
+  [
+   40.08,
+   40.72,
+   "sendiri,"
+  ],
+  [
+   40.8,
+   41.52,
+   "menolak naik."
+  ],
+  [
+   41.92,
+   42.4,
+   "Katanya:"
+  ],
+  [
+   42.8,
+   44.32,
+   "aku akan berlindung ke gunung."
+  ],
+  [
+   44.8,
+   46.56,
+   "Ombak memisahkan keduanya."
+  ],
+  [
+   47.04,
+   47.68,
+   "Hari itu,"
+  ],
+  [
+   47.92,
+   49.92,
+   "yang menyelamatkan bukan keturunan."
+  ],
+  [
+   50.24,
+   51.2,
+   "Tapi mau naik,"
+  ],
+  [
+   51.36,
+   52.0,
+   "atau tidak."
+  ],
+  [
+   52.4,
+   53.92,
+   "Kirim ke orang yang sedang merasa"
+  ],
+  [
+   54.0,
+   54.72,
+   "sendirian,"
+  ],
+  [
+   54.76,
+   55.96,
+   "di jalan yang benar."
+  ],
+  [
+   56.16,
+   57.84,
+   "Kalau kamu hidup saat itu,"
+  ],
+  [
+   57.88,
+   59.44,
+   "yakin kamu ikut naik?"
+  ]
+ ]
+}
