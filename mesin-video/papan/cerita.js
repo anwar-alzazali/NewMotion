@@ -1247,7 +1247,7 @@
     // Pengendara duduk stabil, lutut menekuk dan kedua tangan menjangkau setang.
     mengendarai_motor: { turun: 70, pp: 0.3, lk: [18, 34], rk: [18, 34], la: [88, 88], ra: [88, 88], badan: -3 },
     // Penolong merendahkan pusat tubuh dan menjulurkan kedua lengan ke arah korban.
-    menolong: { turun: 28, badan: 16, kepala: 9, la: [118, 150], ra: [118, 150], depan: 1 },
+    menolong: { turun: 70, badan: 22, kepala: 8, la: [15, 20], ra: [88, 35], depan: 1 },
     peluk_lutut: { turun: 70, pp: 0.3, lk: [8, 2], rk: [8, 2], la: [-4, -22], ra: [-4, -22], badan: 0 },
     tutup_wajah: { la: [136, -118], ra: [136, -118], depan: 1 },
     duduk_tutup_wajah: { turun: 70, pp: 0.3, lk: [12, 3], rk: [12, 3], la: [136, -118], ra: [136, -118], depan: 1 },
