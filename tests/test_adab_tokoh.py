@@ -219,3 +219,19 @@ def test_penjaga_adab_mendeteksi_penggali_dalam_narasi_sahabat():
     }
     kode = {item.kode for item in periksa_adab_tokoh(papan)}
     assert "BENDA_MANUSIA_TOKOH_SAKRAL" in kode
+
+
+
+def test_penjaga_adab_tidak_menolak_pemimpin_yajuj_hanya_karena_allah_disebut():
+    papan = {
+        "genre": "kisah_islami",
+        "cerita": {
+            "shot": [{
+                "_narasi": "Allah menetapkan waktunya. Hari itu pemimpin mereka berkata: pulanglah.",
+                "benda": [{"jenis": "pemimpin"}],
+            }]
+        },
+    }
+    assert "BENDA_MANUSIA_TOKOH_SAKRAL" not in {
+        item.kode for item in periksa_adab_tokoh(papan)
+    }
