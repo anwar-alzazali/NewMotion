@@ -53,6 +53,12 @@ _PEMISAH_URUT = re.compile(r"\s+(?:lalu|kemudian|setelah\s+itu|sesudah\s+itu)\s+
 _PEMISAH_SIMULTAN = re.compile(r"\s+(?:dan|sementara)\s+", re.I)
 
 _AKSI_BUTUH_BENDA = {"menaiki", "mengendarai_motor"}
+_KEADAAN_AKSI = {
+    "jatuh": "terjatuh",
+    "terjatuh": "terjatuh",
+    "duduk": "duduk",
+    "berdiri": "berdiri",
+}
 
 
 def _normalisasi(teks: str) -> str:
@@ -157,6 +163,14 @@ def _peristiwa_klausa(
     if kandidat_benda:
         hasil["sasaran_benda_id"] = kandidat_benda[0][2]
         hasil["sasaran_benda"] = kandidat_benda[0][3]
+    keadaan_akhir = _KEADAAN_AKSI.get(bentuk)
+    if keadaan_akhir is not None:
+        # Hanya keadaan akhir yang didukung langsung oleh verba; keadaan awal
+        # tidak dibuat jika naskah tidak menyatakannya.
+        hasil["perubahan_keadaan"] = {
+            "entitas": aktor,
+            "menjadi": keadaan_akhir,
+        }
     return hasil, None
 
 
