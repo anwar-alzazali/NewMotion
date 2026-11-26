@@ -125,9 +125,12 @@ def terapkan_rencana_visual_tokoh(spec):
                     pengarahan_asal["peristiwa_ids"] = list(item.get("peristiwa_ids", []))
                     pengarahan_asal["status_segmentasi"] = "shot_renderer_dibentuk_dari_tahap_semantik"
             if len(rencana_tahap) > 1:
+                durasi_asal = float(shot_asal.get("durasi", 3.0) or 3.0)
+                durasi_tahap = round(durasi_asal / len(rencana_tahap), 2)
                 shot_turunan["at"] = round(
-                    float(shot_asal.get("at", 0) or 0) + (nomor_tahap - 1) * 0.1, 2
+                    float(shot_asal.get("at", 0) or 0) + (nomor_tahap - 1) * durasi_tahap, 2
                 )
+                shot_turunan["durasi"] = durasi_tahap
             indeks_baru = len(shot_renderer_baru)
             shot_renderer_baru.append(shot_turunan)
             item_baru = deepcopy(dict(item))
