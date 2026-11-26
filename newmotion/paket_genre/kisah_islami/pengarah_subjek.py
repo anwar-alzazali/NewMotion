@@ -22,7 +22,7 @@ POLA_SUBJEK = (
     (re.compile(r"\b(lubang|terowongan)\b", re.I), "ngarai"),
     (re.compile(r"\b(ombak|gelombang)\b", re.I), "ombak"),
     (re.compile(r"\b(arus|aliran air|air)\b", re.I), "arus"),
-    (re.compile(r"\b(kaum\w*|orang-orang|umat|kerumunan)\b", re.I), "kerumunan"),
+    (re.compile(r"\b(kaum\w*|orang-orang|manusia|golongan|umat|kerumunan)\b", re.I), "kerumunan"),
     (re.compile(r"\b(gunung|bukit)\b", re.I), "gunung"),
     (re.compile(r"\b(hewan|binatang|ternak)\b", re.I), "hewan"),
     (re.compile(r"\b(unta)\b", re.I), "unta"),
