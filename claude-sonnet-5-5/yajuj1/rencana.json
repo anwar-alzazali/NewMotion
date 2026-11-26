@@ -1,0 +1,375 @@
+{
+ "objek_inti": {
+  "jenis": "ngarai",
+  "perkembangan": "Dinding utuh, digali hampir tembus, kembali utuh setiap pagi, berulang. Pada hari insya Allah diucapkan, dinding tetap berlubang lalu jebol."
+ },
+ "beat": [
+  {
+   "beat": 1,
+   "bukti": "Ada satu dinding yang digali setiap hari.",
+   "subjek": [
+    {
+     "jenis": "ngarai",
+     "tempat": "tengah",
+     "keadaan": {
+      "lubang": [
+       0.2,
+       0.45
+      ],
+      "jebol": 0
+     }
+    },
+    {
+     "jenis": "penggali",
+     "tempat": "di_lubang:ngarai",
+     "keadaan": {
+      "aktif": 1,
+      "n": 3
+     }
+    }
+   ],
+   "kamu": "tidak",
+   "kamera": {
+    "bidikan": "lebar",
+    "aksen": null
+   },
+   "teks_layar": "SATU KATA",
+   "klimaks": false
+  },
+  {
+   "beat": 2,
+   "bukti": "Di baliknya: Ya'juj dan Ma'juj. Dinding besi itu dibangun Zulkarnain untuk mengurung mereka.",
+   "subjek": [
+    {
+     "jenis": "ngarai",
+     "tempat": "tengah",
+     "keadaan": {
+      "lubang": 0.1,
+      "jebol": 0
+     }
+    },
+    {
+     "jenis": "bayang_misteri",
+     "tempat": "kiri",
+     "keadaan": {
+      "besar": 0.8,
+      "nafas": 0.3
+     }
+    }
+   ],
+   "kamu": "tidak",
+   "kamera": {
+    "bidikan": "lebar",
+    "aksen": null
+   },
+   "teks_layar": "DINDING BESI",
+   "klimaks": false
+  },
+  {
+   "beat": 3,
+   "bukti": "Setiap hari mereka menggali, sampai hampir tembus.",
+   "subjek": [
+    {
+     "jenis": "ngarai",
+     "tempat": "tengah",
+     "keadaan": {
+      "lubang": [
+       0.3,
+       0.95
+      ],
+      "jebol": 0
+     }
+    },
+    {
+     "jenis": "penggali",
+     "tempat": "di_lubang:ngarai",
+     "keadaan": {
+      "aktif": 1,
+      "n": 5
+     }
+    }
+   ],
+   "kamu": "tidak",
+   "kamera": {
+    "bidikan": "sedang",
+    "aksen": null
+   },
+   "teks_layar": "HAMPIR TEMBUS",
+   "klimaks": false
+  },
+  {
+   "beat": 4,
+   "bukti": "Lalu pemimpin mereka berkata: pulanglah, besok kita tembus.",
+   "subjek": [
+    {
+     "jenis": "ngarai",
+     "tempat": "tengah",
+     "keadaan": {
+      "lubang": 0.95,
+      "jebol": 0
+     }
+    },
+    {
+     "jenis": "pemimpin",
+     "tempat": "depan_kiri",
+     "keadaan": {
+      "angkat": 0.8
+     }
+    },
+    {
+     "jenis": "penggali",
+     "tempat": "di_lubang:ngarai",
+     "keadaan": {
+      "aktif": 0,
+      "pulang": [
+       0,
+       1
+      ],
+      "n": 5
+     }
+    }
+   ],
+   "kamu": "tidak",
+   "kamera": {
+    "bidikan": "sedang",
+    "aksen": null
+   },
+   "teks_layar": "BESOK KITA TEMBUS",
+   "klimaks": false
+  },
+  {
+   "beat": 5,
+   "bukti": "Esoknya, dinding itu sudah kembali utuh.",
+   "subjek": [
+    {
+     "jenis": "ngarai",
+     "tempat": "tengah",
+     "keadaan": {
+      "lubang": [
+       0.95,
+       0
+      ],
+      "jebol": 0,
+      "kilap": 0.5
+     }
+    },
+    {
+     "jenis": "penggali",
+     "tempat": "di_lubang:ngarai",
+     "keadaan": {
+      "aktif": 0,
+      "n": 5
+     }
+    }
+   ],
+   "kamu": "tidak",
+   "kamera": {
+    "bidikan": "lebar",
+    "aksen": null
+   },
+   "teks_layar": "UTUH LAGI",
+   "klimaks": false
+  },
+  {
+   "beat": 6,
+   "bukti": "Begitu terus. Hari demi hari.",
+   "subjek": [
+    {
+     "jenis": "ngarai",
+     "tempat": "tengah",
+     "keadaan": {
+      "lubang": [
+       0.1,
+       0.95
+      ],
+      "jebol": 0
+     }
+    },
+    {
+     "jenis": "penggali",
+     "tempat": "di_lubang:ngarai",
+     "keadaan": {
+      "aktif": 1,
+      "n": 5
+     }
+    }
+   ],
+   "kamu": "tidak",
+   "kamera": {
+    "bidikan": "lebar",
+    "aksen": null
+   },
+   "teks_layar": "HARI DEMI HARI",
+   "klimaks": false
+  },
+  {
+   "beat": 7,
+   "bukti": "Hari itu pemimpin mereka berkata: besok kita tembus… insya Allah.",
+   "subjek": [
+    {
+     "jenis": "ngarai",
+     "tempat": "tengah",
+     "keadaan": {
+      "lubang": 0.95,
+      "jebol": 0
+     }
+    },
+    {
+     "jenis": "pemimpin",
+     "tempat": "depan_kiri",
+     "keadaan": {
+      "angkat": 0.8
+     }
+    },
+    {
+     "jenis": "penggali",
+     "tempat": "di_lubang:ngarai",
+     "keadaan": {
+      "aktif": 0,
+      "pulang": [
+       0,
+       1
+      ],
+      "n": 5
+     }
+    }
+   ],
+   "kamu": "tidak",
+   "kamera": {
+    "bidikan": "dekat",
+    "aksen": null
+   },
+   "teks_layar": "INSYA ALLAH",
+   "klimaks": false
+  },
+  {
+   "beat": 8,
+   "bukti": "Esoknya, dinding itu masih seperti saat mereka tinggalkan. Mereka menembusnya, dan keluar.",
+   "subjek": [
+    {
+     "jenis": "ngarai",
+     "tempat": "tengah",
+     "keadaan": {
+      "lubang": 0.95,
+      "jebol": [
+       0,
+       1
+      ]
+     }
+    },
+    {
+     "jenis": "penggali",
+     "tempat": "di_lubang:ngarai",
+     "keadaan": {
+      "aktif": 1,
+      "n": 5
+     }
+    },
+    {
+     "jenis": "bayang_misteri",
+     "tempat": "kiri",
+     "keadaan": {
+      "besar": 1.2,
+      "nafas": 0.6
+     }
+    }
+   ],
+   "kamu": "tidak",
+   "kamera": {
+    "bidikan": "lebar",
+    "aksen": "guncang"
+   },
+   "teks_layar": "JEBOL!",
+   "klimaks": true
+  },
+  {
+   "beat": 9,
+   "bukti": "Mereka meminum habis air, dan manusia berlarian menghindar.",
+   "subjek": [
+    {
+     "jenis": "danau",
+     "tempat": "kiri",
+     "keadaan": {
+      "isi": [
+       1,
+       0
+      ]
+     }
+    },
+    {
+     "jenis": "bayang_misteri",
+     "tempat": "jauh",
+     "keadaan": {
+      "besar": 1.2,
+      "nafas": 0.5
+     }
+    },
+    {
+     "jenis": "arus",
+     "tempat": "kanan",
+     "keadaan": {
+      "mode": "lari",
+      "maju": [
+       0,
+       1
+      ],
+      "n": 14
+     }
+    }
+   ],
+   "kamu": "saksi",
+   "kamera": {
+    "bidikan": "lebar",
+    "aksen": null
+   },
+   "teks_layar": "AIR HABIS",
+   "klimaks": false
+  },
+  {
+   "beat": 10,
+   "bukti": "Sampai Allah mengirim ulat ke tengkuk mereka, dan mereka binasa.",
+   "subjek": [
+    {
+     "jenis": "bayang_misteri",
+     "tempat": "tengah",
+     "keadaan": {
+      "besar": [
+       1.2,
+       0.15
+      ],
+      "nafas": 0.1
+     }
+    }
+   ],
+   "kamu": "tidak",
+   "kamera": {
+    "bidikan": "sedang",
+    "aksen": "hentak"
+   },
+   "teks_layar": "BINASA",
+   "klimaks": false
+  },
+  {
+   "beat": 11,
+   "bukti": "jangan berkata, besok aku lakukan, kecuali dengan insya Allah.",
+   "subjek": [
+    {
+     "jenis": "ponsel",
+     "tempat": "tengah",
+     "keadaan": {
+      "judul": "Catatan",
+      "teks": "Besok aku lakukan… insya Allah",
+      "notif": 1
+     }
+    }
+   ],
+   "kamu": "utama",
+   "kamera": {
+    "bidikan": "dekat",
+    "aksen": null
+   },
+   "teks_layar": "INSYA ALLAH",
+   "klimaks": false
+  }
+ ]
+}

@@ -1,0 +1,884 @@
+{
+ "objek_inti": {
+  "jenis": "koin",
+  "perkembangan": "Koin pahala menumpuk penuh di kantong dari shalat, puasa, dan zakat, lalu berpindah satu per satu kepada orang yang dizalimi sampai habis, dan akhirnya dosa gelap menimpa si pemilik kantong kosong."
+ },
+ "beat": [
+  {
+   "beat": 1,
+   "bukti": "Ada orang yang bangkrut di",
+   "subjek": [
+    {
+     "jenis": "timbangan",
+     "tempat": "tengah",
+     "keadaan": {
+      "miring": [
+       0,
+       0.3
+      ]
+     }
+    }
+   ],
+   "kamu": "tidak",
+   "kamera": {
+    "bidikan": "sedang",
+    "aksen": null
+   },
+   "teks_layar": "BANGKRUT",
+   "klimaks": false
+  },
+  {
+   "beat": 2,
+   "bukti": "hari kiamat… padahal ia datang",
+   "subjek": [
+    {
+     "jenis": "kerumunan",
+     "tempat": "jauh",
+     "keadaan": {
+      "pose": "berdiri",
+      "n": 10
+     }
+    },
+    {
+     "jenis": "kantong",
+     "tempat": "depan_kiri"
+    },
+    {
+     "jenis": "koin",
+     "tempat": "tengah",
+     "keadaan": {
+      "n": 8,
+      "jatuh": 0
+     }
+    }
+   ],
+   "kamu": "saksi",
+   "kamera": {
+    "bidikan": "lebar",
+    "aksen": null
+   },
+   "teks_layar": "HARI KIAMAT",
+   "klimaks": false
+  },
+  {
+   "beat": 3,
+   "bukti": "membawa shalat,",
+   "subjek": [
+    {
+     "jenis": "sajadah",
+     "tempat": "tengah"
+    },
+    {
+     "jenis": "kantong",
+     "tempat": "depan_kiri"
+    }
+   ],
+   "kamu": "tidak",
+   "kamera": {
+    "bidikan": "sedang",
+    "aksen": null
+   },
+   "teks_layar": "SHALAT",
+   "klimaks": false
+  },
+  {
+   "beat": 4,
+   "bukti": "puasa,",
+   "subjek": [
+    {
+     "jenis": "surya",
+     "tempat": "jauh",
+     "keadaan": {
+      "r": 120,
+      "terang": 0.8
+     }
+    },
+    {
+     "jenis": "kantong",
+     "tempat": "depan_kiri"
+    }
+   ],
+   "kamu": "tidak",
+   "kamera": {
+    "bidikan": "sedang",
+    "aksen": null
+   },
+   "teks_layar": "PUASA",
+   "klimaks": false
+  },
+  {
+   "beat": 5,
+   "bukti": "dan zakat.",
+   "subjek": [
+    {
+     "jenis": "amplop",
+     "tempat": "kiri"
+    },
+    {
+     "jenis": "koin",
+     "tempat": "depan_kanan",
+     "keadaan": {
+      "n": 8,
+      "jatuh": 0
+     }
+    },
+    {
+     "jenis": "kantong",
+     "tempat": "tengah"
+    }
+   ],
+   "kamu": "tidak",
+   "kamera": {
+    "bidikan": "sedang",
+    "aksen": null
+   },
+   "teks_layar": "ZAKAT",
+   "klimaks": false
+  },
+  {
+   "beat": 6,
+   "bukti": "Dan yang membuatnya bangkrut… mungkin",
+   "subjek": [
+    {
+     "jenis": "kantong",
+     "tempat": "kiri"
+    },
+    {
+     "jenis": "bayang_misteri",
+     "tempat": "kanan",
+     "keadaan": {
+      "besar": 0.5,
+      "nafas": 0.3
+     }
+    }
+   ],
+   "kamu": "utama",
+   "kamera": {
+    "bidikan": "dekat",
+    "aksen": null
+   },
+   "teks_layar": null,
+   "klimaks": false
+  },
+  {
+   "beat": 7,
+   "bukti": "kamu lakukan setiap hari.",
+   "subjek": [
+    {
+     "jenis": "hp",
+     "tempat": "depan_kanan"
+    },
+    {
+     "jenis": "bayang_misteri",
+     "tempat": "jauh",
+     "keadaan": {
+      "besar": 0.4,
+      "nafas": 0.3
+     }
+    }
+   ],
+   "kamu": "utama",
+   "kamera": {
+    "bidikan": "dekat",
+    "aksen": "hentak"
+   },
+   "teks_layar": "SETIAP HARI",
+   "klimaks": false
+  },
+  {
+   "beat": 8,
+   "bukti": "Rasulullah pernah bertanya:",
+   "subjek": [
+    {
+     "jenis": "nur",
+     "tempat": "tengah",
+     "keadaan": {
+      "nama": "Rasulullah ﷺ"
+     }
+    }
+   ],
+   "kamu": "tidak",
+   "kamera": {
+    "bidikan": "sedang",
+    "aksen": null
+   },
+   "teks_layar": null,
+   "klimaks": false
+  },
+  {
+   "beat": 9,
+   "bukti": "tahukah kalian,",
+   "subjek": [
+    {
+     "jenis": "nur",
+     "tempat": "tengah",
+     "keadaan": {
+      "nama": "Rasulullah ﷺ"
+     }
+    }
+   ],
+   "kamu": "tidak",
+   "kamera": {
+    "bidikan": "dekat",
+    "aksen": null
+   },
+   "teks_layar": null,
+   "klimaks": false
+  },
+  {
+   "beat": 10,
+   "bukti": "siapa orang yang bangkrut?",
+   "subjek": [
+    {
+     "jenis": "nur",
+     "tempat": "kiri",
+     "keadaan": {
+      "nama": "Rasulullah ﷺ"
+     }
+    },
+    {
+     "jenis": "timbangan",
+     "tempat": "kanan",
+     "keadaan": {
+      "miring": 0.3
+     }
+    }
+   ],
+   "kamu": "tidak",
+   "kamera": {
+    "bidikan": "sedang",
+    "aksen": null
+   },
+   "teks_layar": "SIAPA BANGKRUT?",
+   "klimaks": false
+  },
+  {
+   "beat": 11,
+   "bukti": "Para sahabat menjawab:",
+   "subjek": [
+    {
+     "jenis": "nur",
+     "tempat": "jauh",
+     "keadaan": {
+      "nama": "Rasulullah ﷺ"
+     }
+    },
+    {
+     "jenis": "dompet",
+     "tempat": "depan_kiri",
+     "keadaan": {
+      "isi": 1
+     }
+    }
+   ],
+   "kamu": "tidak",
+   "kamera": {
+    "bidikan": "sedang",
+    "aksen": null
+   },
+   "teks_layar": null,
+   "klimaks": false
+  },
+  {
+   "beat": 12,
+   "bukti": "orang yang tidak punya uang",
+   "subjek": [
+    {
+     "jenis": "dompet",
+     "tempat": "tengah",
+     "keadaan": {
+      "isi": [
+       1,
+       0
+      ]
+     }
+    }
+   ],
+   "kamu": "tidak",
+   "kamera": {
+    "bidikan": "dekat",
+    "aksen": null
+   },
+   "teks_layar": null,
+   "klimaks": false
+  },
+  {
+   "beat": 13,
+   "bukti": "dan harta.",
+   "subjek": [
+    {
+     "jenis": "dompet",
+     "tempat": "kiri",
+     "keadaan": {
+      "isi": 0
+     }
+    },
+    {
+     "jenis": "lapak",
+     "tempat": "kanan",
+     "keadaan": {
+      "isi": "buah"
+     }
+    }
+   ],
+   "kamu": "tidak",
+   "kamera": {
+    "bidikan": "sedang",
+    "aksen": null
+   },
+   "teks_layar": "TIDAK PUNYA HARTA?",
+   "klimaks": false
+  },
+  {
+   "beat": 14,
+   "bukti": "Beliau bersabda:",
+   "subjek": [
+    {
+     "jenis": "nur",
+     "tempat": "tengah",
+     "keadaan": {
+      "nama": "Rasulullah ﷺ"
+     }
+    }
+   ],
+   "kamu": "tidak",
+   "kamera": {
+    "bidikan": "dekat",
+    "aksen": null
+   },
+   "teks_layar": null,
+   "klimaks": false
+  },
+  {
+   "beat": 15,
+   "bukti": "orang yang bangkrut dari umatku",
+   "subjek": [
+    {
+     "jenis": "nur",
+     "tempat": "kiri",
+     "keadaan": {
+      "nama": "Rasulullah ﷺ"
+     }
+    },
+    {
+     "jenis": "timbangan",
+     "tempat": "kanan",
+     "keadaan": {
+      "miring": 0.4
+     }
+    }
+   ],
+   "kamu": "tidak",
+   "kamera": {
+    "bidikan": "sedang",
+    "aksen": null
+   },
+   "teks_layar": null,
+   "klimaks": false
+  },
+  {
+   "beat": 16,
+   "bukti": "adalah yang datang dengan shalat,",
+   "subjek": [
+    {
+     "jenis": "sajadah",
+     "tempat": "kiri"
+    },
+    {
+     "jenis": "kantong",
+     "tempat": "tengah"
+    },
+    {
+     "jenis": "koin",
+     "tempat": "depan_kanan",
+     "keadaan": {
+      "n": 8,
+      "jatuh": 0
+     }
+    }
+   ],
+   "kamu": "tidak",
+   "kamera": {
+    "bidikan": "sedang",
+    "aksen": null
+   },
+   "teks_layar": null,
+   "klimaks": false
+  },
+  {
+   "beat": 17,
+   "bukti": "puasa,",
+   "subjek": [
+    {
+     "jenis": "surya",
+     "tempat": "jauh",
+     "keadaan": {
+      "r": 110,
+      "terang": 0.8
+     }
+    },
+    {
+     "jenis": "kantong",
+     "tempat": "tengah"
+    },
+    {
+     "jenis": "koin",
+     "tempat": "depan_kanan",
+     "keadaan": {
+      "n": 8,
+      "jatuh": 0
+     }
+    }
+   ],
+   "kamu": "tidak",
+   "kamera": {
+    "bidikan": "sedang",
+    "aksen": null
+   },
+   "teks_layar": null,
+   "klimaks": false
+  },
+  {
+   "beat": 18,
+   "bukti": "dan zakat… tapi ia pernah",
+   "subjek": [
+    {
+     "jenis": "amplop",
+     "tempat": "kiri"
+    },
+    {
+     "jenis": "kantong",
+     "tempat": "tengah"
+    },
+    {
+     "jenis": "koin",
+     "tempat": "depan_kanan",
+     "keadaan": {
+      "n": 8,
+      "jatuh": 0
+     }
+    },
+    {
+     "jenis": "bayang_misteri",
+     "tempat": "jauh",
+     "keadaan": {
+      "besar": 0.5,
+      "nafas": 0.3
+     }
+    }
+   ],
+   "kamu": "tidak",
+   "kamera": {
+    "bidikan": "sedang",
+    "aksen": null
+   },
+   "teks_layar": null,
+   "klimaks": false
+  },
+  {
+   "beat": 19,
+   "bukti": "mencela orang ini,",
+   "subjek": [
+    {
+     "jenis": "kerumunan",
+     "tempat": "kiri",
+     "keadaan": {
+      "n": 1,
+      "pose": "tunduk"
+     }
+    },
+    {
+     "jenis": "kantong",
+     "tempat": "depan_kanan"
+    }
+   ],
+   "kamu": "tidak",
+   "kamera": {
+    "bidikan": "sedang",
+    "aksen": null
+   },
+   "teks_layar": "MENCELA",
+   "klimaks": false
+  },
+  {
+   "beat": 20,
+   "bukti": "menuduh orang itu,",
+   "subjek": [
+    {
+     "jenis": "kerumunan",
+     "tempat": "kanan",
+     "keadaan": {
+      "n": 1,
+      "pose": "tolak"
+     }
+    },
+    {
+     "jenis": "kantong",
+     "tempat": "depan_kiri"
+    }
+   ],
+   "kamu": "tidak",
+   "kamera": {
+    "bidikan": "sedang",
+    "aksen": null
+   },
+   "teks_layar": "MENUDUH",
+   "klimaks": false
+  },
+  {
+   "beat": 21,
+   "bukti": "dan memakan harta orang lain.",
+   "subjek": [
+    {
+     "jenis": "uang",
+     "tempat": "depan_kanan",
+     "keadaan": {
+      "n": 6,
+      "kipas": 0.6
+     }
+    },
+    {
+     "jenis": "dompet",
+     "tempat": "kiri",
+     "keadaan": {
+      "isi": 0
+     }
+    },
+    {
+     "jenis": "kantong",
+     "tempat": "depan_kiri"
+    }
+   ],
+   "kamu": "tidak",
+   "kamera": {
+    "bidikan": "sedang",
+    "aksen": null
+   },
+   "teks_layar": "MEMAKAN HARTA",
+   "klimaks": false
+  },
+  {
+   "beat": 22,
+   "bukti": "Maka pahalanya diberikan kepada mereka,",
+   "subjek": [
+    {
+     "jenis": "kantong",
+     "tempat": "kiri"
+    },
+    {
+     "jenis": "koin",
+     "tempat": "tengah",
+     "keadaan": {
+      "n": 5,
+      "jatuh": [
+       0,
+       1
+      ]
+     }
+    },
+    {
+     "jenis": "kerumunan",
+     "tempat": "kanan",
+     "keadaan": {
+      "n": 5,
+      "pose": "angkat"
+     }
+    }
+   ],
+   "kamu": "saksi",
+   "kamera": {
+    "bidikan": "lebar",
+    "aksen": null
+   },
+   "teks_layar": null,
+   "klimaks": false
+  },
+  {
+   "beat": 23,
+   "bukti": "satu per satu… sampai habis.",
+   "subjek": [
+    {
+     "jenis": "kantong",
+     "tempat": "kiri"
+    },
+    {
+     "jenis": "koin",
+     "tempat": "tengah",
+     "keadaan": {
+      "n": [
+       5,
+       1
+      ],
+      "jatuh": [
+       0,
+       1
+      ]
+     }
+    },
+    {
+     "jenis": "kerumunan",
+     "tempat": "kanan",
+     "keadaan": {
+      "n": 8,
+      "pose": "angkat"
+     }
+    }
+   ],
+   "kamu": "saksi",
+   "kamera": {
+    "bidikan": "sedang",
+    "aksen": null
+   },
+   "teks_layar": "SAMPAI HABIS",
+   "klimaks": false
+  },
+  {
+   "beat": 24,
+   "bukti": "Lalu dosa mereka… ditimpakan kepadanya.",
+   "subjek": [
+    {
+     "jenis": "kantong",
+     "tempat": "tengah"
+    },
+    {
+     "jenis": "bayang_misteri",
+     "tempat": "depan_kanan",
+     "keadaan": {
+      "besar": [
+       0.6,
+       1.4
+      ],
+      "nafas": 0.8,
+      "cahaya": "merah"
+     }
+    },
+    {
+     "jenis": "timbangan",
+     "tempat": "jauh",
+     "keadaan": {
+      "miring": 1
+     }
+    }
+   ],
+   "kamu": "tidak",
+   "kamera": {
+    "bidikan": "dekat",
+    "aksen": "guncang"
+   },
+   "teks_layar": "BANGKRUT",
+   "klimaks": true
+  },
+  {
+   "beat": 25,
+   "bukti": "Satu ghibah di grup.",
+   "subjek": [
+    {
+     "jenis": "ponsel",
+     "tempat": "tengah",
+     "keadaan": {
+      "judul": "Grup",
+      "teks": "Eh, tahu nggak soal dia…",
+      "notif": 1,
+      "notif_at": 0.5
+     }
+    }
+   ],
+   "kamu": "utama",
+   "kamera": {
+    "bidikan": "dekat",
+    "aksen": null
+   },
+   "teks_layar": "GHIBAH",
+   "klimaks": false
+  },
+  {
+   "beat": 26,
+   "bukti": "Satu komentar yang menyakitkan.",
+   "subjek": [
+    {
+     "jenis": "monitor",
+     "tempat": "tengah",
+     "keadaan": {
+      "judul": "Postingan",
+      "nama": "akun_anonim",
+      "teks": "Gitu doang?",
+      "komentar": 0.5,
+      "suka": 0
+     }
+    }
+   ],
+   "kamu": "utama",
+   "kamera": {
+    "bidikan": "dekat",
+    "aksen": null
+   },
+   "teks_layar": "KOMENTAR",
+   "klimaks": false
+  },
+  {
+   "beat": 27,
+   "bukti": "Satu utang yang tidak dibayar.",
+   "subjek": [
+    {
+     "jenis": "amplop",
+     "tempat": "kanan"
+    },
+    {
+     "jenis": "dompet",
+     "tempat": "kiri",
+     "keadaan": {
+      "isi": 0
+     }
+    }
+   ],
+   "kamu": "utama",
+   "kamera": {
+    "bidikan": "sedang",
+    "aksen": null
+   },
+   "teks_layar": "UTANG",
+   "klimaks": false
+  },
+  {
+   "beat": 28,
+   "bukti": "Semuanya ditagih… dengan pahalamu.",
+   "subjek": [
+    {
+     "jenis": "kantong",
+     "tempat": "tengah"
+    },
+    {
+     "jenis": "rantai_tarik",
+     "tempat": "tengah",
+     "keadaan": {
+      "n": 20,
+      "tarik": [
+       0,
+       200
+      ]
+     }
+    }
+   ],
+   "kamu": "utama",
+   "kamera": {
+    "bidikan": "sedang",
+    "aksen": "hentak"
+   },
+   "teks_layar": "DITAGIH",
+   "klimaks": false
+  },
+  {
+   "beat": 29,
+   "bukti": "Sebelum hari itu datang,",
+   "subjek": [
+    {
+     "jenis": "jendela",
+     "tempat": "tengah",
+     "keadaan": {
+      "terang": [
+       0.2,
+       0.8
+      ]
+     }
+    }
+   ],
+   "kamu": "utama",
+   "kamera": {
+    "bidikan": "sedang",
+    "aksen": null
+   },
+   "teks_layar": null,
+   "klimaks": false
+  },
+  {
+   "beat": 30,
+   "bukti": "minta maaflah hari ini.",
+   "subjek": [
+    {
+     "jenis": "jendela",
+     "tempat": "kiri",
+     "keadaan": {
+      "terang": 0.9
+     }
+    },
+    {
+     "jenis": "hp",
+     "tempat": "depan_kanan"
+    }
+   ],
+   "kamu": "utama",
+   "kamera": {
+    "bidikan": "dekat",
+    "aksen": null
+   },
+   "teks_layar": "MINTA MAAF",
+   "klimaks": false
+  },
+  {
+   "beat": 31,
+   "bukti": "Kepada siapa kamu ingin minta",
+   "subjek": [
+    {
+     "jenis": "hp",
+     "tempat": "depan_kanan"
+    },
+    {
+     "jenis": "hati",
+     "tempat": "kiri"
+    }
+   ],
+   "kamu": "utama",
+   "kamera": {
+    "bidikan": "dekat",
+    "aksen": null
+   },
+   "teks_layar": null,
+   "klimaks": false
+  },
+  {
+   "beat": 32,
+   "bukti": "maaf?",
+   "subjek": [
+    {
+     "jenis": "hp",
+     "tempat": "depan_kanan"
+    },
+    {
+     "jenis": "hati",
+     "tempat": "kiri"
+    }
+   ],
+   "kamu": "utama",
+   "kamera": {
+    "bidikan": "dekat",
+    "aksen": null
+   },
+   "teks_layar": "KEPADA SIAPA?",
+   "klimaks": false
+  },
+  {
+   "beat": 33,
+   "bukti": "Tulis di komentar.",
+   "subjek": [
+    {
+     "jenis": "monitor",
+     "tempat": "tengah",
+     "keadaan": {
+      "judul": "Komentar",
+      "nama": "kamu",
+      "teks": "Aku ingin minta maaf kepada…",
+      "komentar": 0.5,
+      "suka": 0
+     }
+    }
+   ],
+   "kamu": "utama",
+   "kamera": {
+    "bidikan": "sedang",
+    "aksen": null
+   },
+   "teks_layar": "TULIS DI KOMENTAR",
+   "klimaks": false
+  }
+ ]
+}

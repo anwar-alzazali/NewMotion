@@ -1,0 +1,578 @@
+{
+ "objek_inti": {
+  "jenis": "bahtera",
+  "perkembangan": "rusuk papan kayu dibangun di tengah ejekan, selesai dan berlayar di ombak setinggi gunung, lalu tenang dengan pintu terbuka sebagai ajakan naik"
+ },
+ "beat": [
+  {
+   "beat": 1,
+   "bukti": "kamu ada di kapal itu",
+   "subjek": [
+    {
+     "jenis": "laut",
+     "tempat": "tengah"
+    },
+    {
+     "jenis": "bulan",
+     "tempat": "jauh"
+    },
+    {
+     "jenis": "bahtera",
+     "tempat": "tengah",
+     "keadaan": {
+      "jadi": 1,
+      "goyang": 3,
+      "cahaya": 0.5,
+      "orang": 6,
+      "pintu": 0
+     }
+    }
+   ],
+   "kamu": "utama",
+   "kamera": {
+    "bidikan": "sedang",
+    "aksen": null
+   },
+   "teks_layar": "KAMU ADA DI SANA",
+   "klimaks": false
+  },
+  {
+   "beat": 2,
+   "bukti": "nenek moyangmu. Dan penumpangnya, hanya segelintir orang",
+   "subjek": [
+    {
+     "jenis": "bahtera",
+     "tempat": "tengah",
+     "keadaan": {
+      "jadi": 1,
+      "goyang": 2,
+      "cahaya": 0.6,
+      "orang": 8,
+      "pintu": 0
+     }
+    },
+    {
+     "jenis": "laut",
+     "tempat": "tengah"
+    }
+   ],
+   "kamu": "saksi",
+   "kamera": {
+    "bidikan": "lebar",
+    "aksen": null
+   },
+   "teks_layar": "SEGELINTIR ORANG",
+   "klimaks": false
+  },
+  {
+   "beat": 3,
+   "bukti": "Nabi Nuh tinggal di tengah kaumnya, mengajak mereka",
+   "subjek": [
+    {
+     "jenis": "kampung",
+     "tempat": "jauh"
+    },
+    {
+     "jenis": "nur",
+     "tempat": "kiri",
+     "keadaan": {
+      "nama": "Nabi Nuh"
+     }
+    },
+    {
+     "jenis": "kerumunan",
+     "tempat": "kanan",
+     "keadaan": {
+      "n": 10,
+      "pose": "telinga",
+      "rim": 0.4
+     }
+    }
+   ],
+   "kamu": "tidak",
+   "kamera": {
+    "bidikan": "sedang",
+    "aksen": null
+   },
+   "teks_layar": "950 TAHUN",
+   "klimaks": false
+  },
+  {
+   "beat": 4,
+   "bukti": "Yang beriman, hanya sedikit",
+   "subjek": [
+    {
+     "jenis": "nur",
+     "tempat": "tengah",
+     "keadaan": {
+      "nama": "Nabi Nuh"
+     }
+    },
+    {
+     "jenis": "kerumunan",
+     "tempat": "depan_kanan",
+     "keadaan": {
+      "n": 4,
+      "pose": "telinga",
+      "rim": 0.8
+     }
+    },
+    {
+     "jenis": "kampung",
+     "tempat": "jauh"
+    }
+   ],
+   "kamu": "tidak",
+   "kamera": {
+    "bidikan": "dekat",
+    "aksen": null
+   },
+   "teks_layar": "SEDIKIT",
+   "klimaks": false
+  },
+  {
+   "beat": 5,
+   "bukti": "Beliau membuat kapal. Setiap pemuka kaumnya lewat, mereka mengejek",
+   "subjek": [
+    {
+     "jenis": "bahtera",
+     "tempat": "tengah",
+     "keadaan": {
+      "jadi": [
+       0.15,
+       0.9
+      ],
+      "goyang": 0,
+      "orang": 0,
+      "pintu": 0
+     }
+    },
+    {
+     "jenis": "nur",
+     "tempat": "kiri",
+     "keadaan": {
+      "nama": "Nabi Nuh"
+     }
+    },
+    {
+     "jenis": "kerumunan",
+     "tempat": "depan_kanan",
+     "keadaan": {
+      "n": 6,
+      "pose": "tolak",
+      "rim": 0.3
+     }
+    }
+   ],
+   "kamu": "tidak",
+   "kamera": {
+    "bidikan": "sedang",
+    "aksen": null
+   },
+   "teks_layar": null,
+   "klimaks": false
+  },
+  {
+   "beat": 6,
+   "bukti": "pintu-pintu langit dibuka, dengan air yang tercurah. Dan bumi memancarkan mata air",
+   "subjek": [
+    {
+     "jenis": "awan",
+     "tempat": "jauh"
+    },
+    {
+     "jenis": "petir",
+     "tempat": "tengah",
+     "keadaan": {
+      "saat": [
+       0.5,
+       2.0
+      ]
+     }
+    },
+    {
+     "jenis": "pancar",
+     "tempat": "kiri",
+     "keadaan": {
+      "kuat": [
+       0.2,
+       1.0
+      ],
+      "tinggi": 220
+     }
+    },
+    {
+     "jenis": "bahtera",
+     "tempat": "kanan",
+     "keadaan": {
+      "jadi": 1,
+      "goyang": 3,
+      "orang": 0,
+      "pintu": 0
+     }
+    },
+    {
+     "jenis": "ombak",
+     "tempat": "tengah",
+     "keadaan": {
+      "tinggi": [
+       30,
+       120
+      ],
+      "lapis": 3,
+      "cepat": 1
+     }
+    }
+   ],
+   "kamu": "tidak",
+   "kamera": {
+    "bidikan": "lebar",
+    "aksen": null
+   },
+   "teks_layar": "LANGIT DIBUKA",
+   "klimaks": false
+  },
+  {
+   "beat": 7,
+   "bukti": "Sepasang dari tiap jenis hewan naik, bersama mereka yang beriman",
+   "subjek": [
+    {
+     "jenis": "hewan",
+     "tempat": "kiri",
+     "keadaan": {
+      "macam": "gajah",
+      "pasang": true,
+      "jalan": [
+       0.1,
+       0.9
+      ],
+      "rim": 1
+     }
+    },
+    {
+     "jenis": "hewan",
+     "tempat": "tengah",
+     "keadaan": {
+      "macam": "jerapah",
+      "pasang": true,
+      "jalan": [
+       0.0,
+       0.8
+      ],
+      "rim": 1
+     }
+    },
+    {
+     "jenis": "bahtera",
+     "tempat": "kanan",
+     "keadaan": {
+      "jadi": 1,
+      "goyang": 2,
+      "orang": 8,
+      "pintu": [
+       0.4,
+       1.0
+      ],
+      "cahaya": 0.6
+     }
+    },
+    {
+     "jenis": "awan",
+     "tempat": "jauh"
+    }
+   ],
+   "kamu": "tidak",
+   "kamera": {
+    "bidikan": "lebar",
+    "aksen": null
+   },
+   "teks_layar": "SEPASANG-SEPASANG",
+   "klimaks": false
+  },
+  {
+   "beat": 8,
+   "bukti": "Kapal itu berlayar, di tengah ombak laksana gunung",
+   "subjek": [
+    {
+     "jenis": "ombak",
+     "tempat": "tengah",
+     "keadaan": {
+      "tinggi": [
+       150,
+       300
+      ],
+      "lapis": 4,
+      "cepat": 1.5,
+      "buih": 1
+     }
+    },
+    {
+     "jenis": "bahtera",
+     "tempat": "tengah",
+     "keadaan": {
+      "jadi": 1,
+      "goyang": 8,
+      "orang": 8,
+      "pintu": 0,
+      "cahaya": 0.8
+     }
+    },
+    {
+     "jenis": "petir",
+     "tempat": "jauh",
+     "keadaan": {
+      "saat": [
+       1.0,
+       3.0
+      ]
+     }
+    }
+   ],
+   "kamu": "tidak",
+   "kamera": {
+    "bidikan": "lebar",
+    "aksen": null
+   },
+   "teks_layar": "OMBAK LAKSANA GUNUNG",
+   "klimaks": false
+  },
+  {
+   "beat": 9,
+   "bukti": "anak beliau sendiri, menolak naik",
+   "subjek": [
+    {
+     "jenis": "kerumunan",
+     "tempat": "depan_kiri",
+     "keadaan": {
+      "n": 1,
+      "pose": "tolak",
+      "rim": 0.5,
+      "k": 1.3
+     }
+    },
+    {
+     "jenis": "bahtera",
+     "tempat": "kanan",
+     "keadaan": {
+      "jadi": 1,
+      "goyang": 6,
+      "orang": 8,
+      "pintu": 0.8,
+      "cahaya": 0.8
+     }
+    },
+    {
+     "jenis": "nur",
+     "tempat": "depan_kanan",
+     "keadaan": {
+      "nama": "Nabi Nuh"
+     }
+    },
+    {
+     "jenis": "ombak",
+     "tempat": "tengah",
+     "keadaan": {
+      "tinggi": 200,
+      "lapis": 3,
+      "cepat": 1.2
+     }
+    }
+   ],
+   "kamu": "tidak",
+   "kamera": {
+    "bidikan": "sedang",
+    "aksen": null
+   },
+   "teks_layar": "MENOLAK NAIK",
+   "klimaks": false
+  },
+  {
+   "beat": 10,
+   "bukti": "aku akan berlindung ke gunung",
+   "subjek": [
+    {
+     "jenis": "gunung",
+     "tempat": "jauh",
+     "keadaan": {
+      "kilau": 0.3
+     }
+    },
+    {
+     "jenis": "kerumunan",
+     "tempat": "kiri",
+     "keadaan": {
+      "n": 1,
+      "pose": "tolak",
+      "rim": 0.4,
+      "k": 1.2
+     }
+    },
+    {
+     "jenis": "bahtera",
+     "tempat": "kanan",
+     "keadaan": {
+      "jadi": 1,
+      "goyang": 6,
+      "orang": 8,
+      "pintu": 0.5,
+      "cahaya": 0.7
+     }
+    },
+    {
+     "jenis": "ombak",
+     "tempat": "tengah",
+     "keadaan": {
+      "tinggi": [
+       200,
+       260
+      ],
+      "lapis": 3,
+      "cepat": 1.5
+     }
+    }
+   ],
+   "kamu": "tidak",
+   "kamera": {
+    "bidikan": "lebar",
+    "aksen": null
+   },
+   "teks_layar": null,
+   "klimaks": false
+  },
+  {
+   "beat": 11,
+   "bukti": "Ombak memisahkan keduanya",
+   "subjek": [
+    {
+     "jenis": "kerumunan",
+     "tempat": "kiri",
+     "keadaan": {
+      "n": 1,
+      "pose": "tolak",
+      "rim": 0.3,
+      "k": 1.0
+     }
+    },
+    {
+     "jenis": "ombak",
+     "tempat": "tengah",
+     "keadaan": {
+      "tinggi": [
+       260,
+       420
+      ],
+      "lapis": 4,
+      "cepat": 2,
+      "buih": 1
+     }
+    },
+    {
+     "jenis": "bahtera",
+     "tempat": "kanan",
+     "keadaan": {
+      "jadi": 1,
+      "goyang": 10,
+      "orang": 8,
+      "pintu": 0,
+      "cahaya": 0.8
+     }
+    },
+    {
+     "jenis": "petir",
+     "tempat": "jauh",
+     "keadaan": {
+      "saat": [
+       0.3,
+       1.5
+      ]
+     }
+    }
+   ],
+   "kamu": "tidak",
+   "kamera": {
+    "bidikan": "lebar",
+    "aksen": "guncang"
+   },
+   "teks_layar": "DIPISAHKAN OMBAK",
+   "klimaks": true
+  },
+  {
+   "beat": 12,
+   "bukti": "yang menyelamatkan bukan keturunan. Tapi mau naik, atau tidak",
+   "subjek": [
+    {
+     "jenis": "laut",
+     "tempat": "tengah"
+    },
+    {
+     "jenis": "surya",
+     "tempat": "jauh",
+     "keadaan": {
+      "r": 80,
+      "terang": 0.7
+     }
+    },
+    {
+     "jenis": "bahtera",
+     "tempat": "tengah",
+     "keadaan": {
+      "jadi": 1,
+      "goyang": 2,
+      "orang": 8,
+      "pintu": 0.6,
+      "cahaya": 0.9
+     }
+    },
+    {
+     "jenis": "ombak",
+     "tempat": "tengah",
+     "keadaan": {
+      "tinggi": 40,
+      "lapis": 2,
+      "cepat": 0.5
+     }
+    }
+   ],
+   "kamu": "saksi",
+   "kamera": {
+    "bidikan": "sedang",
+    "aksen": null
+   },
+   "teks_layar": "NAIK ATAU TIDAK",
+   "klimaks": false
+  },
+  {
+   "beat": 13,
+   "bukti": "Kalau kamu hidup saat itu, yakin kamu ikut naik?",
+   "subjek": [
+    {
+     "jenis": "bahtera",
+     "tempat": "tengah",
+     "keadaan": {
+      "jadi": 1,
+      "goyang": 1,
+      "orang": 0,
+      "pintu": 1,
+      "cahaya": 1
+     }
+    },
+    {
+     "jenis": "ombak",
+     "tempat": "tengah",
+     "keadaan": {
+      "tinggi": 50,
+      "lapis": 2,
+      "cepat": 0.5
+     }
+    }
+   ],
+   "kamu": "utama",
+   "kamera": {
+    "bidikan": "sedang",
+    "aksen": null
+   },
+   "teks_layar": "YAKIN IKUT NAIK?",
+   "klimaks": false
+  }
+ ]
+}

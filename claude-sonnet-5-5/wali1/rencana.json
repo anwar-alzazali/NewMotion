@@ -1,0 +1,230 @@
+{
+ "objek_inti": null,
+ "beat": [
+  {
+   "beat": 1,
+   "bukti": "Akibatnya jatuh ke anak perempuanmu.",
+   "subjek": [
+    {
+     "jenis": "rumah_kampung",
+     "tempat": "tengah",
+     "keadaan": {
+      "lampu": 0.4
+     }
+    },
+    {
+     "jenis": "awan",
+     "tempat": "jauh"
+    }
+   ],
+   "kamu": "utama",
+   "kamera": {
+    "bidikan": "sedang",
+    "aksen": null
+   },
+   "teks_layar": "AKIBATNYA KE ANAK",
+   "klimaks": false
+  },
+  {
+   "beat": 2,
+   "bukti": "ayah kandungnya… tidak bisa jadi walinya.",
+   "subjek": [
+    {
+     "jenis": "rumah_kampung",
+     "tempat": "kiri",
+     "keadaan": {
+      "lampu": 0.8,
+      "buka": 0.5
+     }
+    },
+    {
+     "jenis": "kursi",
+     "tempat": "depan_kanan",
+     "keadaan": {
+      "sandaran": true
+     }
+    }
+   ],
+   "kamu": "utama",
+   "kamera": {
+    "bidikan": "sedang",
+    "aksen": null
+   },
+   "teks_layar": "KURSI WALI KOSONG",
+   "klimaks": false
+  },
+  {
+   "beat": 3,
+   "bukti": "hanya punya nasab ke ibunya.",
+   "subjek": [
+    {
+     "jenis": "buku",
+     "tempat": "tengah",
+     "keadaan": {
+      "buka": 1,
+      "teks": "NASAB: KE IBU SAJA"
+     }
+    }
+   ],
+   "kamu": "tidak",
+   "kamera": {
+    "bidikan": "dekat",
+    "aksen": null
+   },
+   "teks_layar": "TIDAK ADA NASAB",
+   "klimaks": false
+  },
+  {
+   "beat": 4,
+   "bukti": "tidak sah pernikahan, kecuali dengan wali.",
+   "subjek": [
+    {
+     "jenis": "nur",
+     "tempat": "tengah",
+     "keadaan": {
+      "nama": "Rasulullah ﷺ"
+     }
+    },
+    {
+     "jenis": "kursi",
+     "tempat": "kanan",
+     "keadaan": {
+      "sandaran": true
+     }
+    }
+   ],
+   "kamu": "tidak",
+   "kamera": {
+    "bidikan": "sedang",
+    "aksen": null
+   },
+   "teks_layar": "TIDAK SAH TANPA WALI",
+   "klimaks": false
+  },
+  {
+   "beat": 5,
+   "bukti": "pernikahan anakmu bisa tidak sah.",
+   "subjek": [
+    {
+     "jenis": "rumah_kampung",
+     "tempat": "tengah",
+     "keadaan": {
+      "lampu": [
+       0.9,
+       0.1
+      ],
+      "buka": 0.5
+     }
+    },
+    {
+     "jenis": "kursi",
+     "tempat": "depan_kanan",
+     "keadaan": {
+      "sandaran": true
+     }
+    }
+   ],
+   "kamu": "utama",
+   "kamera": {
+    "bidikan": "lebar",
+    "aksen": "hentak"
+   },
+   "teks_layar": "BISA TIDAK SAH",
+   "klimaks": true
+  },
+  {
+   "beat": 6,
+   "bukti": "Anak yang tidak tahu apa-apa… menanggung akibat perbuatan orang tuanya.",
+   "subjek": [
+    {
+     "jenis": "kerumunan",
+     "tempat": "tengah",
+     "keadaan": {
+      "n": 1,
+      "pose": "tunduk"
+     }
+    },
+    {
+     "jenis": "rumah_kampung",
+     "tempat": "jauh",
+     "keadaan": {
+      "lampu": 0.1
+     }
+    }
+   ],
+   "kamu": "tidak",
+   "kamera": {
+    "bidikan": "dekat",
+    "aksen": null
+   },
+   "teks_layar": null,
+   "klimaks": false
+  },
+  {
+   "beat": 7,
+   "bukti": "Wali hakim, lewat KUA. Tanyakan sebelum akad.",
+   "subjek": [
+    {
+     "jenis": "kantor_gedung",
+     "tempat": "kiri",
+     "keadaan": {
+      "nama": "KUA"
+     }
+    },
+    {
+     "jenis": "rumah_kampung",
+     "tempat": "kanan",
+     "keadaan": {
+      "lampu": 0.7,
+      "buka": 0.6
+     }
+    }
+   ],
+   "kamu": "utama",
+   "kamera": {
+    "bidikan": "sedang",
+    "aksen": null
+   },
+   "teks_layar": "WALI HAKIM",
+   "klimaks": false
+  },
+  {
+   "beat": 8,
+   "bukti": "ini bukan salah anakmu.",
+   "subjek": [
+    {
+     "jenis": "surya",
+     "tempat": "jauh",
+     "keadaan": {
+      "r": 120,
+      "terang": 0.8
+     }
+    },
+    {
+     "jenis": "rumah_kampung",
+     "tempat": "tengah",
+     "keadaan": {
+      "lampu": 1,
+      "buka": 1
+     }
+    },
+    {
+     "jenis": "kerumunan",
+     "tempat": "depan_kiri",
+     "keadaan": {
+      "n": 1,
+      "pose": "berdiri",
+      "rim": 0.8
+     }
+    }
+   ],
+   "kamu": "utama",
+   "kamera": {
+    "bidikan": "lebar",
+    "aksen": null
+   },
+   "teks_layar": "BUKAN SALAHNYA",
+   "klimaks": false
+  }
+ ]
+}

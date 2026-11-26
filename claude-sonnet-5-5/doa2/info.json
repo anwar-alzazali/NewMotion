@@ -1,0 +1,23 @@
+{
+ "naskah": "tests/data/tolok_ukur_buta/doa2.json",
+ "model": "claude-sonnet-5-5",
+ "penyedia": "anthropic",
+ "token_masuk": 8850,
+ "token_keluar": 4584,
+ "biaya_usd": 0.06354,
+ "percobaan": [
+  "claude-sonnet-5-5: diterima (27.4 dtk)"
+ ],
+ "shot": 19,
+ "skor_gabungan": 91,
+ "skor_aspek": {
+  "ritme": 100,
+  "kamera": 85,
+  "lingkungan": 97,
+  "benda": 77,
+  "tokoh": 100,
+  "teks_layar": 33,
+  "gerak": 93,
+  "cerita": 100
+ }
+}

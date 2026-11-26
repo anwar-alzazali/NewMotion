@@ -1,0 +1,22 @@
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/home/runner/work/NewMotion/NewMotion/newmotion/paket_genre/kisah_islami/sutradara_llm.py", line 103, in <module>
+    raise SystemExit(main())
+                     ^^^^^^
+  File "/home/runner/work/NewMotion/NewMotion/newmotion/paket_genre/kisah_islami/sutradara_llm.py", line 88, in main
+    j = buat_rencana(naskah)
+        ^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/NewMotion/NewMotion/newmotion/paket_genre/kisah_islami/sutradara_llm.py", line 64, in buat_rencana
+    return llm.panggil("sutradara", skill_sutradara(), pesan_sutradara(naskah), json=True, maks_token=12000,
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/NewMotion/NewMotion/newmotion/infrastructure/llm.py", line 221, in panggil
+    raise GalatLLM(tahap, riwayat)
+newmotion.infrastructure.llm.GalatLLM: LLM tahap 'sutradara' gagal: gemini: HTTP 503: {
+  "error": {
+    "code": 503,
+    "message": "This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.",
+    "status": "UNAVAILABLE"
+  }
+}
+

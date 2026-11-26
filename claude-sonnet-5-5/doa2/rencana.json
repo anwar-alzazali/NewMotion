@@ -1,0 +1,486 @@
+{
+ "objek_inti": {
+  "jenis": "gerbang",
+  "perkembangan": "pintu bercahaya yang tertutup dan redup saat dosa dan penyesalan, mulai terbuka ketika taubat diterima, lalu terbuka lebar sebagai ajakan penutup"
+ },
+ "beat": [
+  {
+   "beat": 1,
+   "bukti": "Pernah merasa dosamu terlalu banyak…",
+   "subjek": [
+    {
+     "jenis": "kamar",
+     "tempat": "tengah"
+    },
+    {
+     "jenis": "bulan",
+     "tempat": "jauh"
+    }
+   ],
+   "kamu": "utama",
+   "kamera": {
+    "bidikan": "sedang",
+    "aksen": null
+   },
+   "teks_layar": null,
+   "klimaks": false
+  },
+  {
+   "beat": 2,
+   "bukti": "sampai malu untuk berdoa?",
+   "subjek": [
+    {
+     "jenis": "sajadah",
+     "tempat": "tengah"
+    },
+    {
+     "jenis": "kamar",
+     "tempat": "jauh"
+    }
+   ],
+   "kamu": "utama",
+   "kamera": {
+    "bidikan": "dekat",
+    "aksen": null
+   },
+   "teks_layar": "MALU BERDOA",
+   "klimaks": false
+  },
+  {
+   "beat": 3,
+   "bukti": "Manusia pertama pun pernah berbuat",
+   "subjek": [
+    {
+     "jenis": "nur",
+     "tempat": "tengah",
+     "keadaan": {
+      "nama": "Adam"
+     }
+    },
+    {
+     "jenis": "pohon",
+     "tempat": "kanan"
+    }
+   ],
+   "kamu": "tidak",
+   "kamera": {
+    "bidikan": "lebar",
+    "aksen": null
+   },
+   "teks_layar": null,
+   "klimaks": false
+  },
+  {
+   "beat": 4,
+   "bukti": "salah.",
+   "subjek": [
+    {
+     "jenis": "nur",
+     "tempat": "tengah",
+     "keadaan": {
+      "nama": "Adam"
+     }
+    },
+    {
+     "jenis": "pohon",
+     "tempat": "kanan"
+    }
+   ],
+   "kamu": "tidak",
+   "kamera": {
+    "bidikan": "sedang",
+    "aksen": "hentak"
+   },
+   "teks_layar": "SALAH",
+   "klimaks": false
+  },
+  {
+   "beat": 5,
+   "bukti": "Nabi Adam dan Hawa tidak",
+   "subjek": [
+    {
+     "jenis": "nur",
+     "tempat": "tengah",
+     "keadaan": {
+      "nama": "Adam"
+     }
+    },
+    {
+     "jenis": "pohon",
+     "tempat": "jauh"
+    }
+   ],
+   "kamu": "tidak",
+   "kamera": {
+    "bidikan": "sedang",
+    "aksen": null
+   },
+   "teks_layar": null,
+   "klimaks": false
+  },
+  {
+   "beat": 6,
+   "bukti": "mencari alasan.",
+   "subjek": [
+    {
+     "jenis": "nur",
+     "tempat": "tengah",
+     "keadaan": {
+      "nama": "Adam"
+     }
+    }
+   ],
+   "kamu": "tidak",
+   "kamera": {
+    "bidikan": "dekat",
+    "aksen": null
+   },
+   "teks_layar": "TANPA ALASAN",
+   "klimaks": false
+  },
+  {
+   "beat": 7,
+   "bukti": "Mereka mengakuinya… lalu berdoa.",
+   "subjek": [
+    {
+     "jenis": "nur",
+     "tempat": "tengah",
+     "keadaan": {
+      "nama": "Adam"
+     }
+    },
+    {
+     "jenis": "bintang",
+     "tempat": "jauh",
+     "keadaan": {
+      "n": 20
+     }
+    }
+   ],
+   "kamu": "tidak",
+   "kamera": {
+    "bidikan": "sedang",
+    "aksen": null
+   },
+   "teks_layar": "MENGAKUI",
+   "klimaks": false
+  },
+  {
+   "beat": 8,
+   "bukti": "Ya Tuhan kami,",
+   "subjek": [
+    {
+     "jenis": "nur",
+     "tempat": "tengah",
+     "keadaan": {
+      "nama": "Adam"
+     }
+    },
+    {
+     "jenis": "bintang",
+     "tempat": "jauh",
+     "keadaan": {
+      "n": 30
+     }
+    }
+   ],
+   "kamu": "tidak",
+   "kamera": {
+    "bidikan": "dekat",
+    "aksen": null
+   },
+   "teks_layar": null,
+   "klimaks": false
+  },
+  {
+   "beat": 9,
+   "bukti": "kami telah menzalimi diri kami",
+   "subjek": [
+    {
+     "jenis": "nur",
+     "tempat": "tengah",
+     "keadaan": {
+      "nama": "Adam"
+     }
+    },
+    {
+     "jenis": "bintang",
+     "tempat": "jauh",
+     "keadaan": {
+      "n": 30
+     }
+    }
+   ],
+   "kamu": "tidak",
+   "kamera": {
+    "bidikan": "dekat",
+    "aksen": null
+   },
+   "teks_layar": "MENZALIMI DIRI",
+   "klimaks": false
+  },
+  {
+   "beat": 10,
+   "bukti": "sendiri.",
+   "subjek": [
+    {
+     "jenis": "nur",
+     "tempat": "tengah",
+     "keadaan": {
+      "nama": "Adam"
+     }
+    },
+    {
+     "jenis": "bintang",
+     "tempat": "jauh",
+     "keadaan": {
+      "n": 30
+     }
+    }
+   ],
+   "kamu": "tidak",
+   "kamera": {
+    "bidikan": "dekat",
+    "aksen": null
+   },
+   "teks_layar": null,
+   "klimaks": false
+  },
+  {
+   "beat": 11,
+   "bukti": "Jika Engkau tidak mengampuni dan",
+   "subjek": [
+    {
+     "jenis": "nur",
+     "tempat": "kiri",
+     "keadaan": {
+      "nama": "Adam"
+     }
+    },
+    {
+     "jenis": "gerbang",
+     "tempat": "jauh",
+     "keadaan": {
+      "buka": 0
+     }
+    }
+   ],
+   "kamu": "tidak",
+   "kamera": {
+    "bidikan": "sedang",
+    "aksen": null
+   },
+   "teks_layar": null,
+   "klimaks": false
+  },
+  {
+   "beat": 12,
+   "bukti": "merahmati kami,",
+   "subjek": [
+    {
+     "jenis": "nur",
+     "tempat": "kiri",
+     "keadaan": {
+      "nama": "Adam"
+     }
+    },
+    {
+     "jenis": "gerbang",
+     "tempat": "jauh",
+     "keadaan": {
+      "buka": 0
+     }
+    }
+   ],
+   "kamu": "tidak",
+   "kamera": {
+    "bidikan": "sedang",
+    "aksen": null
+   },
+   "teks_layar": null,
+   "klimaks": false
+  },
+  {
+   "beat": 13,
+   "bukti": "niscaya kami termasuk orang-orang yang",
+   "subjek": [
+    {
+     "jenis": "timbangan",
+     "tempat": "tengah",
+     "keadaan": {
+      "miring": 0.6
+     }
+    },
+    {
+     "jenis": "nur",
+     "tempat": "kiri",
+     "keadaan": {
+      "nama": "Adam"
+     }
+    }
+   ],
+   "kamu": "tidak",
+   "kamera": {
+    "bidikan": "sedang",
+    "aksen": null
+   },
+   "teks_layar": null,
+   "klimaks": false
+  },
+  {
+   "beat": 14,
+   "bukti": "rugi.",
+   "subjek": [
+    {
+     "jenis": "timbangan",
+     "tempat": "tengah",
+     "keadaan": {
+      "miring": 1
+     }
+    },
+    {
+     "jenis": "nur",
+     "tempat": "kiri",
+     "keadaan": {
+      "nama": "Adam"
+     }
+    }
+   ],
+   "kamu": "tidak",
+   "kamera": {
+    "bidikan": "dekat",
+    "aksen": "hentak"
+   },
+   "teks_layar": "TERMASUK YANG RUGI",
+   "klimaks": false
+  },
+  {
+   "beat": 15,
+   "bukti": "Dan Allah menerima taubatnya.",
+   "subjek": [
+    {
+     "jenis": "nur",
+     "tempat": "kiri",
+     "keadaan": {
+      "nama": "Adam"
+     }
+    },
+    {
+     "jenis": "gerbang",
+     "tempat": "kanan",
+     "keadaan": {
+      "buka": [
+       0,
+       0.35
+      ]
+     }
+    }
+   ],
+   "kamu": "tidak",
+   "kamera": {
+    "bidikan": "sedang",
+    "aksen": null
+   },
+   "teks_layar": "DITERIMA",
+   "klimaks": false
+  },
+  {
+   "beat": 16,
+   "bukti": "Sebesar apa pun dosamu… pintu",
+   "subjek": [
+    {
+     "jenis": "gerbang",
+     "tempat": "tengah",
+     "keadaan": {
+      "buka": [
+       0.35,
+       0.6
+      ]
+     }
+    }
+   ],
+   "kamu": "utama",
+   "kamera": {
+    "bidikan": "sedang",
+    "aksen": null
+   },
+   "teks_layar": null,
+   "klimaks": false
+  },
+  {
+   "beat": 17,
+   "bukti": "itu masih terbuka.",
+   "subjek": [
+    {
+     "jenis": "gerbang",
+     "tempat": "tengah",
+     "keadaan": {
+      "buka": [
+       0.6,
+       1
+      ]
+     }
+    }
+   ],
+   "kamu": "saksi",
+   "kamera": {
+    "bidikan": "lebar",
+    "aksen": "hentak"
+   },
+   "teks_layar": "MASIH TERBUKA",
+   "klimaks": true
+  },
+  {
+   "beat": 18,
+   "bukti": "Ucapkan doa ini,",
+   "subjek": [
+    {
+     "jenis": "sajadah",
+     "tempat": "tengah"
+    },
+    {
+     "jenis": "gerbang",
+     "tempat": "jauh",
+     "keadaan": {
+      "buka": 1
+     }
+    }
+   ],
+   "kamu": "utama",
+   "kamera": {
+    "bidikan": "sedang",
+    "aksen": null
+   },
+   "teks_layar": null,
+   "klimaks": false
+  },
+  {
+   "beat": 19,
+   "bukti": "malam ini.",
+   "subjek": [
+    {
+     "jenis": "jendela",
+     "tempat": "tengah",
+     "keadaan": {
+      "terang": 0.3
+     }
+    },
+    {
+     "jenis": "bulan",
+     "tempat": "jauh"
+    },
+    {
+     "jenis": "sajadah",
+     "tempat": "depan_kiri"
+    }
+   ],
+   "kamu": "utama",
+   "kamera": {
+    "bidikan": "dekat",
+    "aksen": null
+   },
+   "teks_layar": "MALAM INI",
+   "klimaks": false
+  }
+ ]
+}

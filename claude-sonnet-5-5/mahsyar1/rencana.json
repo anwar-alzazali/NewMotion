@@ -1,0 +1,374 @@
+{
+ "objek_inti": {
+  "jenis": "surya",
+  "perkembangan": "matahari kecil di cakrawala, lalu didekatkan sampai raksasa dan menekan seluruh manusia, tetap menyengat sampai naungan muncul di akhir"
+ },
+ "beat": [
+  {
+   "beat": 1,
+   "bukti": "Kamu akan dibangkitkan… tanpa sehelai pakaian.",
+   "subjek": [
+    {
+     "jenis": "retakan",
+     "tempat": "tengah",
+     "keadaan": {
+      "buka": 0.25,
+      "goyang": 0.5
+     }
+    },
+    {
+     "jenis": "awan",
+     "tempat": "jauh"
+    }
+   ],
+   "kamu": "utama",
+   "kamera": {
+    "bidikan": "sedang",
+    "aksen": null
+   },
+   "teks_layar": "TANPA SEHELAI PAKAIAN",
+   "klimaks": false
+  },
+  {
+   "beat": 2,
+   "bukti": "Tanah di atasmu terbelah. Kamu bangkit, tanpa alas kaki.",
+   "subjek": [
+    {
+     "jenis": "retakan",
+     "tempat": "tengah",
+     "keadaan": {
+      "buka": [
+       0.25,
+       0.9
+      ],
+      "goyang": 1
+     }
+    }
+   ],
+   "kamu": "utama",
+   "kamera": {
+    "bidikan": "dekat",
+    "aksen": null
+   },
+   "teks_layar": "TANPA ALAS KAKI",
+   "klimaks": false
+  },
+  {
+   "beat": 3,
+   "bukti": "Ya Rasulullah, apakah laki-laki dan perempuan saling melihat?",
+   "subjek": [
+    {
+     "jenis": "nur",
+     "tempat": "tengah",
+     "keadaan": {
+      "nama": "Rasulullah ﷺ"
+     }
+    },
+    {
+     "jenis": "awan",
+     "tempat": "jauh"
+    }
+   ],
+   "kamu": "tidak",
+   "kamera": {
+    "bidikan": "sedang",
+    "aksen": null
+   },
+   "teks_layar": "TERLALU DAHSYAT",
+   "klimaks": false
+  },
+  {
+   "beat": 4,
+   "bukti": "Seluruh manusia, dari yang pertama sampai yang terakhir.",
+   "subjek": [
+    {
+     "jenis": "kerumunan",
+     "tempat": "tengah",
+     "keadaan": {
+      "n": 120,
+      "baris": 6,
+      "pose": "berdiri",
+      "rim": 0.3
+     }
+    },
+    {
+     "jenis": "surya",
+     "tempat": "jauh",
+     "keadaan": {
+      "r": 30,
+      "terang": 0.3
+     }
+    }
+   ],
+   "kamu": "saksi",
+   "kamera": {
+    "bidikan": "lebar",
+    "aksen": null
+   },
+   "teks_layar": "TIDAK ADA JALAN PULANG",
+   "klimaks": false
+  },
+  {
+   "beat": 5,
+   "bukti": "Matahari… didekatkan. Hanya sejauh satu mil.",
+   "subjek": [
+    {
+     "jenis": "surya",
+     "tempat": "jauh",
+     "keadaan": {
+      "r": [
+       30,
+       320
+      ],
+      "terang": [
+       0.3,
+       1
+      ]
+     }
+    },
+    {
+     "jenis": "kerumunan",
+     "tempat": "tengah",
+     "keadaan": {
+      "n": 120,
+      "baris": 6,
+      "pose": "tunduk",
+      "rim": 0.8
+     }
+    }
+   ],
+   "kamu": "saksi",
+   "kamera": {
+    "bidikan": "lebar",
+    "aksen": "hentak"
+   },
+   "teks_layar": "SEJAUH SATU MIL",
+   "klimaks": true
+  },
+  {
+   "beat": 6,
+   "bukti": "Ada yang sampai mata kaki. Ada yang sampai lutut. Ada yang sampai pinggang. Dan ada… yang keringatnya sampai ke mulut.",
+   "subjek": [
+    {
+     "jenis": "surya",
+     "tempat": "jauh",
+     "keadaan": {
+      "r": 320,
+      "terang": 1
+     }
+    },
+    {
+     "jenis": "kerumunan",
+     "tempat": "tengah",
+     "keadaan": {
+      "n": 80,
+      "baris": 5,
+      "pose": "tunduk",
+      "rim": 0.8
+     }
+    },
+    {
+     "jenis": "ombak",
+     "tempat": "depan_kiri",
+     "keadaan": {
+      "tinggi": [
+       15,
+       110
+      ],
+      "lapis": 2,
+      "cepat": 0.3
+     }
+    }
+   ],
+   "kamu": "tidak",
+   "kamera": {
+    "bidikan": "sedang",
+    "aksen": null
+   },
+   "teks_layar": "SAMPAI KE MULUT",
+   "klimaks": false
+  },
+  {
+   "beat": 7,
+   "bukti": "Keringat itu bahkan meresap ke dalam tanah, sedalam tujuh puluh hasta.",
+   "subjek": [
+    {
+     "jenis": "surya",
+     "tempat": "jauh",
+     "keadaan": {
+      "r": 320,
+      "terang": 1
+     }
+    },
+    {
+     "jenis": "ombak",
+     "tempat": "tengah",
+     "keadaan": {
+      "tinggi": [
+       110,
+       30
+      ],
+      "lapis": 2,
+      "cepat": 0.2
+     }
+    },
+    {
+     "jenis": "retakan",
+     "tempat": "depan_kanan",
+     "keadaan": {
+      "buka": 0.3,
+      "goyang": 0
+     }
+    }
+   ],
+   "kamu": "tidak",
+   "kamera": {
+    "bidikan": "sedang",
+    "aksen": null
+   },
+   "teks_layar": "70 HASTA",
+   "klimaks": false
+  },
+  {
+   "beat": 8,
+   "bukti": "Hari itu, seseorang lari dari saudaranya. Dari ibu dan ayahnya. Dari istri dan anak-anaknya.",
+   "subjek": [
+    {
+     "jenis": "surya",
+     "tempat": "jauh",
+     "keadaan": {
+      "r": 320,
+      "terang": 1
+     }
+    },
+    {
+     "jenis": "arus",
+     "tempat": "tengah",
+     "keadaan": {
+      "mode": "lari",
+      "n": 14,
+      "maju": [
+       0,
+       1
+      ],
+      "rebah": 0
+     }
+    },
+    {
+     "jenis": "kerumunan",
+     "tempat": "kiri",
+     "keadaan": {
+      "n": 20,
+      "pose": "tolak",
+      "rim": 0.5
+     }
+    }
+   ],
+   "kamu": "tidak",
+   "kamera": {
+    "bidikan": "lebar",
+    "aksen": null
+   },
+   "teks_layar": "SEMUA LARI",
+   "klimaks": false
+  },
+  {
+   "beat": 9,
+   "bukti": "Kamu menunduk. Keringatmu… sampai mana?",
+   "subjek": [
+    {
+     "jenis": "ombak",
+     "tempat": "depan_kiri",
+     "keadaan": {
+      "tinggi": [
+       30,
+       80
+      ],
+      "lapis": 2,
+      "cepat": 0.2
+     }
+    },
+    {
+     "jenis": "kerumunan",
+     "tempat": "jauh",
+     "keadaan": {
+      "n": 60,
+      "pose": "tunduk",
+      "rim": 0.6
+     }
+    },
+    {
+     "jenis": "surya",
+     "tempat": "jauh",
+     "keadaan": {
+      "r": 320,
+      "terang": 1
+     }
+    }
+   ],
+   "kamu": "utama",
+   "kamera": {
+    "bidikan": "dekat",
+    "aksen": null
+   },
+   "teks_layar": "SAMPAI MANA?",
+   "klimaks": false
+  },
+  {
+   "beat": 10,
+   "bukti": "ada tujuh golongan yang justru mendapat naungan hari itu",
+   "subjek": [
+    {
+     "jenis": "mangga",
+     "tempat": "tengah",
+     "keadaan": {
+      "lebar": 1.4
+     }
+    },
+    {
+     "jenis": "bulan",
+     "tempat": "jauh"
+    },
+    {
+     "jenis": "surya",
+     "tempat": "jauh",
+     "keadaan": {
+      "r": 200,
+      "terang": 0.6
+     }
+    }
+   ],
+   "kamu": "utama",
+   "kamera": {
+    "bidikan": "sedang",
+    "aksen": null
+   },
+   "teks_layar": "7 GOLONGAN",
+   "klimaks": false
+  },
+  {
+   "beat": 11,
+   "bukti": "Kirim ke orang yang ingin kamu ajak berteduh bersama.",
+   "subjek": [
+    {
+     "jenis": "hp",
+     "tempat": "depan_kanan"
+    },
+    {
+     "jenis": "mangga",
+     "tempat": "jauh",
+     "keadaan": {
+      "lebar": 1.2
+     }
+    }
+   ],
+   "kamu": "utama",
+   "kamera": {
+    "bidikan": "dekat",
+    "aksen": null
+   },
+   "teks_layar": null,
+   "klimaks": false
+  }
+ ]
+}

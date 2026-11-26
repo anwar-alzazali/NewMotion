@@ -1,0 +1,2 @@
+{"naskah": "tests/data/tolok_ukur/yajuj1.json", "model": "claude-sonnet-5-5", "penyedia": "anthropic", "token_masuk": 9002, "token_keluar": 4733, "biaya_usd": 0.065334, "percobaan": ["claude-sonnet-5-5: diterima (28.0 dtk)"], "shot": 11, "skor_gabungan": 94, "skor_aspek": {"ritme": 63, "kamera": 90, "lingkungan": 97, "benda": 97, "tokoh": 100, "teks_layar": 69, "gerak": 100, "cerita": 100}}
+selesai hasil/claude-sonnet-5-5/yajuj1/video.mp4 58.36 dtk; 2 efek suara

@@ -1,0 +1,23 @@
+{
+ "naskah": "tests/data/tolok_ukur/yajuj2.json",
+ "model": "claude-sonnet-5-5",
+ "penyedia": "anthropic",
+ "token_masuk": 9021,
+ "token_keluar": 4460,
+ "biaya_usd": 0.062642,
+ "percobaan": [
+  "claude-sonnet-5-5: diterima (26.9 dtk)"
+ ],
+ "shot": 13,
+ "skor_gabungan": 92,
+ "skor_aspek": {
+  "ritme": 74,
+  "kamera": 84,
+  "lingkungan": 97,
+  "benda": 94,
+  "tokoh": 100,
+  "teks_layar": 43,
+  "gerak": 95,
+  "cerita": 100
+ }
+}
