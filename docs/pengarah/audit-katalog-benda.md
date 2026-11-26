@@ -76,8 +76,10 @@ Aturan:
 6. Properti renderer harus JSON-valid dan tidak boleh menimpa ID, jenis, posisi, atau
    lapisan dasar.
 7. Jenis renderer di luar subset terverifikasi ditolak.
-8. Motor yang terikat pada pengendara tetap dimiliki pengarah visual tokoh; katalog
-   ini tidak menggandakan kepemilikan kendaraan.
+8. Jika naskah memiliki entitas motor ber-ID dan peristiwa menautkan
+   `sasaran_benda_id`, pengarah tokoh memakai ID tersebut sebagai `kendaraan_id`
+   dan tidak membuat motor sintetis kedua. Jika entitas motor tidak dideklarasikan,
+   pengarah tokoh mempertahankan fallback motor sintetis yang sudah ada.
 
 ## Integrasi
 
