@@ -113,6 +113,31 @@ def terapkan_rencana_visual_tokoh(spec):
         if not isinstance(boneka_lama, list):
             raise GalatAdapterVisualTokoh(f"boneka shot {indeks} harus berupa daftar")
 
+        # Benda renderer hanya ditambahkan bila paket genre menyatakannya secara eksplisit.
+        daftar_benda = rencana_shot.get("benda", [])
+        if not isinstance(daftar_benda, list):
+            raise GalatAdapterVisualTokoh(f"Daftar benda shot {indeks} harus berupa daftar")
+        benda_lama = shot.setdefault("benda", [])
+        if not isinstance(benda_lama, list):
+            raise GalatAdapterVisualTokoh(f"benda shot {indeks} harus berupa daftar")
+        id_benda = {
+            str(item.get("id")) for item in benda_lama
+            if isinstance(item, Mapping) and item.get("id") is not None
+        }
+        for benda in daftar_benda:
+            if not isinstance(benda, Mapping):
+                raise GalatAdapterVisualTokoh(f"Benda shot {indeks} harus berupa objek")
+            identitas_benda = benda.get("id")
+            jenis_benda = benda.get("jenis")
+            if not isinstance(identitas_benda, str) or not identitas_benda.strip():
+                raise GalatAdapterVisualTokoh(f"Benda shot {indeks} wajib memiliki ID")
+            if not isinstance(jenis_benda, str) or not jenis_benda.strip():
+                raise GalatAdapterVisualTokoh(f"Benda {identitas_benda!r} wajib memiliki jenis")
+            if identitas_benda in id_benda:
+                raise GalatAdapterVisualTokoh(f"Benda {identitas_benda!r} digandakan pada shot {indeks}")
+            benda_lama.append(deepcopy(dict(benda)))
+            id_benda.add(identitas_benda)
+
         indeks_aktor = {}
         for nomor_lama, boneka_lama_item in enumerate(boneka_lama):
             if isinstance(boneka_lama_item, Mapping):

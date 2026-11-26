@@ -1,14 +1,138 @@
-name: Uji visual adegan motor dan jembatan
+name: Uji visual NewMotion
 
 on:
-  # Render hanya dijalankan saat diminta secara manual.
+  pull_request:
+    paths:
+      - 'newmotion/adapter_visual_tokoh.py'
+      - 'newmotion/paket_genre/cerita_umum/**'
+      - 'mesin-video/papan/cerita.js'
+      - 'tests/test_paket_cerita_umum.py'
+      - 'tests/data/cerita_umum_motor_penolong.json'
+      - '.github/workflows/render-adegan-uji-visual.yml'
+  # Render adegan motor-jembatan tetap hanya dijalankan saat diminta manual.
   workflow_dispatch:
 
 permissions:
   contents: read
 
 jobs:
+  render-cerita-umum:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Ambil kode PR
+        uses: actions/checkout@v4
+
+      - name: Siapkan Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+
+      - name: Pastikan FFmpeg dan font tersedia
+        run: |
+          if ! command -v ffmpeg >/dev/null 2>&1 || ! command -v ffprobe >/dev/null 2>&1; then
+            sudo apt-get update -qq
+            sudo apt-get install -y -qq ffmpeg
+          fi
+          if ! command -v fc-match >/dev/null 2>&1 || ! fc-match "DejaVu Sans" >/dev/null 2>&1; then
+            sudo apt-get update -qq
+            sudo apt-get install -y -qq fonts-dejavu-core
+          fi
+          ffmpeg -version | head -n 1
+
+      - name: Pasang runtime, dependensi render, dan Chromium
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -e '.[uji,render]'
+          python -m playwright install --with-deps chromium
+
+      - name: Uji kontrak paket cerita umum
+        run: python -m pytest tests/test_paket_cerita_umum.py -q
+
+      - name: Render naskah melalui CLI NewMotion
+        run: |
+          mkdir -p hasil-uji-visual
+          newmotion render tests/data/cerita_umum_motor_penolong.json \
+            --naskah --genre cerita_umum --tanpa-suara -d 7 \
+            -o "$GITHUB_WORKSPACE/hasil-uji-visual/cerita-umum-motor-penolong.mp4"
+          test -s hasil-uji-visual/cerita-umum-motor-penolong.mp4
+          test -s hasil-uji-visual/cerita-umum-motor-penolong.papan.json
+
+      - name: Verifikasi spesifikasi hasil pengarahan
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p = Path("hasil-uji-visual/cerita-umum-motor-penolong.papan.json")
+          spec = json.loads(p.read_text(encoding="utf-8"))
+          import sys
+          root = Path.cwd()
+          sys.path.insert(0, str(root / "mesin-video"))
+          import papan_buat
+          papan_buat.jaga_spek(spec)
+          html = papan_buat.buat_html(spec, dasar=str(root), sudah_dijaga=True)
+          assert "motor-beat-001" in html, "HTML renderer tidak memuat motor"
+          shots = spec["cerita"]["shot"]
+          assert len(shots) == 2, f"Jumlah shot tidak sesuai: {len(shots)}"
+          pertama, kedua = shots
+          motor = next(x for x in pertama["benda"] if x.get("jenis") == "motor")
+          pengendara = next(x for x in pertama["boneka"] if x.get("aktor_id") == "pengendara")
+          penolong = next(x for x in pertama["boneka"] if x.get("aktor_id") == "penolong")
+          assert motor["miring"][-1][1] == 28, "Motor tidak memiliki kemiringan saat tergelincir"
+          assert pengendara.get("kendaraan_id") == motor["id"], "Pengendara tidak terikat ke motor"
+          assert pengendara.get("lepas_kendaraan_at") == 0.9, "Waktu lepas pengendara tidak benar"
+          assert penolong.get("jalan") == 1.0, "Penolong tidak memakai kanal gerak jalan"
+          assert penolong.get("sasaran_id") == 1, "Penolong tidak mengarah ke pengendara"
+          assert pengendara["y"][-1][1] - penolong["y"][-1][1] >= 80, "Penolong tidak berada pada bidang belakang korban"
+          penolong_akhir = next(x for x in kedua["boneka"] if x.get("aktor_id") == "penolong")
+          pengendara_akhir = next(x for x in kedua["boneka"] if x.get("aktor_id") == "pengendara")
+          assert penolong_akhir["x"] == penolong["x"][-1][1], "Posisi penolong tidak kontinu"
+          assert penolong_akhir["y"] == penolong["y"][-1][1], "Kedalaman penolong tidak kontinu"
+          assert pengendara_akhir["x"] == pengendara["x"][-1][1], "Posisi pengendara tidak kontinu"
+          motor_awal = next(x for x in pertama["benda"] if x.get("jenis") == "motor")
+          motor_lanjut = next(x for x in kedua["benda"] if x.get("jenis") == "motor")
+          assert motor_lanjut["id"] == motor_awal["id"], "ID motor berubah antarscene"
+          assert motor_lanjut["x"] == motor_awal["x"][-1][1], "Posisi motor tidak kontinu"
+          assert motor_lanjut["miring"] == motor_awal["miring"][-1][1], "Kemiringan motor tidak kontinu"
+          print("LOLOS: motor miring, pengendara terlepas, penolong berjalan, dan posisi antarscene kontinu.")
+          PY
+
+      - name: Verifikasi MP4 dan ambil frame audit
+        run: |
+          video="hasil-uji-visual/cerita-umum-motor-penolong.mp4"
+          ffprobe -v error -show_entries format=duration,size:stream=codec_name,width,height,r_frame_rate -of json "$video" > hasil-uji-visual/metadata.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          data = json.loads(Path("hasil-uji-visual/metadata.json").read_text())
+          video = next((s for s in data["streams"] if s.get("codec_name") == "h264"), None)
+          if video is None:
+              raise SystemExit("Stream H.264 tidak ditemukan.")
+          if (video.get("width"), video.get("height")) != (1080, 1920):
+              raise SystemExit("Resolusi video bukan 1080x1920.")
+          durasi = float(data["format"]["duration"])
+          if not 6.5 <= durasi <= 7.5:
+              raise SystemExit(f"Durasi tidak sesuai: {durasi:.2f} detik.")
+          print(f"LOLOS: H.264 1080x1920, durasi {durasi:.2f} detik.")
+          PY
+          for detik in 0.5 1.0 2.5 3.8 4.5 5.8 6.8; do
+            ffmpeg -y -loglevel error -ss "$detik" -i "$video" -frames:v 1 "hasil-uji-visual/frame-$detik.png"
+          done
+          sha256sum "$video" > hasil-uji-visual/SHA256SUMS.txt
+
+      - name: Simpan video, papan, metadata, dan frame audit
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: bukti-render-cerita-umum-motor-penolong
+          path: hasil-uji-visual/
+          if-no-files-found: warn
+          retention-days: 14
+
   render-adegan-uji-visual:
+    if: github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
