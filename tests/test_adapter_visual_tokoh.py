@@ -51,7 +51,7 @@ def test_adapter_menerjemahkan_gerak_jalan_dan_profil_karakter():
     assert boneka["aktor_id"] == "penolong"
     assert boneka["x"] == [[0, 180], [2, 520]]
     assert boneka["jalan"] == 1.0
-    assert boneka["pose"] == [[0, "berdiri"], [1.8, "menolong"]]
+    assert boneka["karakter"]["gerak"] == [[0, "berdiri"], [1.8, "menolong"]]
     assert boneka["karakter"]["warna_kulit"] == "#c99a72"
 
 
