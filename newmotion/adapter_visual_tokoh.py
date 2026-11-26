@@ -249,7 +249,7 @@ def terapkan_rencana_visual_tokoh(spec):
 
             for kunci in (
                 "s", "naik", "arah", "wajah", "mata", "lengan", "keringat",
-                "profil", "gaya", "baju", "kendaraan_id",
+                "profil", "sudut", "gaya", "baju", "kendaraan_id",
                 "offset_kendaraan_x", "offset_kendaraan_y", "lepas_kendaraan_at",
             ):
                 if kunci in arahan:
