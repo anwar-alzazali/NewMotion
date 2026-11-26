@@ -1518,7 +1518,7 @@
       [-1, 1].forEach((sg) => {
         const s = sg < 0 ? J.lk : J.rk, sw = sg < 0 ? ayun : -ayun;
         const pp = sg < 0 ? (J.pp_ki == null ? J.pp : J.pp_ki) : (J.pp_ka == null ? J.pp : J.pp_ka), pk = sg < 0 ? (J.pk_ki == null ? J.pk : J.pk_ki) : (J.pk_ka == null ? J.pk : J.pk_ka);
-        const H = [sg * 26, hy0];
+        const H = [tigaPerempat ? (sg < 0 ? -18 : 26) : sg * 26, hy0];
         let K, F;
         if (J.turun > 0) {
           // Saat pinggul turun, lutut menekuk agar telapak tetap berada di garis tanah.
@@ -1547,13 +1547,15 @@
     // Torso samping: dada dan pinggul mengarah ke depan perjalanan.
     let bdn = samping
       ? `<path d="M -24 ${-396 + nafas} Q 12 ${-420 + nafas} 34 ${-382 + nafas} L 32 ${-270 + nafas} Q 22 ${-222 + nafas} 4 ${-206 + nafas} L -22 ${-244 + nafas} Z" fill="${BD}" stroke="${warna(BD, "#000000", 0.18)}" stroke-width="4"/>`
-      : `<rect x="${-70 - 30 * GM}" y="${-395 + nafas}" width="${140 + 60 * GM}" height="215" rx="${58 + 20 * GM}" fill="${BD}"/>`;
+      : tigaPerempat
+        ? `<path d="M -48 ${-395 + nafas} Q -8 ${-426 + nafas} 46 ${-390 + nafas} L 70 ${-250 + nafas} Q 36 ${-208 + nafas} -24 ${-206 + nafas} L -54 ${-252 + nafas} Z" fill="${BD}" stroke="${warna(BD, "#000000", 0.18)}" stroke-width="4"/>`
+        : `<rect x="${-70 - 30 * GM}" y="${-395 + nafas}" width="${140 + 60 * GM}" height="215" rx="${58 + 20 * GM}" fill="${BD}"/>`;
     if (P && !samping) bdn += bajuDetail(P, BD, nafas, GM);
     // lengan
     const lengan = (sg, s) => {
       let a1 = s[0], a2 = s[1]; if (sg > 0 && J.lambai) a2 += Math.sin(t * 9) * 26 * J.lambai;
       const sw = ayun * 0.6 * -sg;
-      const S = samping ? [sisi * (sg < 0 ? 10 : 18), -360 + nafas + (sg < 0 ? -13 : 0)] : [sg * (62 + 26 * GM), -360 + nafas];
+      const S = samping ? [sisi * (sg < 0 ? 10 : 18), -360 + nafas + (sg < 0 ? -13 : 0)] : tigaPerempat ? [sg < 0 ? -44 : 60, -360 + nafas] : [sg * (62 + 26 * GM), -360 + nafas];
       const E = [S[0] + (samping ? sisi : sg) * Math.sin((a1 + sw) * R) * 85, S[1] + Math.cos((a1 + sw) * R) * 85];
       const H = [E[0] + (samping ? sisi : sg) * Math.sin((a2 + sw) * R) * 80, E[1] + Math.cos((a2 + sw) * R) * 80];
       return { ats: `<line x1="${S[0]}" y1="${S[1]}" x2="${E[0]}" y2="${E[1]}" stroke="${BD}" stroke-width="36" stroke-linecap="round"/>`,
@@ -1834,7 +1836,7 @@
     if (RG) k = `<g transform="${RG.T}"><g transform="rotate(${RG.kepala} 0 -400)">${k}</g></g>` + RG.depan;
     let isi = (b.gaya === "siluet" ? g + lenganKanan : `<g filter="url(#${fid})">${g}${lenganKanan}</g>`) + k;
     if (sudutTokoh === "samping_kiri") isi = `<g transform="scale(-1 1)">${isi}</g>`;
-    if (sudutTokoh === "tiga_perempat") isi = `<g transform="scale(.88 1)">${isi}</g>`;
+    // Sudut tiga perempat dibentuk oleh torso asimetris, bahu bertingkat, dan rotasi kepala; panjang anggota gerak tidak diskalakan.
     const gen = v(b.genangan, t, d, 0); // tinggi cairan (px dari telapak): mata kaki 35, lutut 110, pinggang 210, mulut 440
     if (gen > 0) { const w = Math.sin(t * 3) * 6; isi += `<path d="M -105 0 L -105 ${-gen + w} Q -52 ${-gen - 10 - w} 0 ${-gen + w} T 105 ${-gen + w} L 105 0 Z" fill="#ff9a3a" opacity=".72"/><path d="M -105 ${-gen + w} Q -52 ${-gen - 10 - w} 0 ${-gen + w} T 105 ${-gen + w}" fill="none" stroke="#ffe3a8" stroke-width="6"/>`; }
     const potong = b.potong != null ? b.potong : 0; // garis tanah relatif kaki (untuk bangkit dari tanah)
