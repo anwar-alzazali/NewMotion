@@ -1,0 +1,1245 @@
+{
+ "latar": "gelap",
+ "stempel": false,
+ "musik": false,
+ "dekor": false,
+ "suara": "../../audio_manual/mahsyar1_ozhy/narasi.mp3",
+ "waktu": "../../audio_manual/mahsyar1_ozhy/narasi.waktu.json",
+ "sub_kotak": true,
+ "ekor_suara": 2.5,
+ "volume_efek": 0,
+ "cerita": {
+  "label": "PADANG MAHSYAR · BAGIAN 1",
+  "meteran": [
+   {
+    "at": 45.53,
+    "sampai": 61.56,
+    "nilai": [
+     [
+      45.53,
+      0
+     ],
+     [
+      49.82,
+      0
+     ],
+     [
+      50.28,
+      0.08
+     ],
+     [
+      51.76,
+      0.08
+     ],
+     [
+      52.15,
+      0.25
+     ],
+     [
+      53.34,
+      0.25
+     ],
+     [
+      53.76,
+      0.48
+     ],
+     [
+      56.58,
+      0.48
+     ],
+     [
+      57.03,
+      1
+     ]
+    ]
+   },
+   {
+    "at": 71.94,
+    "sampai": 75.4,
+    "nilai": 0
+   }
+  ],
+  "shot": [
+   {
+    "at": 0.0,
+    "langit": 1,
+    "horizon": 1350,
+    "debu": 40,
+    "kamera": {
+     "z": [
+      1.0,
+      1.12
+     ],
+     "x": 540,
+     "y": 1000
+    },
+    "teks": [
+     {
+      "at": 0.0,
+      "teks": "DIBANGKITKAN\nTANPA PAKAIAN",
+      "sub": "HR Bukhari 6527",
+      "y": 380,
+      "ukuran": 104,
+      "warna": "#ffd27a",
+      "sampai": 4.75
+     },
+     {
+      "at": 4.82,
+      "teks": "…dan itu BELUM\nyang paling\nmenakutkan",
+      "y": 380,
+      "ukuran": 84,
+      "warna": "#fff4cf"
+     }
+    ],
+    "boneka": [
+     {
+      "x": 540,
+      "y": 1960,
+      "s": 1.6,
+      "utama": true,
+      "wajah": "takut",
+      "mata": "atas",
+      "keringat": 2,
+      "lengan": [
+       [
+        0,
+        "turun"
+       ],
+       [
+        3.2,
+        "lindungi"
+       ]
+      ]
+     }
+    ],
+    "panas": 1,
+    "matahari": {
+     "x": 540,
+     "y": [
+      700,
+      640
+     ],
+     "r": [
+      380,
+      520
+     ]
+    },
+    "kerumunan": {
+     "n": 260,
+     "y0": 4,
+     "y1": 300,
+     "seed": 5
+    }
+   },
+   {
+    "at": 6.93,
+    "langit": 0.03,
+    "horizon": 1500,
+    "debu": 40,
+    "kamera": {
+     "z": [
+      1.25,
+      1.0
+     ],
+     "x": 540,
+     "y": 1150
+    },
+    "retak": {
+     "x": 540,
+     "y": 1500,
+     "p": [
+      [
+       0.0,
+       0
+      ],
+      [
+       4.79,
+       0
+      ],
+      [
+       5.77,
+       1
+      ]
+     ]
+    },
+    "boneka": [
+     {
+      "x": 540,
+      "y": 1500,
+      "s": 1.7,
+      "mata": [
+       [
+        0.0,
+        "tutup"
+       ],
+       [
+        1.53,
+        "buka"
+       ]
+      ],
+      "wajah": [
+       [
+        0.0,
+        "netral"
+       ],
+       [
+        1.75,
+        "takut"
+       ]
+      ],
+      "naik": [
+       [
+        0.0,
+        0.3
+       ],
+       [
+        5.17,
+        0.3
+       ],
+       [
+        7.75,
+        0.7
+       ]
+      ],
+      "arah": [
+       [
+        2.67,
+        0
+       ],
+       [
+        3.19,
+        -0.5
+       ],
+       [
+        4.25,
+        0.5
+       ],
+       [
+        4.79,
+        0
+       ]
+      ],
+      "utama": true
+     }
+    ]
+   },
+   {
+    "at": 15.45,
+    "langit": 0.1,
+    "horizon": 1100,
+    "debu": 50,
+    "kamera": {
+     "z": [
+      1.0,
+      1.12
+     ],
+     "x": 540,
+     "y": 1100
+    },
+    "kerumunan": {
+     "n": 380,
+     "y0": 4,
+     "y1": 420,
+     "seed": 7,
+     "besar": 0.22
+    },
+    "teks": [
+     {
+      "at": 0.41,
+      "teks": "Apakah mereka\nsaling melihat?",
+      "y": 360,
+      "ukuran": 80,
+      "sampai": 7.59
+     },
+     {
+      "at": 7.69,
+      "teks": "\"Urusan hari itu\nterlalu dahsyat\"",
+      "sub": "HR Bukhari 6527 · Muslim 2859",
+      "y": 360,
+      "ukuran": 80,
+      "warna": "#ffd27a"
+     }
+    ],
+    "boneka": [
+     {
+      "x": 540,
+      "y": 1760,
+      "s": 1.15,
+      "belakang": true,
+      "utama": true
+     }
+    ]
+   },
+   {
+    "at": 27.24,
+    "langit": 0.18,
+    "horizon": 1050,
+    "debu": 50,
+    "kamera": {
+     "z": [
+      1.2,
+      1.0
+     ],
+     "x": 540,
+     "y": 1050
+    },
+    "kerumunan": {
+     "n": 520,
+     "y0": 4,
+     "y1": 380,
+     "seed": 12,
+     "besar": 0.2
+    },
+    "teks": [
+     {
+      "at": 1.22,
+      "teks": "Dari manusia pertama\nsampai terakhir",
+      "sub": "QS Al-Waqi'ah 49-50",
+      "y": 340,
+      "ukuran": 72,
+      "sampai": 5.08
+     },
+     {
+      "at": 5.18,
+      "teks": "Tanpa satu pun tanda",
+      "sub": "HR Bukhari 6521",
+      "y": 340,
+      "ukuran": 80,
+      "sampai": 9.57
+     },
+     {
+      "at": 9.68,
+      "teks": "Tidak ada\njalan pulang",
+      "y": 340,
+      "ukuran": 88
+     }
+    ],
+    "boneka": [
+     {
+      "x": 170,
+      "y": 1620,
+      "s": 0.8,
+      "wajah": "takut",
+      "arah": 0.5,
+      "rambut": "belah",
+      "kulit": "#c98f63",
+      "janggut": true
+     },
+     {
+      "x": 900,
+      "y": 1610,
+      "s": 0.78,
+      "wajah": "bingung",
+      "arah": -0.5,
+      "rambut": "kerudung",
+      "kulit": "#f0d2b4"
+     },
+     {
+      "x": 540,
+      "y": 1720,
+      "s": 1.05,
+      "wajah": "bingung",
+      "arah": [
+       [
+        0.0,
+        0
+       ],
+       [
+        0.52,
+        -0.7
+       ],
+       [
+        2.55,
+        -0.7
+       ],
+       [
+        3.32,
+        0.7
+       ],
+       [
+        6.34,
+        0.7
+       ],
+       [
+        6.89,
+        0
+       ],
+       [
+        9.68,
+        0
+       ]
+      ],
+      "wajah2": 0,
+      "utama": true
+     }
+    ]
+   },
+   {
+    "at": 38.45,
+    "langit": [
+     [
+      0.0,
+      0.2
+     ],
+     [
+      3.18,
+      0.3
+     ],
+     [
+      6.42,
+      1
+     ]
+    ],
+    "horizon": 1150,
+    "panas": [
+     [
+      0.0,
+      0
+     ],
+     [
+      3.18,
+      0
+     ],
+     [
+      5.99,
+      1
+     ]
+    ],
+    "kamera": {
+     "z": [
+      1.0,
+      1.08
+     ],
+     "x": 540,
+     "y": 1000
+    },
+    "matahari": {
+     "x": 540,
+     "y": 760,
+     "r": [
+      [
+       0.0,
+       0
+      ],
+      [
+       2.99,
+       40
+      ],
+      [
+       3.36,
+       60
+      ],
+      [
+       6.75,
+       440
+      ]
+     ]
+    },
+    "kerumunan": {
+     "n": 320,
+     "y0": 4,
+     "y1": 380,
+     "seed": 4
+    },
+    "teks": [
+     {
+      "at": 0.25,
+      "teks": "Lalu terjadi\nsesuatu…",
+      "y": 340,
+      "ukuran": 84,
+      "sampai": 3.09
+     },
+     {
+      "at": 4.24,
+      "teks": "Hanya sejauh\n1 MIL",
+      "sub": "HR Muslim 2864",
+      "y": 300,
+      "ukuran": 92,
+      "warna": "#fff4cf"
+     }
+    ],
+    "boneka": [
+     {
+      "x": 540,
+      "y": 1720,
+      "s": 1.05,
+      "mata": [
+       [
+        0.0,
+        "buka"
+       ],
+       [
+        3.18,
+        "atas"
+       ]
+      ],
+      "wajah": [
+       [
+        0.0,
+        "bingung"
+       ],
+       [
+        3.53,
+        "takut"
+       ]
+      ],
+      "lengan": [
+       [
+        0.0,
+        "turun"
+       ],
+       [
+        5.59,
+        "lindungi"
+       ]
+      ],
+      "keringat": [
+       [
+        0.0,
+        0
+       ],
+       [
+        4.93,
+        0
+       ],
+       [
+        6.42,
+        1
+       ]
+      ],
+      "utama": true
+     }
+    ]
+   },
+   {
+    "at": 45.53,
+    "langit": 1,
+    "horizon": 1050,
+    "panas": 1,
+    "debu": 30,
+    "kamera": {
+     "z": [
+      1.0,
+      1.05
+     ],
+     "x": 520,
+     "y": 1100
+    },
+    "matahari": {
+     "x": 270,
+     "y": 330,
+     "r": 210
+    },
+    "teks": [
+     {
+      "at": 0.21,
+      "teks": "Sesuai amalnya",
+      "sub": "HR Muslim 2864",
+      "y": 330,
+      "ukuran": 76
+     }
+    ],
+    "boneka": [
+     {
+      "x": 110,
+      "y": 1330,
+      "s": 0.68,
+      "genangan": [
+       [
+        0.0,
+        0
+       ],
+       [
+        4.29,
+        0
+       ],
+       [
+        4.84,
+        35
+       ]
+      ],
+      "rambut": "pendek",
+      "kulit": "#e8c39e",
+      "wajah": "lelah",
+      "keringat": 2,
+      "ph": 0.0
+     },
+     {
+      "x": 295,
+      "y": 1330,
+      "s": 0.68,
+      "genangan": [
+       [
+        0.0,
+        0
+       ],
+       [
+        6.23,
+        0
+       ],
+       [
+        6.71,
+        110
+       ]
+      ],
+      "rambut": "kerudung",
+      "kulit": "#f0d2b4",
+      "wajah": "takut",
+      "keringat": 2,
+      "ph": 1.3
+     },
+     {
+      "x": 480,
+      "y": 1330,
+      "s": 0.68,
+      "genangan": [
+       [
+        0.0,
+        0
+       ],
+       [
+        7.81,
+        0
+       ],
+       [
+        8.33,
+        210
+       ]
+      ],
+      "rambut": "keriting",
+      "kulit": "#a8714a",
+      "wajah": "lelah",
+      "keringat": 2,
+      "ph": 2.6
+     },
+     {
+      "x": 665,
+      "y": 1330,
+      "s": 0.68,
+      "genangan": [
+       [
+        0.0,
+        0
+       ],
+       [
+        11.05,
+        0
+       ],
+       [
+        11.59,
+        445
+       ]
+      ],
+      "rambut": "tipis",
+      "kulit": "#d9a77c",
+      "janggut": "#e9e4dc",
+      "warna_rambut": "#e9e4dc",
+      "keriput": true,
+      "wajah": "takut",
+      "keringat": 2,
+      "ph": 3.9000000000000004
+     }
+    ]
+   },
+   {
+    "at": 57.21,
+    "langit": 0.9,
+    "horizon": 820,
+    "debu": 20,
+    "kamera": {
+     "z": [
+      1.0,
+      1.06
+     ],
+     "x": 540,
+     "y": 1100
+    },
+    "resap": {
+     "p": [
+      [
+       0.0,
+       0
+      ],
+      [
+       0.88,
+       0
+      ],
+      [
+       4.15,
+       1
+      ]
+     ],
+     "dalam": 820
+    },
+    "teks": [
+     {
+      "at": 2.9,
+      "teks": "70 HASTA",
+      "sub": "HR Bukhari 6532",
+      "y": 420,
+      "ukuran": 120,
+      "warna": "#ffd27a"
+     }
+    ]
+   },
+   {
+    "at": 61.76,
+    "langit": 1,
+    "horizon": 1050,
+    "panas": 1,
+    "debu": 40,
+    "kamera": {
+     "z": [
+      1.08,
+      1.0
+     ],
+     "x": 540,
+     "y": 1150
+    },
+    "matahari": {
+     "x": 540,
+     "y": 380,
+     "r": 300
+    },
+    "kerumunan": {
+     "n": 300,
+     "y0": 4,
+     "y1": 300,
+     "seed": 21
+    },
+    "teks": [
+     {
+      "at": 0.3,
+      "teks": "Yang paling menyakitkan…\nbukan panasnya",
+      "y": 300,
+      "ukuran": 70
+     }
+    ],
+    "boneka": [
+     {
+      "x": [
+       -60,
+       90
+      ],
+      "y": 1500,
+      "s": 0.62,
+      "wajah": "lelah",
+      "keringat": 2,
+      "jalan": 0.8,
+      "arah": 0.5,
+      "tunduk": 0.5,
+      "ph": 0.0,
+      "rambut": "pendek",
+      "kulit": "#e8c39e"
+     },
+     {
+      "x": [
+       260,
+       410
+      ],
+      "y": 1520,
+      "s": 0.66,
+      "wajah": "lelah",
+      "keringat": 2,
+      "jalan": 0.8,
+      "arah": 0.5,
+      "tunduk": 0.5,
+      "ph": 0.9,
+      "rambut": "kerudung",
+      "kulit": "#f0d2b4"
+     },
+     {
+      "x": [
+       620,
+       770
+      ],
+      "y": 1490,
+      "s": 0.6,
+      "wajah": "lelah",
+      "keringat": 2,
+      "jalan": 0.8,
+      "arah": 0.5,
+      "tunduk": 0.5,
+      "ph": 1.8,
+      "rambut": "keriting",
+      "kulit": "#a8714a"
+     },
+     {
+      "x": [
+       900,
+       1050
+      ],
+      "y": 1530,
+      "s": 0.7,
+      "wajah": "lelah",
+      "keringat": 2,
+      "jalan": 0.8,
+      "arah": 0.5,
+      "tunduk": 0.5,
+      "ph": 2.7,
+      "rambut": "tipis",
+      "kulit": "#d9a77c",
+      "janggut": "#e9e4dc",
+      "warna_rambut": "#e9e4dc",
+      "keriput": true
+     },
+     {
+      "x": [
+       80,
+       230
+      ],
+      "y": 1760,
+      "s": 0.95,
+      "wajah": "lelah",
+      "keringat": 2,
+      "jalan": 0.8,
+      "arah": 0.5,
+      "tunduk": 0.5,
+      "ph": 3.6,
+      "rambut": "belah",
+      "kulit": "#c98f63",
+      "janggut": true
+     },
+     {
+      "x": [
+       520,
+       670
+      ],
+      "y": 1790,
+      "s": 1.0,
+      "wajah": "lelah",
+      "keringat": 2,
+      "jalan": 0.8,
+      "arah": 0.5,
+      "tunduk": 0.5,
+      "ph": 4.5,
+      "rambut": "kerudung",
+      "kulit": "#d8a983"
+     },
+     {
+      "x": [
+       900,
+       1050
+      ],
+      "y": 1770,
+      "s": 0.92,
+      "wajah": "lelah",
+      "keringat": 2,
+      "jalan": 0.8,
+      "arah": 0.5,
+      "tunduk": 0.5,
+      "ph": 5.4,
+      "rambut": "pendek",
+      "kulit": "#8d5a3b"
+     }
+    ]
+   },
+   {
+    "at": 65.93,
+    "langit": [
+     0.35,
+     0.1
+    ],
+    "horizon": 1150,
+    "debu": 40,
+    "kamera": {
+     "z": [
+      1.1,
+      1.0
+     ],
+     "x": 540,
+     "y": 1150
+    },
+    "teks": [
+     {
+      "at": 0.19,
+      "teks": "Lari dari keluarganya",
+      "sub": "QS 'Abasa 34-36",
+      "y": 340,
+      "ukuran": 76
+     }
+    ],
+    "boneka": [
+     {
+      "x": [
+       [
+        0.0,
+        620
+       ],
+       [
+        0.59,
+        620
+       ],
+       [
+        5.91,
+        960
+       ]
+      ],
+      "y": 1720,
+      "s": 1.05,
+      "belakang": [
+       [
+        0.0,
+        false
+       ],
+       [
+        0.59,
+        true
+       ]
+      ],
+      "wajah": "takut",
+      "jalan": [
+       [
+        0.0,
+        0
+       ],
+       [
+        0.59,
+        0
+       ],
+       [
+        0.79,
+        1
+       ]
+      ],
+      "utama": true
+     },
+     {
+      "x": 300,
+      "y": 1640,
+      "s": 0.85,
+      "wajah": "sedih",
+      "arah": 0.5,
+      "rambut": "kerudung",
+      "kulit": "#f0d2b4"
+     },
+     {
+      "x": 150,
+      "y": 1620,
+      "s": 0.82,
+      "wajah": "sedih",
+      "arah": 0.6,
+      "rambut": "tipis",
+      "kulit": "#d9a77c",
+      "janggut": "#e9e4dc",
+      "warna_rambut": "#e9e4dc",
+      "keriput": true
+     },
+     {
+      "x": 430,
+      "y": 1600,
+      "s": 0.55,
+      "wajah": "sedih",
+      "arah": 0.4,
+      "rambut": "keriting",
+      "kulit": "#a8714a"
+     }
+    ]
+   },
+   {
+    "at": 71.94,
+    "langit": 1,
+    "horizon": 1300,
+    "panas": 1,
+    "debu": 30,
+    "kamera": {
+     "z": [
+      1.0,
+      1.35
+     ],
+     "x": 540,
+     "y": 1050
+    },
+    "teks": [
+     {
+      "at": 1.19,
+      "teks": "Keringatmu…\nsampai mana?",
+      "y": 300,
+      "ukuran": 96,
+      "warna": "#ffd27a"
+     }
+    ],
+    "boneka": [
+     {
+      "x": 540,
+      "y": 1900,
+      "s": 1.5,
+      "wajah": "takut",
+      "mata": "bawah",
+      "tunduk": [
+       [
+        0.0,
+        0
+       ],
+       [
+        0.54,
+        1
+       ]
+      ],
+      "keringat": 1,
+      "utama": true
+     }
+    ]
+   },
+   {
+    "at": 75.4,
+    "langit": [
+     1,
+     0.75
+    ],
+    "horizon": 1150,
+    "panas": [
+     1,
+     0.3
+    ],
+    "debu": 30,
+    "kamera": {
+     "z": [
+      1.0,
+      1.06
+     ],
+     "x": 540,
+     "y": 1050
+    },
+    "naungan": {
+     "x": 540,
+     "y": 1150,
+     "r": [
+      [
+       0.0,
+       60
+      ],
+      [
+       3.4,
+       200
+      ]
+     ],
+     "kuat": [
+      [
+       0.0,
+       0
+      ],
+      [
+       3.4,
+       1
+      ]
+     ]
+    },
+    "teks": [
+     {
+      "at": 1.1,
+      "teks": "7 GOLONGAN\nDINAUNGI",
+      "sub": "HR Bukhari 660",
+      "y": 340,
+      "ukuran": 96,
+      "warna": "#d8f7ff",
+      "sampai": 6.78
+     },
+     {
+      "at": 6.87,
+      "teks": "Salah satunya bisa\nkamu kerjakan\nMALAM INI",
+      "y": 340,
+      "ukuran": 76,
+      "warna": "#ffd27a",
+      "sampai": 9.15
+     },
+     {
+      "at": 9.22,
+      "teks": "BAGIAN 2 →",
+      "y": 400,
+      "ukuran": 110,
+      "warna": "#d8f7ff"
+     }
+    ],
+    "boneka": [
+     {
+      "x": 540,
+      "y": 1760,
+      "s": 1.05,
+      "wajah": [
+       [
+        0.0,
+        "takut"
+       ],
+       [
+        2.4,
+        "lega"
+       ]
+      ],
+      "mata": "buka",
+      "utama": true
+     }
+    ]
+   },
+   {
+    "at": 85.49,
+    "langit": 0.6,
+    "horizon": 1150,
+    "debu": 30,
+    "kamera": {
+     "z": [
+      1.0,
+      1.1
+     ],
+     "x": 540,
+     "y": 1100
+    },
+    "naungan": {
+     "x": 540,
+     "y": 1150,
+     "r": 220,
+     "kuat": 1
+    },
+    "teks": [
+     {
+      "at": 0.26,
+      "teks": "Ada yang keliru?\nKoreksi + sumbernya",
+      "y": 340,
+      "ukuran": 70,
+      "sampai": 3.53
+     },
+     {
+      "at": 3.63,
+      "teks": "Kirim ke orang yang\ningin kamu ajak\nberteduh bersama",
+      "y": 340,
+      "ukuran": 70,
+      "warna": "#d8f7ff"
+     }
+    ],
+    "boneka": [
+     {
+      "x": 540,
+      "y": [
+       1760,
+       1500
+      ],
+      "s": [
+       1.05,
+       0.7
+      ],
+      "belakang": true,
+      "jalan": 0.7,
+      "utama": true
+     }
+    ]
+   }
+  ]
+ },
+ "rekaman": [
+  {
+   "berkas": "../../aset/suara/drone_gelap.mp3",
+   "at": 0.0,
+   "vol": 0.35,
+   "ulang": true
+  },
+  {
+   "berkas": "../../aset/suara/braam.mp3",
+   "at": 0.0,
+   "vol": 0.5
+  },
+  {
+   "berkas": "../../aset/suara/detak_jantung.mp3",
+   "at": 4.68,
+   "sampai": 15.45,
+   "vol": 0.55,
+   "ulang": true
+  },
+  {
+   "berkas": "../../aset/suara/tanah_retak.mp3",
+   "at": 11.63,
+   "vol": 0.7
+  },
+  {
+   "berkas": "../../aset/suara/whoosh.mp3",
+   "at": 15.23,
+   "vol": 0.6
+  },
+  {
+   "berkas": "../../aset/suara/kerumunan_cemas.mp3",
+   "at": 15.45,
+   "sampai": 38.62,
+   "vol": 0.4,
+   "ulang": true
+  },
+  {
+   "berkas": "../../aset/suara/angin_gurun.mp3",
+   "at": 27.12,
+   "sampai": 75.58,
+   "vol": 0.35,
+   "ulang": true
+  },
+  {
+   "berkas": "../../aset/suara/whoosh.mp3",
+   "at": 27.01,
+   "vol": 0.5
+  },
+  {
+   "berkas": "../../aset/suara/braam.mp3",
+   "at": 41.54,
+   "vol": 0.5
+  },
+  {
+   "berkas": "../../aset/suara/panas_naik.mp3",
+   "at": 41.72,
+   "vol": 0.7
+  },
+  {
+   "berkas": "../../aset/suara/napas_berat.mp3",
+   "at": 43.72,
+   "vol": 0.5
+  },
+  {
+   "berkas": "../../aset/suara/tetes.mp3",
+   "at": 49.94,
+   "vol": 0.8
+  },
+  {
+   "berkas": "../../aset/suara/tetes.mp3",
+   "at": 51.9,
+   "vol": 0.8
+  },
+  {
+   "berkas": "../../aset/suara/tetes.mp3",
+   "at": 53.46,
+   "vol": 0.8
+  },
+  {
+   "berkas": "../../aset/suara/tetes.mp3",
+   "at": 56.68,
+   "vol": 0.9
+  },
+  {
+   "berkas": "../../aset/suara/whoosh.mp3",
+   "at": 57.03,
+   "vol": 0.5
+  },
+  {
+   "berkas": "../../aset/suara/braam.mp3",
+   "at": 61.76,
+   "vol": 0.5
+  },
+  {
+   "berkas": "../../aset/suara/langkah_lari.mp3",
+   "at": 66.52,
+   "vol": 0.7
+  },
+  {
+   "berkas": "../../aset/suara/detak_jantung.mp3",
+   "at": 71.84,
+   "sampai": 75.68,
+   "vol": 0.7,
+   "ulang": true
+  },
+  {
+   "berkas": "../../aset/suara/angin_sejuk.mp3",
+   "at": 75.68,
+   "vol": 0.6
+  },
+  {
+   "berkas": "../../aset/suara/angin_sejuk.mp3",
+   "at": 85.49,
+   "vol": 0.45
+  }
+ ],
+ "watermark": "Alzazali"
+}

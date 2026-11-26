@@ -1,0 +1,2749 @@
+{
+ "latar": "gelap",
+ "stempel": false,
+ "musik": false,
+ "dekor": false,
+ "suara": "../../audio_manual/nuh1_v/narasi.mp3",
+ "ekor_suara": 2.1,
+ "volume_efek": 0,
+ "duck_rasio": 3,
+ "keras_lufs": -15,
+ "rekaman": [
+  {
+   "berkas": "../../aset/suara/braam.mp3",
+   "at": 0,
+   "vol": 0.8
+  },
+  {
+   "berkas": "../../aset/suara/guntur_hujan.mp3",
+   "at": 0,
+   "vol": 0.55
+  },
+  {
+   "berkas": "../../aset/suara/laut_malam.mp3",
+   "at": 0,
+   "vol": 0.5,
+   "ulang": true,
+   "sampai": 10.91
+  },
+  {
+   "berkas": "../../aset/suara/drone_gelap.mp3",
+   "at": 0,
+   "vol": 0.35,
+   "ulang": true,
+   "sampai": 10.91
+  },
+  {
+   "berkas": "../../aset/suara/hentak_serius.mp3",
+   "at": 3.85,
+   "vol": 0.6
+  },
+  {
+   "berkas": "../../aset/suara/kilau_cahaya.mp3",
+   "at": 5.39,
+   "vol": 0.35
+  },
+  {
+   "berkas": "../../aset/suara/hentak_serius.mp3",
+   "at": 10.86,
+   "vol": 0.6
+  },
+  {
+   "berkas": "../../aset/suara/angin_gurun.mp3",
+   "at": 10.71,
+   "vol": 0.3,
+   "sampai": 22.03
+  },
+  {
+   "berkas": "../../aset/suara/langkah_pelan.mp3",
+   "at": 11.51,
+   "vol": 0.3,
+   "sampai": 16.78
+  },
+  {
+   "berkas": "../../aset/suara/palu_kayu.mp3",
+   "at": 16.73,
+   "vol": 0.6
+  },
+  {
+   "berkas": "../../aset/suara/kerumunan_cemas.mp3",
+   "at": 18.58,
+   "vol": 0.35,
+   "sampai": 21.93
+  },
+  {
+   "berkas": "../../aset/suara/palu_kayu.mp3",
+   "at": 18.98,
+   "vol": 0.35
+  },
+  {
+   "berkas": "../../aset/suara/guntur_hujan.mp3",
+   "at": 23.06,
+   "vol": 0.8
+  },
+  {
+   "berkas": "../../aset/suara/braam.mp3",
+   "at": 23.11,
+   "vol": 0.6
+  },
+  {
+   "berkas": "../../aset/suara/air_mengalir.mp3",
+   "at": 26.39,
+   "vol": 0.6,
+   "sampai": 28.57
+  },
+  {
+   "berkas": "../../aset/suara/laut_malam.mp3",
+   "at": 26.39,
+   "vol": 0.5,
+   "ulang": true,
+   "sampai": 47.05
+  },
+  {
+   "berkas": "../../aset/suara/drone_gelap.mp3",
+   "at": 23.11,
+   "vol": 0.35,
+   "ulang": true,
+   "sampai": 47.05
+  },
+  {
+   "berkas": "../../aset/suara/langkah_pelan.mp3",
+   "at": 28.42,
+   "vol": 0.5,
+   "sampai": 32.87
+  },
+  {
+   "berkas": "../../aset/suara/kilau_cahaya.mp3",
+   "at": 28.52,
+   "vol": 0.35
+  },
+  {
+   "berkas": "../../aset/suara/braam.mp3",
+   "at": 34.75,
+   "vol": 0.85
+  },
+  {
+   "berkas": "../../aset/suara/guntur_hujan.mp3",
+   "at": 34.75,
+   "vol": 0.7
+  },
+  {
+   "berkas": "../../aset/suara/detak_jantung.mp3",
+   "at": 36.48,
+   "vol": 0.6,
+   "ulang": true,
+   "sampai": 44.72
+  },
+  {
+   "berkas": "../../aset/suara/hentak_serius.mp3",
+   "at": 39.13,
+   "vol": 0.75
+  },
+  {
+   "berkas": "../../aset/suara/braam.mp3",
+   "at": 45.32,
+   "vol": 0.9
+  },
+  {
+   "berkas": "../../aset/suara/guntur_hujan.mp3",
+   "at": 45.32,
+   "vol": 0.6
+  },
+  {
+   "berkas": "../../aset/suara/dengung_haru.mp3",
+   "at": 47.35,
+   "vol": 0.5
+  },
+  {
+   "berkas": "../../aset/suara/kilau_cahaya.mp3",
+   "at": 47.55,
+   "vol": 0.4
+  },
+  {
+   "berkas": "../../aset/suara/laut_malam.mp3",
+   "at": 47.35,
+   "vol": 0.22,
+   "ulang": true,
+   "sampai": 59.56
+  },
+  {
+   "berkas": "../../aset/suara/hentak_serius.mp3",
+   "at": 51.27,
+   "vol": 0.5
+  },
+  {
+   "berkas": "../../aset/suara/senandung_haru.mp3",
+   "at": 53.53,
+   "vol": 0.35,
+   "sampai": 59.56
+  },
+  {
+   "berkas": "../../aset/suara/pop_teks.mp3",
+   "at": 57.61,
+   "vol": 0.4
+  }
+ ],
+ "cerita": {
+  "cerah": false,
+  "shot": [
+   {
+    "langit": 0.03,
+    "malam": 1,
+    "horizon": 2400,
+    "debu": 0,
+    "at": 0,
+    "kamera": {
+     "z": [
+      1.0,
+      1.1
+     ],
+     "x": 540,
+     "y": 960
+    },
+    "hujan": 0.8,
+    "benda": [
+     {
+      "jenis": "gunung",
+      "x": 160,
+      "y": 1260,
+      "s": 1.0,
+      "warna": "#141a2c",
+      "belakang": true
+     },
+     {
+      "jenis": "gunung",
+      "x": 940,
+      "y": 1260,
+      "s": 1.15,
+      "warna": "#10152a",
+      "belakang": true
+     },
+     {
+      "jenis": "petir",
+      "x": 820,
+      "y": 60,
+      "s": 1,
+      "saat": [
+       0.9
+      ],
+      "belakang": true
+     },
+     {
+      "jenis": "ombak",
+      "x": 540,
+      "y": 1180,
+      "s": 1,
+      "tinggi": 110,
+      "depan": false,
+      "belakang": true,
+      "lapis": 2,
+      "seed": 1
+     },
+     {
+      "jenis": "bahtera",
+      "x": 540,
+      "y": 1290,
+      "s": 0.95,
+      "goyang": 2.2,
+      "cahaya": 1,
+      "orang": 4
+     },
+     {
+      "jenis": "nur",
+      "x": 250,
+      "y": 1052,
+      "s": 0.6
+     },
+     {
+      "jenis": "ombak",
+      "x": 540,
+      "y": 1330,
+      "s": 1,
+      "tinggi": 120,
+      "depan": true,
+      "belakang": false,
+      "lapis": 4,
+      "seed": 4,
+      "jarak": 90
+     }
+    ],
+    "teks": [
+     {
+      "at": 0,
+      "teks": "KAMU DI\nKAPAL ITU",
+      "y": 450,
+      "ukuran": 135,
+      "warna": "#ffd27a"
+     }
+    ]
+   },
+   {
+    "langit": 0.03,
+    "malam": 1,
+    "horizon": 2400,
+    "debu": 0,
+    "at": 3.75,
+    "kamera": {
+     "z": [
+      1.35,
+      1.5
+     ],
+     "x": 560,
+     "y": 1120
+    },
+    "hujan": 0.8,
+    "benda": [
+     {
+      "jenis": "gunung",
+      "x": 160,
+      "y": 1260,
+      "s": 1.0,
+      "warna": "#141a2c",
+      "belakang": true
+     },
+     {
+      "jenis": "gunung",
+      "x": 940,
+      "y": 1260,
+      "s": 1.15,
+      "warna": "#10152a",
+      "belakang": true
+     },
+     {
+      "jenis": "ombak",
+      "x": 540,
+      "y": 1180,
+      "s": 1,
+      "tinggi": 110,
+      "depan": false,
+      "belakang": true,
+      "lapis": 2,
+      "seed": 1
+     },
+     {
+      "jenis": "bahtera",
+      "x": 540,
+      "y": 1290,
+      "s": 0.95,
+      "goyang": 2.2,
+      "cahaya": 1,
+      "orang": 4
+     },
+     {
+      "jenis": "nur",
+      "x": 250,
+      "y": 1052,
+      "s": 0.6
+     },
+     {
+      "jenis": "ombak",
+      "x": 540,
+      "y": 1330,
+      "s": 1,
+      "tinggi": 120,
+      "depan": true,
+      "belakang": false,
+      "lapis": 4,
+      "seed": 4,
+      "jarak": 90
+     }
+    ],
+    "teks": [
+     {
+      "at": 0.05,
+      "teks": "“Kami membawa kamu\nke dalam kapal”",
+      "y": 400,
+      "ukuran": 67,
+      "warna": "#ffffff"
+     },
+     {
+      "at": 0.3,
+      "teks": "QS Al-Haqqah: 11\nterjemahan ringkas",
+      "y": 590,
+      "ukuran": 48,
+      "warna": "#ffd27a"
+     }
+    ]
+   },
+   {
+    "langit": 0.03,
+    "malam": 1,
+    "horizon": 2400,
+    "debu": 0,
+    "at": 5.29,
+    "kamera": {
+     "z": [
+      1.7,
+      1.95
+     ],
+     "x": 800,
+     "y": 1010
+    },
+    "hujan": 0.6,
+    "benda": [
+     {
+      "jenis": "gunung",
+      "x": 160,
+      "y": 1260,
+      "s": 1.0,
+      "warna": "#141a2c",
+      "belakang": true
+     },
+     {
+      "jenis": "gunung",
+      "x": 940,
+      "y": 1260,
+      "s": 1.15,
+      "warna": "#10152a",
+      "belakang": true
+     },
+     {
+      "jenis": "ombak",
+      "x": 540,
+      "y": 1180,
+      "s": 1,
+      "tinggi": 110,
+      "depan": false,
+      "belakang": true,
+      "lapis": 2,
+      "seed": 1
+     },
+     {
+      "jenis": "bahtera",
+      "x": 540,
+      "y": 1290,
+      "s": 0.95,
+      "goyang": 2.2,
+      "cahaya": 1,
+      "orang": 4
+     },
+     {
+      "jenis": "ombak",
+      "x": 540,
+      "y": 1330,
+      "s": 1,
+      "tinggi": 120,
+      "depan": true,
+      "belakang": false,
+      "lapis": 4,
+      "seed": 4,
+      "jarak": 90
+     }
+    ],
+    "teks": [
+     {
+      "at": 0.1,
+      "teks": "NENEK\nMOYANGMU",
+      "y": 480,
+      "ukuran": 130,
+      "warna": "#ffd27a",
+      "sampai": 2.41
+     },
+     {
+      "at": 2.46,
+      "teks": "HANYA\nSEGELINTIR",
+      "y": 480,
+      "ukuran": 122,
+      "warna": "#ffffff"
+     },
+     {
+      "at": 0,
+      "teks": "QS Al-Haqqah: 11\nQS Hud: 40",
+      "y": 215,
+      "ukuran": 46,
+      "warna": "#ffffff"
+     }
+    ]
+   },
+   {
+    "palet": "senja",
+    "malam": 0.35,
+    "horizon": 1180,
+    "langit": 0.2,
+    "debu": 10,
+    "at": 10.71,
+    "kamera": {
+     "z": [
+      1.0,
+      1.14
+     ],
+     "x": 540,
+     "y": 960
+    },
+    "benda": [
+     {
+      "jenis": "gunung",
+      "x": 180,
+      "y": 1190,
+      "s": 1.5,
+      "warna": "#3a2c44"
+     },
+     {
+      "jenis": "gunung",
+      "x": 900,
+      "y": 1190,
+      "s": 1.7,
+      "warna": "#2f2438"
+     },
+     {
+      "jenis": "surya",
+      "x": 800,
+      "y": 1010,
+      "s": 1.0,
+      "r": 150,
+      "terang": 0.8,
+      "belakang": true
+     },
+     {
+      "jenis": "kota",
+      "x": 700,
+      "y": 1200,
+      "s": 0.8,
+      "seed": 5
+     },
+     {
+      "jenis": "nur",
+      "x": 360,
+      "y": 1240,
+      "s": 1.2,
+      "nama": "Nabi Nuh a.s.",
+      "nama_s": 1.0
+     },
+     {
+      "jenis": "arus",
+      "mode": "lari",
+      "x": 800,
+      "y": 1290,
+      "s": 0.85,
+      "n": 18,
+      "maju": [
+       [
+        0,
+        0.2
+       ],
+       [
+        7,
+        0.9
+       ]
+      ],
+      "warna": "#221a2c",
+      "rim": 0.5
+     }
+    ],
+    "teks": [
+     {
+      "at": 0.15,
+      "teks": "950 TAHUN",
+      "y": 400,
+      "ukuran": 135,
+      "warna": "#ffd27a"
+     },
+     {
+      "at": 0,
+      "teks": "QS Al-‘Ankabut: 14",
+      "y": 232,
+      "ukuran": 46,
+      "warna": "#ffffff"
+     }
+    ]
+   },
+   {
+    "palet": "senja",
+    "malam": 0.35,
+    "horizon": 1180,
+    "langit": 0.2,
+    "debu": 10,
+    "at": 16.63,
+    "kamera": {
+     "z": [
+      1.05,
+      1.2
+     ],
+     "x": 560,
+     "y": 1000
+    },
+    "benda": [
+     {
+      "jenis": "gunung",
+      "x": 180,
+      "y": 1190,
+      "s": 1.5,
+      "warna": "#3a2c44"
+     },
+     {
+      "jenis": "gunung",
+      "x": 900,
+      "y": 1190,
+      "s": 1.7,
+      "warna": "#2f2438"
+     },
+     {
+      "jenis": "surya",
+      "x": 800,
+      "y": 1010,
+      "s": 1.0,
+      "r": 150,
+      "terang": 0.8,
+      "belakang": true
+     },
+     {
+      "jenis": "bahtera",
+      "x": 680,
+      "y": 1270,
+      "s": 0.7,
+      "darat": true,
+      "jadi": [
+       [
+        0,
+        0.1
+       ],
+       [
+        1.9499999999999957,
+        0.62
+       ],
+       [
+        4.949999999999996,
+        0.9
+       ]
+      ],
+      "cahaya": 0.3,
+      "goyang": 0
+     },
+     {
+      "jenis": "nur",
+      "x": 300,
+      "y": 1240,
+      "s": 0.9
+     }
+    ],
+    "teks": [
+     {
+      "at": 0.1,
+      "teks": "MEMBUAT KAPAL",
+      "y": 380,
+      "ukuran": 94,
+      "warna": "#ffd27a",
+      "sampai": 1.9
+     },
+     {
+      "at": 0,
+      "teks": "QS Hud: 38",
+      "y": 232,
+      "ukuran": 46,
+      "warna": "#ffffff"
+     }
+    ]
+   },
+   {
+    "palet": "senja",
+    "malam": 0.35,
+    "horizon": 1180,
+    "langit": 0.2,
+    "debu": 10,
+    "at": 18.58,
+    "kamera": {
+     "z": [
+      1.2,
+      1.32
+     ],
+     "x": 600,
+     "y": 1080
+    },
+    "benda": [
+     {
+      "jenis": "gunung",
+      "x": 180,
+      "y": 1190,
+      "s": 1.5,
+      "warna": "#3a2c44"
+     },
+     {
+      "jenis": "gunung",
+      "x": 900,
+      "y": 1190,
+      "s": 1.7,
+      "warna": "#2f2438"
+     },
+     {
+      "jenis": "surya",
+      "x": 800,
+      "y": 1010,
+      "s": 1.0,
+      "r": 150,
+      "terang": 0.8,
+      "belakang": true
+     },
+     {
+      "jenis": "bahtera",
+      "x": 680,
+      "y": 1270,
+      "s": 0.7,
+      "darat": true,
+      "jadi": [
+       [
+        0,
+        0.62
+       ],
+       [
+        3,
+        0.9
+       ]
+      ],
+      "cahaya": 0.3,
+      "goyang": 0
+     },
+     {
+      "jenis": "nur",
+      "x": 300,
+      "y": 1240,
+      "s": 0.9
+     },
+     {
+      "jenis": "arus",
+      "mode": "lari",
+      "x": 420,
+      "y": 1700,
+      "s": 1.5,
+      "n": 9,
+      "maju": [
+       [
+        0,
+        0.15
+       ],
+       [
+        4,
+        0.75
+       ]
+      ],
+      "warna": "#150f1c",
+      "rim": 0.6,
+      "depan": true
+     }
+    ],
+    "teks": [
+     {
+      "at": 0.1,
+      "teks": "MEREKA\nMENGEJEK",
+      "y": 450,
+      "ukuran": 130,
+      "warna": "#ffffff"
+     },
+     {
+      "at": 0,
+      "teks": "QS Hud: 38",
+      "y": 232,
+      "ukuran": 46,
+      "warna": "#ffffff"
+     }
+    ]
+   },
+   {
+    "palet": "senja",
+    "malam": [
+     [
+      0,
+      0.45
+     ],
+     [
+      1.6,
+      1
+     ]
+    ],
+    "horizon": 1180,
+    "langit": 0.2,
+    "debu": 0,
+    "at": 21.78,
+    "kamera": {
+     "z": [
+      1.0,
+      1.14
+     ],
+     "x": 540,
+     "y": 980,
+     "guncang": [
+      [
+       1.3299999999999983,
+       36
+      ]
+     ]
+    },
+    "hujan": [
+     [
+      0,
+      0
+     ],
+     [
+      1.3299999999999983,
+      0.1
+     ],
+     [
+      1.9299999999999984,
+      1
+     ]
+    ],
+    "benda": [
+     {
+      "jenis": "gunung",
+      "x": 180,
+      "y": 1190,
+      "s": 1.5,
+      "warna": "#2a2236"
+     },
+     {
+      "jenis": "gunung",
+      "x": 900,
+      "y": 1190,
+      "s": 1.7,
+      "warna": "#221c30"
+     },
+     {
+      "jenis": "petir",
+      "x": 300,
+      "y": 40,
+      "s": 1,
+      "saat": [
+       1.3299999999999983,
+       5.909999999999999
+      ],
+      "belakang": true
+     },
+     {
+      "jenis": "bahtera",
+      "x": 560,
+      "y": 1380,
+      "s": 0.78,
+      "darat": true,
+      "cahaya": [
+       [
+        0,
+        0.3
+       ],
+       [
+        1.8299999999999983,
+        1
+       ]
+      ],
+      "goyang": 0
+     },
+     {
+      "jenis": "nur",
+      "x": 330,
+      "y": 1178,
+      "s": 0.5
+     },
+     {
+      "jenis": "pancar",
+      "x": 170,
+      "y": 1440,
+      "s": 1,
+      "kuat": [
+       [
+        0,
+        0
+       ],
+       [
+        4.609999999999999,
+        0
+       ],
+       [
+        5.109999999999999,
+        1
+       ]
+      ],
+      "seed": 3
+     },
+     {
+      "jenis": "pancar",
+      "x": 930,
+      "y": 1400,
+      "s": 0.8,
+      "kuat": [
+       [
+        0,
+        0
+       ],
+       [
+        4.859999999999999,
+        0
+       ],
+       [
+        5.409999999999999,
+        1
+       ]
+      ],
+      "seed": 6
+     },
+     {
+      "jenis": "ombak",
+      "x": 540,
+      "y": [
+       [
+        0,
+        2300
+       ],
+       [
+        4.609999999999999,
+        2300
+       ],
+       [
+        7.209999999999999,
+        1560
+       ]
+      ],
+      "s": 1,
+      "tinggi": 30,
+      "depan": true,
+      "belakang": false,
+      "lapis": 3,
+      "seed": 2
+     }
+    ],
+    "teks": [
+     {
+      "at": 1.23,
+      "teks": "PINTU LANGIT\nDIBUKA",
+      "y": 450,
+      "ukuran": 101,
+      "warna": "#ffd27a",
+      "sampai": 4.56
+     },
+     {
+      "at": 4.61,
+      "teks": "BUMI MEMANCARKAN\nMATA AIR",
+      "y": 450,
+      "ukuran": 76,
+      "warna": "#ffffff"
+     },
+     {
+      "at": 0,
+      "teks": "QS Al-Qamar: 11-12",
+      "y": 232,
+      "ukuran": 46,
+      "warna": "#ffffff"
+     }
+    ]
+   },
+   {
+    "langit": 0.03,
+    "malam": 1,
+    "horizon": 1300,
+    "debu": 0,
+    "at": 28.42,
+    "kamera": {
+     "z": [
+      1.0,
+      1.1
+     ],
+     "x": [
+      [
+       0,
+       520
+      ],
+      [
+       5,
+       600
+      ]
+     ],
+     "y": 960
+    },
+    "hujan": 0.45,
+    "benda": [
+     {
+      "jenis": "gunung",
+      "x": 160,
+      "y": 1260,
+      "s": 1.0,
+      "warna": "#141a2c",
+      "belakang": true
+     },
+     {
+      "jenis": "gunung",
+      "x": 940,
+      "y": 1260,
+      "s": 1.15,
+      "warna": "#10152a",
+      "belakang": true
+     },
+     {
+      "jenis": "bahtera",
+      "x": 930,
+      "y": 1330,
+      "s": 0.95,
+      "darat": true,
+      "pintu": 1,
+      "cahaya": 1,
+      "goyang": 0
+     },
+     {
+      "jenis": "hewan",
+      "x": [
+       [
+        0,
+        250
+       ],
+       [
+        5,
+        520
+       ]
+      ],
+      "y": [
+       [
+        0,
+        800
+       ],
+       [
+        5,
+        880
+       ]
+      ],
+      "s": 0.9,
+      "macam": "burung"
+     },
+     {
+      "jenis": "hewan",
+      "x": [
+       [
+        0,
+        230
+       ],
+       [
+        5,
+        450
+       ]
+      ],
+      "y": 1396,
+      "s": 0.9,
+      "macam": "jerapah"
+     },
+     {
+      "jenis": "hewan",
+      "x": [
+       [
+        0,
+        520
+       ],
+       [
+        5,
+        720
+       ]
+      ],
+      "y": 1400,
+      "s": 0.92,
+      "macam": "gajah"
+     },
+     {
+      "jenis": "hewan",
+      "x": [
+       [
+        0,
+        -40
+       ],
+       [
+        5,
+        190
+       ]
+      ],
+      "y": 1404,
+      "s": 0.88,
+      "macam": "unta"
+     },
+     {
+      "jenis": "ombak",
+      "x": 540,
+      "y": 1450,
+      "s": 1,
+      "tinggi": 12,
+      "depan": true,
+      "belakang": false,
+      "lapis": 2,
+      "seed": 7,
+      "kilap": 0.6
+     }
+    ],
+    "teks": [
+     {
+      "at": 0.1,
+      "teks": "SEPASANG\nTIAP JENIS",
+      "y": 450,
+      "ukuran": 122,
+      "warna": "#ffd27a"
+     },
+     {
+      "at": 0,
+      "teks": "QS Hud: 40",
+      "y": 232,
+      "ukuran": 46,
+      "warna": "#ffffff"
+     }
+    ]
+   },
+   {
+    "langit": 0.03,
+    "malam": 1,
+    "horizon": 2400,
+    "debu": 0,
+    "at": 32.67,
+    "kamera": {
+     "z": [
+      1.25,
+      1.0
+     ],
+     "x": 540,
+     "y": 960,
+     "guncang": [
+      [
+       2.0800000000000054,
+       40
+      ]
+     ]
+    },
+    "hujan": 1,
+    "benda": [
+     {
+      "jenis": "gunung",
+      "x": 160,
+      "y": 1260,
+      "s": 1.0,
+      "warna": "#141a2c",
+      "belakang": true
+     },
+     {
+      "jenis": "gunung",
+      "x": 940,
+      "y": 1260,
+      "s": 1.15,
+      "warna": "#10152a",
+      "belakang": true
+     },
+     {
+      "jenis": "petir",
+      "x": 240,
+      "y": 30,
+      "s": 1,
+      "saat": [
+       2.0800000000000054
+      ],
+      "belakang": true
+     },
+     {
+      "jenis": "ombak",
+      "x": 540,
+      "y": 1040,
+      "s": 1,
+      "tinggi": 260,
+      "depan": false,
+      "belakang": true,
+      "lapis": 2,
+      "seed": 3,
+      "panjang": 430,
+      "jarak": 120
+     },
+     {
+      "jenis": "bahtera",
+      "x": 540,
+      "y": 1190,
+      "s": 0.5,
+      "goyang": 6,
+      "cahaya": 1,
+      "orang": 4
+     },
+     {
+      "jenis": "nur",
+      "x": 385,
+      "y": 1065,
+      "s": 0.34
+     },
+     {
+      "jenis": "ombak",
+      "x": 540,
+      "y": 1260,
+      "s": 1,
+      "tinggi": 300,
+      "depan": true,
+      "belakang": false,
+      "lapis": 3,
+      "seed": 9,
+      "panjang": 390,
+      "jarak": 170,
+      "cepat": 1.3
+     }
+    ],
+    "teks": [
+     {
+      "at": 2.03,
+      "teks": "OMBAK LAKSANA\nGUNUNG",
+      "y": 450,
+      "ukuran": 94,
+      "warna": "#ffd27a"
+     },
+     {
+      "at": 0,
+      "teks": "QS Hud: 42",
+      "y": 232,
+      "ukuran": 46,
+      "warna": "#ffffff"
+     }
+    ]
+   },
+   {
+    "langit": 0.03,
+    "malam": 1,
+    "horizon": 2400,
+    "debu": 0,
+    "at": 36.48,
+    "kamera": {
+     "z": [
+      1.5,
+      1.7
+     ],
+     "x": 330,
+     "y": 1080
+    },
+    "hujan": 0.5,
+    "benda": [
+     {
+      "jenis": "gunung",
+      "x": 160,
+      "y": 1260,
+      "s": 1.0,
+      "warna": "#141a2c",
+      "belakang": true
+     },
+     {
+      "jenis": "gunung",
+      "x": 940,
+      "y": 1260,
+      "s": 1.15,
+      "warna": "#10152a",
+      "belakang": true
+     },
+     {
+      "jenis": "ombak",
+      "x": 540,
+      "y": 1180,
+      "s": 1,
+      "tinggi": 60,
+      "depan": false,
+      "belakang": true,
+      "lapis": 2,
+      "seed": 1
+     },
+     {
+      "jenis": "bahtera",
+      "x": 540,
+      "y": 1290,
+      "s": 0.95,
+      "goyang": 1.5,
+      "cahaya": 1,
+      "orang": 4
+     },
+     {
+      "jenis": "nur",
+      "x": 250,
+      "y": 1052,
+      "s": 0.62,
+      "nama": "Nabi Nuh a.s.",
+      "nama_s": 1.25
+     },
+     {
+      "jenis": "ombak",
+      "x": 540,
+      "y": 1330,
+      "s": 1,
+      "tinggi": 70,
+      "depan": true,
+      "belakang": false,
+      "lapis": 4,
+      "seed": 4,
+      "jarak": 90
+     }
+    ],
+    "teks": [
+     {
+      "at": 0.3,
+      "teks": "YANG PALING\nMENYESAKKAN…",
+      "y": 450,
+      "ukuran": 92,
+      "warna": "#ffffff"
+     }
+    ]
+   },
+   {
+    "langit": 0.03,
+    "malam": 1,
+    "horizon": 2400,
+    "debu": 0,
+    "at": 39.03,
+    "kamera": {
+     "z": [
+      1.0,
+      1.1
+     ],
+     "x": 540,
+     "y": 960
+    },
+    "hujan": 0.6,
+    "benda": [
+     {
+      "jenis": "gunung",
+      "x": 160,
+      "y": 1260,
+      "s": 1.0,
+      "warna": "#141a2c",
+      "belakang": true
+     },
+     {
+      "jenis": "gunung",
+      "x": 940,
+      "y": 1260,
+      "s": 1.15,
+      "warna": "#10152a",
+      "belakang": true
+     },
+     {
+      "jenis": "ombak",
+      "x": 540,
+      "y": 1200,
+      "s": 1,
+      "tinggi": 60,
+      "depan": false,
+      "belakang": true,
+      "lapis": 2,
+      "seed": 1
+     },
+     {
+      "jenis": "bahtera",
+      "x": 740,
+      "y": 1300,
+      "s": 0.62,
+      "goyang": 1.5,
+      "cahaya": 1,
+      "orang": 4
+     },
+     {
+      "jenis": "nur",
+      "x": 545,
+      "y": 1148,
+      "s": 0.42
+     },
+     {
+      "jenis": "tebing",
+      "x": 200,
+      "y": 1060,
+      "s": 1.0
+     },
+     {
+      "jenis": "ombak",
+      "x": 540,
+      "y": 1380,
+      "s": 1,
+      "tinggi": 80,
+      "depan": true,
+      "belakang": false,
+      "lapis": 4,
+      "seed": 4,
+      "jarak": 90
+     }
+    ],
+    "boneka": [
+     {
+      "gaya": "siluet",
+      "belakang": true,
+      "x": 200,
+      "y": 1060,
+      "s": 0.45
+     }
+    ],
+    "teks": [
+     {
+      "at": 0.1,
+      "teks": "ANAK BELIAU\nMENOLAK NAIK",
+      "y": 450,
+      "ukuran": 101,
+      "warna": "#ffd27a"
+     },
+     {
+      "at": 0,
+      "teks": "QS Hud: 42-43",
+      "y": 232,
+      "ukuran": 46,
+      "warna": "#ffffff"
+     }
+    ]
+   },
+   {
+    "langit": 0.03,
+    "malam": 1,
+    "horizon": 2400,
+    "debu": 0,
+    "at": 41.45,
+    "kamera": {
+     "z": [
+      1.45,
+      1.7
+     ],
+     "x": 300,
+     "y": 1010
+    },
+    "hujan": 0.6,
+    "benda": [
+     {
+      "jenis": "gunung",
+      "x": 160,
+      "y": 1260,
+      "s": 1.0,
+      "warna": "#141a2c",
+      "belakang": true
+     },
+     {
+      "jenis": "gunung",
+      "x": 940,
+      "y": 1260,
+      "s": 1.15,
+      "warna": "#10152a",
+      "belakang": true
+     },
+     {
+      "jenis": "ombak",
+      "x": 540,
+      "y": 1200,
+      "s": 1,
+      "tinggi": 60,
+      "depan": false,
+      "belakang": true,
+      "lapis": 2,
+      "seed": 1
+     },
+     {
+      "jenis": "tebing",
+      "x": 200,
+      "y": 1060,
+      "s": 1.0
+     },
+     {
+      "jenis": "ombak",
+      "x": 540,
+      "y": 1380,
+      "s": 1,
+      "tinggi": 90,
+      "depan": true,
+      "belakang": false,
+      "lapis": 4,
+      "seed": 4,
+      "jarak": 90
+     }
+    ],
+    "boneka": [
+     {
+      "gaya": "siluet",
+      "belakang": true,
+      "x": 200,
+      "y": 1060,
+      "s": 0.45
+     }
+    ],
+    "teks": [
+     {
+      "at": 0.35,
+      "teks": "“AKU BERLINDUNG\nKE GUNUNG”",
+      "y": 450,
+      "ukuran": 81,
+      "warna": "#ffffff"
+     },
+     {
+      "at": 0,
+      "teks": "QS Hud: 43",
+      "y": 232,
+      "ukuran": 46,
+      "warna": "#ffffff"
+     }
+    ]
+   },
+   {
+    "langit": 0.03,
+    "malam": 1,
+    "horizon": 2400,
+    "debu": 0,
+    "at": 44.57,
+    "kamera": {
+     "z": [
+      1.05,
+      1.15
+     ],
+     "x": 540,
+     "y": 960,
+     "guncang": [
+      [
+       0.75,
+       44
+      ]
+     ]
+    },
+    "hujan": 0.9,
+    "benda": [
+     {
+      "jenis": "gunung",
+      "x": 160,
+      "y": 1260,
+      "s": 1.0,
+      "warna": "#141a2c",
+      "belakang": true
+     },
+     {
+      "jenis": "gunung",
+      "x": 940,
+      "y": 1260,
+      "s": 1.15,
+      "warna": "#10152a",
+      "belakang": true
+     },
+     {
+      "jenis": "petir",
+      "x": 520,
+      "y": 20,
+      "s": 1,
+      "saat": [
+       0.75
+      ],
+      "belakang": true
+     },
+     {
+      "jenis": "ombak",
+      "x": 540,
+      "y": 1200,
+      "s": 1,
+      "tinggi": 60,
+      "depan": false,
+      "belakang": true,
+      "lapis": 2,
+      "seed": 1
+     },
+     {
+      "jenis": "bahtera",
+      "x": 740,
+      "y": 1300,
+      "s": 0.62,
+      "goyang": 3,
+      "cahaya": 1,
+      "orang": 4
+     },
+     {
+      "jenis": "nur",
+      "x": 545,
+      "y": 1148,
+      "s": 0.42
+     },
+     {
+      "jenis": "tebing",
+      "x": 200,
+      "y": 1060,
+      "s": 1.0
+     },
+     {
+      "jenis": "ombak",
+      "x": 540,
+      "y": [
+       [
+        0,
+        1380
+       ],
+       [
+        0.55,
+        1340
+       ],
+       [
+        1.65,
+        760
+       ]
+      ],
+      "s": 1,
+      "tinggi": [
+       [
+        0,
+        90
+       ],
+       [
+        1.65,
+        300
+       ]
+      ],
+      "depan": true,
+      "belakang": false,
+      "lapis": 4,
+      "seed": 4,
+      "jarak": 110,
+      "panjang": 360
+     }
+    ],
+    "boneka": [
+     {
+      "gaya": "siluet",
+      "belakang": true,
+      "x": 200,
+      "y": 1060,
+      "s": 0.45,
+      "op": [
+       [
+        0,
+        1
+       ],
+       [
+        1.05,
+        1
+       ],
+       [
+        1.55,
+        0
+       ]
+      ]
+     }
+    ],
+    "teks": [
+     {
+      "at": 0.75,
+      "teks": "OMBAK\nMEMISAHKAN",
+      "y": 450,
+      "ukuran": 122,
+      "warna": "#ffffff"
+     },
+     {
+      "at": 0,
+      "teks": "QS Hud: 43",
+      "y": 232,
+      "ukuran": 46,
+      "warna": "#ffffff"
+     }
+    ]
+   },
+   {
+    "palet": "senja",
+    "malam": 0.3,
+    "horizon": 2400,
+    "langit": 0.2,
+    "debu": 8,
+    "at": 47.35,
+    "kamera": {
+     "z": [
+      1.0,
+      1.12
+     ],
+     "x": 540,
+     "y": 960
+    },
+    "benda": [
+     {
+      "jenis": "gunung",
+      "x": 160,
+      "y": 1210,
+      "s": 1.4,
+      "warna": "#3a2c44",
+      "belakang": true
+     },
+     {
+      "jenis": "gunung",
+      "x": 930,
+      "y": 1210,
+      "s": 1.6,
+      "warna": "#2f2438",
+      "belakang": true
+     },
+     {
+      "jenis": "surya",
+      "x": 560,
+      "y": [
+       [
+        0,
+        1150
+       ],
+       [
+        6,
+        930
+       ]
+      ],
+      "s": 1.0,
+      "r": 190,
+      "terang": [
+       [
+        0,
+        0.5
+       ],
+       [
+        3,
+        1
+       ]
+      ],
+      "belakang": true
+     },
+     {
+      "jenis": "ombak",
+      "x": 540,
+      "y": 1200,
+      "s": 1,
+      "tinggi": 10,
+      "depan": false,
+      "belakang": true,
+      "lapis": 2,
+      "seed": 1,
+      "warna": [
+       "#5a5f86",
+       "#1c2244"
+      ]
+     },
+     {
+      "jenis": "bahtera",
+      "x": 600,
+      "y": 1290,
+      "s": 0.82,
+      "goyang": 0.6,
+      "cahaya": 0.7,
+      "orang": 4
+     },
+     {
+      "jenis": "ombak",
+      "x": 540,
+      "y": 1318,
+      "s": 1,
+      "tinggi": 12,
+      "depan": true,
+      "belakang": false,
+      "lapis": 3,
+      "seed": 4,
+      "jarak": 80,
+      "warna": [
+       "#4a5280",
+       "#141a3a"
+      ]
+     },
+     {
+      "jenis": "nur",
+      "x": 349,
+      "y": 1085,
+      "s": 0.56,
+      "nama": "Nabi Nuh a.s.",
+      "nama_s": 1.9
+     }
+    ],
+    "teks": [
+     {
+      "at": 0.7,
+      "teks": "BUKAN\nKETURUNAN",
+      "y": 450,
+      "ukuran": 130,
+      "warna": "#ffffff",
+      "sampai": 3.87
+     },
+     {
+      "at": 3.92,
+      "teks": "MAU NAIK,\nATAU TIDAK",
+      "y": 450,
+      "ukuran": 122,
+      "warna": "#ffd27a"
+     }
+    ]
+   },
+   {
+    "palet": "senja",
+    "malam": 0.3,
+    "horizon": 2400,
+    "langit": 0.2,
+    "debu": 8,
+    "at": 53.53,
+    "kamera": {
+     "z": [
+      1.12,
+      1.26
+     ],
+     "x": 540,
+     "y": 1010
+    },
+    "benda": [
+     {
+      "jenis": "gunung",
+      "x": 160,
+      "y": 1210,
+      "s": 1.4,
+      "warna": "#3a2c44",
+      "belakang": true
+     },
+     {
+      "jenis": "gunung",
+      "x": 930,
+      "y": 1210,
+      "s": 1.6,
+      "warna": "#2f2438",
+      "belakang": true
+     },
+     {
+      "jenis": "surya",
+      "x": 560,
+      "y": 900,
+      "s": 1.0,
+      "r": 190,
+      "belakang": true
+     },
+     {
+      "jenis": "ombak",
+      "x": 540,
+      "y": 1200,
+      "s": 1,
+      "tinggi": 10,
+      "depan": false,
+      "belakang": true,
+      "lapis": 2,
+      "seed": 1,
+      "warna": [
+       "#5a5f86",
+       "#1c2244"
+      ]
+     },
+     {
+      "jenis": "bahtera",
+      "x": 600,
+      "y": 1290,
+      "s": 0.82,
+      "goyang": 0.6,
+      "cahaya": 0.7,
+      "orang": 4
+     },
+     {
+      "jenis": "ombak",
+      "x": 540,
+      "y": 1318,
+      "s": 1,
+      "tinggi": 12,
+      "depan": true,
+      "belakang": false,
+      "lapis": 3,
+      "seed": 4,
+      "jarak": 80,
+      "warna": [
+       "#4a5280",
+       "#141a3a"
+      ]
+     },
+     {
+      "jenis": "nur",
+      "x": 349,
+      "y": 1085,
+      "s": 0.56
+     }
+    ],
+    "teks": [
+     {
+      "at": 0.1,
+      "teks": "Kirim ke yang merasa\nsendirian di jalan benar",
+      "y": 330,
+      "ukuran": 50,
+      "warna": "#ffffff",
+      "sampai": 4.03
+     },
+     {
+      "at": 4.08,
+      "teks": "YAKIN KAMU\nIKUT NAIK?",
+      "y": 450,
+      "ukuran": 122,
+      "warna": "#ffd27a"
+     },
+     {
+      "at": 4.58,
+      "teks": "Tulis di komentar",
+      "y": 700,
+      "ukuran": 60,
+      "warna": "#ffffff"
+     }
+    ]
+   }
+  ],
+  "dialog": [],
+  "tengah": [
+   {
+    "t0": 0.2,
+    "t1": 1.46,
+    "kata": [
+     [
+      0.25,
+      "Saat"
+     ],
+     [
+      0.65,
+      "banjir"
+     ],
+     [
+      0.97,
+      "besar"
+     ],
+     [
+      1.25,
+      "Nabi"
+     ]
+    ],
+    "y": 1500,
+    "ukuran": 60,
+    "maks": 17,
+    "tahan": 0
+   },
+   {
+    "t0": 1.48,
+    "t1": 2.06,
+    "kata": [
+     [
+      1.53,
+      "Nuh,"
+     ]
+    ],
+    "y": 1500,
+    "ukuran": 60,
+    "maks": 17,
+    "tahan": 0
+   },
+   {
+    "t0": 2.08,
+    "t1": 3.06,
+    "kata": [
+     [
+      2.13,
+      "kamu"
+     ],
+     [
+      2.49,
+      "ada"
+     ],
+     [
+      2.69,
+      "di"
+     ],
+     [
+      2.85,
+      "kapal"
+     ]
+    ],
+    "y": 1500,
+    "ukuran": 60,
+    "maks": 17,
+    "tahan": 0
+   },
+   {
+    "t0": 3.08,
+    "t1": 3.77,
+    "kata": [
+     [
+      3.13,
+      "itu."
+     ]
+    ],
+    "y": 1500,
+    "ukuran": 60,
+    "maks": 17,
+    "tahan": 0
+   },
+   {
+    "t0": 3.8,
+    "t1": 5.09,
+    "kata": [
+     [
+      3.85,
+      "Itu"
+     ],
+     [
+      4.17,
+      "kata"
+     ],
+     [
+      4.45,
+      "Al-Qur'an."
+     ]
+    ],
+    "y": 1500,
+    "ukuran": 60,
+    "maks": 17,
+    "tahan": 0
+   },
+   {
+    "t0": 5.46,
+    "t1": 6.32,
+    "kata": [
+     [
+      5.51,
+      "Maksudnya,"
+     ]
+    ],
+    "y": 1500,
+    "ukuran": 60,
+    "maks": 17,
+    "tahan": 0
+   },
+   {
+    "t0": 6.34,
+    "t1": 7.39,
+    "kata": [
+     [
+      6.39,
+      "nenek"
+     ],
+     [
+      6.67,
+      "moyangmu."
+     ]
+    ],
+    "y": 1500,
+    "ukuran": 60,
+    "maks": 17,
+    "tahan": 0
+   },
+   {
+    "t0": 7.7,
+    "t1": 8.88,
+    "kata": [
+     [
+      7.75,
+      "Dan"
+     ],
+     [
+      7.91,
+      "penumpangnya,"
+     ]
+    ],
+    "y": 1500,
+    "ukuran": 60,
+    "maks": 17,
+    "tahan": 0
+   },
+   {
+    "t0": 8.9,
+    "t1": 10.55,
+    "kata": [
+     [
+      8.95,
+      "hanya"
+     ],
+     [
+      9.35,
+      "segelintir"
+     ],
+     [
+      9.83,
+      "orang."
+     ]
+    ],
+    "y": 1500,
+    "ukuran": 60,
+    "maks": 17,
+    "tahan": 0
+   },
+   {
+    "t0": 10.98,
+    "t1": 12.32,
+    "kata": [
+     [
+      11.03,
+      "Sembilan"
+     ],
+     [
+      11.51,
+      "ratus"
+     ],
+     [
+      11.91,
+      "lima"
+     ],
+     [
+      12.07,
+      "puluh"
+     ]
+    ],
+    "y": 1500,
+    "ukuran": 60,
+    "maks": 17,
+    "tahan": 0
+   },
+   {
+    "t0": 12.34,
+    "t1": 13.08,
+    "kata": [
+     [
+      12.39,
+      "tahun,"
+     ]
+    ],
+    "y": 1500,
+    "ukuran": 60,
+    "maks": 17,
+    "tahan": 0
+   },
+   {
+    "t0": 13.1,
+    "t1": 14.24,
+    "kata": [
+     [
+      13.15,
+      "Nabi"
+     ],
+     [
+      13.43,
+      "Nuh"
+     ],
+     [
+      13.75,
+      "tinggal"
+     ],
+     [
+      14.19,
+      "di"
+     ]
+    ],
+    "y": 1500,
+    "ukuran": 60,
+    "maks": 17,
+    "tahan": 0
+   },
+   {
+    "t0": 14.26,
+    "t1": 15.24,
+    "kata": [
+     [
+      14.31,
+      "tengah"
+     ],
+     [
+      14.55,
+      "kaumnya,"
+     ]
+    ],
+    "y": 1500,
+    "ukuran": 60,
+    "maks": 17,
+    "tahan": 0
+   },
+   {
+    "t0": 15.26,
+    "t1": 16.43,
+    "kata": [
+     [
+      15.31,
+      "mengajak"
+     ],
+     [
+      15.95,
+      "mereka."
+     ]
+    ],
+    "y": 1500,
+    "ukuran": 60,
+    "maks": 17,
+    "tahan": 0
+   },
+   {
+    "t0": 16.85,
+    "t1": 18.3,
+    "kata": [
+     [
+      16.9,
+      "Beliau"
+     ],
+     [
+      17.353,
+      "membuat"
+     ],
+     [
+      17.7,
+      "kapal."
+     ]
+    ],
+    "y": 1500,
+    "ukuran": 60,
+    "maks": 17,
+    "tahan": 0
+   },
+   {
+    "t0": 18.53,
+    "t1": 20.47,
+    "kata": [
+     [
+      18.58,
+      "Setiap"
+     ],
+     [
+      19.02,
+      "pemuka"
+     ],
+     [
+      19.46,
+      "kaumnya"
+     ],
+     [
+      19.86,
+      "lewat,"
+     ]
+    ],
+    "y": 1500,
+    "ukuran": 60,
+    "maks": 17,
+    "tahan": 0
+   },
+   {
+    "t0": 20.49,
+    "t1": 21.5,
+    "kata": [
+     [
+      20.54,
+      "mereka"
+     ],
+     [
+      20.82,
+      "mengejek."
+     ]
+    ],
+    "y": 1500,
+    "ukuran": 60,
+    "maks": 17,
+    "tahan": 0
+   },
+   {
+    "t0": 22.1,
+    "t1": 23.400000000000002,
+    "kata": [
+     [
+      22.15,
+      "Lalu"
+     ],
+     [
+      22.55,
+      "pintu-pintu"
+     ],
+     [
+      23.11,
+      "langit"
+     ]
+    ],
+    "y": 1500,
+    "ukuran": 60,
+    "maks": 17,
+    "tahan": 0
+   },
+   {
+    "t0": 23.42,
+    "t1": 24.2,
+    "kata": [
+     [
+      23.47,
+      "dibuka,"
+     ]
+    ],
+    "y": 1500,
+    "ukuran": 60,
+    "maks": 17,
+    "tahan": 0
+   },
+   {
+    "t0": 24.22,
+    "t1": 25.87,
+    "kata": [
+     [
+      24.27,
+      "dengan"
+     ],
+     [
+      24.71,
+      "air"
+     ],
+     [
+      25.03,
+      "yang"
+     ],
+     [
+      25.23,
+      "tercurah."
+     ]
+    ],
+    "y": 1500,
+    "ukuran": 60,
+    "maks": 17,
+    "tahan": 0
+   },
+   {
+    "t0": 26.1,
+    "t1": 27.68,
+    "kata": [
+     [
+      26.15,
+      "Dan"
+     ],
+     [
+      26.39,
+      "bumi"
+     ],
+     [
+      26.79,
+      "memancarkan"
+     ],
+     [
+      27.47,
+      "mata"
+     ]
+    ],
+    "y": 1500,
+    "ukuran": 60,
+    "maks": 17,
+    "tahan": 0
+   },
+   {
+    "t0": 27.7,
+    "t1": 28.43,
+    "kata": [
+     [
+      27.75,
+      "air."
+     ]
+    ],
+    "y": 1500,
+    "ukuran": 60,
+    "maks": 17,
+    "tahan": 0
+   },
+   {
+    "t0": 28.64,
+    "t1": 29.900000000000002,
+    "kata": [
+     [
+      28.69,
+      "Sepasang"
+     ],
+     [
+      29.303,
+      "dari"
+     ],
+     [
+      29.49,
+      "tiap"
+     ],
+     [
+      29.73,
+      "jenis"
+     ]
+    ],
+    "y": 1500,
+    "ukuran": 60,
+    "maks": 17,
+    "tahan": 0
+   },
+   {
+    "t0": 29.92,
+    "t1": 30.900000000000002,
+    "kata": [
+     [
+      29.97,
+      "hewan"
+     ],
+     [
+      30.37,
+      "naik,"
+     ]
+    ],
+    "y": 1500,
+    "ukuran": 60,
+    "maks": 17,
+    "tahan": 0
+   },
+   {
+    "t0": 30.92,
+    "t1": 32.57,
+    "kata": [
+     [
+      30.97,
+      "bersama"
+     ],
+     [
+      31.33,
+      "mereka"
+     ],
+     [
+      31.73,
+      "yang"
+     ],
+     [
+      31.89,
+      "beriman."
+     ]
+    ],
+    "y": 1500,
+    "ukuran": 60,
+    "maks": 17,
+    "tahan": 0
+   },
+   {
+    "t0": 32.94,
+    "t1": 34.239999999999995,
+    "kata": [
+     [
+      32.99,
+      "Kapal"
+     ],
+     [
+      33.31,
+      "itu"
+     ],
+     [
+      33.55,
+      "berlayar,"
+     ]
+    ],
+    "y": 1500,
+    "ukuran": 60,
+    "maks": 17,
+    "tahan": 0
+   },
+   {
+    "t0": 34.26,
+    "t1": 35.559999999999995,
+    "kata": [
+     [
+      34.31,
+      "di"
+     ],
+     [
+      34.43,
+      "tengah"
+     ],
+     [
+      34.75,
+      "ombak"
+     ],
+     [
+      35.19,
+      "laksana"
+     ]
+    ],
+    "y": 1500,
+    "ukuran": 60,
+    "maks": 17,
+    "tahan": 0
+   },
+   {
+    "t0": 35.58,
+    "t1": 36.15,
+    "kata": [
+     [
+      35.63,
+      "gunung."
+     ]
+    ],
+    "y": 1500,
+    "ukuran": 60,
+    "maks": 17,
+    "tahan": 0
+   },
+   {
+    "t0": 37.0,
+    "t1": 39.059999999999995,
+    "kata": [
+     [
+      37.05,
+      "Dan"
+     ],
+     [
+      37.21,
+      "yang"
+     ],
+     [
+      37.53,
+      "paling"
+     ],
+     [
+      37.93,
+      "menyesakkan…"
+     ]
+    ],
+    "y": 1500,
+    "ukuran": 60,
+    "maks": 17,
+    "tahan": 0
+   },
+   {
+    "t0": 39.08,
+    "t1": 40.339999999999996,
+    "kata": [
+     [
+      39.13,
+      "anak"
+     ],
+     [
+      39.37,
+      "beliau"
+     ],
+     [
+      39.69,
+      "sendiri,"
+     ]
+    ],
+    "y": 1500,
+    "ukuran": 60,
+    "maks": 17,
+    "tahan": 0
+   },
+   {
+    "t0": 40.36,
+    "t1": 41.25,
+    "kata": [
+     [
+      40.41,
+      "menolak"
+     ],
+     [
+      40.81,
+      "naik."
+     ]
+    ],
+    "y": 1500,
+    "ukuran": 60,
+    "maks": 17,
+    "tahan": 0
+   },
+   {
+    "t0": 41.62,
+    "t1": 42.27,
+    "kata": [
+     [
+      41.67,
+      "Katanya:"
+     ]
+    ],
+    "y": 1500,
+    "ukuran": 60,
+    "maks": 17,
+    "tahan": 0
+   },
+   {
+    "t0": 42.5,
+    "t1": 43.72,
+    "kata": [
+     [
+      42.55,
+      "aku"
+     ],
+     [
+      42.87,
+      "akan"
+     ],
+     [
+      43.11,
+      "berlindung"
+     ],
+     [
+      43.59,
+      "ke"
+     ]
+    ],
+    "y": 1500,
+    "ukuran": 60,
+    "maks": 17,
+    "tahan": 0
+   },
+   {
+    "t0": 43.74,
+    "t1": 44.19,
+    "kata": [
+     [
+      43.79,
+      "gunung."
+     ]
+    ],
+    "y": 1500,
+    "ukuran": 60,
+    "maks": 17,
+    "tahan": 0
+   },
+   {
+    "t0": 44.79,
+    "t1": 46.72,
+    "kata": [
+     [
+      44.84,
+      "Ombak"
+     ],
+     [
+      45.32,
+      "memisahkan"
+     ],
+     [
+      46.04,
+      "keduanya."
+     ]
+    ],
+    "y": 1500,
+    "ukuran": 60,
+    "maks": 17,
+    "tahan": 0
+   },
+   {
+    "t0": 48.02,
+    "t1": 48.83,
+    "kata": [
+     [
+      48.07,
+      "Hari"
+     ],
+     [
+      48.47,
+      "itu,"
+     ]
+    ],
+    "y": 1500,
+    "ukuran": 60,
+    "maks": 17,
+    "tahan": 0
+   },
+   {
+    "t0": 48.9,
+    "t1": 50.239999999999995,
+    "kata": [
+     [
+      48.95,
+      "yang"
+     ],
+     [
+      49.11,
+      "menyelamatkan"
+     ],
+     [
+      49.91,
+      "bukan"
+     ]
+    ],
+    "y": 1500,
+    "ukuran": 60,
+    "maks": 17,
+    "tahan": 0
+   },
+   {
+    "t0": 50.26,
+    "t1": 51.07,
+    "kata": [
+     [
+      50.31,
+      "keturunan."
+     ]
+    ],
+    "y": 1500,
+    "ukuran": 60,
+    "maks": 17,
+    "tahan": 0
+   },
+   {
+    "t0": 51.22,
+    "t1": 52.32,
+    "kata": [
+     [
+      51.27,
+      "Tapi"
+     ],
+     [
+      51.59,
+      "mau"
+     ],
+     [
+      51.83,
+      "naik,"
+     ]
+    ],
+    "y": 1500,
+    "ukuran": 60,
+    "maks": 17,
+    "tahan": 0
+   },
+   {
+    "t0": 52.34,
+    "t1": 53.15,
+    "kata": [
+     [
+      52.39,
+      "atau"
+     ],
+     [
+      52.63,
+      "tidak."
+     ]
+    ],
+    "y": 1500,
+    "ukuran": 60,
+    "maks": 17,
+    "tahan": 0
+   },
+   {
+    "t0": 53.7,
+    "t1": 54.63999999999999,
+    "kata": [
+     [
+      53.75,
+      "Kirim"
+     ],
+     [
+      54.15,
+      "ke"
+     ],
+     [
+      54.35,
+      "orang"
+     ],
+     [
+      54.55,
+      "yang"
+     ]
+    ],
+    "y": 1500,
+    "ukuran": 60,
+    "maks": 17,
+    "tahan": 0
+   },
+   {
+    "t0": 54.66,
+    "t1": 56.04,
+    "kata": [
+     [
+      54.71,
+      "sedang"
+     ],
+     [
+      55.03,
+      "merasa"
+     ],
+     [
+      55.35,
+      "sendirian,"
+     ]
+    ],
+    "y": 1500,
+    "ukuran": 60,
+    "maks": 17,
+    "tahan": 0
+   },
+   {
+    "t0": 56.06,
+    "t1": 57.43,
+    "kata": [
+     [
+      56.11,
+      "di"
+     ],
+     [
+      56.31,
+      "jalan"
+     ],
+     [
+      56.63,
+      "yang"
+     ],
+     [
+      56.79,
+      "benar."
+     ]
+    ],
+    "y": 1500,
+    "ukuran": 60,
+    "maks": 17,
+    "tahan": 0
+   }
+  ],
+  "badan": "siluet",
+  "kilat": false
+ }
+}
