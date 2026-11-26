@@ -1,7 +1,8 @@
 name: Uji sutradara LLM (manual)
 
 # Bandingkan model penulis rencana sutradara pada cerita tolok ukur dan holdout buta.
-# Per cerita: rencana.json, info.json (model, biaya, skor), lembar frame (render tanpa TTS).
+# Per cerita: rencana.json, info.json (model, biaya, skor), periksa.json (temuan vision + revisi),
+# lembar_*.jpg (frame per beat, tanpa MP4/TTS).
 # Hasil di-commit ke branch baru `hasil/sutradara-<run_id>` agar bisa diaudit tanpa unduh artefak.
 on:
   workflow_dispatch:
@@ -14,6 +15,10 @@ on:
         description: "Berkas naskah (pisahkan koma), relatif ke tests/data"
         required: true
         default: "tolok_ukur/yajuj1.json,tolok_ukur/mahsyar1.json,tolok_ukur_buta/wali1.json"
+      periksa:
+        description: "Putaran periksa visual + revisi (0 = mati)"
+        required: true
+        default: "1"
 
 permissions:
   contents: write
@@ -39,12 +44,14 @@ jobs:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           MODEL: ${{ inputs.model }}
           CERITA: ${{ inputs.cerita }}
+          PERIKSA: ${{ inputs.periksa }}
         shell: bash
         run: |
           set -uo pipefail
           mkdir -p hasil
-          echo "| model | cerita | skor | cerita (aspek) | biaya USD | catatan |" > hasil/ringkasan.md
-          echo "|---|---|---:|---:|---:|---|" >> hasil/ringkasan.md
+          [[ "$PERIKSA" =~ ^[0-3]$ ]] || { echo "::error::periksa harus 0-3"; exit 1; }
+          echo "| model | cerita | skor | cerita (aspek) | biaya USD | periksa | catatan |" > hasil/ringkasan.md
+          echo "|---|---|---:|---:|---:|---|---|" >> hasil/ringkasan.md
           IFS=',' read -ra DAFTAR_MODEL <<< "$MODEL"
           IFS=',' read -ra DAFTAR_CERITA <<< "$CERITA"
           for m in "${DAFTAR_MODEL[@]}"; do
@@ -54,22 +61,18 @@ jobs:
               nama=$(basename "$c" .json); out="hasil/$m/$nama"
               mkdir -p "$out"
               if NEWMOTION_MODEL_SUTRADARA="$m" python -m newmotion.paket_genre.kisah_islami.sutradara_llm \
-                   "tests/data/$c" -o "$out" > "$out/log.txt" 2>&1; then
-                python mesin-video/papan_buat.py "$out/papan.json" --tanpa-suara -o "$out/video.mp4" >> "$out/log.txt" 2>&1 || true
-                if [[ -s "$out/video.mp4" ]]; then
-                  T=$(python -c "import json;j=json.load(open('$out/papan.json'));a=[s['at'] for s in j['cerita']['shot']]+[j.get('durasi',0)];print(' '.join(str(round((x+y)/2,2)) for x,y in zip(a,a[1:])))")
-                  i=0; for t in $T; do ffmpeg -v error -y -ss "$t" -i "$out/video.mp4" -frames:v 1 -vf scale=270:-1 "$out/f$(printf %02d $i).png"; i=$((i+1)); done
-                  ffmpeg -v error -y -pattern_type glob -i "$out/f*.png" -vf tile=6x3:padding=6:color=white "$out/lembar.jpg" || true
-                  rm -f "$out"/f*.png "$out/video.mp4"
-                fi
+                   "tests/data/$c" -o "$out" --periksa "$PERIKSA" > "$out/log.txt" 2>&1; then
+                # lembar frame per beat (tanpa MP4): sudah dibuat oleh putaran periksa, atau dibuat di sini
+                ls "$out"/lembar_*.jpg >/dev/null 2>&1 || python -c "import json,sys;from newmotion.application.lembar_periksa import buat_lembar;buat_lembar(json.load(open(sys.argv[1])),sys.argv[2])" "$out/papan.json" "$out" >> "$out/log.txt" 2>&1 || true
                 python - "$m" "$nama" "$out" >> hasil/ringkasan.md <<'PY'
           import json, sys
           m, nama, out = sys.argv[1:4]
           i = json.load(open(f"{out}/info.json"))
-          print(f"| {i.get('model', m)} | {nama} | {i['skor_gabungan']} | {i['skor_aspek']['cerita']} | {i.get('biaya_usd', 0):.4f} | {len(i.get('percobaan', []))} percobaan |")
+          pk = " → ".join(("lulus" if e.get("lulus") else f"{e.get('jumlah_temuan', '?')} temuan") + (" +revisi" if e.get("revisi") else "") for e in i.get("periksa", [])) or "-"
+          print(f"| {i.get('model', m)} | {nama} | {i['skor_gabungan']} | {i['skor_aspek']['cerita']} | {i.get('biaya_usd', 0):.4f} | {pk} | {len(i.get('percobaan', []))} percobaan |")
           PY
               else
-                echo "| $m | $nama | - | - | - | GAGAL: $(tail -c 150 "$out/log.txt" | tr '\n|' '  ') |" >> hasil/ringkasan.md
+                echo "| $m | $nama | - | - | - | - | GAGAL: $(tail -c 150 "$out/log.txt" | tr '\n|' '  ') |" >> hasil/ringkasan.md
               fi
             done
           done
