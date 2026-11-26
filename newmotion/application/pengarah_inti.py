@@ -321,6 +321,7 @@ def _lengkapi_metadata_pengarah(shot: list[dict], rencana_cerita: dict) -> None:
                 "aksi": item.get("aksi"),
                 "sasaran": item.get("sasaran"),
                 "sasaran_tokoh_id": sasaran_tokoh_id,
+                "sasaran_benda_id": item.get("sasaran_benda_id"),
             })
         pengarahan["fokus_tokoh_ids"] = fokus
         pengarahan["tahapan_peristiwa"] = _tahapan_peristiwa(peristiwa)
