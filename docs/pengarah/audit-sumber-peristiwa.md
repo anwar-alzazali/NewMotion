@@ -141,3 +141,29 @@ tujuan implisit, tujuan spasial yang kompleks, sebab-akibat, dan relasi antar
 peristiwa lintas kalimat belum ditafsirkan. Tujuan bukan bukti bahwa aksi tujuan
 sudah dilaksanakan. Tidak ada perubahan pada paket Kisah Islami dan tidak ada
 render video.
+
+
+
+## Hubungan sebab-akibat eksplisit (Tahap 19)
+
+Parser cerita umum mengenali penghubung kausal secara konservatif:
+- A karena B: peristiwa A menjadi akibat dan ditautkan ke peristiwa B
+  melalui hubungan_sebab_akibat dengan jenis "disebabkan_oleh" dan ID peristiwa.
+- A sehingga B dan A akibatnya B: peristiwa B menjadi akibat dari A.
+- Referensi sebab diselesaikan setelah ID peristiwa final diberikan, sehingga
+  tautan memakai ID stabil, bukan nomor urutan sementara.
+- Jika klausa sebab berupa kondisi atau frasa non-peristiwa, misalnya
+  "Tokoh jatuh karena jalan licin", teks sebab disimpan pada sebab_teks.
+  Sistem tidak membuat peristiwa palsu untuk "jalan licin" dan memberi
+  diagnostik sebab_teks_tidak_dipetakan_ke_peristiwa.
+- Penghubung kausal tidak dianggap sebagai urutan atau simultanitas.
+- Lebih dari satu penghubung kausal dalam satu kalimat ditandai ambigu dan
+  tidak dipaksakan menjadi graf sebab-akibat.
+- Klausa sebab/akibat yang aksinya belum didukung kamus tidak dibuat menjadi
+  peristiwa; relasi tidak diterbitkan jika salah satu sisi tidak dapat dipetakan.
+- Kata "untuk" tetap merupakan penanda tujuan, bukan sebab.
+
+Cakupan ini masih berupa pola permukaan satu penghubung kausal per kalimat.
+Korelasi, sebab implisit, sebab jamak, sebab lintas kalimat, dan pengetahuan
+dunia tidak digunakan untuk menebak hubungan. Tes memakai ragam konteks cerita;
+contoh kendaraan bukan acuan utama. Tidak ada render video pada tahap ini.
