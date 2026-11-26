@@ -12,33 +12,33 @@ from copy import deepcopy
 
 # Kosakata milik pengarah, bukan salinan leksikon ukur_kedalaman.
 POLA_SUBJEK = (
-    ("bahtera", re.compile(r"\\b(kapal|bahtera|perahu)\\b", re.I)),
-    ("ngarai", re.compile(r"\\b(dinding|tembok|benteng)\\b", re.I)),
-    ("penggali", re.compile(r"\\b(gali|menggali|digali|penggalian)\\w*\\b", re.I)),
-    ("pemimpin", re.compile(r"\\b(pemimpin|raja)\\b", re.I)),
-    ("ombak", re.compile(r"\\b(ombak|gelombang)\\b", re.I)),
-    ("gunung", re.compile(r"\\b(gunung|bukit)\\b", re.I)),
-    ("hewan", re.compile(r"\\b(hewan|binatang|ternak)\\b|sepasang dari tiap jenis", re.I)),
-    ("arus", re.compile(r"\\b(banjir|air bah|tenggelam|arus air)\\b", re.I)),
+    ("bahtera", re.compile(r"\b(kapal|bahtera|perahu)\b", re.I)),
+    ("ngarai", re.compile(r"\b(dinding|tembok|benteng)\b", re.I)),
+    ("penggali", re.compile(r"\b(gali|menggali|digali|penggalian)\w*\b", re.I)),
+    ("pemimpin", re.compile(r"\b(pemimpin|raja)\b", re.I)),
+    ("ombak", re.compile(r"\b(ombak|gelombang)\b", re.I)),
+    ("gunung", re.compile(r"\b(gunung|bukit)\b", re.I)),
+    ("hewan", re.compile(r"\b(hewan|binatang|ternak)\b|sepasang dari tiap jenis", re.I)),
+    ("arus", re.compile(r"\b(banjir|air bah|tenggelam|arus air)\b", re.I)),
     ("pancar", re.compile(r"mata air|memancarkan air|air yang tercurah", re.I)),
-    ("surya", re.compile(r"\\b(matahari|surya)\\b", re.I)),
-    ("retakan", re.compile(r"\\b(retak|retakan|terbelah|terbelahnya)\\b", re.I)),
-    ("kerumunan", re.compile(r"\\b(kerumunan|orang-orang|seluruh manusia|semua manusia)\\b", re.I)),
-    ("koin", re.compile(r"\\b(harta karun|emas|kekayaan)\\b", re.I)),
-    ("petir", re.compile(r"\\b(petir|kilat|guntur)\\b", re.I)),
-    ("awan", re.compile(r"\\b(awan|hujan)\\b", re.I)),
+    ("surya", re.compile(r"\b(matahari|surya)\b", re.I)),
+    ("retakan", re.compile(r"\b(retak|retakan|terbelah|terbelahnya)\b", re.I)),
+    ("kerumunan", re.compile(r"\b(kerumunan|orang-orang|seluruh manusia|semua manusia)\b", re.I)),
+    ("koin", re.compile(r"\b(harta karun|emas|kekayaan)\b", re.I)),
+    ("petir", re.compile(r"\b(petir|kilat|guntur)\b", re.I)),
+    ("awan", re.compile(r"\b(awan|hujan)\b", re.I)),
 )
 
-POLA_GALI = re.compile(r"\\b(gali|menggali|digali|penggalian)\\w*\\b", re.I)
+POLA_GALI = re.compile(r"\b(gali|menggali|digali|penggalian)\w*\b", re.I)
 POLA_HAMPIR = re.compile(r"hampir (tembus|jebol)|nyaris (tembus|jebol)", re.I)
-POLA_JEBOL = re.compile(r"\\b(jebol|menjebol|tembus|menerobos|runtuh)\\b", re.I)
+POLA_JEBOL = re.compile(r"\b(jebol|menjebol|tembus|menerobos|runtuh)\b", re.I)
 POLA_UTUH = re.compile(r"(kembali|sudah kembali|lagi) (utuh|seperti semula)|utuh kembali", re.I)
 POLA_KONTINUITAS_DINDING = re.compile(
-    r"\\b(pemimpin|raja|besok|pulanglah|tembus|utuh|mereka)\\b", re.I
+    r"\b(pemimpin|raja|besok|pulanglah|tembus|utuh|mereka)\b", re.I
 )
 POLA_KLIMAKS = re.compile(
-    r"\\b(jebol|menjebol|pecah|runtuh|tenggelam|terbelah|meledak|"
-    r"terhempas|terjatuh|terselamatkan|muncul|keluar)\\b", re.I
+    r"\b(jebol|menjebol|pecah|runtuh|tenggelam|terbelah|meledak|"
+    r"terhempas|terjatuh|terselamatkan|muncul|keluar)\b", re.I
 )
 POLA_WUJUD_TAK_DIJELASKAN = re.compile(
     r"tidak (disebutkan|dijelaskan|diketahui) (wujud|bentuk)|"
@@ -49,16 +49,16 @@ POLA_WUJUD_TAK_DIJELASKAN = re.compile(
 
 # Angka dan ukuran ditonjolkan hanya jika narasi memang menyebut kuantitas.
 POLA_ANGKA = re.compile(
-    r"\\b(?:\\d+(?:[.,]\\d+)?|"
+    r"\b(?:\d+(?:[.,]\d+)?|"
     r"satu|dua|tiga|empat|lima|enam|tujuh|delapan|sembilan|sepuluh|"
     r"sebelas|seratus|seribu|puluh|ratus|ribu|juta|setengah|separuh)"
-    r"(?:\\s+[a-z]+){0,3}\\s+(?:tahun|hari|malam|bulan|mil|meter|"
-    r"orang|jiwa|kali|jenis|ayat|pintu|negeri)\\b",
+    r"(?:\s+[a-z]+){0,3}\s+(?:tahun|hari|malam|bulan|mil|meter|"
+    r"orang|jiwa|kali|jenis|ayat|pintu|negeri)\b",
     re.I,
 )
 POLA_KATA_KUNCI = re.compile(
-    r"\\b(hampir tembus|kembali utuh|tidak ada jalan pulang|"
-    r"pintu taubat|hari kiamat|air bah|fitnah terbesar)\\b",
+    r"\b(hampir tembus|kembali utuh|tidak ada jalan pulang|"
+    r"pintu taubat|hari kiamat|air bah|fitnah terbesar)\b",
     re.I,
 )
 
@@ -92,7 +92,7 @@ class PengarahSubjek:
 
     def _perbarui_dinding(self, teks: str) -> tuple[float, float, float]:
         sebelumnya = self.lubang_dinding
-        if re.search(r"\\b(dinding|tembok|benteng)\\b", teks, re.I):
+        if re.search(r"\b(dinding|tembok|benteng)\b", teks, re.I):
             self.dinding_aktif = True
         if self.dinding_aktif:
             if POLA_UTUH.search(teks):
@@ -105,7 +105,7 @@ class PengarahSubjek:
                 self.lubang_dinding = max(self.lubang_dinding, 0.86)
             elif POLA_GALI.search(teks):
                 self.lubang_dinding = min(0.78, max(0.18, self.lubang_dinding + 0.2))
-            elif re.search(r"\\blubang\\b", teks, re.I):
+            elif re.search(r"\blubang\b", teks, re.I):
                 self.lubang_dinding = max(0.32, self.lubang_dinding)
         return sebelumnya, self.lubang_dinding, self.jebol
 
