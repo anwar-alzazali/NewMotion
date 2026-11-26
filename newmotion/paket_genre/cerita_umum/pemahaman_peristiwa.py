@@ -341,11 +341,42 @@ def uraikan_peristiwa(
                 })
             continue
         if len(pemisah) > 1:
-            diagnostik.append({
-                "kode": "hubungan_sebab_akibat_ambigu",
-                "kalimat": nomor_kalimat,
-                "bukti_teks": kalimat_item,
-            })
+            # Rantai kausal dipetakan hanya jika setiap klausa menghasilkan
+            # tepat satu peristiwa yang dikenali tanpa diagnostik baru.
+            batas = [0] + [item.end() for item in pemisah]
+            akhir = [item.start() for item in pemisah] + [len(kalimat_item)]
+            klausa = [
+                kalimat_item[mulai:selesai].strip(" ,;")
+                for mulai, selesai in zip(batas, akhir)
+            ]
+            hasil_klausa = []
+            rantai_valid = all(klausa)
+            for bagian in klausa:
+                jumlah_diagnostik = len(diagnostik)
+                hasil_bagian = uraikan_rangkaian(bagian, nomor_kalimat)
+                if len(hasil_bagian) != 1 or len(diagnostik) != jumlah_diagnostik:
+                    rantai_valid = False
+                hasil_klausa.append(hasil_bagian)
+            if not rantai_valid:
+                diagnostik.append({
+                    "kode": "rantai_sebab_akibat_tidak_dapat_dipetakan",
+                    "kalimat": nomor_kalimat,
+                    "bukti_teks": kalimat_item,
+                })
+                continue
+            indeks_awal = len(peristiwa)
+            peristiwa.extend(item[0] for item in hasil_klausa)
+            for indeks, pemisah_item in enumerate(pemisah):
+                if pemisah_item.group(1).casefold() == "karena":
+                    indeks_akibat = indeks_awal + indeks
+                    indeks_sebab = indeks_awal + indeks + 1
+                else:
+                    indeks_sebab = indeks_awal + indeks
+                    indeks_akibat = indeks_awal + indeks + 1
+                peristiwa[indeks_akibat]["hubungan_sebab_akibat"] = {
+                    "jenis": "disebabkan_oleh",
+                    "_indeks_sebab": indeks_sebab,
+                }
             continue
         peristiwa.extend(uraikan_rangkaian(kalimat_item, nomor_kalimat))
 
