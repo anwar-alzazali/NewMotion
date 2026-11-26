@@ -1,0 +1,93 @@
+name: Uji sutradara LLM (manual)
+
+# Bandingkan model penulis rencana sutradara pada cerita tolok ukur dan holdout buta.
+# Per cerita: rencana.json, info.json (model, biaya, skor), lembar frame (render tanpa TTS).
+# Hasil di-commit ke branch baru `hasil/sutradara-<run_id>` agar bisa diaudit tanpa unduh artefak.
+on:
+  workflow_dispatch:
+    inputs:
+      model:
+        description: "Model (pisahkan koma). Contoh: claude-sonnet-5-5,gemini"
+        required: true
+        default: "claude-sonnet-5-5,gemini"
+      cerita:
+        description: "Berkas naskah (pisahkan koma), relatif ke tests/data"
+        required: true
+        default: "tolok_ukur/nuh1.json,tolok_ukur/mahsyar1.json,tolok_ukur/yajuj1.json,tolok_ukur/yajuj2.json,tolok_ukur_buta/doa2.json,tolok_ukur_buta/bangkrut1.json,tolok_ukur_buta/wali1.json"
+
+permissions:
+  contents: write
+
+jobs:
+  uji:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Pasang renderer
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq ffmpeg fonts-dejavu-core
+          python -m pip install -e '.[render]'
+          python -m playwright install --with-deps chromium
+      - name: Tulis rencana, render, dan ukur
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          MODEL: ${{ inputs.model }}
+          CERITA: ${{ inputs.cerita }}
+        shell: bash
+        run: |
+          set -uo pipefail
+          mkdir -p hasil
+          echo "| model | cerita | skor | cerita (aspek) | biaya USD | catatan |" > hasil/ringkasan.md
+          echo "|---|---|---:|---:|---:|---|" >> hasil/ringkasan.md
+          IFS=',' read -ra DAFTAR_MODEL <<< "$MODEL"
+          IFS=',' read -ra DAFTAR_CERITA <<< "$CERITA"
+          for m in "${DAFTAR_MODEL[@]}"; do
+            [[ "$m" =~ ^[a-z0-9.-]+$ ]] || { echo "::error::model tidak sah: $m"; exit 1; }
+            for c in "${DAFTAR_CERITA[@]}"; do
+              [[ "$c" =~ ^[a-z_]+/[a-z0-9_]+\.json$ ]] || { echo "::error::cerita tidak sah: $c"; exit 1; }
+              nama=$(basename "$c" .json); out="hasil/$m/$nama"
+              mkdir -p "$out"
+              if NEWMOTION_MODEL_SUTRADARA="$m" python -m newmotion.paket_genre.kisah_islami.sutradara_llm \
+                   "tests/data/$c" -o "$out" > "$out/log.txt" 2>&1; then
+                python mesin-video/papan_buat.py "$out/papan.json" --tanpa-suara -o "$out/video.mp4" >> "$out/log.txt" 2>&1 || true
+                if [[ -s "$out/video.mp4" ]]; then
+                  T=$(python -c "import json;j=json.load(open('$out/papan.json'));a=[s['at'] for s in j['cerita']['shot']]+[j.get('durasi',0)];print(' '.join(str(round((x+y)/2,2)) for x,y in zip(a,a[1:])))")
+                  i=0; for t in $T; do ffmpeg -v error -y -ss "$t" -i "$out/video.mp4" -frames:v 1 -vf scale=270:-1 "$out/f$(printf %02d $i).png"; i=$((i+1)); done
+                  ffmpeg -v error -y -pattern_type glob -i "$out/f*.png" -vf tile=6x3:padding=6:color=white "$out/lembar.jpg" || true
+                  rm -f "$out"/f*.png "$out/video.mp4"
+                fi
+                python - "$m" "$nama" "$out" >> hasil/ringkasan.md <<'PY'
+          import json, sys
+          m, nama, out = sys.argv[1:4]
+          i = json.load(open(f"{out}/info.json"))
+          print(f"| {i.get('model', m)} | {nama} | {i['skor_gabungan']} | {i['skor_aspek']['cerita']} | {i.get('biaya_usd', 0):.4f} | {len(i.get('percobaan', []))} percobaan |")
+          PY
+              else
+                echo "| $m | $nama | - | - | - | GAGAL: $(tail -c 150 "$out/log.txt" | tr '\n|' '  ') |" >> hasil/ringkasan.md
+              fi
+            done
+          done
+          cat hasil/ringkasan.md >> "$GITHUB_STEP_SUMMARY"
+      - name: Simpan hasil ke branch baru
+        if: always()
+        env:
+          TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          RUN: ${{ github.run_id }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -d hasil || exit 0
+          cd hasil
+          git init -q && git checkout -q -b hasil
+          git config user.name "github-actions[bot]"
+          git config user.email "41898333+github-actions[bot]@users.noreply.github.com"
+          git add . && git commit -q -m "Hasil uji sutradara LLM run $RUN"
+          git push -q "https://x-access-token:${TOKEN}@github.com/${REPO}" "HEAD:refs/heads/hasil/sutradara-${RUN}"
+          echo "Hasil: branch hasil/sutradara-${RUN}" >> "$GITHUB_STEP_SUMMARY"

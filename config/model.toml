@@ -1,0 +1,27 @@
+# Model LLM per tahap. Urutan = model utama lalu cadangan (dipakai bila gagal, kena batas,
+# atau hasilnya ditolak validator). "gemini" = Gemini Flash versi stabil tertinggi yang
+# tersedia untuk kunci (atau GEMINI_MODEL). Timpa per tahap dengan variabel lingkungan
+# NEWMOTION_MODEL_<TAHAP>, mis. NEWMOTION_MODEL_SUTRADARA="gemini,claude-sonnet-5-5".
+
+[tahap.rapikan]          # naskah tempelan -> format (narasi tidak diubah): mekanis
+model = ["claude-haiku-5-5", "gemini"]
+
+[tahap.naskah]           # ide -> naskah: mutu cerita
+model = ["claude-sonnet-5-5", "gemini"]
+
+[tahap.sutradara]        # naskah -> rencana sutradara: keputusan makna dan adab
+model = ["claude-sonnet-5-5", "gemini"]
+
+[tahap.periksa_visual]   # lembar frame -> temuan: kesalahan halus termasuk adab
+model = ["claude-sonnet-5-5", "gemini"]
+
+[tahap.chat]             # obrolan bot dan balas komentar
+model = ["gemini", "claude-haiku-5-5"]
+
+# Harga USD per juta token (input, output) untuk pencatatan biaya.
+# Sumber: https://platform.claude.com/docs/en/about-claude/pricing (Nov 2026).
+[harga]
+"claude-opus-5-5" = [4.0, 20.0]
+"claude-sonnet-5-5" = [2.0, 10.0]
+"claude-haiku-5-5" = [0.10, 0.50]
+"gemini" = [0.0, 0.0]
