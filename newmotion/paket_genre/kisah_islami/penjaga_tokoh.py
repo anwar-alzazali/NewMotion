@@ -32,6 +32,50 @@ def _daftar(nilai: Any) -> list:
     return nilai if isinstance(nilai, list) else []
 
 
+def _periksa_roster_semantik(rencana: dict) -> list[TemuanAdab]:
+    """Periksa roster tokoh baru sebelum adapter visual mengubahnya menjadi boneka."""
+    daftar_tokoh = rencana.get("tokoh")
+    if not isinstance(daftar_tokoh, list):
+        return [TemuanAdab(
+            "GAGAL", "ROSTER_TOKOH_TIDAK_VALID",
+            "rencana_cerita.tokoh harus berupa daftar objek",
+        )]
+
+    temuan: list[TemuanAdab] = []
+    for nomor, tokoh in enumerate(daftar_tokoh, start=1):
+        if not isinstance(tokoh, dict):
+            temuan.append(TemuanAdab(
+                "GAGAL", "IDENTITAS_TOKOH_TIDAK_VALID",
+                f"Tokoh semantik ke-{nomor} harus berupa objek",
+            ))
+            continue
+
+        nama = str(tokoh.get("nama", tokoh.get("id", f"tokoh-{nomor}")))
+        kategori = str(tokoh.get("kategori", "")).strip().lower().replace("-", "_").replace(" ", "_")
+        tampil = tokoh.get("tampil")
+        if kategori in KATEGORI_ALLAH or nama.strip().lower() in {
+            "allah", "allah swt", "tuhan", "sang pencipta",
+        }:
+            temuan.append(TemuanAdab(
+                "GAGAL", "ALLAH_TIDAK_DIVISUALKAN",
+                f"{nama}: Allah tidak boleh divisualisasikan dalam bentuk apa pun",
+            ))
+            continue
+
+        wajib = NAMA_TAMPIL.get(kategori)
+        if wajib and tampil != wajib:
+            temuan.append(TemuanAdab(
+                "GAGAL", "CARA_TAMPIL_TOKOH_SUCI",
+                f"{nama} ({kategori}) wajib tampil '{wajib}', bukan '{tampil}'",
+            ))
+        elif not wajib and tampil in {"nur", "cahaya_malaikat", "wajah_cahaya"}:
+            temuan.append(TemuanAdab(
+                "GAGAL", "BENTUK_CAHAYA_SALAH",
+                f"{nama} ({kategori or 'kategori tidak diisi'}) tidak boleh memakai bentuk khusus '{tampil}'",
+            ))
+    return temuan
+
+
 def periksa_adab_tokoh(rencana: Any) -> list[TemuanAdab]:
     """Periksa identitas tokoh dan cara tampilnya sebelum job diteruskan ke renderer.
 
@@ -43,6 +87,10 @@ def periksa_adab_tokoh(rencana: Any) -> list[TemuanAdab]:
     """
     if not isinstance(rencana, dict):
         return []
+    rencana_semantik = rencana.get("rencana_cerita")
+    if isinstance(rencana_semantik, dict) and not _daftar(rencana.get("peran")):
+        return _periksa_roster_semantik(rencana_semantik)
+
     peran_list = _daftar(rencana.get("peran"))
     if not peran_list:
         # Format papan lama tetap dijaga oleh adapter paket, bukan oleh inti renderer.
