@@ -219,3 +219,42 @@ def test_satu_shot_yang_menyebut_sahabat_tidak_menyisipkan_siluet_kelompok_di_ka
     jenis = _jenis("Para sahabat berkumpul. Orang-orang berlarian di kejauhan.")
     assert "kerumunan" not in jenis
     assert "arus" not in jenis
+
+
+def _arahkan_satu(teks):
+    from newmotion.application.pengarah_inti import arahkan_naskah
+    spek, _, _ = arahkan_naskah({"judul": "uji", "genre": "kisah_islami", "konteks_konten": "islami",
+                                 "adegan": [{"nama": "a1", "teks": teks}]})
+    return spek["cerita"]["shot"]
+
+
+def test_dinding_zulkarnain_tidak_tertutup_latar_gunung():
+    # Renderer menggambar benda `belakang` lebih dulu; gunung latar akan menimpa dinding.
+    for shot in _arahkan_satu("Dinding besi Zulkarnain digali setiap hari oleh Ya'juj dan Ma'juj."):
+        jenis = [b["jenis"] for b in shot["benda"]]
+        if "ngarai" in jenis:
+            assert not {"gunung", "tebing", "kota"} & set(jenis)
+
+
+def test_tokoh_kamu_menjadi_saksi_saat_pelaku_cerita_tampil():
+    for shot in _arahkan_satu("Setiap hari mereka menggali dinding besi Zulkarnain, sampai hampir tembus."):
+        if any(b["jenis"] == "penggali" for b in shot["benda"]):
+            kamu = shot["boneka"][0]
+            assert kamu["belakang"] is True and kamu["s"] <= 0.6 and kamu["y"] >= 1900
+            assert shot["kamera"]["x"] == 540 and shot["kamera"]["z"][0] == 1.0
+            batu = [b for b in shot["benda"] if b["jenis"] == "batu" and b.get("depan")]
+            assert all((b["x"] > 540) != (kamu["x"] > 540) for b in batu)
+
+
+def test_kamu_tetap_tokoh_utama_bila_subjek_hanya_suasana():
+    # Mahsyar: "kamu" adalah pelaku; kerumunan latar tidak membuatnya mundur.
+    for shot in _arahkan_satu("Manusia tenggelam dalam keringatnya, dan keringatmu sampai mana?"):
+        assert not shot["boneka"][0].get("belakang") or shot["boneka"][0]["s"] > 0.55
+
+
+def test_dinding_kembali_utuh_tanpa_lubang():
+    from newmotion.paket_genre.kisah_islami.pengarah_subjek import arahkan_subjek
+    konteks = "Dinding besi itu dibangun Zulkarnain untuk mengurung Ya'juj dan Ma'juj."
+    teks = "Esoknya, dinding itu sudah kembali utuh."
+    ngarai = [b for b in arahkan_subjek(teks, 4.0, 0, konteks=konteks + " " + teks)["benda"] if b["jenis"] == "ngarai"]
+    assert ngarai and ngarai[0]["lubang"] == 0.0

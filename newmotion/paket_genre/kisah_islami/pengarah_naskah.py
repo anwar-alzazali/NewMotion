@@ -36,6 +36,7 @@ from __future__ import annotations
 
 import hashlib
 import re
+import statistics
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
@@ -324,6 +325,59 @@ def _boneka_kamu(tampilan: dict, letak: dict, wajah: str, pose: str, ds: float, 
     return b, pose
 
 
+# Subjek yang membawa lanskapnya sendiri: `ngarai` sudah berupa dinding di celah dua tebing,
+# `istana`/`gerbang` adalah bangunan besar. Latar tema yang bertabrakan dengannya dibuang
+# (renderer menggambar benda `belakang` lebih dulu, sehingga gunung latar menimpa dinding).
+SUBJEK_PANGGUNG = frozenset({"ngarai", "istana", "gerbang"})
+LATAR_BERTABRAKAN = frozenset({"gunung", "tebing", "kota", "bukit"})
+# Subjek suasana/latar: "kamu" tetap tokoh utama (mis. Mahsyar: "keringatmu sampai mana?").
+SUBJEK_SUASANA = frozenset({"kerumunan", "ombak", "gunung", "rumah", "makam", "pancar"})
+
+
+def _susun_ulang_untuk_subjek(benda: list[dict], subjek: list[dict], b: dict, kamera: dict,
+                              look: dict, wajah: str, pose: str, ds: float, tx: str,
+                              posisi: str, R) -> tuple[list[dict], dict, dict]:
+    """Jadikan subjek narasi fokus shot, bukan tempelan di atas templat "kamu".
+
+    - Latar tema yang bertabrakan dengan subjek panggung (dinding, istana, gerbang) dibuang.
+    - Tokoh "kamu" mundur menjadi saksi: kecil, tampak belakang, di sisi yang berlawanan
+      dengan subjek, sehingga tidak menutupi atau tampak berdiri di antara pelaku cerita.
+    - Kamera melebar ke subjek; bidikan dekat ke wajah "kamu" akan memotong subjek keluar
+      bingkai. Aksen kamera (hentak/guncang) yang sudah ditetapkan tetap dipertahankan.
+    """
+    jenis_subjek = {x.get("jenis") for x in subjek}
+    if jenis_subjek & SUBJEK_PANGGUNG:
+        benda = [x for x in benda if x.get("jenis") not in LATAR_BERTABRAKAN]
+
+    def _x_awal(o: dict) -> float:
+        x = o.get("x", 540)
+        while isinstance(x, list) and x:
+            x = x[0][1] if isinstance(x[0], list) else x[0]
+        return float(x) if isinstance(x, (int, float)) else 540.0
+
+    pelaku = [o for o in subjek if o.get("jenis") not in SUBJEK_SUASANA]
+    if not pelaku:
+        return benda, b, kamera
+    pusat = statistics.fmean(_x_awal(o) for o in pelaku)
+    x_saksi = 880 if pusat < 540 else 200
+    # Kaki sedikit di bawah bingkai: "kamu" menjadi siluet saksi di latar paling depan,
+    # di bawah garis kaki pelaku sehingga tidak menumpuk dengan mereka.
+    letak = {"x": x_saksi, "y": 1980, "s": 0.55, "belakang": True}
+    # Batu kabur di sudut depan pindah ke sisi seberang agar tidak menutupi "kamu".
+    batu_seberang = BATU_KANAN if x_saksi < 540 else BATU_KIRI
+    benda = [dict(batu_seberang) if o.get("jenis") == "batu" and o.get("depan") else o for o in benda]
+    b_baru, _ = _boneka_kamu(look, letak, wajah, pose, ds, tx, posisi, R, -1 if x_saksi > 540 else 1)
+    for kunci in ("keringat", "genangan"):
+        if kunci in b:
+            b_baru[kunci] = b[kunci]
+
+    lebar = {"z": [1.0, 1.06], "x": 540, "y": 1000}
+    for kunci in ("hentak", "guncang"):
+        if kunci in kamera:
+            lebar[kunci] = kamera[kunci]
+    return benda, b_baru, lebar
+
+
 def arahkan(naskah: dict, waktu_adegan: list[float] | None = None,
             waktu_kata: list[list] | None = None, tampilan: dict | None = None,
             latar: str | None = None) -> dict:
@@ -487,6 +541,10 @@ def arahkan(naskah: dict, waktu_adegan: list[float] | None = None,
             subjek = arahkan_subjek(tx, ds, idx * 100 + j, konteks=teks_gabungan)
             jenis_ada = {x.get("jenis") for x in benda}
             benda += [x for x in subjek["benda"] if x.get("jenis") not in jenis_ada]
+            if subjek["benda"]:
+                benda, b, kamera = _susun_ulang_untuk_subjek(benda, subjek["benda"], b, kamera,
+                                                              look, wajah, pose, ds, tx, posisi, R)
+                s["kamera"] = kamera
             s["benda"] = benda
             if subjek["teks"]:
                 s["teks"] = (s.get("teks") or []) + subjek["teks"]

@@ -204,6 +204,8 @@ def _properti_benda(jenis: str, teks: str, durasi: float, seed: int) -> dict:
         if POLA_PERUBAHAN["jebol"].search(teks):
             dasar["lubang"] = 1.0
             dasar["jebol"] = 1.0
+        elif re.search(r"\b(kembali utuh|utuh kembali|masih utuh|seperti semula)\b", teks, re.I):
+            dasar["lubang"] = 0.0  # galian kemarin tertutup lagi: dinding tampak utuh
     elif jenis == "penggali":
         dasar.update({
             "x": 540, "y": 1420, "s": 0.82, "aktif": 1, "n": 5,
