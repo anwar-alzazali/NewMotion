@@ -202,6 +202,54 @@ def _rencana_cerita(naskah: Mapping[str, Any], shot: list[dict]) -> dict[str, An
 
 
 
+
+def _tahapan_peristiwa(peristiwa: list[Mapping]) -> list[dict]:
+    """Kelompokkan aksi simultan; pisahkan hanya jika urutan temporal dinyatakan."""
+    tahapan = []
+    tahap_aktif = None
+    keadaan_terakhir = {}
+    for nomor, item in enumerate(peristiwa, start=1):
+        id_event = item.get("id")
+        ketergantungan = (
+            item.get("setelah_peristiwa_id")
+            or item.get("peristiwa_sebelumnya_id")
+        )
+        relasi = str(item.get("hubungan_temporal") or "").strip().casefold()
+        perubahan = item.get("perubahan_keadaan")
+        transisi_berurutan = False
+        if isinstance(perubahan, Mapping):
+            entitas = perubahan.get("entitas_id")
+            if isinstance(entitas, str) and entitas in keadaan_terakhir:
+                transisi_berurutan = (
+                    perubahan.get("dari") == keadaan_terakhir[entitas]
+                )
+            if isinstance(entitas, str) and perubahan.get("menjadi") is not None:
+                keadaan_terakhir[entitas] = perubahan["menjadi"]
+
+        eksplisit_setelah = (
+            isinstance(ketergantungan, str) and bool(ketergantungan.strip())
+        ) or relasi in {"setelah", "sesudah", "kemudian", "berikutnya"}
+        perlu_tahap_baru = tahap_aktif is None or (
+            eksplisit_setelah or transisi_berurutan
+        )
+        if perlu_tahap_baru:
+            tahap_aktif = {
+                "id": f"tahap-aksi-{len(tahapan) + 1:03d}",
+                "urutan": len(tahapan) + 1,
+                "peristiwa_ids": [],
+                "dasar_pemisahan": (
+                    "relasi_temporal_eksplisit" if eksplisit_setelah
+                    else "transisi_keadaan_berurutan" if transisi_berurutan
+                    else "tahap_awal"
+                ),
+                "bergantung_pada_peristiwa_id": ketergantungan,
+            }
+            tahapan.append(tahap_aktif)
+        if isinstance(id_event, str):
+            tahap_aktif["peristiwa_ids"].append(id_event)
+    return tahapan
+
+
 def _lengkapi_metadata_pengarah(shot: list[dict], rencana_cerita: dict) -> None:
     """Tautkan metadata shot ke hasil resolusi ID aktor/sasaran yang otoritatif."""
     adegan = {
@@ -238,6 +286,8 @@ def _lengkapi_metadata_pengarah(shot: list[dict], rencana_cerita: dict) -> None:
                 "sasaran_tokoh_id": sasaran_tokoh_id,
             })
         pengarahan["fokus_tokoh_ids"] = fokus
+        pengarahan["tahapan_peristiwa"] = _tahapan_peristiwa(peristiwa)
+        pengarahan["status_segmentasi"] = "rencana_semantik_belum_memecah_shot_renderer"
         pengarahan["peristiwa_ids"] = [
             item["peristiwa_id"] for item in urutan if item.get("peristiwa_id")
         ]
