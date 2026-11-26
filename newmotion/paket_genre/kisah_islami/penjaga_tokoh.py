@@ -91,7 +91,7 @@ def _periksa_benda_manusia_dalam_konteks_sakral(rencana: Any) -> list[TemuanAdab
         return []
 
     pola_sakral = re.compile(
-        r"\b(allah|tuhan|rasulullah|rasul|nabi|muhammad|malaikat|jibril|mikail|israfil)\b",
+        r"\b(allah|tuhan|rasulullah|rasul|nabi|muhammad|malaikat|jibril|mikail|israfil|sahabat|abu bakar|umar|utsman|usman|ali bin abi thalib)\b",
         re.IGNORECASE,
     )
     pola_sahabat = re.compile(
@@ -99,7 +99,7 @@ def _periksa_benda_manusia_dalam_konteks_sakral(rencana: Any) -> list[TemuanAdab
         re.IGNORECASE,
     )
     pola_pemimpin = re.compile(r"\b(pemimpin|pemuka|raja|panglima)\b", re.IGNORECASE)
-    pola_penggali = re.compile(r"\b(penggali|menggali|digali|menggerogoti)\b", re.IGNORECASE)
+    pola_penggali = re.compile(r"\b(penggali|menggali|digali|menggerogoti|mengikis)\b", re.IGNORECASE)
     jenis_manusia = {"pemimpin", "penggali", "kerumunan", "arus"}
     temuan: list[TemuanAdab] = []
 
