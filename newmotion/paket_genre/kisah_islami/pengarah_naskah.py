@@ -386,7 +386,9 @@ def arahkan(naskah: dict, waktu_adegan: list[float] | None = None,
         wajah_adegan = _wajah_dari_teks(teks, bawaan={"isi": "netral", "hook": "bingung"}.get(posisi, "lega"))
 
         def shot_dasar(at: float) -> dict:
-            s: dict = {"at": round(at, 2), "_adegan": idx, "horizon": h}
+            s: dict = {
+                "at": round(at, 2), "_adegan": idx, "_narasi": teks, "horizon": h
+            }
             if palet is not None:
                 s["palet"] = palet
                 s["malam"] = AV.MALAM_PALET.get(palet, 0)
