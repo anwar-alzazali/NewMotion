@@ -291,8 +291,7 @@ def test_pengarah_menetapkan_tujuan_shot_dan_zoom_dari_peristiwa_eksplisit():
     assert kedua["pengarahan"]["tujuan"] == "menampilkan_interaksi"
     assert kedua["pengarahan"]["peristiwa_ids"] == ["e3"]
     assert kedua["kamera"]["z"] == [1.04, 1.12]
-    # Motor berasal dari peristiwa tergelincir eksplisit dan berlanjut dengan ID sama.
+    # Benda hanya dibuat pada shot yang memiliki peristiwa eksplisit terkait motor.
     assert [x["jenis"] for x in pertama["benda"]] == ["motor"]
-    assert [x["jenis"] for x in kedua["benda"]] == ["motor"]
-    assert pertama["benda"][0]["id"] == kedua["benda"][0]["id"] == "motor-beat-001"
+    assert kedua["benda"] == []
 
