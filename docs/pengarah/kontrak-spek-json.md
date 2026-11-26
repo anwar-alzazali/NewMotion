@@ -148,3 +148,22 @@ menciptakan lintasan aktor.
 Hasil pelacakan disimpan pada `rencana_kamera` dan status per shot. Pusat bounding-box
 adalah tahap awal; ia belum menggantikan komposisi sinematik yang mempertimbangkan
 kedalaman, occlusion, ruang kosong, lensa, dialog, atau shot/reverse-shot.
+
+
+## Posisi relatif benda
+
+Entitas benda dapat memakai salah satu dari dua sumber posisi:
+
+1. `posisi: {x, y, s}` untuk koordinat/keyframe eksplisit; atau
+2. `relasi_posisi: {tokoh_id, hubungan, offset_x?, offset_y?, s?}` untuk mengikuti
+   lintasan tokoh yang sudah dihasilkan pengarah visual.
+
+Hubungan yang didukung: `di_samping_kiri`, `di_samping_kanan`, `di_depan`,
+`di_belakang`, dan `mengikuti`. Jika x/y tokoh berupa keyframe, offset diterapkan
+pada setiap keyframe sehingga kontinuitas relatif terjaga. Posisi eksplisit memiliki
+prioritas atas relasi. Relasi tanpa tokoh fokus yang tersedia tidak boleh menghasilkan
+koordinat tebakan; keluaran harus memberi diagnostik penempatan.
+
+Benda yang ditautkan melalui `sasaran_benda_id` hanya diterapkan pada tahap renderer
+yang memuat ID peristiwa terkait. Benda pada `benda_ids` beat berlaku pada semua tahap
+shot yang berasal dari beat tersebut. ID benda tetap stabil pada setiap shot.
