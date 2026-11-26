@@ -311,7 +311,7 @@ def test_segmentasi_hanya_memisahkan_aksi_dengan_relasi_temporal_eksplisit():
     pengarahan = spek["cerita"]["shot"][0]["pengarahan"]
     assert len(pengarahan["tahapan_peristiwa"]) == 1
     assert pengarahan["tahapan_peristiwa"][0]["peristiwa_ids"] == ["e1", "e2"]
-    assert pengarahan["status_segmentasi"] == "shot_renderer_dibentuk_dari_tahap_semantik"
+    assert pengarahan["status_segmentasi"] == "shot_renderer_satu_tahap_semantik"
 
     naskah["adegan"][0]["peristiwa"][1]["setelah_peristiwa_id"] = "e1"
     spek_berurutan, _, _ = arahkan_naskah(naskah)
@@ -353,6 +353,10 @@ def test_tahap_temporal_memecah_shot_renderer_dan_menjaga_kontinuitas():
     assert shot[1]["pengarahan"]["peristiwa_ids"] == ["e2"]
     assert shot[0]["at"] == 0
     assert shot[1]["at"] == shot[0]["durasi"]
+    # Renderer cerita.js menentukan batas shot dari nilai at berikutnya.
+    assert shot[1]["at"] > shot[0]["at"]
+    assert shot[0]["pengarahan"]["status_segmentasi"] == "shot_renderer_dibagi_dari_tahap_semantik"
+    assert shot[1]["pengarahan"]["status_segmentasi"] == "shot_renderer_dibagi_dari_tahap_semantik"
     assert round(shot[0]["durasi"] + shot[1]["durasi"], 2) == round(
         max(3.0, min(12.0, len(naskah["adegan"][0]["teks"]) / 16.0)), 2
     )
@@ -377,5 +381,5 @@ def test_tahap_simultan_tetap_satu_shot_renderer():
     assert jumlah == 1
     assert len(spek["cerita"]["shot"]) == 1
     assert spek["cerita"]["shot"][0]["pengarahan"]["status_segmentasi"] == (
-        "shot_renderer_dibentuk_dari_tahap_semantik"
+        "shot_renderer_satu_tahap_semantik"
     )
