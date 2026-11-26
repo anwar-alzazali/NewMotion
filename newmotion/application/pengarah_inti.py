@@ -201,6 +201,49 @@ def _rencana_cerita(naskah: Mapping[str, Any], shot: list[dict]) -> dict[str, An
     }
 
 
+
+def _lengkapi_metadata_pengarah(shot: list[dict], rencana_cerita: dict) -> None:
+    """Tautkan metadata shot ke hasil resolusi ID aktor/sasaran yang otoritatif."""
+    adegan = {
+        item["id"]: item
+        for item in rencana_cerita.get("adegan", [])
+        if isinstance(item, Mapping) and isinstance(item.get("id"), str)
+    }
+    for item_shot in shot:
+        if not isinstance(item_shot, dict):
+            continue
+        identitas_beat = item_shot.get("_beat_id")
+        sumber = adegan.get(identitas_beat)
+        pengarahan = item_shot.get("pengarahan")
+        if not isinstance(sumber, Mapping) or not isinstance(pengarahan, dict):
+            continue
+        peristiwa = sumber.get("peristiwa") or []
+        urutan = []
+        fokus = list(pengarahan.get("fokus_tokoh_ids") or [])
+        for nomor, item in enumerate(peristiwa, start=1):
+            if not isinstance(item, Mapping):
+                continue
+            aktor_id = item.get("aktor_id")
+            sasaran_tokoh_id = item.get("sasaran_tokoh_id")
+            for tokoh_id in (aktor_id, sasaran_tokoh_id):
+                if isinstance(tokoh_id, str) and tokoh_id not in fokus:
+                    fokus.append(tokoh_id)
+            urutan.append({
+                "urutan": nomor,
+                "peristiwa_id": item.get("id"),
+                "aktor_id": aktor_id,
+                "aktor": item.get("aktor"),
+                "aksi": item.get("aksi"),
+                "sasaran": item.get("sasaran"),
+                "sasaran_tokoh_id": sasaran_tokoh_id,
+            })
+        pengarahan["fokus_tokoh_ids"] = fokus
+        pengarahan["peristiwa_ids"] = [
+            item["peristiwa_id"] for item in urutan if item.get("peristiwa_id")
+        ]
+        pengarahan["urutan_peristiwa"] = urutan
+
+
 def arahkan_naskah(
     naskah: Mapping[str, Any], *, genre_pilihan: str | None = None
 ) -> tuple[dict[str, Any], str, int]:
@@ -246,6 +289,7 @@ def arahkan_naskah(
     # Rencana semantik disimpan terpisah dari instruksi visual renderer.
     # Renderer tetap menerima cerita.shot; lapisan blocking berikutnya memakai rencana_cerita.
     spesifikasi["rencana_cerita"] = _rencana_cerita(naskah, shot)
+    _lengkapi_metadata_pengarah(shot, spesifikasi["rencana_cerita"])
     spesifikasi["rencana_blocking"] = susun_rencana_blocking(
         spesifikasi["rencana_cerita"], cerita
     )
