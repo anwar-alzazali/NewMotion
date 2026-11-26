@@ -165,6 +165,14 @@ def arahkan_benda_visual(rencana_cerita, rencana_blocking, cerita, rencana_visua
         id_beat = list(dict.fromkeys(beat.get("benda_ids", [])))
         pengarahan = shot.get("pengarahan", {})
         peristiwa_shot = set(pengarahan.get("peristiwa_ids", []))
+        # Sebagian pengarah genre lama belum menempelkan metadata peristiwa
+        # pada shot. Untuk shot tanpa segmentasi eksplisit, gunakan seluruh
+        # peristiwa beat; tahap yang sudah memiliki ID tetap memakai filter tahap.
+        if not peristiwa_shot:
+            peristiwa_shot = {
+                item.get("id") for item in beat.get("peristiwa", [])
+                if isinstance(item, Mapping) and isinstance(item.get("id"), str)
+            }
         id_peristiwa_benda = {}
         for peristiwa in beat.get("peristiwa", []):
             if (
