@@ -41,6 +41,11 @@ Satu keluaran dinilai lengkap hanya jika:
   `periksa`, bukan ditebak.
 - Setiap perubahan keadaan menunjuk peristiwa pemicunya; keadaan yang tidak berubah
   tetap dibawa ke shot berikutnya.
+- Segmentasi aksi hanya memisahkan tahap bila ada relasi temporal eksplisit atau
+  transisi keadaan berantai yang konsisten; aksi tanpa relasi tersebut tetap satu
+  kelompok agar aksi simultan tidak dipecah secara spekulatif.
+- Rencana tahap semantik dibedakan dari pemecahan shot renderer; pemecahan aktual baru
+  boleh dilakukan setelah adapter menjaga indeks, aktor, benda, dan kontinuitas lintas-shot.
 - Setiap arahan visual tokoh menunjuk tokoh/peristiwa yang mendasarinya.
 - Gerak mempunyai lintasan dan waktu yang masuk akal; aksi berjalan/berlari tidak boleh
   hanya mengganti pose tanpa perpindahan posisi.
