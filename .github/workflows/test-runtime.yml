@@ -55,8 +55,10 @@ jobs:
           mkdir -p /tmp/newmotion-baseline
           git archive origin/main | tar -x -C /tmp/newmotion-baseline
           mkdir -p /tmp/newmotion-baseline/tests/data/tolok_ukur_tambahan
+          mkdir -p /tmp/newmotion-baseline/tests/data/tolok_ukur_buta
           cp tests/laporan_ukur_perbandingan.py /tmp/newmotion-baseline/tests/
           cp tests/data/tolok_ukur_tambahan/*.json /tmp/newmotion-baseline/tests/data/tolok_ukur_tambahan/
+          cp tests/data/tolok_ukur_buta/*.json /tmp/newmotion-baseline/tests/data/tolok_ukur_buta/
           cp /tmp/ukur_kedalaman_pr29.py /tmp/newmotion-baseline/newmotion/application/ukur_kedalaman.py
           cp newmotion/application/ukur_kedalaman.py /tmp/ukur_kedalaman_pr28.py
           cp /tmp/ukur_kedalaman_pr29.py newmotion/application/ukur_kedalaman.py
@@ -66,8 +68,12 @@ jobs:
           (cd /tmp/newmotion-baseline && PYTHONPATH=. python tests/laporan_ukur_perbandingan.py --folder tests/data/tolok_ukur_tambahan)
           echo "=== BRANCH PR #28 + ALAT UKUR PR #29: 4 TOLok UKUR ==="
           PYTHONPATH=. python tests/laporan_ukur_perbandingan.py --folder tests/data/tolok_ukur
-          echo "=== BRANCH PR #28 + ALAT UKUR PR #29: SEMUA HOLDOUT ==="
+          echo "=== BRANCH PR #28 + ALAT UKUR PR #29: HOLDOUT LAMA (SUDAH TERLIHAT) ==="
           PYTHONPATH=. python tests/laporan_ukur_perbandingan.py --folder tests/data/tolok_ukur_tambahan
+          echo "=== BASELINE MAIN + ALAT UKUR PR #29: BLIND HOLDOUT TERDAFTAR ==="
+          (cd /tmp/newmotion-baseline && PYTHONPATH=. python tests/laporan_ukur_perbandingan.py --folder tests/data/tolok_ukur_buta)
+          echo "=== BRANCH PR #28 + ALAT UKUR PR #29: BLIND HOLDOUT TERDAFTAR ==="
+          PYTHONPATH=. python tests/laporan_ukur_perbandingan.py --folder tests/data/tolok_ukur_buta
           cp /tmp/ukur_kedalaman_pr28.py newmotion/application/ukur_kedalaman.py
       - name: Uji CLI ukur asli PR #28 (alat ukur tidak dimodifikasi)
         run: newmotion ukur
