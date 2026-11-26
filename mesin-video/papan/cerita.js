@@ -1716,13 +1716,13 @@
     } else if (profilAktif) {
       // Profil kiri dan kanan memakai geometri wajah yang sama; sisi kiri dicerminkan pada tahap komposisi.
       // Tampak samping: wajah mengarah ke depan perjalanan, bukan ke kamera.
-      k += `<path d="M -62 -54 Q -38 -94 8 -82 Q 48 -78 52 -40 L 54 -10 L 78 8 L 56 24 Q 60 58 34 76 Q 4 94 -34 70 Q -66 48 -62 -54 Z" fill="${b.kulit || KL}" stroke="${INK}" stroke-width="7"/>`;
+      k += `<path d="M -62 -54 Q -38 -94 8 -82 Q 48 -78 52 -40 L 54 -10 L 78 8 L 56 24 Q 60 58 34 76 Q 4 94 -34 70 Q -66 48 -62 -54 Z" fill="${b.wajah_cahaya ? "#fff8df" : (b.kulit || KL)}" stroke="${INK}" stroke-width="7"/>`;
       k += `<path d="M -64 -44 Q -58 -108 8 -104 Q 62 -100 66 -48 Q 38 -68 10 -60 Q -24 -54 -64 -20 Z" fill="${b.rambut === "kerudung" ? (b.kerudung || BAYANG) : (b.warna_rambut || INK)}" stroke="${INK}" stroke-width="6"/>`;
-      k += `<circle cx="-76" cy="6" r="15" fill="${b.kulit || KL}" stroke="${INK}" stroke-width="6"/><circle cx="30" cy="-18" r="8" fill="#fff" stroke="${INK}" stroke-width="3"/><circle cx="34" cy="-18" r="4.5" fill="${INK}"/><path d="M 50 42 Q 62 46 68 38" fill="none" stroke="${INK}" stroke-width="5" stroke-linecap="round"/>`;
+      k += `<circle cx="-76" cy="6" r="15" fill="${b.wajah_cahaya ? "#fff8df" : (b.kulit || KL)}" stroke="${INK}" stroke-width="6"/>`; if (!b.wajah_cahaya) k += `<circle cx="30" cy="-18" r="8" fill="#fff" stroke="${INK}" stroke-width="3"/><circle cx="34" cy="-18" r="4.5" fill="${INK}"/><path d="M 50 42 Q 62 46 68 38" fill="none" stroke="${INK}" stroke-width="5" stroke-linecap="round"/>`; else k += `<ellipse cx="22" cy="12" rx="42" ry="62" fill="#fff8df" opacity=".42"/>`;
     } else if (belakang) {
       k += `<circle cx="-76" cy="6" r="15" fill="${KL}" stroke="${INK}" stroke-width="6"/><circle cx="76" cy="6" r="15" fill="${KL}" stroke="${INK}" stroke-width="6"/><circle r="78" fill="${b.warna_rambut || INK}" stroke="${INK}" stroke-width="7"/><path d="M -60 50 Q 0 90 60 50 L 50 72 Q 0 96 -50 72 Z" fill="${KL}"/>`;
     } else if (gaya === "umum") {
-      const kl = b.kulit || KL, rb = b.rambut || "pendek", RB = b.warna_rambut || INK;
+      const kl = b.wajah_cahaya ? "#fff8df" : (b.kulit || KL), rb = b.rambut || "pendek", RB = b.warna_rambut || INK;
       if (rb === "kerudung") { // perempuan: kepala tertutup kain gelap (sama dengan badan)
         k += `<path d="M -92 30 C -100 -110, 100 -110, 92 30 C 96 90, 60 120, 0 122 C -60 120, -96 90, -92 30 Z" fill="${b.kerudung || BAYANG}" stroke="${INK}" stroke-width="6"/>`;
         k += `<ellipse cx="0" cy="8" rx="62" ry="72" fill="${kl}" stroke="${INK}" stroke-width="6"/>`;
@@ -1783,7 +1783,7 @@
         k += `<path d="M -68 -48 Q 0 -68 68 -48 L 62 -88 Q 0 -110 -62 -88 Z" fill="${WPK}" stroke="${INK}" stroke-width="6"/><path d="M -58 -58 Q 0 -76 58 -58" stroke="${warna(WPK, "#000000", 0.18)}" stroke-width="5" fill="none"/>`;
       }
     }
-    const muka = ANW && !belakang && !profilAktif && gaya !== "dajjal";
+    const muka = ANW && !belakang && !profilAktif && gaya !== "dajjal" && !b.wajah_cahaya;
     if (muka && gaya !== "siluet") k += `<path d="M 18 -80 A 75 82 0 0 1 18 80 A 58 82 0 0 0 18 -80 Z" fill="#3a1f2a" opacity=".13"/>`; // bayangan separuh wajah
     if (muka && (wajah === "lelah" || wajah === "takut" || wajah === "marah" || wajah === "malu" || keringat > 0) && gaya !== "siluet") k += `<ellipse cx="${ex - 44}" cy="${30 + ey}" rx="16" ry="9" fill="#ff6b6b" opacity="${0.25 + 0.3 * PANAS}"/><ellipse cx="${ex + 44}" cy="${30 + ey}" rx="16" ry="9" fill="#ff6b6b" opacity="${0.25 + 0.3 * PANAS}"/>`; // pipi memerah
     if (muka) {
