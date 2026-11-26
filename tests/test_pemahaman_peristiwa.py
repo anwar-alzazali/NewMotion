@@ -421,7 +421,7 @@ def test_tujuan_aksi_dipisahkan_dari_aksi_yang_benar_benar_terjadi():
     assert "menolong" != peristiwa["aksi"]
 
 
-def test_tujuan_aksi_dapat_menautkan_benda_dari_roster_tanpa_mengubahnya_menjadi_aksi():
+def test_tujuan_aksi_belum_dikenali_tidak_dianggap_sasaran_benda():
     benda = [{
         "id": "motor-01",
         "nama": "motor",
