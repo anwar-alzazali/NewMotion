@@ -56,6 +56,22 @@ def _rencana_cerita(naskah: Mapping[str, Any], shot: list[dict]) -> dict[str, An
     daftar_adegan = []
     id_adegan = set()
     id_peristiwa_global = set()
+    daftar_benda = naskah.get("benda", [])
+    if not isinstance(daftar_benda, list):
+        raise GalatPengarahan("Daftar benda naskah harus berupa daftar")
+    id_benda = set()
+    for nomor_benda, benda in enumerate(daftar_benda, start=1):
+        if not isinstance(benda, Mapping):
+            raise GalatPengarahan(f"Benda ke-{nomor_benda} harus berupa objek")
+        identitas_benda = benda.get("id")
+        jenis_benda = benda.get("jenis_renderer")
+        if not isinstance(identitas_benda, str) or not identitas_benda.strip():
+            raise GalatPengarahan(f"Benda ke-{nomor_benda} wajib memiliki ID")
+        if identitas_benda in id_benda:
+            raise GalatPengarahan(f"ID benda {identitas_benda!r} digunakan lebih dari sekali")
+        if not isinstance(jenis_benda, str) or not jenis_benda.strip():
+            raise GalatPengarahan(f"Benda {identitas_benda!r} wajib memiliki jenis_renderer")
+        id_benda.add(identitas_benda)
     for nomor, adegan in enumerate(naskah["adegan"], start=1):
         identitas = adegan.get("id") or f"beat-{nomor:03d}"
         if not isinstance(identitas, str) or not identitas.strip():
@@ -78,7 +94,17 @@ def _rencana_cerita(naskah: Mapping[str, Any], shot: list[dict]) -> dict[str, An
             "peran": copy.deepcopy(adegan.get("peran", [])),
             "tokoh_ids": list(tokoh_ids),
             "dialog": copy.deepcopy(adegan.get("dialog", [])),
+            "benda_ids": copy.deepcopy(adegan.get("benda_ids", [])),
         }
+        if not isinstance(butir["benda_ids"], list):
+            raise GalatPengarahan(f"Beat {identitas!r} benda_ids harus berupa daftar")
+        for benda_id in butir["benda_ids"]:
+            if not isinstance(benda_id, str) or benda_id not in id_benda:
+                diagnostik.append({
+                    "kode": "benda_id_tidak_terdaftar",
+                    "beat_id": identitas,
+                    "benda_id": benda_id,
+                })
         for kunci in ("peristiwa", "aksi", "sasaran", "tujuan", "perubahan_keadaan"):
             if kunci in adegan:
                 butir[kunci] = copy.deepcopy(adegan[kunci])
@@ -108,6 +134,16 @@ def _rencana_cerita(naskah: Mapping[str, Any], shot: list[dict]) -> dict[str, An
                 id_peristiwa_global.add(id_peristiwa)
                 item_peristiwa["id"] = id_peristiwa
                 item_peristiwa["beat_id"] = identitas
+                sasaran_benda_id = item_peristiwa.get("sasaran_benda_id")
+                if sasaran_benda_id is not None and (
+                    not isinstance(sasaran_benda_id, str) or sasaran_benda_id not in id_benda
+                ):
+                    diagnostik.append({
+                        "kode": "sasaran_benda_id_tidak_terdaftar",
+                        "beat_id": identitas,
+                        "peristiwa_id": id_peristiwa,
+                        "sasaran_benda_id": sasaran_benda_id,
+                    })
 
                 aktor = item_peristiwa.get("aktor")
                 aktor_id = item_peristiwa.get("aktor_id")
@@ -196,6 +232,7 @@ def _rencana_cerita(naskah: Mapping[str, Any], shot: list[dict]) -> dict[str, An
 
     return {
         "tokoh": copy.deepcopy(tokoh),
+        "benda": copy.deepcopy(daftar_benda),
         "adegan": daftar_adegan,
         "diagnostik": diagnostik,
     }
