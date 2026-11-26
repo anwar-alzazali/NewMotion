@@ -321,3 +321,82 @@ def test_sutradara_menghubungkan_transisi_keadaan_ke_id_tokoh():
     assert transisi[1]["dari"] == "terjatuh"
     assert transisi[1]["menjadi"] == "berdiri"
     assert spek["rencana_blocking"]["keadaan_akhir"][tokoh_id] == "berdiri"
+
+
+
+def test_transisi_keadaan_benda_hanya_dari_peristiwa_eksplisit():
+    from newmotion.application.pengarah_inti import arahkan_naskah
+
+    naskah = {
+        "judul": "Motor mulai bergerak",
+        "genre": "cerita_umum",
+        "konteks_konten": "umum",
+        "tokoh": [{"id": "pengendara-01", "nama": "Pengendara"}],
+        "benda": [{
+            "id": "motor-01",
+            "nama": "motor",
+            "alias": ["sepeda motor"],
+            "jenis_renderer": "motor",
+            "posisi": {"x": 520, "y": 1500, "s": 0.8},
+        }],
+        "adegan": [{
+            "id": "beat-motor-bergerak",
+            "teks": "Pengendara mengamati motor yang mulai bergerak.",
+            "peran": ["Pengendara"],
+            "tokoh_ids": ["pengendara-01"],
+            "peristiwa": [{
+                "id": "motor-bergerak-01",
+                "aktor": "Pengendara",
+                "aksi": "mengamati",
+                "bukti_teks": "Pengendara mengamati motor yang mulai bergerak",
+                "perubahan_keadaan": {
+                    "entitas": "sepeda motor",
+                    "menjadi": "bergerak",
+                },
+            }],
+        }],
+    }
+    spek, _, _ = arahkan_naskah(naskah, genre_pilihan="cerita_umum")
+
+    perubahan = spek["rencana_cerita"]["adegan"][0]["peristiwa"][0]["perubahan_keadaan"]
+    assert perubahan["entitas_id"] == "motor-01"
+    assert spek["rencana_blocking"]["transisi_keadaan"][0]["entitas_id"] == "motor-01"
+    assert spek["rencana_blocking"]["keadaan_akhir"]["motor-01"] == "bergerak"
+
+
+def test_nama_entitas_keadaan_yang_bertabrakan_ditandai_ambigu():
+    from newmotion.application.pengarah_inti import arahkan_naskah
+
+    naskah = {
+        "judul": "Nama entitas ambigu",
+        "genre": "cerita_umum",
+        "konteks_konten": "umum",
+        "tokoh": [{"id": "motor-tokoh", "nama": "Motor"}],
+        "benda": [{
+            "id": "motor-benda",
+            "nama": "Motor",
+            "jenis_renderer": "motor",
+            "posisi": {"x": 520, "y": 1500, "s": 0.8},
+        }],
+        "adegan": [{
+            "id": "beat-ambigu",
+            "teks": "Motor bergerak.",
+            "peran": ["Motor"],
+            "tokoh_ids": ["motor-tokoh"],
+            "peristiwa": [{
+                "id": "event-ambigu",
+                "aktor": "Motor",
+                "aksi": "mengamati",
+                "bukti_teks": "Motor bergerak",
+                "perubahan_keadaan": {
+                    "entitas": "Motor",
+                    "menjadi": "bergerak",
+                },
+            }],
+        }],
+    }
+    spek, _, _ = arahkan_naskah(naskah, genre_pilihan="cerita_umum")
+
+    kode = {item["kode"] for item in spek["rencana_cerita"]["diagnostik"]}
+    assert "entitas_perubahan_keadaan_ambigu" in kode
+    assert "entitas_id" not in spek["rencana_cerita"]["adegan"][0]["peristiwa"][0]["perubahan_keadaan"]
