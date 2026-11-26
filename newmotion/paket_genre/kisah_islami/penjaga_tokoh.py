@@ -7,6 +7,7 @@ Penjaga ini hanya aktif melalui kait paket genre Kisah Islami.
 from __future__ import annotations
 
 from dataclasses import dataclass
+import re
 from typing import Any
 
 NAMA_TAMPIL = {
@@ -76,6 +77,73 @@ def _periksa_roster_semantik(rencana: dict) -> list[TemuanAdab]:
     return temuan
 
 
+def _periksa_benda_manusia_dalam_konteks_sakral(rencana: Any) -> list[TemuanAdab]:
+    """Pastikan properti bersosok manusia tidak mengambil identitas tokoh sakral.
+
+    Pengarah menyimpan narasi sumber di shot._narasi agar penjaga genre dapat
+    memeriksa relasi semantik benda dan narasi sebelum renderer dijalankan.
+    """
+    if not isinstance(rencana, dict):
+        return []
+    cerita = rencana.get("cerita")
+    shot_list = cerita.get("shot") if isinstance(cerita, dict) else None
+    if not isinstance(shot_list, list):
+        return []
+
+    pola_sakral = re.compile(
+        r"\\b(allah|tuhan|rasulullah|rasul|nabi|muhammad|malaikat|jibril|mikail|israfil)\\b",
+        re.IGNORECASE,
+    )
+    pola_sahabat = re.compile(
+        r"\\b(sahabat|abu bakar|umar|utsman|usman|ali bin abi thalib)\\b",
+        re.IGNORECASE,
+    )
+    pola_pemimpin = re.compile(r"\\b(pemimpin|pemuka|raja|panglima)\\b", re.IGNORECASE)
+    pola_penggali = re.compile(r"\\b(penggali|menggali|digali|menggerogoti)\\b", re.IGNORECASE)
+    jenis_manusia = {"pemimpin", "penggali", "kerumunan", "arus"}
+    temuan: list[TemuanAdab] = []
+
+    for nomor, shot in enumerate(shot_list):
+        if not isinstance(shot, dict):
+            continue
+        narasi = shot.get("_narasi") or shot.get("narasi") or shot.get("subtitle")
+        if not isinstance(narasi, str) or not narasi.strip():
+            continue
+        kalimat = [
+            bagian.strip()
+            for bagian in re.split(r"(?<=[.!?;])\\s+|\\n+", narasi)
+            if bagian.strip()
+        ]
+        benda = shot.get("benda") if isinstance(shot.get("benda"), list) else []
+        for item in benda:
+            if not isinstance(item, dict):
+                continue
+            jenis = item.get("jenis")
+            if jenis not in jenis_manusia:
+                continue
+            salah_konteks = False
+            alasan = ""
+            for bagian in kalimat:
+                if jenis == "pemimpin" and pola_pemimpin.search(bagian) and pola_sakral.search(bagian):
+                    salah_konteks = True
+                    alasan = "sosok pemimpin berpotensi menjadi wujud Nabi/Rasul/malaikat"
+                    break
+                if jenis == "penggali" and pola_penggali.search(bagian) and pola_sakral.search(bagian):
+                    salah_konteks = True
+                    alasan = "sosok penggali berpotensi menjadi wujud tokoh sakral"
+                    break
+                if jenis in {"kerumunan", "arus"} and pola_sahabat.search(bagian):
+                    salah_konteks = True
+                    alasan = "kerumunan berpotensi menggambarkan sahabat sebagai siluet"
+                    break
+            if salah_konteks:
+                temuan.append(TemuanAdab(
+                    "GAGAL", "BENDA_MANUSIA_TOKOH_SAKRAL",
+                    f"shot {nomor}: benda {jenis!r} tidak aman untuk narasi ini: {alasan}",
+                ))
+    return temuan
+
+
 def periksa_adab_tokoh(rencana: Any) -> list[TemuanAdab]:
     """Periksa identitas tokoh dan cara tampilnya sebelum job diteruskan ke renderer.
 
@@ -89,17 +157,23 @@ def periksa_adab_tokoh(rencana: Any) -> list[TemuanAdab]:
         return []
     rencana_semantik = rencana.get("rencana_cerita")
     if isinstance(rencana_semantik, dict) and not _daftar(rencana.get("peran")):
-        return _periksa_roster_semantik(rencana_semantik)
+        return (
+            _periksa_roster_semantik(rencana_semantik)
+            + _periksa_benda_manusia_dalam_konteks_sakral(rencana)
+        )
 
     peran_list = _daftar(rencana.get("peran"))
     if not peran_list:
         # Format papan lama tetap dijaga oleh adapter paket, bukan oleh inti renderer.
         from .penjaga_tokoh_legacy import periksa_tokoh_suci
 
-        return [
-            TemuanAdab("GAGAL", "TOKOH_SAKRAL_FORMAT_LAMA", str(item))
-            for item in periksa_tokoh_suci(rencana)
-        ]
+        return (
+            [
+                TemuanAdab("GAGAL", "TOKOH_SAKRAL_FORMAT_LAMA", str(item))
+                for item in periksa_tokoh_suci(rencana)
+            ]
+            + _periksa_benda_manusia_dalam_konteks_sakral(rencana)
+        )
 
     temuan: list[TemuanAdab] = []
     peran = {
@@ -173,6 +247,7 @@ def periksa_adab_tokoh(rencana: Any) -> list[TemuanAdab]:
                     temuan.append(TemuanAdab("GAGAL", "BERKAS_CAHAYA_BUKAN_MALAIKAT",
                                              f"{lokasi}: berkas cahaya khusus malaikat tidak boleh dipakai oleh '{nama}'"))
 
+    temuan.extend(_periksa_benda_manusia_dalam_konteks_sakral(rencana))
     return temuan
 
 
