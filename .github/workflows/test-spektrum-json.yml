@@ -9,6 +9,7 @@ on:
       - 'tests/test_paket_cerita_umum.py'
       - 'tests/test_penataan_panggung.py'
       - 'tests/test_generalisasi_spek_json.py'
+      - 'tests/test_pengarah_kamera_lingkungan.py'
       - '.github/workflows/test-spektrum-json.yml'
   workflow_dispatch:
 
