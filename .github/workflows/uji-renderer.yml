@@ -1,0 +1,124 @@
+name: Uji renderer lengkap (manual)
+
+# Pemeriksaan seluruh katalog benda dan anatomi tokoh. Tidak memanggil LLM, TTS, atau API berbayar.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  uji:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Pasang renderer dan Chromium
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq ffmpeg fonts-dejavu-core
+          python -m pip install -e '.[uji,render]'
+          python -m playwright install --with-deps chromium
+      - name: Ukur seluruh benda
+        run: python mesin-video/papan/ukur_benda.py
+      - name: Uji tokoh lapis A
+        run: python mesin-video/papan/uji_tokoh.py -o hasil/uji_tokoh
+      - name: Buat lembar semua benda (dua keadaan)
+        run: python mesin-video/papan/lembar_semua_benda.py
+      - name: Ringkasan jumlah benda, ukuran, dan temuan Lapis A
+        if: always()
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json, os, sys
+          from pathlib import Path
+          from newmotion.application.katalog_renderer import katalog
+
+          hasil = Path("hasil")
+          ukuran_path = Path("newmotion/application/data/ukuran_benda.json")
+          ukuran = json.loads(ukuran_path.read_text(encoding="utf-8")) if ukuran_path.is_file() else {}
+          nama_benda = set(katalog())
+          tanpa_ukuran = sorted(nama_benda - set(ukuran))
+          laporan_path = hasil / "uji_tokoh" / "laporan.json"
+          laporan = json.loads(laporan_path.read_text(encoding="utf-8")) if laporan_path.is_file() else {}
+          temuan = laporan.get("temuan") if isinstance(laporan, dict) else None
+          temuan = temuan if isinstance(temuan, list) else []
+          manifest_path = hasil / "manifest-renderer.json"
+          manifest = json.loads(manifest_path.read_text(encoding="utf-8")) if manifest_path.is_file() else {}
+          benda = manifest.get("benda", [])
+          animasi = sum(bool(x.get("parameter_animasi")) for x in benda)
+          galat_js = manifest.get("galat_javascript", [])
+          from collections import Counter
+          hitung = Counter(x.get("kode", "TANPA_KODE") for x in temuan)
+          baris = [
+              "# Ringkasan uji renderer",
+              "",
+              f"- Jumlah benda katalog: **{len(nama_benda)}**",
+              f"- Benda dengan parameter animasi: **{animasi}**",
+              f"- Benda tanpa ukuran: **{len(tanpa_ukuran)}**",
+              f"- Temuan Lapis A: **{len(temuan)}**",
+              f"- Galat JavaScript: **{len(galat_js)}**",
+              "",
+          ]
+          if tanpa_ukuran:
+              baris += ["## Benda tanpa ukuran", *[f"- {x}" for x in tanpa_ukuran], ""]
+          if hitung:
+              baris += ["## Temuan Lapis A", *[f"- {k}: {v}" for k, v in sorted(hitung.items())], ""]
+          if galat_js:
+              baris += ["## Galat JavaScript", *[f"- {x}" for x in galat_js], ""]
+          if not tanpa_ukuran and not temuan and not galat_js:
+              baris.append("Semua benda terukur, Lapis A tanpa temuan, dan tidak ada galat JavaScript.")
+          ringkasan = "\n".join(baris) + "\n"
+          (hasil / "ringkasan.md").write_text(ringkasan, encoding="utf-8")
+          with open(os.environ["GITHUB_STEP_SUMMARY"], "a", encoding="utf-8") as f:
+              f.write(ringkasan)
+          if not laporan_path.is_file() or not manifest_path.is_file():
+              print("::error::Laporan uji tokoh atau manifest renderer tidak tersedia")
+              sys.exit(1)
+          if tanpa_ukuran or temuan or galat_js:
+              print("::error::Uji renderer menemukan ukuran hilang, temuan Lapis A, atau galat JavaScript")
+              sys.exit(1)
+          PY
+      - name: Simpan hasil ke branch baru
+        if: always()
+        env:
+          TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          RUN: ${{ github.run_id }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p hasil
+          if [[ -f newmotion/application/data/ukuran_benda.json ]]; then
+            cp newmotion/application/data/ukuran_benda.json hasil/ukuran_benda.json
+          fi
+          if [[ -f hasil/ringkasan.md ]]; then
+            cat hasil/ringkasan.md
+          fi
+          cd hasil
+          rm -rf .git
+          git init -q
+          git checkout -q -b hasil
+          git config user.name "github-actions[bot]"
+          git config user.email "41898333+github-actions[bot]@users.noreply.github.com"
+          git add -f .
+          if git diff --cached --quiet; then
+            echo "Tidak ada berkas hasil untuk disimpan."
+            exit 0
+          fi
+          git commit -q -m "Hasil uji renderer run $RUN"
+          git push -q "https://x-access-token:${TOKEN}@github.com/${REPO}.git" "HEAD:refs/heads/hasil/renderer-${RUN}"
+          echo "Hasil tersimpan di branch hasil/renderer-${RUN}." >> "$GITHUB_STEP_SUMMARY"
+      - name: Unggah artefak cadangan
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: hasil-renderer-${{ github.run_id }}
+          path: hasil/
+          if-no-files-found: warn
+          retention-days: 30
