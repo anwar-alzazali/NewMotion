@@ -1568,20 +1568,12 @@
       rk: [8 + 4 * s, -6 * Math.max(0, s)], lk: [8 - 4 * s, -6 * Math.max(0, -s)] };
     if (nama === "lompat") {
       const u = ((t % 1.2) + 1.2) % 1.2 / 1.2;
-      // Semua fase berbagi nilai batas yang sama agar sendi tidak tersentak saat lepas landas/mendarat.
-      if (u < .2) {
-        const q = halus(u / .2);
-        return { turun: 18 * q, pp: 1 - .25 * q, rk: [8 + 2 * q, -10 * q], lk: [8 + 2 * q, -10 * q],
-          ra: [8 + 142 * q, 4 + 166 * q], la: [8 + 142 * q, 4 + 166 * q] };
-      }
-      if (u < .75) {
-        const q = halus((u - .2) / .55), tinggi = Math.sin(Math.PI * q);
-        return { turun: 18 - 138 * tinggi, pp: .75, rk: [10, -25], lk: [10, -25],
-          ra: [150, 170], la: [150, 170] };
-      }
-      const q = halus((u - .75) / .25);
-      return { turun: 18 * (1 - q), pp: .75 + .25 * q, rk: [10 - 2 * q, -25 + 25 * q], lk: [10 - 2 * q, -25 + 25 * q],
-        ra: [150 - 142 * q, 170 - 166 * q], la: [150 - 142 * q, 170 - 166 * q] };
+      // Satu lintasan periodik dengan turunan nol pada sambungan siklus (tanpa patahan saat modulo berulang).
+      const q = 0.5 - 0.5 * Math.cos(2 * Math.PI * u);
+      const angkat = q * q * (3 - 2 * q);
+      return { turun: -120 * angkat, pp: 1 - .25 * angkat,
+        rk: [8 + 2 * angkat, -25 * angkat], lk: [8 + 2 * angkat, -25 * angkat],
+        ra: [8 + 142 * angkat, 4 + 166 * angkat], la: [8 + 142 * angkat, 4 + 166 * angkat] };
     }
     if (nama === "melambai") return { ra: [150, 160 + 25 * Math.sin(t * 2 * Math.PI * 1.6)], kepala: 4 };
     if (nama === "menggeleng") return { toleh: .8 * Math.sin(t * 2 * Math.PI * 1.6) };
@@ -1683,7 +1675,7 @@
         let K, F;
         if (aksi === "menolong" || aksi === "gali") {
           // Kedua kaki tetap menapak saat badan merendah; lutut menekuk dengan IK.
-          [K, F] = ik2(H, [sg < 0 ? -35 : 35, 0], 104, 100, true);
+          [K, F] = ik2(H, [sg < 0 ? -35 : 35, 0], 100, 100, true);
         } else {
           K = [H[0] + Math.sin(p1) * 100, H[1] + Math.cos(p1) * 100];
           F = [K[0] + Math.sin(tekuk) * 100, K[1] + Math.cos(tekuk) * 100];
@@ -2110,7 +2102,7 @@
     if (H) { x += H.dx; y += H.dy; s *= H.sc; isi = `<g transform="scale(${1 - H.sq * 0.7} ${1 + H.sq})">${isi}</g>`; }
     const byg = (C.bayangan === false || b.bayangan === false || gaya === "siluet" || naik < 0.98 || potong > 0 || gen > 0 || (RG && RG.guling)) ? "" : `<ellipse cx="0" cy="6" rx="${b.bayangan > 0 ? b.bayangan : 92}" ry="15" fill="#000" opacity=".2"/>`; // standar visual butir 5: bayangan lembut di pijakan (matikan: bayangan:false di boneka atau cerita)
     if (window.__catatBoneka) { // hanya aktif saat alat uji tokoh menyiapkannya; tidak memengaruhi render biasa
-      const pm = (b.profil === "kanan" || b.profil === true || b.profil === "kiri") && !!RIG && !RIG.guling;
+      const pm = (b.profil === "kanan" || b.profil === true || b.profil === "kiri") && !!RIG;
       window.__catatBoneka.push({ id: b.id, t, x, y, s, tubuh, arah, tunduk, profil: b.profil || null, belakang: !!belakang,
         badan_samping: pm, rig: !!RIG, aksi: RIG && RIG._aksi || b.aksi || null, sendi: RG ? RG.sendi : null, guling: RG ? RG.guling || 0 : 0,
         telinga: (k.match(/data-telinga="1"/g) || []).length, kepala: [hx, hy],
