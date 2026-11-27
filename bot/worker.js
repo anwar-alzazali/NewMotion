@@ -21,10 +21,43 @@ export const idAman = (s) => String(s || "").toLowerCase().replace(/[^a-z0-9_-]+
  *  Batas Telegram 64 byte. */
 export function bacaTombol(data) {
   const [aksi, id, kode] = String(data || "").split(":");
-  if (!["st", "tl", "al", "ub", "nl", "nr", "nb", "nu", "va", "vr", "fu"].includes(aksi) || !idAman(id) || idAman(id) !== id) return null;
+  if (!["st", "tl", "al", "ub", "nl", "nr", "nb", "nu", "va", "vr", "fu", "sh"].includes(aksi) || !idAman(id) || idAman(id) !== id) return null;
   if (aksi === "al" && !ALASAN[kode]) return null;
   return { aksi, id, alasan: kode || null };
 }
+
+// ---------- statistik tayang (Tugas 9) ----------
+const angkaSingkat = (x) => { // "1,2rb" / "1.2k" / "3jt" / "12.500" -> angka
+  const m = /^([\d.,]+)\s*(rb|ribu|k|jt|juta|m)?$/i.exec(String(x).trim()); if (!m) return NaN;
+  let a = m[1], kali = { rb: 1e3, ribu: 1e3, k: 1e3, jt: 1e6, juta: 1e6, m: 1e6 }[(m[2] || "").toLowerCase()] || 1;
+  if (kali > 1) a = a.replace(",", "."); else a = a.replace(/[.,](?=\d{3}(\D|$))/g, "").replace(",", ".");
+  return Math.round(parseFloat(a) * kali);
+};
+/** "tiktok h7 12rb 850 40 12 35%" -> {platform, hari, tayang, suka, komentar, bagikan, tuntas}. Galat -> {galat}. */
+export function bacaHasil(teks) {
+  const k = String(teks || "").toLowerCase().replace(/[:;|]/g, " ").split(/\s+/).filter(Boolean);
+  const pl = k.find((x) => /^(tiktok|tt|fb|facebook)$/.test(x));
+  if (!pl) return { galat: "sebutkan platform: tiktok atau fb" };
+  const hariTeks = k.find((x) => /^h[17]$/.test(x));
+  const sisa = k.filter((x) => x !== pl && x !== hariTeks && x !== "hari");
+  const persen = sisa.find((x) => /%$/.test(x));
+  const angka = sisa.filter((x) => x !== persen).map(angkaSingkat);
+  let hari = hariTeks ? Number(hariTeks.replace(/\D/g, "")) : null;
+  if (!hari && [1, 7].includes(angka[0]) && angka.length >= 5) hari = angka.shift();
+  if (![1, 7].includes(hari)) return { galat: "sebutkan hari ke-1 atau ke-7, mis. h1 atau h7" };
+  if (angka.length < 4 || angka.some((x) => !Number.isFinite(x) || x < 0)) return { galat: "butuh 4 angka: tayang suka komentar bagikan" };
+  const tuntas = persen ? parseFloat(persen.replace(",", ".")) : null;
+  return { platform: /^(fb|facebook)$/.test(pl) ? "facebook" : "tiktok", hari, tayang: angka[0], suka: angka[1], komentar: angka[2], bagikan: angka[3],
+           tuntas: Number.isFinite(tuntas) ? tuntas : null };
+}
+/** Satu catatan per (platform, hari); yang baru menimpa yang lama. */
+export function gabungStatistik(lama, entri, waktu) {
+  const daftar = ((lama && lama.catatan) || []).filter((c) => !(c.platform === entri.platform && c.hari === entri.hari));
+  daftar.push({ ...entri, dicatat: waktu, sumber: "manual" });
+  daftar.sort((a, b) => a.platform.localeCompare(b.platform) || a.hari - b.hari);
+  return { catatan: daftar };
+}
+export const tombolHasil = (id) => [[{ text: "📊 Catat hasil", callback_data: `sh:${id}` }]];
 
 export const tombolPersetujuan = (id) => [[{ text: "✅ Setujui", callback_data: `st:${id}` }, { text: "❌ Tolak", callback_data: `tl:${id}` }]];
 export const tombolAlasan = (id) => {
@@ -271,6 +304,7 @@ async function dispatch(env, workflow, inputs) {
   const r = await GH(env, `/actions/workflows/${workflow}/dispatches`, { method: "POST", body: JSON.stringify({ ref: env.GH_BRANCH, inputs }) });
   if (!r.ok) throw new Error(`GitHub Actions ${r.status} (token perlu izin Actions: Read and write)`);
 }
+const PENANDA_HASIL = "📊 Hasil tayang";
 const PENANDA_NASKAH = "📝 Tempel naskah", PENANDA_IDE = "💡 Ide naskah", PENANDA_REVISI = "✏️ Catatan revisi";
 
 async function kirimKartu(env, st) {
@@ -443,7 +477,7 @@ async function bersihkanTanya(env, kecuali) {
   await simpanPengaturan(env, "tanya_" + env.DARI, "").catch(() => {});
 }
 const tanyaNaskah = (env) => tanya(env, { chat_id: env.CHAT, text: `${PENANDA_NASKAH}\nBalas pesan ini dengan naskah lengkapnya (atau kirim berkas .txt/.md dengan keterangan "naskah"). Narasi Anda tidak akan diubah; dalil yang disebut akan diverifikasi.`, reply_markup: { force_reply: true, input_field_placeholder: "tempel naskah" } });
-const tanyaIde = (env) => tanya(env, { chat_id: env.CHAT, text: `${PENANDA_IDE}\nBalas pesan ini dengan topik/idenya (mis. "Nabi Hud dan kaum 'Ad"). AI menulis naskah (Gemini gratis; cadangan Claude ±Rp500), lalu dalilnya diverifikasi.`, reply_markup: { force_reply: true, input_field_placeholder: "topik" } });
+const tanyaIde = (env) => tanya(env, { chat_id: env.CHAT, text: `${PENANDA_IDE}\nBalas pesan ini dengan topik/idenya (mis. "Nabi Hud dan kaum 'Ad"). AI menulis naskah (Claude; cadangan Gemini), lalu dalilnya diverifikasi.`, reply_markup: { force_reply: true, input_field_placeholder: "topik" } });
 
 // ---------- persetujuan video ----------
 async function bacaJsonRepo(env, path) {
@@ -461,6 +495,16 @@ async function catatPersetujuan(env, id, keputusan, alasan, catatan) {
   return isi;
 }
 
+async function catatHasil(env, id, teks) {
+  const e = bacaHasil(teks);
+  if (e.galat) return kirim(env, `❌ ${e.galat}. Contoh: tiktok h1 12rb 850 40 12 35%`, tombolHasil(id));
+  const jalur = `antrean/${id}/statistik.json`;
+  const isi = gabungStatistik(await bacaJsonRepo(env, jalur), e, new Date().toISOString());
+  await simpanTeks(env, jalur, JSON.stringify(isi, null, 1) + "\n", `Statistik ${id}: ${e.platform} hari ${e.hari}`);
+  const er = e.tayang ? ((e.suka + e.komentar + e.bagikan) / e.tayang * 100).toFixed(1) : "0";
+  return kirim(env, `📊 Tercatat ${id} — ${e.platform} hari ${e.hari}: ${e.tayang} tayang, ${e.suka} suka, ${e.komentar} komentar, ${e.bagikan} bagikan${e.tuntas != null ? `, ${e.tuntas}% tuntas` : ""} (interaksi ${er}%).`, tombolHasil(id));
+}
+
 async function tandaiPesan(env, q, teks, id) {  // tombol diganti hasil keputusan + tombol Ubah
   const m = q.message; if (!m) return;
   await TG(env, "editMessageReplyMarkup", { chat_id: m.chat.id, message_id: m.message_id, reply_markup: { inline_keyboard: tombolSesudah(id, teks) } });
@@ -474,6 +518,10 @@ async function tanganiTombol(env, q) {
   if (t && ["nl", "nr", "nb", "nu"].includes(t.aksi)) return ubahAntrean(env, q, t);
   if (t && ["va", "vr"].includes(t.aksi)) return putuskanVisual(env, q, t);
   if (t && t.aksi === "fu") return ulangiFinal(env, q, t);
+  if (t && t.aksi === "sh") {
+    await TG(env, "answerCallbackQuery", { callback_query_id: q.id });
+    return tanya(env, { chat_id: env.CHAT, text: `${PENANDA_HASIL} [${t.id}]\nBalas: platform hari tayang suka komentar bagikan [persen ditonton sampai habis]\nContoh: tiktok h1 12rb 850 40 12 35%\nHari 1 dan 7 per platform; catatan yang sama ditimpa.`, reply_markup: { force_reply: true, input_field_placeholder: "tiktok h1 12rb 850 40 12 35%" } });
+  }
   if (!t) return TG(env, "answerCallbackQuery", { callback_query_id: q.id });
   if (t.aksi === "st") {
     await catatPersetujuan(env, t.id, "disetujui");
@@ -505,6 +553,7 @@ const BANTUAN = `Mesin KONTEN (pribadi)
 • Setelah naskah disetujui, bot membuat pratinjau visual MP4 tanpa TTS. Tinjau blocking, aksi, tokoh, latar, dan kamera; pilih Setujui visual atau Revisi visual. TTS belum dimulai sebelum visual disetujui.
 • Video baru datang dengan tombol ✅ Setujui / ❌ Tolak. Tolak → pilih alasan (atau "Lainnya" lalu ketik). Berubah pikiran? Ketuk ↩️ Ubah. Keputusan tersimpan di repo (keputusan lama ikut tercatat) dan jadi bahan belajar mesin.
 • 🧾 Jalur manual (tanpa LLM): kirim berkas .json papan tulisan tangan (format seperti mahsyar1.json), atau /papan <nama> untuk papan yang sudah ada di repo. Bila shot berisi "narasi", suara ElevenLabs dibuat sekali dan waktu shot mengikuti rekaman; lalu render → periksa → video dikirim. Format: docs/FORMAT_PAPAN_MANUAL.md.
+• 📊 Statistik: video final punya tombol "Catat hasil" (tayang, suka, komentar, bagikan, % tuntas; hari 1 dan 7; TikTok/FB). Dipakai untuk melihat pola setelah ±20 video.
 • Balas komentar: kirim tangkapan layar komentar (tanpa keterangan, atau keterangan "k" + catatan, mis. "k jawab singkat").
 • Tanya apa saja: ketik pesan biasa. /reset = hapus riwayat obrolan.`;
 
@@ -527,6 +576,10 @@ async function tangani(env0, u) {
   const balasKe = msg.reply_to_message && (msg.reply_to_message.text || "");
   if (balasKe && msg.text && balasKe.startsWith(PENANDA_NASKAH)) return antreanBaru(env, "tempel", msg.text);
   if (balasKe && msg.text && balasKe.startsWith(PENANDA_IDE)) return antreanBaru(env, "ide", msg.text);
+  if (balasKe && msg.text && balasKe.startsWith(PENANDA_HASIL)) {
+    const id = idAman((/\[([^\]]+)\]/.exec(balasKe) || [])[1]);
+    if (id) return catatHasil(env, id, msg.text);
+  }
   if (balasKe && msg.text && balasKe.startsWith(PENANDA_REVISI)) {
     const id = idAman((/\[([^\]]+)\]/.exec(balasKe) || [])[1]);
     if (id) return revisiAntrean(env, id, msg.text.trim().slice(0, 2000));

@@ -123,3 +123,25 @@ test("papan manual: JSON rusak atau kosong ditolak, papan bershot diterima", () 
   assert.match(cekPapan("{}"), /kosong/);
   assert.equal(cekPapan(JSON.stringify({ cerita: { shot: [{ at: 0 }] } })), null);
 });
+
+import { bacaHasil, gabungStatistik, tombolHasil } from "./worker.js";
+
+test("statistik: format bebas dibaca, singkatan rb/k/jt, persen opsional", () => {
+  assert.deepEqual(bacaHasil("tiktok h1 12rb 850 40 12 35%"), { platform: "tiktok", hari: 1, tayang: 12000, suka: 850, komentar: 40, bagikan: 12, tuntas: 35 });
+  assert.deepEqual(bacaHasil("FB h7 1,2jt 3.400 210 95"), { platform: "facebook", hari: 7, tayang: 1200000, suka: 3400, komentar: 210, bagikan: 95, tuntas: null });
+  assert.equal(bacaHasil("tiktok 7 1.5k 100 5 2 22,5%").tuntas, 22.5);
+  assert.equal(bacaHasil("tiktok 7 1.5k 100 5 2").tayang, 1500);
+  assert.ok(bacaHasil("h1 100 2 3 4").galat);
+  assert.ok(bacaHasil("tiktok h3 100 2 3 4").galat);
+  assert.ok(bacaHasil("tiktok h1 100 2").galat);
+  assert.equal(bacaTombol("sh:abc-1").aksi, "sh");
+  assert.equal(tombolHasil("abc")[0][0].callback_data, "sh:abc");
+});
+
+test("statistik: catatan platform+hari yang sama ditimpa, lainnya tetap", () => {
+  let s = gabungStatistik(null, { platform: "tiktok", hari: 1, tayang: 10 }, "w1");
+  s = gabungStatistik(s, { platform: "facebook", hari: 1, tayang: 5 }, "w2");
+  s = gabungStatistik(s, { platform: "tiktok", hari: 1, tayang: 99 }, "w3");
+  assert.equal(s.catatan.length, 2);
+  assert.equal(s.catatan.find((c) => c.platform === "tiktok").tayang, 99);
+});

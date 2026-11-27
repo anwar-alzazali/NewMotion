@@ -96,15 +96,23 @@ def produksi(id_: str, *, folder: Path = ANTREAN, video: Path | None = None) -> 
     simpan_contoh_disetujui(d, naskah, st)
     st["papan_final"] = str(papan.relative_to(AKAR)) if papan.is_relative_to(AKAR) else str(papan)
     _simpan_status(d, st)
+    try:  # ciri video untuk statistik (Tugas 9); tidak boleh menggagalkan produksi
+        from newmotion.application.statistik_video import simpan_ciri
+
+        simpan_ciri(d)
+    except Exception as e:  # noqa: BLE001
+        print(f"ciri video tidak tersimpan: {e}")
     return video
 
 
 def kirim(id_: str, video: Path) -> None:
     st = _status(ANTREAN / id_)
-    kirim_ke_telegram(id_, video, tombol={}, nama_berkas="final.mp4", caption=(
+    tombol = {"inline_keyboard": [[{"text": "📊 Catat hasil", "callback_data": f"sh:{id_}"}]]}  # Tugas 9: statistik tayang
+    kirim_ke_telegram(id_, video, tombol=tombol, nama_berkas="final.mp4", caption=(
         f"🎞️ Video final — {st.get('judul') or id_}\n"
         "Sudah bersuara (narasi, efek, subtitle). Dengarkan di speaker HP dan headphone sebelum diunggah.\n"
-        "Label AI tetap wajib aktif saat unggah."))
+        "Label AI tetap wajib aktif saat unggah.\n"
+        "Setelah tayang, ketuk 📊 Catat hasil pada hari ke-1 dan ke-7."))
 
 
 def main() -> None:
