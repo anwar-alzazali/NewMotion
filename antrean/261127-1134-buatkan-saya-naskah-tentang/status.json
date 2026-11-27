@@ -9,8 +9,8 @@
   "diterima": "selesai",
   "dalil": "selesai",
   "tinjau": "selesai",
-  "sutradara": "jalan",
-  "tinjau_visual": "belum",
+  "sutradara": "selesai",
+  "tinjau_visual": "jalan",
   "narasi": "belum",
   "render": "belum",
   "periksa": "belum",
@@ -20,7 +20,7 @@
   "diterima": "9 beat, 8 dalil · Gemini",
   "dalil": "8/8",
   "tinjau": "disetujui",
-  "sutradara": "pratinjau ulang: laut menelan Firaun di akhir beat, dinding air setinggi gunung (rencana tersimpan)",
+  "sutradara": "10 shot disusun oleh kisah_islami; sutradara LLM rencana tersimpan, biaya $0.00 (memakai rencana sutradara yang sudah ada (naskah tidak berubah))",
   "tinjau_visual": "menunggu tinjauan visual pemilik; TTS belum dibuat"
  },
  "dibuat": "2026-11-27T04:34:37.402Z",
@@ -39,22 +39,9 @@
  ],
  "sutradara": {
   "mode": "llm",
-  "biaya_usd": 0.2957,
-  "model": "claude-sonnet-5-5",
-  "periksa": [
-   {
-    "putaran": 0,
-    "lulus": false,
-    "temuan": 5,
-    "revisi": "claude-sonnet-5-5"
-   },
-   {
-    "putaran": 1,
-    "lulus": false,
-    "temuan": 7,
-    "revisi": null
-   }
-  ]
+  "biaya_usd": 0.0,
+  "model": "rencana tersimpan",
+  "catatan": "memakai rencana sutradara yang sudah ada (naskah tidak berubah)"
  },
  "pratinjau_visual": "antrean/261127-1134-buatkan-saya-naskah-tentang/papan_pratinjau.json"
 }

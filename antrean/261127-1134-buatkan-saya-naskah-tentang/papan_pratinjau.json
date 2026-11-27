@@ -443,8 +443,7 @@
                 9.65,
                 1.0
               ]
-            ],
-            "tinggi": 300
+            ]
           },
           {
             "jenis": "nur",
@@ -513,8 +512,7 @@
             "x": 540,
             "y": 1320,
             "s": 0.82,
-            "belah": 1,
-            "tinggi": 300
+            "belah": 1
           },
           {
             "jenis": "kerumunan",
@@ -653,7 +651,6 @@
                 0.366
               ]
             ],
-            "tinggi": 300,
             "buih": 0.9
           },
           {
@@ -671,7 +668,6 @@
                 0.366
               ]
             ],
-            "tinggi": 300,
             "buih": 0.9,
             "lapis": "tutup",
             "depan": true
@@ -888,7 +884,6 @@
                 0.1
               ]
             ],
-            "tinggi": 300,
             "buih": 0.9
           },
           {
@@ -906,7 +901,6 @@
                 0.1
               ]
             ],
-            "tinggi": 300,
             "buih": 0.9,
             "lapis": "tutup",
             "depan": true
