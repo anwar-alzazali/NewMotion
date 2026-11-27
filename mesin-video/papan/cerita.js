@@ -1915,8 +1915,9 @@
         [E, H] = ik2(S, q, 85, 80, false);
       }
       if (sg > 0 && o.tanganTarget) [E, H] = ik2(S, o.tanganTarget, 85, 80, false);
-      return { ats: `<line x1="${S[0]}" y1="${S[1]}" x2="${E[0]}" y2="${E[1]}" stroke="${BD}" stroke-width="36" stroke-linecap="round"/>`,
-               bwh: `<line x1="${E[0]}" y1="${E[1]}" x2="${H[0]}" y2="${H[1]}" stroke="${BD}" stroke-width="34" stroke-linecap="round"/><circle cx="${H[0]}" cy="${H[1]}" r="19" fill="${pakaiP ? KLB : BD}" stroke="${INK}" stroke-width="4"/>`, S, E, H };
+      const LB = P && P.bisht ? P.bisht : BD, lb = P && P.bisht ? 46 : 0, man = P && P.bisht ? `<line x1="${mix(E[0], H[0], 0.72)}" y1="${mix(E[1], H[1], 0.72)}" x2="${H[0]}" y2="${H[1]}" stroke="${BD}" stroke-width="28" stroke-linecap="round"/>` : ""; // (27 Nov) bisht: lengan di dalam lengan bisht yang lebar, ujung lengan jubah tampak di pergelangan
+      return { ats: `<line x1="${S[0]}" y1="${S[1]}" x2="${E[0]}" y2="${E[1]}" stroke="${LB}" stroke-width="${lb || 36}" stroke-linecap="round"/>`,
+               bwh: `<line x1="${E[0]}" y1="${E[1]}" x2="${H[0]}" y2="${H[1]}" stroke="${LB}" stroke-width="${lb ? lb - 2 : 34}" stroke-linecap="round"/>${man}<circle cx="${H[0]}" cy="${H[1]}" r="19" fill="${pakaiP ? KLB : BD}" stroke="${INK}" stroke-width="4"/>`, S, E, H };
     };
     const L = lengan(-1, J.la), Rk = lengan(1, J.ra);
     let barang = "";
@@ -2080,8 +2081,9 @@
       if (P.bisht && BLK) g += `<path d="M ${-78 - 30 * GM} ${-392 + nafas} Q 0 ${-410 + nafas} ${78 + 30 * GM} ${-392 + nafas} L ${104 + 30 * GM} -50 L ${-104 - 30 * GM} -50 Z" fill="${P.bisht}" stroke="${INK}" stroke-width="4"/><path d="M -34 ${-402 + nafas} Q 0 ${-392 + nafas} 34 ${-402 + nafas}" stroke="#c9a24a" stroke-width="6" fill="none"/>`;
       else if (P.bisht) g += [-1, 1].map((sg) => `<path d="M ${sg * 30} ${-404 + nafas} L ${sg * (78 + 30 * GM)} ${-392 + nafas} L ${sg * (104 + 30 * GM)} -50 L ${sg * 40} -50 Z" fill="${P.bisht}" stroke="${INK}" stroke-width="4"/><path d="M ${sg * 30} ${-404 + nafas} L ${sg * 40} -50" stroke="#c9a24a" stroke-width="6"/>`).join(""); // bisht (tanpa rangka)
     }
-    const tangan = (x2, y2) => (P ? `<circle cx="${x2}" cy="${y2}" r="19" fill="${KLB}" stroke="${INK}" stroke-width="4"/>` : "");
-    const lenganKiri = `<line x1="${-SH}" y1="${-360 + nafas}" x2="${-SH - 22 - ayun * 0.3}" y2="${-200 + nafas}" stroke="${BD}" stroke-width="36" stroke-linecap="round"/>` + tangan(-SH - 22 - ayun * 0.3, -192 + nafas);
+    const tangan = (x2, y2) => (P ? (P.bisht ? `<line x1="${x2 - (x2 > 0 ? 6 : -6)}" y1="${y2 - 34}" x2="${x2}" y2="${y2}" stroke="${BD}" stroke-width="28" stroke-linecap="round"/>` : "") + `<circle cx="${x2}" cy="${y2}" r="19" fill="${KLB}" stroke="${INK}" stroke-width="4"/>` : "");
+    const LBD = P && P.bisht ? P.bisht : BD, LW = P && P.bisht ? 46 : 36;
+    const lenganKiri = `<line x1="${-SH}" y1="${-360 + nafas}" x2="${-SH - 22 - ayun * 0.3}" y2="${-200 + nafas}" stroke="${LBD}" stroke-width="${LW}" stroke-linecap="round"/>` + tangan(-SH - 22 - ayun * 0.3, -192 + nafas);
     g += lenganKiri;
     const kaitL = b._kaitDunia ? (() => { const cm = b.cermin || b.profil === "kiri" ? -1 : 1, L = (p) => [cm * (p[0] - x) / s, (p[1] - y) / s - tubuh], K = b._kaitDunia;
       return { pijak: K.pijak && K.pijak.map(L), pegang: K.pegang && K.pegang.map(L) }; })() : null;
@@ -2100,7 +2102,7 @@
       kait: kaitL, tanganTarget: RIG.tanganTarget }); g = RG.g;
       if (window.__tanganBoneka) window.__tanganBoneka[b.id] = tanganDunia({ sendi: RG.sendi, x, y, s, tubuh, guling: RG.guling }, b);
     }
-    let lenganKanan = RIG ? "" : `<line x1="${SH}" y1="${-360 + nafas}" x2="${SH + 22 + ayun * 0.3}" y2="${-200 + nafas}" stroke="${BD}" stroke-width="36" stroke-linecap="round"/>` + tangan(SH + 22 + ayun * 0.3, -192 + nafas);
+    let lenganKanan = RIG ? "" : `<line x1="${SH}" y1="${-360 + nafas}" x2="${SH + 22 + ayun * 0.3}" y2="${-200 + nafas}" stroke="${LBD}" stroke-width="${LW}" stroke-linecap="round"/>` + tangan(SH + 22 + ayun * 0.3, -192 + nafas);
     // kepala
     const hx = arah * 10, hy = -492 - (KB - 1) * 96 + nafas + tunduk * 14 + (H ? H.ky : 0), ex = arah * 24, ey = tunduk * 14 + (mata === "atas" ? -8 : mata === "bawah" ? 8 : 0);
     let k = b.profil === "kanan" || b.profil === true || b.profil === "kiri"
@@ -2300,7 +2302,7 @@
     if (pc && !belakang && b.rambut !== "kerudung") k += `<path d="M -70 -44 L -64 -98 Q 0 -114 64 -98 L 70 -44 Q 0 -58 -70 -44 Z" fill="${pc === true ? "#1d1520" : pc === "putih" ? "#ffffff" : pc}" stroke="${INK}" stroke-width="6"/>` + (pc === "#ffffff" || pc === "putih" ? `<path d="M -60 -60 Q 0 -72 60 -60" stroke="#d8d2c4" stroke-width="4" fill="none"/>` : "");
     k += `</g>`;
     if (!RIG && (lengan === "doa" || lengan === "beri" || lengan === "tolak")) {
-      const lk = (sg, ex2, ey2, ex3, ey3) => `<polyline points="${sg * 62},${-360 + nafas} ${ex2},${ey2 + nafas} ${ex3},${ey3 + nafas}" fill="none" stroke="${BD}" stroke-width="36" stroke-linecap="round" stroke-linejoin="round"/>`;
+      const lk = (sg, ex2, ey2, ex3, ey3) => `<polyline points="${sg * 62},${-360 + nafas} ${ex2},${ey2 + nafas} ${ex3},${ey3 + nafas}" fill="none" stroke="${LBD}" stroke-width="${LW}" stroke-linecap="round" stroke-linejoin="round"/>`;
       if (lengan === "doa") { g = g.replace(lenganKiri, ""); lenganKanan = lk(-1, -96, -250, -56, -330) + lk(1, 96, -250, 56, -330) + `<ellipse cx="-50" cy="${-338 + nafas}" rx="26" ry="16" fill="${b.kulit || KL}" stroke="${INK}" stroke-width="5"/><ellipse cx="50" cy="${-338 + nafas}" rx="26" ry="16" fill="${b.kulit || KL}" stroke="${INK}" stroke-width="5"/>`; }
       if (lengan === "beri") lenganKanan = lk(1, 150, -300, 250, -300) + `<circle cx="262" cy="${-300 + nafas}" r="20" fill="${b.kulit || KL}" stroke="${INK}" stroke-width="5"/>`;
       if (lengan === "tolak") lenganKanan = lk(1, 160, -330, 170, -450) + `<ellipse cx="172" cy="${-470 + nafas}" rx="22" ry="32" fill="${b.kulit || KL}" stroke="${INK}" stroke-width="5"/>`;
@@ -2308,7 +2310,7 @@
     }
     const am = v(b.air_mata, t, d, 0);
     if (am > 0 && muka) { k = k.replace(/<\/g>$/, ""); [-1, 1].forEach((sg) => { const cx = ex + sg * 30, cy = 14 + ey, L = 70 * am; k += `<path d="M ${cx} ${cy} q ${sg * 4} ${L / 2} 0 ${L}" stroke="#9fdcff" stroke-width="9" fill="none" stroke-linecap="round" opacity=".9"/>`; const q = (t * 0.8 + (sg > 0 ? 0.5 : 0)) % 1; k += `<path transform="translate(${cx} ${cy + L + q * 60})" d="M 0 -10 Q 8 2 0 8 Q -8 2 0 -10 Z" fill="#9fdcff" opacity="${1 - q}"/>`; }); k += `</g>`; }
-    if (!RIG && lengan === "lindungi") lenganKanan = `<polyline points="62,${-360 + nafas} 128,${-470 + nafas} ${hx + 30},${hy - 66}" fill="none" stroke="${BD}" stroke-width="36" stroke-linecap="round" stroke-linejoin="round"/><ellipse cx="${hx + 22}" cy="${hy - 66}" rx="42" ry="20" fill="${BD}"/>`;
+    if (!RIG && lengan === "lindungi") lenganKanan = `<polyline points="62,${-360 + nafas} 128,${-470 + nafas} ${hx + 30},${hy - 66}" fill="none" stroke="${LBD}" stroke-width="${LW}" stroke-linecap="round" stroke-linejoin="round"/><ellipse cx="${hx + 22}" cy="${hy - 66}" rx="42" ry="20" fill="${BD}"/>`;
     const fid = b.utama ? "rimU" : "rim";
     if (!P && b.gaya !== "siluet" && C.badan !== "siluet") { const R = rng(b.id * 7 + 3); for (let i = 0; i < 14; i++) g += `<circle cx="${-55 + R() * 110}" cy="${-380 + R() * 360 + nafas}" r="${2 + R() * 4}" fill="#e9d2b8" opacity=".35"/>`; } // debu tanah di badan
     if (!RIG && lengan === "lindungi") { k += lenganKanan; lenganKanan = ""; }
