@@ -32,7 +32,7 @@ def test_pemeriksa_mendeteksi_detail_tanpa_dalil_dan_hook_lemah(monkeypatch):
     def palsu(tahap, sistem, isi, **kwargs):
         panggilan.append((tahap, sistem, isi))
         assert "terjemah_resmi" in isi
-        assert "Jangan menulis teks ayat/hadis" in sistem
+        assert "Jangan membuat teks ayat/hadis" in sistem
         return metadata
     hasil, meta = P.periksa(DATA, panggil=palsu)
     assert len(panggilan) == 1
@@ -97,5 +97,5 @@ def test_perbaikan_otomatis_satu_putaran_dan_pemeriksaan_ulang(tmp_path, monkeyp
     assert panggilan_penulis == ["ide", "revisi"]
     assert "Saat tenggelam" in tersimpan["beat"][0]["narasi"]
     assert status["pemeriksaan_naskah"]["temuan"] == []
-    assert status["pemeriksaan_naskah_ringkas"] == "0 temuan; 2 putaran perbaikan otomatis"
+    assert status["pemeriksaan_naskah_ringkas"] == "0 temuan; 1 putaran perbaikan otomatis"
     assert status["pemeriksaan_naskah_ai"]["tahap"] == "periksa_naskah"
