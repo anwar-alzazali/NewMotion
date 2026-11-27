@@ -28,7 +28,9 @@ def main() -> int:
     from newmotion.application.katalog_renderer import katalog
 
     lama = json.loads(KELUARAN.read_text(encoding="utf-8")) if KELUARAN.is_file() else {}
-    jenis = sorted(set(katalog()) - set(lama))
+    # Empat benda ini digambar ulang pada Tugas 5b; ukur ulang meski namanya sudah ada.
+    ukur_ulang = {"ladang_gandum", "kambing", "rantai_belenggu", "sungai"}
+    jenis = sorted((set(katalog()) - set(lama)) | (ukur_ulang & set(katalog())) )
     if not jenis:
         print(f"Semua {len(lama)} jenis sudah terukur.")
         return 0
