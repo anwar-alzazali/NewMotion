@@ -102,8 +102,8 @@ def _periksa_benda_manusia_dalam_konteks_sakral(rencana: Any) -> list[TemuanAdab
         r"\b(?:sahabat|abu bakar|umar|utsman|usman|ali bin abi thalib)\b",
         re.IGNORECASE,
     )
-    jenis_manusia_tunggal = {"pemimpin", "penggali"}
-    jenis_kelompok = {"kerumunan", "arus"}
+    jenis_manusia_tunggal = {"pemimpin", "penggali", "genangan_tubuh"}
+    jenis_kelompok = {"kerumunan", "arus", "naungan_kelompok"}
     jenis_manusia = jenis_manusia_tunggal | jenis_kelompok
     temuan: list[TemuanAdab] = []
 
@@ -130,7 +130,12 @@ def _periksa_benda_manusia_dalam_konteks_sakral(rencana: Any) -> list[TemuanAdab
                 continue
 
             alasan = ""
-            if jenis in jenis_manusia_tunggal and menyebut_tokoh_sakral:
+            if jenis in {"genangan_tubuh", "naungan_kelompok"} and menyebut_tokoh_sakral:
+                alasan = (
+                    "siluet manusia umum untuk konsep abstrak tidak boleh tampil "
+                    "dalam shot yang menyebut nabi, rasul, malaikat, atau sahabat"
+                )
+            elif jenis in jenis_manusia_tunggal and menyebut_tokoh_sakral:
                 # Pengecualian hanya jika narasi secara eksplisit mengenalkan
                 # sosok manusia lain pada kalimat terpisah yang tidak menyebut
                 # tokoh sakral. Tanpa penanda ini, renderer dianggap berisiko
