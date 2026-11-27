@@ -191,14 +191,15 @@ def jalankan(p: Path, video: Path, *, tts_fn=None) -> dict:
 
 
 # ---------------- Telegram ----------------
-def _kirim_berkas(metode: str, medan: str, berkas: Path, nama: str, jenis: str, keterangan: str) -> None:
+def _kirim_berkas(metode: str, medan: str, berkas: Path, nama: str, jenis: str, keterangan: str, tombol: dict | None = None) -> None:
     token = (os.environ.get("TELEGRAM_BOT_TOKEN") or "").strip()
     chat = (os.environ.get("TELEGRAM_CHAT_ID") or "").strip()
     if not token or not chat:
         raise RuntimeError("TELEGRAM_BOT_TOKEN atau TELEGRAM_CHAT_ID belum tersedia.")
     batas = "----NewMotionManual"
     tubuh = bytearray()
-    for k, v in (("chat_id", chat), ("caption", keterangan[:1000])):
+    medan_teks = [("chat_id", chat), ("caption", keterangan[:1000])] + ([("reply_markup", json.dumps(tombol, ensure_ascii=False))] if tombol else [])
+    for k, v in medan_teks:
         tubuh += f"--{batas}\r\nContent-Disposition: form-data; name=\"{k}\"\r\n\r\n{v}\r\n".encode()
     tubuh += (f"--{batas}\r\nContent-Disposition: form-data; name=\"{medan}\"; filename=\"{nama}\"\r\n"
               f"Content-Type: {jenis}\r\n\r\n").encode() + berkas.read_bytes() + f"\r\n--{batas}--\r\n".encode()
@@ -221,7 +222,7 @@ def kirim_pesan(teks: str) -> None:
                                                       headers={"Content-Type": "application/json"}), timeout=30)
 
 
-def kirim(nama: str, video: Path, hasil: dict) -> None:
+def kirim(nama: str, video: Path, hasil: dict, id_antrean: str | None = None) -> None:
     lembar = Path(hasil["periksa"]) / "lembar.jpg"
     if lembar.is_file():
         _kirim_berkas("sendPhoto", "photo", lembar, "lembar.jpg", "image/jpeg", f"Lembar kontak — {nama}")
@@ -230,8 +231,9 @@ def kirim(nama: str, video: Path, hasil: dict) -> None:
         return
     tanda = "🎞️" if hasil["lulus"] else "⚠️ ADA GAGAL TEKNIS —"
     suara = "dengan narasi dari JSON" if hasil.get("ada_narasi") else "tanpa narasi (JSON tidak merujuk berkas suara)"
+    tombol = {"inline_keyboard": [[{"text": "📊 Catat hasil", "callback_data": f"sh:{id_antrean}"}]]} if id_antrean else None
     _kirim_berkas("sendVideo", "video", video, f"{nama}.mp4", "video/mp4",
-                  f"{tanda} Jalur manual (tanpa LLM) — {nama}, {suara}.\nPeriksa:\n{hasil['laporan']}\nLabel AI tetap wajib aktif saat unggah.")
+                  f"{tanda} Jalur manual (tanpa LLM) — {nama}, {suara}.\nPeriksa:\n{hasil['laporan']}\nLabel AI tetap wajib aktif saat unggah.", tombol)
 
 
 def bekal() -> str:
@@ -272,8 +274,16 @@ def main() -> None:
         sys.exit(1)
     print(json.dumps(hasil, ensure_ascii=False, indent=1))
     if a.kirim:
+        id_antrean = Path(a.spek).parent.name if a.spek.startswith("antrean/") else None
+        if id_antrean and hasil["lulus"]:
+            try:
+                from newmotion.application.statistik_video import simpan_ciri
+
+                simpan_ciri(AKAR / "antrean" / id_antrean)
+            except Exception as e:  # noqa: BLE001
+                print(f"ciri video tidak tersimpan: {e}")
         if video.is_file():
-            kirim(nama, video, hasil)
+            kirim(nama, video, hasil, id_antrean)
         else:
             kirim_pesan(f"❌ Jalur manual {nama} gagal di tahap {hasil['tahap']}:\n{hasil['laporan']}")
     sys.exit(0 if hasil["lulus"] else 1)

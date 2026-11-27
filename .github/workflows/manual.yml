@@ -57,10 +57,12 @@ jobs:
         run: |
           set -euo pipefail
           if [[ "$SPEK" == antrean/* ]]; then a="$(dirname "$SPEK")/audio"; else a="mesin-video/audio_manual/$(basename "$SPEK" .json)_auto"; fi
-          [[ -d "$a" ]] || exit 0
+          c="$(dirname "$SPEK")/ciri.json"
+          [[ -d "$a" || -f "$c" ]] || exit 0
           git config user.name "github-actions[bot]"
           git config user.email "41898333+github-actions[bot]@users.noreply.github.com"
-          git add "$a"
+          if [[ -d "$a" ]]; then git add "$a"; fi
+          if [[ "$SPEK" == antrean/* && -f "$c" ]]; then git add "$c"; fi
           git diff --cached --quiet && exit 0
           git commit -m "Jalur manual: narasi $SPEK"
           for i in 1 2 3; do git pull --rebase -q origin main && git push -q origin HEAD:main && exit 0; sleep 5; done

@@ -60,7 +60,7 @@ daftar tugas dari posisi terakhir.
 - [x] Tugas 6 — Visual konsep abstrak
 - [x] Tugas 7 — Lembar uji renderer otomatis
 - [x] Tugas 8 — Pembuat komponen renderer (alat: PR #66/#67; komponen nyata pertama dari naskah Firaun dibuat Claude, lihat log 2026-11-27-2130)
-- [ ] Tugas 9 — Statistik video dan usulan pedoman dari data
+- [x] Tugas 9 — Statistik video dan usulan pedoman dari data (Claude, 27 Nov)
 
 ## Batas wajib (berlaku untuk semua tugas)
 
