@@ -28,7 +28,8 @@ def _baca(jalur: str) -> dict:
     a = s.index("const KAIT = {")
     blok = s[a:s.index("\n  };", a)]
     kait = {m.group(1): m.group(2) for m in re.finditer(r'^\s{4}(\w+): \{ sudut: "(\w+)"', blok, re.MULTILINE)}
-    return {"pose": pose, "aksi": aksi, "kait": kait, "pegang": pegang}
+    penutup = sorted(set(re.findall(r'b\.penutup_kepala === "([a-z_]+)"', s)))
+    return {"pose": pose, "aksi": aksi, "kait": kait, "pegang": pegang, "penutup_kepala": penutup}
 
 
 def kemampuan(jalur: Path = CERITA_JS) -> dict:
@@ -49,6 +50,9 @@ def teks_kemampuan_tokoh(jalur: Path = CERITA_JS) -> str:
         f"- hadap: {', '.join(HADAP)} (kanan/kiri = tampak samping utuh, badan dan kaki ikut menyamping)",
         f"- benda yang dapat dipegang: {', '.join(k['pegang'])}",
         f"- bisa dinaiki/diduduki (kait): {kait}. Tokoh menempel otomatis: duduk di jok, tangan di setang, kaki di pijakan",
+        (f"- penutup_kepala tokoh: {', '.join(k['penutup_kepala'])} (warna_penutup opsional). "
+         "nemes = kain kepala bergaris raja Mesir kuno; mahkota = mahkota emas raja. "
+         'Pakaian raja: pakaian {"jenis": "jubah", "bisht": true}. Jasad/tak bernyawa: pose rebahan + mata "tutup", tanpa luka'),
         (f"- suku figuran: {', '.join(SUKU)}. arab = laki-laki berjubah dengan imamah/ghutrah/peci (sebagian berbisht), "
          "perempuan berkerudung dan abaya gelap"),
     ])
