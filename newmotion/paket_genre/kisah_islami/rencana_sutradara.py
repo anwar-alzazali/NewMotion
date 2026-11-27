@@ -117,6 +117,8 @@ def validasi_rencana(rencana: Any, narasi_beat: list[str]) -> list[str]:
             if j not in kat:
                 g.append(f"{lbl}: jenis {j!r} tidak ada di katalog renderer")
                 continue
+            if j in {"genangan_tubuh", "naungan_kelompok"} and POLA_SAKRAL.search(narasi_beat[n - 1]):
+                g.append(f"{lbl}: {j} memakai siluet manusia umum; jangan gunakan pada beat yang menyebut tokoh sakral (adab)")
             tempat = s.get("tempat", "tengah")
             if isinstance(tempat, str) and ":" in tempat:
                 rel, target = tempat.split(":", 1)

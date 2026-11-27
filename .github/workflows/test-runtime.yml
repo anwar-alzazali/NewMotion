@@ -105,7 +105,8 @@ jobs:
         run: |
           set -euo pipefail
           python mesin-video/papan/uji_tokoh.py -o hasil/uji_tokoh
-          python mesin-video/papan/lembar_benda_baru.py mesin-video/papan/ukur_benda.py || true
+          python mesin-video/papan/lembar_benda_baru.py || true
+          python mesin-video/papan/lembar_konsep_abstrak.py
           python - <<'PY'
           import json, os
           from collections import Counter
@@ -125,6 +126,7 @@ jobs:
             hasil/uji_tokoh/*.png
             hasil/uji_tokoh/laporan.json
             hasil/pustaka-benda-baru.png
+            hasil/konsep-abstrak.png
           if-no-files-found: ignore
           retention-days: 14
       - name: CLI
