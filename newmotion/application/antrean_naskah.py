@@ -330,7 +330,8 @@ def validasi_uji_cerita(data):
     return galat
 
 
-def validasi_peta_tempel(data):
+def validasi_peta_tempel(data, jumlah_paragraf=None):
+    """Pastikan pemetaan mencakup naskah asli tanpa paragraf hilang/terduplikasi."""
     if not isinstance(data, dict):
         return ["pemetaan tempel harus berupa objek JSON"]
     galat = []
@@ -341,6 +342,8 @@ def validasi_peta_tempel(data):
         galat.append("dalil pemetaan tempel harus berupa daftar")
     if not isinstance(data.get("beat"), list) or not data["beat"]:
         return galat + ["pemetaan tempel harus memiliki daftar beat"]
+
+    sudah = set()
     for i, b in enumerate(data["beat"], 1):
         if not isinstance(b, dict):
             galat.append(f"beat {i} harus berupa objek")
@@ -350,6 +353,19 @@ def validasi_peta_tempel(data):
             not isinstance(x, int) or isinstance(x, bool) or x < 1 for x in p
         ):
             galat.append(f"beat {i}: paragraf harus berupa daftar nomor positif")
+            continue
+        if p != sorted(p):
+            galat.append(f"beat {i}: urutan paragraf harus menaik agar narasi tidak terbalik")
+        for nomor in p:
+            if nomor in sudah:
+                galat.append(f"paragraf {nomor} dipetakan lebih dari sekali")
+            sudah.add(nomor)
+            if jumlah_paragraf is not None and nomor > jumlah_paragraf:
+                galat.append(f"paragraf {nomor} tidak ada dalam naskah asli")
+    if jumlah_paragraf is not None:
+        hilang = sorted(set(range(1, jumlah_paragraf + 1)) - sudah)
+        if hilang:
+            galat.append("paragraf belum dipetakan: " + ", ".join(map(str, hilang)))
     return galat
 
 
@@ -374,7 +390,7 @@ def buat_naskah(mode, masukan, naskah_lama=None, *, tanya=None):
         tahap = "rapikan"
 
         def pemeriksa(data):
-            galat = validasi_peta_tempel(data)
+            galat = validasi_peta_tempel(data, len(par))
             if galat:
                 return galat
             beat_uji = []
