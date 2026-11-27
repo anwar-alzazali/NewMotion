@@ -310,6 +310,28 @@ def kirim_ke_telegram(id_: str, video: Path, *, caption: str | None = None, tomb
         raise RuntimeError("Telegram gagal mengirim pratinjau visual.")
 
 
+def tandai_gagal(id_: str, e: BaseException, *, folder: Path = ANTREAN) -> None:
+    """Pratinjau gagal: status gagal + alasan singkat, kartu Telegram diperbarui (tombol Ulangi pratinjau)."""
+    p = folder / id_ / "status.json"
+    if not re.fullmatch(r"[a-z0-9_-]{1,60}", id_) or not p.is_file():
+        return
+    st = json.loads(p.read_text(encoding="utf-8"))
+    tahap = st.setdefault("tahap", {})
+    if tahap.get("tinjau_visual") in ("jalan", "selesai"):
+        return  # galat 'cegah render ganda': status yang ada tetap
+    tahap["sutradara"] = "gagal"
+    tahap["tinjau_visual"] = "belum"
+    st.setdefault("ket", {})["sutradara"] = f"pratinjau gagal: {str(e)[:220]}"
+    p.write_text(json.dumps(st, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
+    try:
+        from newmotion.application.antrean_naskah import perbarui_kartu
+
+        perbarui_kartu(st)
+        p.write_text(json.dumps(st, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
+    except Exception as kirim_galat:  # noqa: BLE001 - kartu gagal terkirim tidak boleh menutupi galat asli
+        print(f"kartu tidak terkirim: {kirim_galat}")
+
+
 def main() -> None:
     import argparse
     parser = argparse.ArgumentParser()
@@ -322,7 +344,11 @@ def main() -> None:
         kirim_ke_telegram(args.id, video)
         print(f"Pratinjau visual dikirim: {video}")
         return
-    _, video = buat_pratinjau(args.id, keluaran=video)
+    try:
+        _, video = buat_pratinjau(args.id, keluaran=video)
+    except Exception as e:
+        tandai_gagal(args.id, e)
+        raise
     if args.kirim:
         kirim_ke_telegram(args.id, video)
     print(f"Pratinjau visual selesai: {video}")

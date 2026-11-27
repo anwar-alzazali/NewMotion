@@ -94,10 +94,12 @@ jobs:
           p = Path("antrean") / os.environ["ID"] / "status.json"
           if p.is_file():
               s = json.loads(p.read_text(encoding="utf-8"))
+              sudah = s.get("tahap", {}).get("sutradara") == "gagal"   # alasan rinci sudah ditulis pratinjau_visual
               s.setdefault("tahap", {})["sutradara"] = "gagal"
               if s["tahap"].get("tinjau_visual") != "selesai":
                   s["tahap"]["tinjau_visual"] = "belum"
-              s.setdefault("ket", {})["sutradara"] = "pratinjau gagal dibuat/dikirim; dapat dicoba ulang dari Telegram"
+              if not sudah:
+                  s.setdefault("ket", {})["sutradara"] = "pratinjau gagal dibuat/dikirim; dapat dicoba ulang dari Telegram"
               s["ket"]["tinjau_visual"] = "belum berhasil dikirim untuk ditinjau"
               s["diperbarui"] = __import__("datetime").datetime.now(__import__("datetime").timezone.utc).isoformat()
               p.write_text(json.dumps(s, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
@@ -105,6 +107,7 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898333+github-actions[bot]@users.noreply.github.com"
           git add "antrean/$ID/status.json"
+          if [[ -f "antrean/$ID/sutradara_galat.txt" ]]; then git add "antrean/$ID/sutradara_galat.txt"; fi
           if git diff --cached --quiet; then exit 0; fi
           git commit -m "Antrean $ID: tandai pratinjau gagal agar dapat dicoba ulang"
           for i in 1 2 3; do

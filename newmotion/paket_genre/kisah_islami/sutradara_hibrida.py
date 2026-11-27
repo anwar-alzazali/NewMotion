@@ -24,6 +24,9 @@ def konfigurasi_produksi() -> dict[str, Any]:
     k = dict(_muat_konfigurasi().get("produksi", {}))
     k.setdefault("sutradara", "aturan")
     k.setdefault("periksa_putaran", 0)
+    k.setdefault("cadangan_aturan", True)
+    if os.environ.get("NEWMOTION_CADANGAN_ATURAN") in ("0", "1"):
+        k["cadangan_aturan"] = os.environ["NEWMOTION_CADANGAN_ATURAN"] == "1"
     if os.environ.get("NEWMOTION_SUTRADARA"):
         k["sutradara"] = os.environ["NEWMOTION_SUTRADARA"]
     if os.environ.get("NEWMOTION_PERIKSA_PUTARAN", "").isdigit():
@@ -78,7 +81,11 @@ def arahkan_hibrida(naskah: Mapping, folder: str | Path, *, genre: str = "kisah_
             info["catatan"] = f"sutradara LLM gagal, memakai sutradara aturan: {str(e)[:240]}"
             folder.mkdir(parents=True, exist_ok=True)
             (folder / "sutradara_galat.txt").write_text(str(e) + "\n", encoding="utf-8")  # galat lengkap untuk diperbaiki
+            if not k.get("cadangan_aturan", True):
+                raise RuntimeError(f"sutradara LLM gagal: {str(e)[:300]}") from e
     elif k["sutradara"] == "llm":
+        if not k.get("cadangan_aturan", True) and genre == "kisah_islami":
+            raise RuntimeError("kunci LLM tidak tersedia (ANTHROPIC_API_KEY/GEMINI_API_KEY) untuk sutradara")
         info["catatan"] = "kunci LLM tidak tersedia; memakai sutradara aturan"
     spek, _, _ = arahkan_naskah(naskah, genre_pilihan=genre)
     return spek, info
