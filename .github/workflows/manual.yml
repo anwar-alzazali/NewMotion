@@ -65,7 +65,8 @@ jobs:
           if [[ "$SPEK" == antrean/* && -f "$c" ]]; then git add "$c"; fi
           git diff --cached --quiet && exit 0
           git commit -m "Jalur manual: narasi $SPEK"
-          for i in 1 2 3; do git pull --rebase -q origin main && git push -q origin HEAD:main && exit 0; sleep 5; done
+          # simpan ke branch tempat workflow dijalankan (main dari bot; branch video/* dari AI berakses GitHub)
+          for i in 1 2 3; do git pull --rebase -q origin "$GITHUB_REF_NAME" && git push -q origin "HEAD:$GITHUB_REF_NAME" && exit 0; sleep 5; done
           exit 1
       - name: Simpan artefak
         if: always()

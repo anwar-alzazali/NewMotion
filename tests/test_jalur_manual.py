@@ -90,3 +90,10 @@ def test_narasi_arab_dan_shot_diam_tanpa_durasi_ditolak():
         J.susun_teks_narasi({"cerita": {"shot": [{"narasi": "Allah berfirman بِسْمِ"}]}})
     with pytest.raises(ValueError, match="durasi"):
         J.susun_teks_narasi({"cerita": {"shot": [{"narasi": "Satu dua"}, {}]}})
+
+
+def test_bekal_papan_manual_sesuai_kode():
+    """docs/BEKAL_PAPAN_MANUAL.md dibuat dari kode; CI test-runtime memperbaruinya otomatis di branch tugas-*.
+    Bila gagal: python -m newmotion.application.jalur_manual --bekal > docs/BEKAL_PAPAN_MANUAL.md"""
+    berkas = J.AKAR / "docs" / "BEKAL_PAPAN_MANUAL.md"
+    assert berkas.read_text(encoding="utf-8").strip() == J.bekal().strip()

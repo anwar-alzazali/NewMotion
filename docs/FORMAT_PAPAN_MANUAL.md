@@ -5,8 +5,8 @@ Mesin hanya membuat suara (satu permintaan ElevenLabs), mencocokkan waktu, meren
 Tidak ada naskah/sutradara/periksa visual LLM di jalur ini.
 
 Kirim: unggah berkas `.json` ke bot Mesin KONTEN, atau simpan di `mesin-video/papan/kisah/<nama>.json` lalu `/papan <nama>`.
-Bekal lengkap untuk sesi chat (dokumen ini + katalog benda/tokoh/suara terbaru):
-`python -m newmotion.application.jalur_manual --bekal > bekal.md`
+Bekal lengkap untuk sesi chat (dokumen ini + katalog benda/tokoh/suara terbaru): `docs/BEKAL_PAPAN_MANUAL.md`
+(diperbarui otomatis oleh CI; bot mengirimkannya lewat `/bekal`). Prompt siap pakai: `docs/PROMPT_JSON_LENGKAP.md`.
 
 ## Contoh referensi
 `mesin-video/papan/kisah/mahsyar1.json`, `nuh1.json`, `yajuj1.json`, `yajuj2.json` — kunci shot yang dipakai di sana
@@ -47,6 +47,14 @@ Bedanya: di contoh itu waktu sudah angka karena rekamannya sudah ada. Di papan m
 - Bacaan Arab tidak disuarakan: huruf Arab dilarang di `narasi`; tulis Arab + latin + arti di `teks` layar.
 - Hanya dalil sahih/hasan, sumber tampil di layar (`sub`), nomor dicek oleh penulis JSON. Jalur ini tidak memverifikasi dalil.
 - Tanpa watermark. Label AI tetap aktif saat unggah.
+
+## Resep tokoh yang sering dipakai
+- **Raja Mesir kuno / Firaun:** `"penutup_kepala": "nemes", "janggut": true, "janggut_model": "firaun",
+  "pakaian": {"jenis": "jubah", "warna": "#f4ecd8", "bisht": "#3a2a1e", "kalung": "usekh"}`.
+- **Rombongan Arab:** `"cerita": {"suku": "arab", ...}` lalu figuran `{"npc": <angka acak tetap>}`; membelakangi kamera: `"belakang": true`.
+- **Nabi:** benda `{"jenis": "nur", "nama": "Nabi Musa ﷺ"}`, tidak pernah boneka.
+- **Jasad tanpa luka:** boneka `"pose": "rebahan", "mata": "tutup"` di benda `pantai`.
+- **Laut terbelah:** benda `{"jenis": "laut_terbelah", "belah": [[0, 0], [2.5, 1]]}` (turunkan lagi = laut menutup).
 
 ## Yang dikirim balik
 Lembar kontak + video + hasil `periksa.py`. GAGAL = kerusakan teknis atau batas wajib; PERIKSA = pedoman, keputusan Anda.

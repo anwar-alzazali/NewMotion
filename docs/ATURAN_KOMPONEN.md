@@ -118,9 +118,8 @@ mengenali aplikasinya. Aturannya:
   atau diubah beserta parameternya, lembar bukti, dan kebutuhan yang sengaja ditunda.
 - Catat setiap kebutuhan (dibuat atau ditunda) di antrean kebutuhan (`kebutuhan_renderer`), status
   `dibuat` untuk yang dibuat.
-- **Tujuan PR:** selama cabang `gpt/integrasi` belum digabung ke `main`, PR ke `gpt/integrasi`; setelah itu
-  ke `main`. Komponen dari naskah pemilik **tidak di-merge sendiri**: pemilik melihat lembar buktinya lalu
-  merge (cepat, hanya menilai gambar). Tambahkan entri di Log kerja `docs/TUGAS_GPT.md`.
+- **Tujuan PR:** `gpt/integrasi` (disamakan dengan `main` setiap kali Claude menggabungkan). Komponen dari naskah pemilik **tidak di-merge sendiri**: pemilik melihat lembar buktinya lalu
+  merge (cepat, hanya menilai gambar). Tulis log kerja sebagai berkas baru di `docs/log_kerja/`.
 - Jangan mengubah naskah. Bila naskah meminta sesuatu yang melanggar batas wajib, tulis di PR bagian mana
   dan usulan penggantinya; jangan dibuat.
 

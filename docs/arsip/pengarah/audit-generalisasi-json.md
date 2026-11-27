@@ -92,7 +92,7 @@ Audit renderer pada `mesin-video/papan/cerita.js` membuktikan dukungan untuk kam
 `x/y/z`, efek `hentak/guncang`, serta properti lingkungan seperti `palet`, `ruang`,
 `langit`, `horizon`, `debu`, `hujan`, `panas`, `matahari`, `naungan`,
 `kerumunan`, `retak`, dan `resap`. Rincian bukti dan pola empat JSON referensi ada
-pada `docs/pengarah/audit-kamera-lingkungan.md`.
+pada `docs/arsip/pengarah/audit-kamera-lingkungan.md`.
 
 Pengarah cerita umum kini memilih framing dasar kamera menurut tujuan shot dan menerima
 metadata kamera/lingkungan eksplisit pada level naskah atau adegan. Metadata adegan
@@ -117,4 +117,4 @@ tetap digunakan.
 Ini menutup kesenjangan kamera yang sebelumnya belum mengikuti lintasan aktor pada
 level dasar. Kamera masih belum mempertimbangkan kedalaman, occlusion, ruang kosong,
 lensa, atau shot/reverse-shot. Rincian integrasi dan batasnya dicatat pada
-`docs/pengarah/audit-kamera-mengikuti-panggung.md`.
+`docs/arsip/pengarah/audit-kamera-mengikuti-panggung.md`.
