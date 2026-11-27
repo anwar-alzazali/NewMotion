@@ -350,6 +350,11 @@ def buat_html(spec, dasar=".", sudah_dijaga=False):
             import base64
             css += ("@font-face{font-family:'Tangan';font-weight:700;src:url(data:font/woff2;base64,"
                     + base64.b64encode(open(fnt, "rb").read()).decode() + ") format('woff2');}")
+        far = os.path.join(HERE, "papan", "font", "amiri-quran-arabic-400-normal.woff2")  # Arab kartu dalil (OFL, dari motion-studio-ai)
+        if os.path.exists(far) and '"arab"' in json.dumps(spec, ensure_ascii=False):
+            import base64
+            css += ("@font-face{font-family:'Amiri Quran';font-weight:100 900;unicode-range:U+0600-06FF,U+0750-077F,U+08A0-08FF,U+FB50-FDFF,U+FE70-FEFF;"
+                    "src:url(data:font/woff2;base64," + base64.b64encode(open(far, "rb").read()).decode() + ") format('woff2');}")
     data = json.dumps(spec, ensure_ascii=False).replace("</", "<\\/")
     tambahan = ""
     if spec.get("tokoh"):

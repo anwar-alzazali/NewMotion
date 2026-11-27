@@ -821,7 +821,8 @@
       for (; uk >= 30; uk -= 2) { cw = uk * 0.6; lh = uk * 1.3; const mk = Math.floor((W - 90) / cw); baris = []; let cur = ""; kata.forEach((w) => { if (cur && (cur + " " + w).length > mk) { baris.push(cur); cur = w; } else cur = cur ? cur + " " + w : w; }); if (cur) baris.push(cur); if (baris.length * lh <= (o.arab ? 380 : 520)) break; }
       const adaArab = !!o.arab, au = o.arab_ukuran || 56, alh = au * 1.35;
       let abaris = [];
-      if (adaArab) { const akata = String(o.arab).replace(/\s+/g, " ").trim().split(" ").filter(Boolean), acw = au * 0.62, amaxw = W - 90; let acur = "";
+      if (adaArab && Array.isArray(o.arab_baris) && o.arab_baris.length) abaris = o.arab_baris.slice(); // (27 Nov, dari motion-studio-ai) baris Arab seimbang dihitung Python
+      else if (adaArab) { const akata = String(o.arab).replace(/\s+/g, " ").trim().split(" ").filter(Boolean), acw = au * 0.62, amaxw = W - 90; let acur = "";
         akata.forEach((w) => { const test = acur ? acur + " " + w : w; if (acur && test.length * acw > amaxw) { abaris.push(acur); acur = w; } else acur = test; });
         if (acur) abaris.push(acur); }
       const arabH = adaArab ? abaris.length * alh + 70 : 0, H = 330 + arabH + baris.length * lh + 80, top = -H / 2;
@@ -843,8 +844,8 @@
       const ts = tt - 0.5, ks = ts < 0 ? 0 : ts < 0.2 ? 2.2 - 1.2 * halus(ts / 0.2) : 1, gx = ts > 0 && ts < 0.25 ? Math.sin(ts * 120) * 6 * (1 - ts / 0.25) : 0;
       if (ts > 0 && o.no) g += `<g transform="translate(${W / 2 - 170 + gx} ${top + H - 20}) rotate(-8) scale(${ks})" opacity="${clamp(ts / 0.08)}"><rect x="-130" y="-52" width="260" height="104" rx="16" fill="#fffaf0" fill-opacity=".9" stroke="#b3261e" stroke-width="9"/><text x="0" y="22" font-family="Tangan, DejaVu Sans, sans-serif" font-weight="700" font-size="${String(o.no).length > 6 ? 54 : 70}" text-anchor="middle" fill="#b3261e">${/^\d/.test(String(o.no)) ? "No. " : ""}${esc(o.no)}</text></g>`;
       let yy = top + 190 + 36;
-      if (adaArab) { const ap = halus((tt - 0.7) / 0.5), ay0 = yy + 70;
-        g += `<g opacity="${ap}" direction="rtl" unicode-bidi="bidi-override" font-family="Noto Naskh Arabic, Noto Sans Arabic, serif" font-weight="700" font-size="${au}" text-anchor="middle" fill="#0d4a3a">` +
+      if (adaArab) { const ap = halus((tt - (o.arab_at != null ? o.arab_at : 0.7)) / 0.5), ay0 = yy + 70;
+        g += `<g opacity="${ap}" direction="rtl" unicode-bidi="bidi-override" font-family="Amiri Quran, Noto Naskh Arabic, Noto Sans Arabic, serif" font-weight="700" font-size="${au}" text-anchor="middle" fill="#0d4a3a">` +
           abaris.map((b, i) => `<text x="0" y="${ay0 + i * alh}">${esc(b)}</text>`).join("") + `</g>`;
         const garisY = ay0 + (abaris.length - 1) * alh + 48;
         g += `<path d="M -200 ${garisY} H 200" stroke="#b07a2a" stroke-width="3" opacity="${ap}"/><circle cx="0" cy="${garisY}" r="8" fill="#e8c26a" stroke="#b07a2a" stroke-width="2"/>`;

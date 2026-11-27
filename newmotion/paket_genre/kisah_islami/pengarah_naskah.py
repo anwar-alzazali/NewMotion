@@ -250,11 +250,71 @@ def _ambil_dalil_untuk_adegan(nama_adegan: str, dalil_dipakai: list[dict]) -> di
                 "arab": " ".join(x["teks_arab"] for x in daftar),
                 "teks": " ".join(t for t in terjemah if t) or "(terjemahan tidak tersedia)",
                 "label": "QUR'AN",
+                "sumber": d.get("label") or f"QS {surah}:{nomor}",  # label pendek untuk `sub` teks layar
             }
         except Exception:
             # Sumber tidak tersedia atau rujukan tidak dapat dipastikan: jangan membuat dalil.
             return None
     return None
+
+
+def _nilai_kamera(v, t: float, dur: float, bawaan: float) -> float:
+    """Nilai kamera pada detik t: angka, [awal, akhir] sepanjang shot, atau kunci [[t, v], ...]."""
+    if isinstance(v, (int, float)):
+        return float(v)
+    if isinstance(v, list) and len(v) == 2 and all(isinstance(x, (int, float)) for x in v):
+        return v[0] + (v[1] - v[0]) * min(1.0, max(0.0, t / dur))
+    if isinstance(v, list) and v and all(isinstance(x, list) and len(x) == 2 for x in v):
+        if t <= v[0][0]:
+            return float(v[0][1])
+        for (ta, va), (tb, vb) in zip(v, v[1:]):
+            if ta <= t <= tb:
+                return va + (vb - va) * ((t - ta) / (tb - ta) if tb > ta else 1)
+        return float(v[-1][1])
+    return bawaan
+
+
+def _hud(kamera: dict, dur: float, X: float, Y: float, S: float) -> dict:
+    """Koordinat dunia berkunci waktu agar benda tampil tetap di (X, Y, skala S) layar walau kamera bergerak."""
+    ks = [0.0, round(dur / 2, 2), round(dur, 2)]
+    z = [_nilai_kamera(kamera.get("z"), t, dur, 1.0) for t in ks]
+    kx = [_nilai_kamera(kamera.get("x"), t, dur, 540.0) for t in ks]
+    ky = [_nilai_kamera(kamera.get("y"), t, dur, 960.0) for t in ks]
+    return {"x": [[t, round(kx[i] + (X - 540) / z[i], 1)] for i, t in enumerate(ks)],
+            "y": [[t, round(ky[i] + (Y - 960) / z[i], 1)] for i, t in enumerate(ks)],
+            "s": [[t, round(S / z[i], 4)] for i, t in enumerate(ks)]}
+
+
+def _pasang_dalil_rencana(shots_beat: list[dict], dalil: dict, rb: dict, t0: float, dur: float) -> None:
+    """Jalur sutradara (27 Nov): dalil TIDAK lagi mengganti seluruh adegan dengan kartu penuh layar.
+    Sutradara memilih beat kutipan (`kartu_dalil: true`); kartu muncul di atas adegan setelah adegan
+    terbangun dan hanya bila terbaca di HP (kartu_dalil.alasan_tidak_layak). Selain itu sumbernya tampil
+    sebagai `sub` di teks layar beat itu (sumber tetap di layar, adegan tetap terlihat)."""
+    from .kartu_dalil import alasan_tidak_layak, buat_kartu
+
+    if not shots_beat:
+        return
+    if rb.get("kartu_dalil") and alasan_tidak_layak(dalil.get("teks"), dalil.get("arab")) is None:
+        muncul = t0 + min(2.0, 0.35 * dur)
+        i = max((k for k, x in enumerate(shots_beat) if x["at"] <= muncul), default=0)
+        s = shots_beat[i]
+        akhir = shots_beat[i + 1]["at"] if i + 1 < len(shots_beat) else t0 + dur
+        at = round(max(0.2, muncul - s["at"]), 2)
+        kartu = buat_kartu(dalil, at=at)
+        # (dari motion-studio-ai `hud`) kartu tetap di layar walau kamera shot bergerak/zoom
+        kartu.update(_hud(s.get("kamera") or {}, max(0.5, akhir - s["at"]), kartu["x"], kartu["y"], kartu["s"]))
+        for t in s.get("teks") or []:  # teks layar beat itu memberi tempat bagi kartu
+            t["sampai"] = at
+        s["benda"] = list(s.get("benda") or []) + [kartu]
+        return
+    sumber = dalil.get("sumber") or dalil.get("kitab")
+    for s in shots_beat:
+        teks = s.get("teks") or []
+        if teks:
+            for t in teks:
+                t.setdefault("sub", sumber)
+            return
+    shots_beat[0]["teks"] = [{"at": 0.3, "teks": sumber, "y": 260, "ukuran": 44, "warna": "#ffd27a"}]
 
 
 def _waktu_adegan(adegan: list[dict], waktu_adegan: list[float] | None) -> list[tuple[float, float]]:
@@ -562,7 +622,8 @@ def arahkan(naskah: dict, waktu_adegan: list[float] | None = None,
             return s
 
         dalil = _ambil_dalil_untuk_adegan(nama, dalil_dipakai)
-        if dalil:
+        rb_adegan = a.get("rencana") if isinstance(a.get("rencana"), dict) else None
+        if dalil and not rb_adegan:
             # Adegan kutipan ayat: kartu dalil jadi fokus utama -- TIDAK diubah dari versi
             # terbukti (kamera hampir diam, z ~1, kartu di tengah). Hanya latar di belakang
             # kartu yang kini mengikuti tema (kartu punya latar sendiri yang menutupi).
@@ -649,8 +710,12 @@ def arahkan(naskah: dict, waktu_adegan: list[float] | None = None,
             subjek = (subjek_dari_rencana(rb, tx, ds, seed0 + idx * 100 + j) if rb
                       else arahkan_subjek(tx, ds, idx * 100 + j, konteks=teks_gabungan))
             if rb:
-                # Rencana sutradara: subjek menggantikan latar berjenis sama (mis. gunung tujuan
-                # berlindung menggantikan gunung latar), bukan diabaikan karena jenisnya sudah ada.
+                # Rencana sutradara: sutradara yang memutuskan isi adegan. Hiasan tema otomatis
+                # (ikan, bulan, tebing, ... dari komposisi tema) dibuang (27 Nov: bulan muncul di
+                # adegan dhuha, ikan melayang di atas laut terbelah); hanya bintang langit malam
+                # dan aksen cahaya/gelap yang tetap.
+                if subjek["benda"]:
+                    benda = [x for x in benda if x.get("jenis") in ("bintang", "cahaya", "gelap")]
                 jenis_subjek = {x.get("jenis") for x in subjek["benda"]}
                 benda = [x for x in benda if x.get("jenis") not in jenis_subjek] + list(subjek["benda"])
             else:
@@ -734,6 +799,8 @@ def arahkan(naskah: dict, waktu_adegan: list[float] | None = None,
                     s["_tata_letak"] = tl
             shots.append(s)
             framing_seb = framing
+        if dalil and rb_adegan:
+            _pasang_dalil_rencana([x for x in shots if x.get("_adegan") == idx], dalil, rb_adegan, t0, dur)
 
     spek = {"latar": "gelap", "musik": "santai" if total else False,
             "cerita": {"shot": shots}}

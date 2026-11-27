@@ -70,7 +70,8 @@
       "kalung": "usekh"
      }
     }
-   ]
+   ],
+   "kartu_dalil": false
   },
   {
    "beat": 2,
@@ -128,7 +129,8 @@
      "alasan": "pasukan pengejar perlu tampak berbeda dari rombongan Nabi Musa; siluet kerumunan atau arus bisa dikira sosok Nabi Musa atau pengikutnya",
      "bukti": "Firaun bersama bala tentaranya berhasil menyusul rombongan Nabi Musa"
     }
-   ]
+   ],
+   "kartu_dalil": false
   },
   {
    "beat": 3,
@@ -170,7 +172,8 @@
     "efek": [],
     "transisi": false,
     "intonasi": "tegang"
-   }
+   },
+   "kartu_dalil": false
   },
   {
    "beat": 4,
@@ -204,7 +207,8 @@
     "efek": [],
     "transisi": false,
     "intonasi": "tegas"
-   }
+   },
+   "kartu_dalil": false
   },
   {
    "beat": 5,
@@ -256,7 +260,8 @@
     ],
     "transisi": true,
     "intonasi": "tegas"
-   }
+   },
+   "kartu_dalil": false
   },
   {
    "beat": 6,
@@ -299,7 +304,8 @@
     ],
     "transisi": false,
     "intonasi": "tenang"
-   }
+   },
+   "kartu_dalil": false
   },
   {
    "beat": 7,
@@ -356,7 +362,8 @@
       "kalung": "usekh"
      }
     }
-   ]
+   ],
+   "kartu_dalil": false
   },
   {
    "beat": 8,
@@ -413,7 +420,8 @@
       "kalung": "usekh"
      }
     }
-   ]
+   ],
+   "kartu_dalil": true
   },
   {
    "beat": 9,
@@ -449,7 +457,8 @@
     ],
     "transisi": false,
     "intonasi": "lega"
-   }
+   },
+   "kartu_dalil": false
   }
  ],
  "suku": "umum"

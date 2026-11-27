@@ -20,6 +20,7 @@ Nilai keadaan: angka, teks pilihan, atau [awal, akhir] (berubah halus sepanjang 
 """
 from __future__ import annotations
 
+import json
 import re
 import unicodedata
 from collections.abc import Mapping
@@ -154,6 +155,8 @@ def validasi_rencana(rencana: Any, narasi_beat: list[str]) -> list[str]:
             g.append(f"{lbl}: teks_layar maksimal {MAKS_TEKS_LAYAR} huruf dan 3 baris")
         if not isinstance(b.get("klimaks", False), bool):
             g.append(f"{lbl}: klimaks harus true/false")
+        if not isinstance(b.get("kartu_dalil", False), bool):
+            g.append(f"{lbl}: kartu_dalil harus true/false")
         if "suara" in b:
             g += _validasi_suara(b["suara"], narasi, lbl)
         if "figuran" in b:
@@ -266,6 +269,10 @@ LETAK_FIGURAN = {  # (x, y kaki, skala, jauh)
 }
 
 
+KUNCI_TAMPILAN_FIGURAN = ("penutup_kepala", "warna_penutup", "janggut", "janggut_model", "pakaian", "mata", "wajah",
+                          "rambut", "warna_rambut", "kulit")
+
+
 def figuran_dari_rencana(rb: Mapping, benda: list[dict], kunci: int, ds: float = 4.0) -> list[dict]:
     """Rencana figuran satu beat -> boneka figuran (npc) dengan posisi, gerak, hadap, pindah, dan kait."""
     keluar: list[dict] = []
@@ -294,6 +301,11 @@ def figuran_dari_rencana(rb: Mapping, benda: list[dict], kunci: int, ds: float =
                 o["pose"] = f"pegang_{f['pegang']}"
             if f.get("suku"):  # tanpa suku: ikut suku cerita
                 o["suku"] = f["suku"]
+            for kt in KUNCI_TAMPILAN_FIGURAN:  # (27 Nov) tampilan dari rencana, mis. resep raja Mesir kuno
+                if f.get(kt) is not None:
+                    o[kt] = json.loads(json.dumps(f[kt]))
+            if isinstance(o.get("pakaian"), dict) and o["pakaian"].get("bisht") is True:
+                o["pakaian"]["bisht"] = "#3a2a1e"  # renderer butuh warna, bukan true
             if f.get("hadap") in ("kanan", "kiri"):
                 o["profil"] = f["hadap"]
             if f.get("hadap_ke"):

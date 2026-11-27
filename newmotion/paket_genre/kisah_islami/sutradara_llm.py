@@ -23,6 +23,7 @@ from newmotion.application.kemampuan_tokoh import teks_kemampuan_tokoh
 from .rencana_sutradara import terapkan_rencana, validasi_rencana
 
 SKILL = Path(__file__).resolve().parent / "skill" / "sutradara.md"
+MAKS_KARTU_DALIL = 2
 
 
 def skill_sutradara() -> str:
@@ -37,9 +38,21 @@ def _narasi(naskah: Mapping) -> list[str]:
     return [str(b.get("narasi", "")) for b in naskah.get("beat", [])]
 
 
+def dalil_per_beat(naskah: Mapping) -> dict[int, str]:
+    """Nomor beat -> label dalil terverifikasi yang dirujuk beat itu (untuk keputusan kartu_dalil)."""
+    nama = {str(a.get("nama")): i for i, a in enumerate(naskah.get("adegan") or [], 1)}
+    keluar: dict[int, str] = {}
+    for d in naskah.get("dalil_dipakai") or []:
+        n = nama.get(str(d.get("di_adegan")))
+        if n and n not in keluar:
+            keluar[n] = d.get("label") or f"QS {d.get('surah')}:{d.get('ayat')}"
+    return keluar
+
+
 def pesan_sutradara(naskah: Mapping) -> str:
     baris = [f"Judul: {naskah.get('judul', '-')}", "", "Naskah (beat bernomor):"]
-    baris += [f"{i}. {t}" for i, t in enumerate(_narasi(naskah), 1)]
+    dalil = dalil_per_beat(naskah)
+    baris += [f"{i}. {t}" + (f"  [dalil: {dalil[i]}]" if i in dalil else "") for i, t in enumerate(_narasi(naskah), 1)]
     baris += ["", "Tulis rencana sutradara untuk SEMUA beat di atas."]
     return "\n".join(baris)
 
@@ -49,6 +62,13 @@ def validasi_lengkap(rencana: Any, naskah: Mapping) -> list[str]:
     galat = validasi_rencana(rencana, _narasi(naskah))
     if galat:
         return galat
+    dalil = dalil_per_beat(naskah)
+    kartu = [b.get("beat") for b in rencana.get("beat", []) if b.get("kartu_dalil")]
+    if len(kartu) > MAKS_KARTU_DALIL:
+        return [f"kartu_dalil paling banyak {MAKS_KARTU_DALIL} per video (dipilih: beat {kartu})"]
+    salah = [n for n in kartu if n not in dalil]
+    if salah:
+        return [f"beat {salah}: kartu_dalil hanya untuk beat yang bertanda [dalil: ...]"]
     from newmotion.application.pengarah_inti import arahkan_naskah
 
     from .penjaga_tokoh import periksa_adab_tokoh
