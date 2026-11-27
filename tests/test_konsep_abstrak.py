@@ -48,3 +48,36 @@ def test_siluet_manusia_umum_dilarang_untuk_tokoh_sakral():
         }
         galat = validasi_rencana(rencana, ["Nabi berdiri di tengah kaum"])
         assert any("tokoh sakral" in x for x in galat)
+
+
+def test_pengarah_aturan_mengenali_semua_jenis_konsep_abstrak():
+    from newmotion.paket_genre.kisah_islami.pengarah_naskah import _validasi_benda
+
+    for jenis in KONSEP:
+        spek = {"cerita": {"shot": [{"benda": [{"jenis": jenis}], "boneka": []}]}}
+        assert _validasi_benda(spek) == []
+
+
+def test_penjaga_adab_menolak_siluet_konsep_abstrak_di_shot_tokoh_sakral():
+    from newmotion.paket_genre.kisah_islami.penjaga_tokoh import periksa_adab_tokoh
+
+    for jenis in ("genangan_tubuh", "naungan_kelompok"):
+        spek = {"cerita": {"shot": [{
+            "_narasi": "Nabi Musa berdiri di tengah kaum.",
+            "benda": [{"jenis": jenis}],
+        }]}}
+        temuan = periksa_adab_tokoh(spek)
+        assert any(x.kode == "BENDA_MANUSIA_TOKOH_SAKRAL" for x in temuan)
+
+
+def test_penjaga_adab_tidak_melarang_konsep_abstrak_pada_narasi_umum():
+    from newmotion.paket_genre.kisah_islami.penjaga_tokoh import periksa_adab_tokoh
+
+    spek = {"cerita": {"shot": [{
+        "_narasi": "Orang-orang berkumpul di padang terbuka.",
+        "benda": [{"jenis": "naungan_kelompok"}],
+    }]}}
+    assert not any(
+        x.kode == "BENDA_MANUSIA_TOKOH_SAKRAL"
+        for x in periksa_adab_tokoh(spek)
+    )
