@@ -673,11 +673,13 @@ def proses(id_: str, mode: str, *, folder: Path = ANTREAN, tanya=None, quran=Non
                     token_periksa_ulang = meta_periksa_ulang.token_masuk + meta_periksa_ulang.token_keluar
                     st["token_ai"] += token_periksa_ulang
                     st["biaya_ai_usd"] = round(st["biaya_ai_usd"] + meta_periksa_ulang.biaya_usd, 6)
-                    st["pemeriksaan_naskah_ai"]["perbaikan"]["pemeriksaan_ulang"] = {
+                    st["pemeriksaan_naskah_ai"]["perbaikan"] = {
+                        "pemeriksaan_ulang": {
                         "model": meta_periksa_ulang.model,
                         "token_masuk": meta_periksa_ulang.token_masuk,
                         "token_keluar": meta_periksa_ulang.token_keluar,
                         "biaya_usd": meta_periksa_ulang.biaya_usd,
+                        },
                     }
             else:
                 perbaikan_gagal = True
