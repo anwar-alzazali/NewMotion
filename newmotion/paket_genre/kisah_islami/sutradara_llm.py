@@ -49,10 +49,28 @@ def dalil_per_beat(naskah: Mapping) -> dict[int, str]:
     return keluar
 
 
+SUBJEK_MANUSIA = {"kerumunan", "arus", "pemimpin", "penggali", "saf"}
+
+
+def peran_manusia(naskah: Mapping) -> dict[int, list[str]]:
+    """Nomor beat -> tokoh manusia biasa yang disebut beat itu (nabi/malaikat/sahabat/Allah tidak termasuk)."""
+    from .rencana_sutradara import POLA_SAKRAL
+
+    keluar: dict[int, list[str]] = {}
+    for i, a in enumerate(naskah.get("adegan") or [], 1):
+        p = [x for x in (a.get("peran") or []) if isinstance(x, str) and x.strip()
+             and not POLA_SAKRAL.search(x) and x.strip().lower() not in ("allah", "tuhan", "allah swt")]
+        if p:
+            keluar[i] = p
+    return keluar
+
+
 def pesan_sutradara(naskah: Mapping) -> str:
     baris = [f"Judul: {naskah.get('judul', '-')}", "", "Naskah (beat bernomor):"]
     dalil = dalil_per_beat(naskah)
-    baris += [f"{i}. {t}" + (f"  [dalil: {dalil[i]}]" if i in dalil else "") for i, t in enumerate(_narasi(naskah), 1)]
+    peran = peran_manusia(naskah)
+    baris += [f"{i}. {t}" + (f"  [dalil: {dalil[i]}]" if i in dalil else "")
+              + (f"  [tokoh: {', '.join(peran[i])}]" if peran.get(i) else "") for i, t in enumerate(_narasi(naskah), 1)]
     baris += ["", "Tulis rencana sutradara untuk SEMUA beat di atas."]
     return "\n".join(baris)
 
@@ -69,6 +87,14 @@ def validasi_lengkap(rencana: Any, naskah: Mapping) -> list[str]:
     salah = [n for n in kartu if n not in dalil]
     if salah:
         return [f"beat {salah}: kartu_dalil hanya untuk beat yang bertanda [dalil: ...]"]
+    hilang = []
+    for b in rencana.get("beat", []):
+        tokoh = peran_manusia(naskah).get(b.get("beat"))
+        if tokoh and not b.get("figuran") and not ({x.get("jenis") for x in b.get("subjek", [])} & SUBJEK_MANUSIA):
+            hilang.append(f"beat {b.get('beat')}: tokoh {', '.join(tokoh)} disebut tetapi tidak tampil; "
+                          "tambahkan figuran (atau kerumunan/arus untuk rombongan besar)")
+    if hilang:
+        return hilang
     from newmotion.application.pengarah_inti import arahkan_naskah
 
     from .penjaga_tokoh import periksa_adab_tokoh

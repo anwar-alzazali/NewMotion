@@ -50,6 +50,14 @@ Jangan gunakan identitas tokoh nabi, rasul, malaikat, atau sahabat; pagar adab f
 - Jangan memilih wujud makhluk gaib yang tidak dijelaskan dalil (mis. rupa Dabbah, Dajjal secara rinci) kecuali katalog menyediakannya sebagai simbol yang disepakati.
 - Ayat dan hadis tidak ditulis di teks layar; mesin menampilkannya dari sumber resmi.
 
+## Tokoh yang disebut harus tampil
+Beat bertanda `[tokoh: ...]` menyebut manusia biasa (raja, pasukan, kaum, pengikut). Mereka WAJIB tampil sebagai
+`figuran` (beberapa orang; rombongan besar: tambah subjek `kerumunan` atau `arus`), kecuali nabi/rasul (cahaya `nur`)
+dan malaikat. Firaun/raja Mesir kuno: `"penutup_kepala": "nemes", "janggut": true, "janggut_model": "firaun",
+"pakaian": {"jenis": "jubah", "bisht": true, "kalung": "usekh"}` di figuran. Orang yang berada DI DALAM laut terbelah
+pakai `"tempat": "di_lorong:laut_terbelah"`; pasukan/tentara: `"jenis_kelamin": "pria"`; bila `belah` di beat itu turun (mis. `[1, 0.1]`), air menutup dan
+menelan mereka (mesin menggambar air di depan mereka).
+
 ## Kartu dalil (pilih dengan hemat)
 Beat yang merujuk dalil terverifikasi bertanda `[dalil: ...]` di naskah. Untuk beat seperti itu mesin selalu
 menampilkan sumbernya (mis. "QS YUNUS 92") kecil di bawah teks layar, dan adeganmu tetap terlihat.

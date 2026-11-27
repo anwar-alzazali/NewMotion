@@ -27,7 +27,6 @@ from collections.abc import Mapping
 from typing import Any
 
 from newmotion.application.katalog_renderer import katalog_subjek
-from newmotion.application.kemampuan_tokoh import HADAP, SUKU, gerak_sah, kemampuan
 from newmotion.application.katalog_suara import (
     INTONASI,
     KERAS,
@@ -35,6 +34,7 @@ from newmotion.application.katalog_suara import (
     berkas,
     katalog_suara,
 )
+from newmotion.application.kemampuan_tokoh import HADAP, SUKU, gerak_sah, kemampuan
 
 from .pengarah_subjek import _properti_benda
 
@@ -223,8 +223,12 @@ def _validasi_figuran(fig: Any, jenis_beat: set, narasi: str, lbl: str) -> list[
                 g.append(f"{lbl}: figuran pemberi serah-terima harus jumlah 1")
         if f.get("suku", "umum") not in SUKU:
             g.append(f"{lbl}: figuran.suku harus {SUKU}")
-        if f.get("tempat", "tengah") not in TEMPAT_DASAR:
-            g.append(f"{lbl}: figuran.tempat harus salah satu {tuple(TEMPAT_DASAR)}")
+        tf = f.get("tempat", "tengah")
+        if isinstance(tf, str) and tf.startswith("di_lorong:"):
+            if tf.split(":", 1)[1] not in jenis_beat or tf.split(":", 1)[1] not in LORONG:
+                g.append(f"{lbl}: figuran.tempat {tf!r} butuh subjek {', '.join(LORONG)} di beat ini")
+        elif tf not in TEMPAT_DASAR:
+            g.append(f"{lbl}: figuran.tempat harus salah satu {tuple(TEMPAT_DASAR)} atau di_lorong:laut_terbelah")
         if f.get("gerak", "berdiri") not in gerak_sah():
             g.append(f"{lbl}: figuran.gerak {f.get('gerak')!r} tidak dikenal renderer")
         if f.get("hadap", "depan") not in HADAP:
@@ -269,7 +273,18 @@ LETAK_FIGURAN = {  # (x, y kaki, skala, jauh)
 }
 
 
-KUNCI_TAMPILAN_FIGURAN = ("penutup_kepala", "warna_penutup", "janggut", "janggut_model", "pakaian", "mata", "wajah",
+LORONG = ("laut_terbelah",)  # benda berlorong: figuran "di_lorong:<jenis>" berjalan di dalamnya
+
+
+def _letak_lorong(target: Mapping) -> tuple[float, float, float]:
+    """(x, y kaki, skala) figuran di dalam lorong benda (sepertiga jalan menuju ujung lorong)."""
+    sx = float(target["x"] if isinstance(target.get("x"), (int, float)) else 540)
+    sy = float(target["y"] if isinstance(target.get("y"), (int, float)) else 1000)
+    ss = float(target["s"] if isinstance(target.get("s"), (int, float)) else 1)
+    return sx, sy - (target.get("jauh") if isinstance(target.get("jauh"), (int, float)) else 560) * ss * 0.3, 0.55 * ss
+
+
+KUNCI_TAMPILAN_FIGURAN = ("jenis_kelamin", "penutup_kepala", "warna_penutup", "janggut", "janggut_model", "pakaian", "mata", "wajah",
                           "rambut", "warna_rambut", "kulit")
 
 
@@ -285,8 +300,23 @@ def figuran_dari_rencana(rb: Mapping, benda: list[dict], kunci: int, ds: float =
                 kiri_kanan = pemberi.get("tempat") == "kiri"
                 posisi_serah[pemberi["nama"]] = 400 if kiri_kanan else 580
                 posisi_serah[penerima["nama"]] = 580 if kiri_kanan else 400
+    tambahan_depan: list[dict] = []
     for i, f in enumerate(daftar):
-        x0, y0, sk, blk = LETAK_FIGURAN[f.get("tempat", "tengah")]
+        tf = f.get("tempat", "tengah")
+        if isinstance(tf, str) and tf.startswith("di_lorong:"):
+            target = next((b for b in benda if b.get("jenis") == tf.split(":", 1)[1]), None)
+            if target is None:
+                tf = "tengah"
+            else:
+                x0, y0, sk = _letak_lorong(target)
+                blk = False
+                bl = target.get("belah")
+                if isinstance(bl, list) and bl and isinstance(bl[-1], list) and bl[-1][1] < bl[0][1] \
+                        and not any(x.get("lapis") == "tutup" for x in benda + tambahan_depan):
+                    # laut menutup: lapisan air yang naik digambar DI DEPAN tokoh, sehingga mereka tertelan
+                    tambahan_depan.append(dict(target, lapis="tutup", depan=True))
+        if not (isinstance(tf, str) and tf.startswith("di_lorong:")):
+            x0, y0, sk, blk = LETAK_FIGURAN[tf]
         n = int(f.get("jumlah", 1))
         for k in range(n):
             x = round(x0 + (k - (n - 1) / 2) * 150 * sk)
@@ -327,6 +357,7 @@ def figuran_dari_rencana(rb: Mapping, benda: list[dict], kunci: int, ds: float =
                     target.setdefault("id", f"kait_{kunci}_{i}")
                     o = {k2: o[k2] for k2 in ("npc", "suku") if k2 in o} | {"kait": target["id"]}
             keluar.append(o)
+    benda.extend(tambahan_depan)
     return keluar
 
 
@@ -403,14 +434,19 @@ def rekaman_dari_rencana(adegan: list[Mapping], jadwal: list[tuple[float, float]
     return sorted(keluar, key=lambda r: r["at"])
 
 
-def _nilai(v: Any, ds: float) -> Any:
-    """[awal, akhir] -> kunci waktu halus sepanjang shot; selain itu apa adanya."""
+def _nilai(v: Any, ds: float, f0: float = 0.0, f1: float = 1.0) -> Any:
+    """[awal, akhir] -> kunci waktu halus. f0..f1 = bagian beat yang dicakup shot ini (beat yang dipecah
+    beberapa shot melanjutkan perubahan, tidak mengulang dari awal di tiap shot)."""
     if isinstance(v, list) and len(v) == 2:
-        return [[0, v[0]], [round(max(0.5, ds * 0.85), 2), v[1]]]
+        if f0 <= 0 and f1 >= 1:
+            return [[0, v[0]], [round(max(0.5, ds * 0.85), 2), v[1]]]
+        def pada(f: float) -> float:
+            return round(v[0] + (v[1] - v[0]) * min(1.0, max(0.0, f / 0.85)), 3)
+        return [[0, pada(f0)], [round(max(0.5, ds), 2), pada(f1)]]
     return v
 
 
-def subjek_dari_rencana(rb: Mapping, teks: str, ds: float, seed: int) -> dict:
+def subjek_dari_rencana(rb: Mapping, teks: str, ds: float, seed: int, bagian: tuple[float, float] = (0.0, 1.0)) -> dict:
     """Satu beat rencana -> struktur yang sama dengan arahkan_subjek, plus peran kamu & kamera."""
     benda = []
     for s in rb.get("subjek", []):
@@ -421,7 +457,7 @@ def subjek_dari_rencana(rb: Mapping, teks: str, ds: float, seed: int) -> dict:
             if tempat != "jauh":
                 o.pop("belakang", None)
         for k, v in (s.get("keadaan") or {}).items():
-            o[k] = _nilai(v, ds)
+            o[k] = _nilai(v, ds, *bagian)
         if s["jenis"] == "nur":
             o.setdefault("nama_letak", "atas")  # (27 Nov) nama nabi di atas cahaya, tidak tertutup tanah/ombak
         if isinstance(tempat, str) and tempat.startswith("di_lubang:"):

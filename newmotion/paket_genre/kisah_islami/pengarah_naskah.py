@@ -707,7 +707,8 @@ def arahkan(naskah: dict, waktu_adegan: list[float] | None = None,
             # Pemetaan dimiliki paket genre, terpisah dari leksikon alat ukur.
             # Rencana sutradara (LLM) bila ada: keputusan makna per beat. Tanpanya: aturan subjek.
             rb = a.get("rencana") if isinstance(a.get("rencana"), dict) else None
-            subjek = (subjek_dari_rencana(rb, tx, ds, seed0 + idx * 100 + j) if rb
+            bagian = ((ts - t0) / dur, (ts + ds - t0) / dur) if dur > 0 else (0.0, 1.0)
+            subjek = (subjek_dari_rencana(rb, tx, ds, seed0 + idx * 100 + j, bagian) if rb
                       else arahkan_subjek(tx, ds, idx * 100 + j, konteks=teks_gabungan))
             if rb:
                 # Rencana sutradara: sutradara yang memutuskan isi adegan. Hiasan tema otomatis
