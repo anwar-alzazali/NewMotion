@@ -116,11 +116,16 @@ def main(argv=None) -> int:
     parser.add_argument("--nama", required=True, help="nama kebutuhan dalam snake_case")
     parser.add_argument("--alasan", required=True, help="mengapa komponen diperlukan")
     parser.add_argument("--bukti", required=True, help="potongan persis narasi yang membutuhkan komponen")
+    parser.add_argument("--buat-pr", action="store_true", help="buat branch dan PR komponen-draf terpisah")
     args = parser.parse_args(argv)
     hasil = buat_draf(args.nama, args.alasan, args.bukti)
     jalur = simpan_draf(hasil)
     print(f"Draf tersimpan: {jalur.relative_to(AKAR)}")
-    print("Status: belum diuji render, ukuran, video referensi, atau pagar adab; belum menjadi PR.")
+    if args.buat_pr:
+        from newmotion.application.penerbit_komponen import terbitkan
+        print(f"PR draf dibuat: {terbitkan(hasil)}")
+    else:
+        print("Belum menjadi PR; tambahkan --buat-pr untuk menerbitkan draf terpisah.")
     return 0
 
 
