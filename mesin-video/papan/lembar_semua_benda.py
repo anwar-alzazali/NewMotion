@@ -39,12 +39,12 @@ PROPERTI_UJI = {
     "chat": {"nama": "Contoh", "pesan": [[0, "Uji renderer", "12:00", True]]},
     "monitor": {"judul": "Pratinjau", "nama": "Renderer", "teks": "Uji visual"},
     "ponsel": {"judul": "Uji renderer", "teks": "Pratinjau visual"},
-    "rincian": {"judul": "Ringkasan uji", "gaji": "—", "baris": [[0, "Contoh", 1]], "akhir": "Selesai"},
+    "rincian": {"judul": "Ringkasan uji", "gaji": 1000000, "baris": [[0, "Contoh", 1]], "akhir": "Selesai"},
     "logo_app": {"teks": "UJI"}, "stempel": {"teks": "UJI"},
     "tanda": {"ok": True}, "kalender": {"bulan": "Januari", "tgl": 15, "mulai": 0},
     "nur": {"nama": "Nur", "nama_s": "Nur"}, "bintang": {"n": 8},
     "makam": {"n": 3}, "dompet": {"isi": 2}, "koin": {"n": 4},
-    "uang": {"n": 4}, "kartu_dalil": {"kitab": "CONTOH UJI", "no": "—", "teks": "Pratinjau visual", "label": "CONTOH"},
+    "uang": {"n": 4},
 }
 
 
@@ -145,6 +145,8 @@ def main() -> int:
             panel = []
             for offset in (0.6, 2.8):
                 page.evaluate(f"setT({i * DURASI + offset})")
+                if page.locator(f'g[data-j="{nama}"]').count() == 0:
+                    galat_js.append(f"{nama}: elemen renderer tidak ditemukan")
                 mentah = page.screenshot(clip={
                     "x": POTONG[0], "y": POTONG[1],
                     "width": POTONG[2] - POTONG[0], "height": POTONG[3] - POTONG[1],
