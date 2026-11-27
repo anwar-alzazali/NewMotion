@@ -721,7 +721,19 @@
       g = `<ellipse cx="0" cy="40" rx="330" ry="30" fill="#000" opacity=".25"/><path d="M -320 20 L 0 0 L 320 20 L 320 -360 L 0 -380 L -320 -360 Z" fill="#6b2a2a" stroke="${INK}" stroke-width="7"/>
         <path d="M 0 -10 L -${300 * bk} 8 L -${300 * bk} -350 L 0 -372 Z" fill="#fbf3dc" stroke="${INK}" stroke-width="6"/><path d="M 0 -10 L 300 8 L 300 -350 L 0 -372 Z" fill="#fbf3dc" stroke="${INK}" stroke-width="6"/><line x1="0" y1="-372" x2="0" y2="-10" stroke="#c9b48a" stroke-width="6"/>`;
       for (let i = 0; i < 7; i++) { const yy = -320 + i * 40; if (bk > 0.5) g += `<line x1="${-260}" y1="${yy + 2}" x2="${-40}" y2="${yy - 4}" stroke="#b9a882" stroke-width="5" opacity="${o.teks ? 0.35 : 0.7}"/>`; g += `<line x1="40" y1="${yy - 4}" x2="260" y2="${yy + 2}" stroke="#b9a882" stroke-width="5" opacity="${o.teks ? 0.35 : 0.7}"/>`; }
-      if (o.teks) String(o.teks).split("\n").forEach((tx, i) => { g += `<text x="0" y="${-250 + i * 70}" font-family="DejaVu Sans, Arial, sans-serif" font-weight="800" font-size="${o.ukuran || 54}" text-anchor="middle" fill="#3a1f1a">${esc(tx)}</text>`; });
+      if (o.teks) { // (27 Nov) teks dibungkus dan dikecilkan agar selalu di dalam halaman (lebar 560, maks 5 baris)
+        const lebarMaks = 560, kar = 0.6;
+        let fs = o.ukuran || 54, baris = [];
+        for (; fs >= 26; fs -= 4) {
+          const maksKar = Math.floor(lebarMaks / (fs * kar)); baris = [];
+          String(o.teks).split("\n").forEach((p0) => { let cur = "";
+            p0.split(/\s+/).forEach((w) => { if (cur && (cur + " " + w).length > maksKar) { baris.push(cur); cur = w; } else cur = cur ? cur + " " + w : w; });
+            if (cur) baris.push(cur); });
+          if (baris.length * fs * 1.25 <= 300 && Math.max(...baris.map((b) => b.length)) <= maksKar) break;
+        }
+        const y0 = -190 - (baris.length - 1) * fs * 1.25 / 2;
+        baris.forEach((tx, i) => { g += `<text x="0" y="${y0 + i * fs * 1.25}" font-family="DejaVu Sans, Arial, sans-serif" font-weight="800" font-size="${fs}" text-anchor="middle" fill="#3a1f1a">${esc(tx)}</text>`; });
+      };
       if (o.sub) { const w2 = o.sub.length * 25 + 70; g += `<g font-family="DejaVu Sans, Arial, sans-serif" font-weight="800" text-anchor="middle"><rect x="${-w2 / 2}" y="60" width="${w2}" height="80" rx="40" fill="#1d1520" opacity=".85"/><text y="114" font-size="46" fill="#ffd27a">${esc(o.sub)}</text></g>`; }
     } else if (j === "kartu_dalil") { // kartu dalil 2D: {kitab:"HR. Bukhari", no:"6507", teks, sorot:"frasa", arab:"teks Arab terverifikasi", label:"DALIL", ukuran, sorot_at}
       const W = 780, tt = tl, masuk = halus(tt / 0.45), ov = tt < 0.45 ? 1 + (1 - masuk) * 0.0 : 1;
