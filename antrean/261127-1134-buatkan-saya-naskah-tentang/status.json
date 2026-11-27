@@ -6,9 +6,9 @@
  "genre": "kisah_islami",
  "konteks_konten": "islami",
  "tahap": {
-  "diterima": "jalan",
-  "dalil": "selesai",
-  "tinjau": "jalan",
+  "diterima": "gagal",
+  "dalil": "belum",
+  "tinjau": "belum",
   "sutradara": "belum",
   "tinjau_visual": "belum",
   "narasi": "belum",
@@ -17,14 +17,12 @@
   "kirim": "belum"
  },
  "ket": {
-  "diterima": "revisi mengantre…",
-  "dalil": "8/8",
-  "tinjau": "menunggu Anda membaca naskah"
+  "diterima": "beat 7 dialog 1: penjawab 'Allah' belum tercantum di peran; tambahkan agar bisa ditata dan digambar dengan aman; beat 7 dialog 1: Allah tidak digambarkan sebagai tokoh; gunakan narasi atau cahaya tanpa sosok; beat 7 dialog 2: pembicara 'Allah' belum tercantum di peran; tambahkan agar bisa ditata dan"
  },
  "dibuat": "2026-11-27T04:34:37.402Z",
- "diperbarui": "2026-11-27T04:40:23+00:00",
- "token_ai": 12233,
- "penyedia_ai": "Gemini gemini-3.8-flash (gratis)",
+ "diperbarui": "2026-11-27T05:48:36+00:00",
+ "token_ai": 24412,
+ "penyedia_ai": "Gemini gemini-3.5-flash-lite (gratis)",
  "laporan_dalil": [
   "✓ QS YUNUS 90-91",
   "✓ QS ASY-SYU'ARA 60 (label disarankan: QS ASH-SHU'ARA 60)",

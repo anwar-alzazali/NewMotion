@@ -686,11 +686,11 @@
    ]
   },
   {
-   "narasi": "Saat air laut kembali runtuh menelan mereka, Firaun yang sekarat sempat menyatakan keimanannya, namun tobatnya ditolak karena ajal sudah tiba.",
+   "narasi": "Saat air laut menenggelamkannya, Firaun berkata bahwa ia percaya tidak ada tuhan selain Tuhan yang dipercayai Bani Israil. Namun Allah berfirman, mengapa baru sekarang beriman padahal sebelumnya kamu durhaka dan berbuat kerusakan.",
    "kata_kunci": [
-    "tenggelam",
-    "tobat terlambat",
-    "firaun binasa"
+    "firaun tenggelam",
+    "ucapan firaun",
+    "jawaban allah"
    ],
    "dalil": [
     "yunus90_91",
@@ -706,14 +706,19 @@
     {
      "pembicara": "Firaun",
      "ucapan": "Aku percaya bahwa tidak ada tuhan melainkan Tuhan yang dipercayai oleh Bani Israil, dan aku termasuk orang-orang yang berserah diri.",
-     "penjawab": ""
+     "penjawab": "Allah"
+    },
+    {
+     "pembicara": "Allah",
+     "ucapan": "Mengapa baru sekarang, padahal sesungguhnya engkau telah durhaka sejak dahulu, dan engkau termasuk orang yang berbuat kerusakan.",
+     "penjawab": "Firaun"
     }
    ]
   },
   {
-   "narasi": "Allah kemudian menyelamatkan jasad Firaun agar tetap utuh keluar dari laut, untuk menjadi bukti dan pelajaran berharga bagi orang-orang sesudahnya, termasuk kamu.",
+   "narasi": "Allah kemudian menyelamatkan badan Firaun agar menjadi pelajaran bagi orang-orang yang datang sesudahnya, termasuk kamu.",
    "kata_kunci": [
-    "jasad firaun",
+    "badan firaun",
     "pelajaran",
     "bukti kekuasaan"
    ],
