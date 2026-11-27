@@ -1302,10 +1302,6 @@
         g += '<path d="M '+(xx-lebarRiak)+' '+yy+' q '+(lebarRiak*.5)+' -18 '+lebarRiak+' 0 q '+(lebarRiak*.5)+' 18 '+lebarRiak+' 0" stroke="#d5f2ec" stroke-width="'+(4+arus*7)+'" opacity="'+(.28+arus*.65)+'" fill="none" stroke-linecap="round"/>';
         g += '<path d="M '+(xx-lebarRiak*.45)+' '+(yy+13)+' q '+(lebarRiak*.35)+' -7 '+(lebarRiak*.7)+' 0" stroke="#2b647d" stroke-width="4" opacity=".65" fill="none"/>';
       }
-    } else if (j === "sungai") { // sungai berkelok; arus 0-1 mengatur riak air
-      const arus=v(o.arus,t,d,0.5), lebar=o.lebar||620, warna=o.warna||"#397f9a";
-      g += '<path d="M '+(-lebar)+' 0 Q '+(-lebar*.35)+' -220 '+(-lebar*.55)+' -480 Q 0 -700 '+(lebar*.5)+' -900 L '+lebar+' -900 Q '+(lebar*.2)+' -600 '+(lebar*.55)+' -400 Q '+(lebar*.8)+' -170 '+lebar+' 0 Z" fill="'+warna+'" stroke="'+INK+'" stroke-width="10"/>';
-      for(let i=0;i<9;i++){const yy=-70-i*85, xx=Math.sin(t*2+i)*35*arus;g += '<path d="M '+(-lebar*.55+xx)+' '+yy+' q '+(lebar*.25)+' -22 '+(lebar*.5)+' 0" stroke="#b8e0df" stroke-width="7" opacity="'+(0.25+0.55*arus)+'" fill="none"/>';}
     } else if (j === "perahu_kecil") { // perahu kecil kayu; goyang 0-1 mengatur olengan
       const goyang=v(o.goyang,t,d,0.1), muatan=v(o.muatan,t,d,0.25);
       g += '<g transform="rotate('+(goyang*8)+' 0 -80)"><path d="M -330 -90 L 330 -90 L 240 30 Q 0 110 -240 30 Z" fill="#8b5735" stroke="'+INK+'" stroke-width="12"/><path d="M -260 -80 L 260 -80 M -180 -35 L 180 -35" stroke="#d6a36a" stroke-width="12"/><path d="M 0 -100 L 0 -500 L 230 -180 L 0 -180 Z" fill="#e5d4a7" stroke="'+INK+'" stroke-width="10"/><path d="M 0 -500 L 0 -100" stroke="#65452e" stroke-width="12"/><rect x="-110" y="-180" width="'+(220*muatan)+'" height="75" rx="12" fill="#b48a53" stroke="'+INK+'" stroke-width="7"/></g>';
