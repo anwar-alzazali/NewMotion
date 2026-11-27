@@ -13,7 +13,7 @@ from newmotion.application.katalog_renderer import katalog_subjek
 
 AKAR = Path(__file__).resolve().parents[2]
 BERKAS = AKAR / "newmotion" / "application" / "data" / "kebutuhan_renderer.json"
-STATUS = ("menunggu", "dibuat")
+STATUS = ("menunggu", "draf", "dibuat")
 
 
 def normalisasi(nama: str) -> str:
@@ -89,6 +89,37 @@ def catat(data: Any, *, sumber: str, kisah: str, jalur: Path | None = None) -> d
             entri["contoh"] = entri["contoh"][-20:]
         if len(nama) > len(entri["nama"]):
             entri["nama"] = nama
+    tujuan.parent.mkdir(parents=True, exist_ok=True)
+    tujuan.write_text(json.dumps(antrean, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    return antrean
+
+
+def tandai_draf(data: dict, *, jalur: Path | None = None) -> dict:
+    """Catat komponen yang sudah diterbitkan sebagai PR draf, bukan komponen jadi."""
+    tujuan = jalur or BERKAS
+    antrean = _baca(tujuan)
+    nama = str(data.get("nama", "")).strip()
+    kunci = normalisasi(nama)
+    if not kunci:
+        raise ValueError("nama kebutuhan wajib diisi")
+    sekarang = datetime.now(timezone.utc).isoformat()
+    entri = antrean["kebutuhan"].setdefault(kunci, {
+        "nama": nama, "jumlah": 0, "contoh": [],
+        "sumber": ["pembuat_komponen"], "status": "draf",
+    })
+    entri["status"] = "draf"
+    if "pembuat_komponen" not in entri.setdefault("sumber", []):
+        entri["sumber"].append("pembuat_komponen")
+    contoh = {
+        "kisah": str(data.get("kisah") or "tanpa_judul"),
+        "beat": data.get("beat"),
+        "alasan": str(data.get("alasan") or ""),
+        "bukti": str(data.get("bukti_narasi") or ""),
+        "dicatat": sekarang,
+    }
+    if contoh not in entri.setdefault("contoh", []):
+        entri["contoh"].append(contoh)
+        entri["contoh"] = entri["contoh"][-20:]
     tujuan.parent.mkdir(parents=True, exist_ok=True)
     tujuan.write_text(json.dumps(antrean, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     return antrean
