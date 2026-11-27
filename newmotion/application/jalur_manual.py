@@ -206,23 +206,30 @@ def siapkan_pratinjau_visual(p: Path, durasi_per_shot: float = 4.0) -> Path:
     return tujuan
 
 
-def jalankan(p: Path, video: Path, *, tts_fn=None) -> dict:
-    """Render + periksa. Mengembalikan ringkasan; 'lulus' False bila ada GAGAL teknis/batas wajib."""
+def jalankan(p: Path, video: Path, *, tts_fn=None, pratinjau_visual: bool = False) -> dict:
+    """Render + periksa; mode pratinjau tidak pernah memanggil TTS atau membuat audio."""
     kerja = video.parent / (video.stem + "_periksa")
     kerja.mkdir(parents=True, exist_ok=True)
-    papan, ada_narasi = siapkan(p, tts_fn=tts_fn)
+    if pratinjau_visual:
+        papan = siapkan_pratinjau_visual(p)
+        ada_narasi = False
+    else:
+        papan, ada_narasi = siapkan(p, tts_fn=tts_fn)
     html = video.with_suffix(".html")
-    r = subprocess.run([sys.executable, str(MV / "papan_buat.py"), str(papan), "--html", str(html), "-o", str(video)],
-                       cwd=AKAR, env=_env(), capture_output=True, text=True, check=False)
+    perintah_render = [sys.executable, str(MV / "papan_buat.py"), str(papan), "--html", str(html), "-o", str(video)]
+    if pratinjau_visual:
+        perintah_render.append("--tanpa-suara")
+    r = subprocess.run(perintah_render, cwd=AKAR, env=_env(), capture_output=True, text=True, check=False)
     if r.returncode != 0 or not video.is_file():
         return {"lulus": False, "tahap": "render", "laporan": (r.stderr or r.stdout)[-1500:], "periksa": str(kerja)}
     perintah = [sys.executable, str(MV / "periksa.py"), str(video), "--html", str(html), "--spek", str(papan), "-o", str(kerja)]
     if not ada_narasi:
         perintah.append("--tanpa-audio")
-    c = subprocess.run(perintah, cwd=AKAR, env=_env(), capture_output=True, text=True, check=False)
-    baris = [b for b in c.stdout.splitlines() if b.startswith(("GAGAL", "PERIKSA"))]
-    return {"lulus": c.returncode == 0, "tahap": "periksa", "ada_narasi": ada_narasi,
-            "laporan": "\n".join(baris) or "semua butir LOLOS", "periksa": str(kerja)}
+    hasil_periksa = subprocess.run(perintah, cwd=AKAR, env=_env(), capture_output=True, text=True, check=False)
+    baris = [b for b in hasil_periksa.stdout.splitlines() if b.startswith(("GAGAL", "PERIKSA"))]
+    return {"lulus": hasil_periksa.returncode == 0, "tahap": "periksa",
+            "mode": "pratinjau_visual" if pratinjau_visual else "final", "ada_narasi": ada_narasi,
+            "laporan": "\\n".join(baris) or "semua butir LOLOS", "periksa": str(kerja)}
 
 
 # ---------------- Telegram ----------------
