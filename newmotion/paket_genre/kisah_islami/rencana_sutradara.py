@@ -222,7 +222,8 @@ def _validasi_figuran(fig: Any, jenis_beat: set, narasi: str, lbl: str) -> list[
         nama_x = {f.get("nama"): LETAK_FIGURAN.get(f.get("tempat", "tengah"), LETAK_FIGURAN["tengah"])[0]
                   for f in fig if isinstance(f, Mapping) and f.get("nama")}
         for f in fig:
-            if isinstance(f, Mapping) and f.get("hadap_ke") in nama_x and f.get("nama") in nama_x:
+            if (isinstance(f, Mapping) and isinstance(f.get("hadap_ke"), str)
+                    and f.get("hadap_ke") in nama_x and f.get("nama") in nama_x):
                 if nama_x[f["hadap_ke"]] == nama_x[f["nama"]]:
                     g.append(f"{lbl}: pasangan hadap_ke tidak boleh berada pada tempat horizontal yang sama")
     if total > MAKS_FIGURAN:
@@ -256,7 +257,7 @@ def figuran_dari_rencana(rb: Mapping, benda: list[dict], kunci: int, ds: float =
             if f.get("hadap_ke"):
                 target = next((q for q in rb.get("figuran", []) if q.get("nama") == f["hadap_ke"]), None)
                 if target is not None:
-                    tx0 = LETAK_FIGURAN[target.get("tempat", "tengah")][0]
+                    tx0 = LETAK_FIGURAN.get(target.get("tempat", "tengah"), LETAK_FIGURAN["tengah"])[0]
                     tx = tx0  # pasangan bernama selalu satu orang
                     o["profil"] = "kanan" if tx > x else "kiri"
             pindah = f.get("pindah")
