@@ -58,7 +58,7 @@ jobs:
       - name: Ukur semua benda dan buat lembar dua keadaan
         run: |
           python mesin-video/papan/ukur_benda.py
-          python mesin-video/papan/lembar_benda_baru.py
+          python mesin-video/papan/lembar_benda_baru.py mesin-video/papan/ukur_benda.py
           python mesin-video/papan/uji_tokoh.py -o /tmp/uji_tokoh
           python - <<'PY'
           import json
