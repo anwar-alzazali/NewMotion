@@ -847,7 +847,7 @@
       if (ts > 0 && o.no) g += `<g transform="translate(${W / 2 - 170 + gx} ${top + H - 20}) rotate(-8) scale(${ks})" opacity="${clamp(ts / 0.08)}"><rect x="-130" y="-52" width="260" height="104" rx="16" fill="#fffaf0" fill-opacity=".9" stroke="#b3261e" stroke-width="9"/><text x="0" y="22" font-family="Tangan, DejaVu Sans, sans-serif" font-weight="700" font-size="${String(o.no).length > 6 ? 54 : 70}" text-anchor="middle" fill="#b3261e">${/^\d/.test(String(o.no)) ? "No. " : ""}${esc(o.no)}</text></g>`;
       let yy = top + 190 + 36;
       if (adaArab) { const ap = halus((tt - (o.arab_at != null ? o.arab_at : 0.7)) / 0.5), ay0 = yy + 70;
-        g += `<g opacity="${ap}" direction="rtl" unicode-bidi="bidi-override" font-family="Amiri Quran, Noto Naskh Arabic, Noto Sans Arabic, serif" font-weight="700" font-size="${au}" text-anchor="middle" fill="#0d4a3a">` +
+        g += `<g opacity="${ap}" direction="rtl" unicode-bidi="bidi-override" font-family="Amiri Quran, Noto Naskh Arabic, Noto Sans Arabic, serif" font-weight="700" font-size="${au}" text-anchor="middle" fill="#0d4a3a"${LTR < 1 ? ` stroke="#fffaf0" stroke-width="8" stroke-linejoin="round" paint-order="stroke"` : ""}>` +
           abaris.map((b, i) => `<text x="0" y="${ay0 + i * alh}">${esc(b)}</text>`).join("") + `</g>`;
         const garisY = ay0 + (abaris.length - 1) * alh + 48;
         g += `<path d="M -200 ${garisY} H 200" stroke="#b07a2a" stroke-width="3" opacity="${ap}"/><circle cx="0" cy="${garisY}" r="8" fill="#e8c26a" stroke="#b07a2a" stroke-width="2"/>`;
@@ -860,7 +860,7 @@
       const yb = yy + uk * 0.9;
       sel.forEach(([i, a, n]) => { g += `<rect x="${X0 + a * cw - 5}" y="${yb + i * lh - uk * 0.85}" width="${n * cw + 10}" height="${uk * 1.1}" rx="10" fill="#ffd93a" opacity=".75"/>`; });
       baris.forEach((b, i) => { const f = clamp(maju / b.length); maju -= b.length; if (f <= 0) return; const ww = b.length * cw, ly = yb + i * lh;
-        g += `<clipPath id="kdt${i}"><rect x="${X0 - 8}" y="${ly - uk}" width="${ww * f + 10}" height="${uk * 1.4}"/></clipPath><text clip-path="url(#kdt${i})" x="${X0}" y="${ly}" textLength="${ww}" lengthAdjust="spacing" font-family="DejaVu Sans, Arial, sans-serif" font-weight="800" font-size="${uk}" fill="#2b2140">${esc(b)}</text>`; });
+        g += `<clipPath id="kdt${i}"><rect x="${X0 - 8}" y="${ly - uk}" width="${ww * f + 10}" height="${uk * 1.4}"/></clipPath><text clip-path="url(#kdt${i})" x="${X0}" y="${ly}" textLength="${ww}" lengthAdjust="spacing" font-family="DejaVu Sans, Arial, sans-serif" font-weight="800" font-size="${uk}" fill="#2b2140"${LTR < 1 ? ` stroke="#fffaf0" stroke-width="9" stroke-linejoin="round" paint-order="stroke"` : ""}>${esc(b)}</text>`; });
       // kilau emas menyapu kartu
       const sw = clamp((tt - 0.35) / 0.7); if (sw > 0 && sw < 1) g += `<g clip-path="url(#kdc)"><path d="M ${-W / 2 - 200 + sw * (W + 500)} ${top - 20} l 90 0 l -140 ${H + 40} l -90 0 Z" fill="#fff6c8" opacity=".55"/></g>`;
       g += `</g>`;

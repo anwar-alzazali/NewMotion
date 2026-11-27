@@ -15,7 +15,7 @@ import unicodedata
 
 ARAB_MIN_1, ARAB_MIN_2, ARAB_MAKS = 42.0, 34.0, 56.0
 KARTU_MAKS_HURUF = 200
-LATAR_KARTU = 0.72  # latar kartu tembus pandang (27 Nov, permintaan pemilik): adegan tetap terlihat di belakang
+LATAR_KARTU = 0.4  # latar kartu tembus pandang (27 Nov, permintaan pemilik): adegan tetap terlihat di belakang
 ZONA_ATAS, ZONA_TINGGI = 170, 1130
 
 
