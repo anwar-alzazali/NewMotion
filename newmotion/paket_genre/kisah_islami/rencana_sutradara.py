@@ -246,8 +246,9 @@ def _validasi_figuran(fig: Any, jenis_beat: set, narasi: str, lbl: str) -> list[
         if penerima is not None:
             if penerima.get("jumlah", 1) != 1:
                 g.append(f"{lbl}: figuran penerima serah-terima harus jumlah 1")
-            if penerima.get("tempat", "tengah") == f.get("tempat", "tengah"):
-                g.append(f"{lbl}: pemberi dan penerima serah-terima harus di tempat berbeda")
+            tempat_pasangan = {f.get("tempat", "tengah"), penerima.get("tempat", "tengah")}
+            if tempat_pasangan != {"kiri", "kanan"}:
+                g.append(f"{lbl}: serah-terima memerlukan pemberi dan penerima pada tempat kiri/kanan")
     if total > MAKS_FIGURAN:
         g.append(f"{lbl}: total figuran maksimal {MAKS_FIGURAN} per beat")
     return g
@@ -262,11 +263,22 @@ LETAK_FIGURAN = {  # (x, y kaki, skala, jauh)
 def figuran_dari_rencana(rb: Mapping, benda: list[dict], kunci: int, ds: float = 4.0) -> list[dict]:
     """Rencana figuran satu beat -> boneka figuran (npc) dengan posisi, gerak, hadap, pindah, dan kait."""
     keluar: list[dict] = []
-    for i, f in enumerate(rb.get("figuran") or []):
+    daftar = rb.get("figuran") or []
+    posisi_serah: dict[str, int] = {}
+    for pemberi in daftar:
+        if pemberi.get("serahkan_ke"):
+            penerima = next((q for q in daftar if q.get("nama") == pemberi["serahkan_ke"]), None)
+            if penerima is not None:
+                kiri_kanan = pemberi.get("tempat") == "kiri"
+                posisi_serah[pemberi["nama"]] = 440 if kiri_kanan else 570
+                posisi_serah[penerima["nama"]] = 570 if kiri_kanan else 440
+    for i, f in enumerate(daftar):
         x0, y0, sk, blk = LETAK_FIGURAN[f.get("tempat", "tengah")]
         n = int(f.get("jumlah", 1))
         for k in range(n):
             x = round(x0 + (k - (n - 1) / 2) * 150 * sk)
+            if f.get("nama") in posisi_serah:
+                x = posisi_serah[f["nama"]]
             gerak = f.get("gerak", "berdiri")
             identitas = kunci * 100 + i * 10 + k
             o = {"id": identitas, "npc": identitas, "pose": gerak, "x": x, "y": y0 + (k % 2) * 18, "s": sk}
