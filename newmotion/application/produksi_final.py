@@ -91,6 +91,9 @@ def produksi(id_: str, *, folder: Path = ANTREAN, video: Path | None = None) -> 
     st = _status(d)
     st["tahap"]["render"] = "selesai"
     st["ket"]["render"] = "video final bersuara siap ditinjau"
+    from newmotion.application.antrean_naskah import simpan_contoh_disetujui
+    naskah = json.loads((d / "naskah.json").read_text(encoding="utf-8"))
+    simpan_contoh_disetujui(d, naskah, st)
     st["papan_final"] = str(papan.relative_to(AKAR)) if papan.is_relative_to(AKAR) else str(papan)
     _simpan_status(d, st)
     return video
