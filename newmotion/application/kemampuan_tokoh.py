@@ -51,8 +51,8 @@ def teks_kemampuan_tokoh(jalur: Path = CERITA_JS) -> str:
         f"- benda yang dapat dipegang: {', '.join(k['pegang'])}",
         f"- bisa dinaiki/diduduki (kait): {kait}. Tokoh menempel otomatis: duduk di jok, tangan di setang, kaki di pijakan",
         (f"- penutup_kepala tokoh: {', '.join(k['penutup_kepala'])} (warna_penutup opsional). "
-         "nemes = kain kepala bergaris raja Mesir kuno; mahkota = mahkota emas raja. "
-         'Pakaian raja: pakaian {"jenis": "jubah", "bisht": true}. Jasad/tak bernyawa: pose rebahan + mata "tutup", tanpa luka'),
+         "nemes = kain kepala bergaris raja Mesir kuno (+ kobra kecil di dahi; ureus: false untuk membuang); mahkota = mahkota emas raja. "
+         'Raja Mesir kuno/Firaun: penutup_kepala "nemes" + janggut true + janggut_model "firaun" + pakaian {"jenis": "jubah", "bisht": true, "kalung": "usekh"}. Jasad/tak bernyawa: pose rebahan + mata "tutup", tanpa luka'),
         (f"- suku figuran: {', '.join(SUKU)}. arab = laki-laki berjubah dengan imamah/ghutrah/peci (sebagian berbisht), "
          "perempuan berkerudung dan abaya gelap"),
     ])
