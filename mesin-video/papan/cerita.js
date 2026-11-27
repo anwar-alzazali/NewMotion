@@ -802,7 +802,7 @@
         g += `<g transform="scale(${o.nama_s || 1})" font-family="DejaVu Sans, Arial, sans-serif" font-weight="800" text-anchor="middle"><rect x="${-w2 / 2}" y="${ny}" width="${w2}" height="74" rx="37" fill="#1d1520" opacity=".78"/><text y="${ny + 50}" font-size="44" fill="#ffe6a0">${nm}</text></g>`; }
     } else if (j === "jenazah") { // jenazah berkafan putih di atas keranda kayu (sopan, tanpa wajah); o.kain = warna kain penutup opsional; o.dipikul = sedang diusung (tanpa bayangan/kaki)
       const kw = "#7a5432";
-      const pk = !!o.dipikul; // (27 Nov) dipikul: keranda di pundak pengusung, tanpa bayangan tanah dan kaki keranda
+      const pk = !!o.dipikul, ayunKeranda = v(o.ayun, t, d, 0); // ayun mengikuti langkah pengusung
       g = (pk ? "" : `<ellipse cx="0" cy="40" rx="430" ry="34" fill="#000" opacity=".25"/>`) + `
         <line x1="-470" y1="-60" x2="470" y2="-60" stroke="${kw}" stroke-width="26" stroke-linecap="round"/><line x1="-470" y1="-60" x2="470" y2="-60" stroke="${INK}" stroke-width="4" opacity=".4"/>` +
         (pk ? "" : `<rect x="-360" y="-60" width="22" height="90" fill="${kw}" stroke="${INK}" stroke-width="5"/><rect x="338" y="-60" width="22" height="90" fill="${kw}" stroke="${INK}" stroke-width="5"/>`) + `
@@ -811,6 +811,7 @@
       else { g += `<path d="M -330 -88 Q -350 -190 -250 -196 L 220 -186 Q 350 -176 340 -88 Z" fill="#f6f1e6" stroke="${INK}" stroke-width="7"/><ellipse cx="-262" cy="-150" rx="70" ry="54" fill="#fbf8f1" stroke="${INK}" stroke-width="6"/>`;
         [-262 - 64, -150, 40, 250].forEach((bx, i) => { g += `<path d="M ${bx} ${i ? -184 : -176} q 8 50 0 ${i ? 96 : 84}" stroke="#d9cfbf" stroke-width="12" fill="none"/>`; });
         g += `<path d="M -200 -170 Q 0 -150 300 -150" stroke="#e2d9c8" stroke-width="5" fill="none"/>`; }
+      if (ayunKeranda) g = `<g transform="translate(0 ${Math.sin(t * 5.2) * ayunKeranda * 0.55})">${g}</g>`;
     } else if (j === "kitab" || (j === "buku" && CERAH)) { // kitab di meja (buku lama otomatis jadi kitab pada gaya cerah, dipusatkan di 540,1000)
       g = j === "kitab" ? kitab(o, t, d) : `<g transform="scale(${1 / sc}) translate(${540 - x} ${1000 - y}) scale(.92)">${kitab(o, t, d)}</g>`;
     } else if (j === "buku") { // kitab terbuka + label sumber: {teks (baris di halaman), sub (pil sumber), buka 0-1}
