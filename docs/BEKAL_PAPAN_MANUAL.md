@@ -116,7 +116,7 @@ Lembar kontak + video + hasil `periksa.py`. GAGAL = kerusakan teknis atau batas 
 - jam_pasir: jam pasir; sisa 0-1 menunjukkan pasir di ruang atas [keadaan: sisa*]
 - jembatan: shirath: jembatan sangat tipis di atas jurang api
 - jembatan_desa: jembatan desa: badan jembatan kayu/beton melintasi sungai, dengan pagar dan tiang penyangga [keadaan: air, lebar, warna_pagar]
-- jenazah: jenazah berkafan putih di atas keranda kayu (sopan, tanpa wajah); kain = warna kain penutup opsional [keadaan: kain]
+- jenazah: jenazah berkafan putih di atas keranda kayu (sopan, tanpa wajah); kain = warna kain penutup opsional; dipikul = sedang diusung (tanpa bayangan/kaki) [keadaan: dipikul, kain]
 - jendela: jendela kamar dengan cahaya Subuh masuk; terang 0-1 [keadaan: terang*]
 - jurang: (16 Nov) jurang neraka dilihat dari tepi atas: cincin tebing mengecil ke dasar membara. jatuh 0-1 (batu dari atas ke dasar), dasar 0-1 terang, cahaya warna [keadaan: cahaya, dasar*, jatuh*]
 - kambing: kambing kampung bertubuh berisi, tanduk pendek, telinga jatuh, berjanggut [keadaan: jalan*]

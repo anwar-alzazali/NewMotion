@@ -792,11 +792,12 @@
       const R = rng(o.seed || 5); for (let i = 0; i < 14; i++) { const h = ((R() * 700 + t * (40 + R() * 40)) % 700), bx = (R() - 0.5) * 220; g += `<circle cx="${bx}" cy="${-h}" r="${2 + R() * 4}" fill="#fff" opacity="${0.6 * (1 - h / 700)}"/>`; }
       if (o.nama) { const nm = esc(o.nama), w2 = o.nama.length * 25 + 60, ny = o.nama_letak === "atas" ? -720 : 40; // nama_letak "atas": di atas cahaya (27 Nov)
         g += `<g transform="scale(${o.nama_s || 1})" font-family="DejaVu Sans, Arial, sans-serif" font-weight="800" text-anchor="middle"><rect x="${-w2 / 2}" y="${ny}" width="${w2}" height="74" rx="37" fill="#1d1520" opacity=".78"/><text y="${ny + 50}" font-size="44" fill="#ffe6a0">${nm}</text></g>`; }
-    } else if (j === "jenazah") { // jenazah berkafan putih di atas keranda kayu (sopan, tanpa wajah); o.kain = warna kain penutup opsional
+    } else if (j === "jenazah") { // jenazah berkafan putih di atas keranda kayu (sopan, tanpa wajah); o.kain = warna kain penutup opsional; o.dipikul = sedang diusung (tanpa bayangan/kaki)
       const kw = "#7a5432";
-      g = `<ellipse cx="0" cy="40" rx="430" ry="34" fill="#000" opacity=".25"/>
-        <line x1="-470" y1="-60" x2="470" y2="-60" stroke="${kw}" stroke-width="26" stroke-linecap="round"/><line x1="-470" y1="-60" x2="470" y2="-60" stroke="${INK}" stroke-width="4" opacity=".4"/>
-        <rect x="-360" y="-60" width="22" height="90" fill="${kw}" stroke="${INK}" stroke-width="5"/><rect x="338" y="-60" width="22" height="90" fill="${kw}" stroke="${INK}" stroke-width="5"/>
+      const pk = !!o.dipikul; // (27 Nov) dipikul: keranda di pundak pengusung, tanpa bayangan tanah dan kaki keranda
+      g = (pk ? "" : `<ellipse cx="0" cy="40" rx="430" ry="34" fill="#000" opacity=".25"/>`) + `
+        <line x1="-470" y1="-60" x2="470" y2="-60" stroke="${kw}" stroke-width="26" stroke-linecap="round"/><line x1="-470" y1="-60" x2="470" y2="-60" stroke="${INK}" stroke-width="4" opacity=".4"/>` +
+        (pk ? "" : `<rect x="-360" y="-60" width="22" height="90" fill="${kw}" stroke="${INK}" stroke-width="5"/><rect x="338" y="-60" width="22" height="90" fill="${kw}" stroke="${INK}" stroke-width="5"/>`) + `
         <rect x="-370" y="-88" width="740" height="34" rx="8" fill="#9a7048" stroke="${INK}" stroke-width="6"/>`;
       if (o.kain) g += `<path d="M -350 -88 Q -360 -230 -200 -238 L 230 -238 Q 360 -230 350 -88 Z" fill="${o.kain}" stroke="${INK}" stroke-width="7"/><path d="M -300 -120 L 300 -120" stroke="#ffd27a" stroke-width="6" opacity=".7"/>`;
       else { g += `<path d="M -330 -88 Q -350 -190 -250 -196 L 220 -186 Q 350 -176 340 -88 Z" fill="#f6f1e6" stroke="${INK}" stroke-width="7"/><ellipse cx="-262" cy="-150" rx="70" ry="54" fill="#fbf8f1" stroke="${INK}" stroke-width="6"/>`;
@@ -823,11 +824,17 @@
         baris.forEach((tx, i) => { g += `<text x="0" y="${y0 + i * fs * 1.25}" font-family="DejaVu Sans, Arial, sans-serif" font-weight="800" font-size="${fs}" text-anchor="middle" fill="#3a1f1a">${esc(tx)}</text>`; });
       };
       if (o.sub) { const w2 = o.sub.length * 25 + 70; g += `<g font-family="DejaVu Sans, Arial, sans-serif" font-weight="800" text-anchor="middle"><rect x="${-w2 / 2}" y="60" width="${w2}" height="80" rx="40" fill="#1d1520" opacity=".85"/><text y="114" font-size="46" fill="#ffd27a">${esc(o.sub)}</text></g>`; }
-    } else if (j === "kartu_dalil") { // kartu dalil 2D: {kitab:"HR. Bukhari", no:"6507", teks, sorot:"frasa", arab:"teks Arab terverifikasi", label:"DALIL", ukuran, sorot_at}
+    } else if (j === "kartu_dalil") { // kartu dalil 2D: {kitab:"HR. Bukhari", no:"6507", teks, sorot:"frasa", arab:"teks Arab terverifikasi", label:"DALIL", ukuran, sorot_at, masuk:"jatuh"|"geser"|"geserkanan"|"zoom", rot}; efek suara masuk otomatis
       const LTR = clamp(o.latar == null ? 1 : o.latar); // (27 Nov) latar kartu 0-1: <1 = tembus pandang, adegan di belakang tetap terlihat
       const W = 780, tt = tl, masuk = halus(tt / 0.45), ov = tt < 0.45 ? 1 + (1 - masuk) * 0.0 : 1;
-      const k = 0.55 + 0.45 * masuk + (tt > 0.45 && tt < 0.7 ? Math.sin((tt - 0.45) / 0.25 * Math.PI) * 0.03 : 0);
-      const rot = (1 - masuk) * -9 + Math.sin(tt * 1.3) * 0.6, melayang = Math.sin(tt * 1.6) * 8;
+      // (27 Nov) cara masuk gaya NGOPAI: o.masuk "jatuh" (bawaan; jatuh dari atas, memantul, miring sedikit) | "geser" | "geserkanan" | "zoom" (lama)
+      const gaya = o.masuk || "jatuh", u = clamp(tt / 0.55), pb = 1 + 2.70158 * Math.pow(u - 1, 3) + 1.70158 * Math.pow(u - 1, 2), r0 = o.rot != null ? o.rot : -1.6;
+      let k = 0.55 + 0.45 * masuk + (tt > 0.45 && tt < 0.7 ? Math.sin((tt - 0.45) / 0.25 * Math.PI) * 0.03 : 0), dx = 0, dy = 0;
+      let rot = (1 - masuk) * -9 + Math.sin(tt * 1.3) * 0.6;
+      if (gaya === "jatuh") { k = 0.92 + 0.08 * pb; dy = (1 - pb) * -420; rot = r0 * (0.3 + 0.7 * pb) + (1 - pb) * 7; }
+      else if (gaya === "geser" || gaya === "geserkanan") { k = 1; dx = (1 - pb) * (gaya === "geser" ? -1000 : 1000); rot = r0; }
+      if (gaya !== "zoom" && tt > 0.7) rot += Math.sin(tt * 1.1) * 0.32 * Math.min(1, (tt - 0.7) / 0.5);
+      const melayang = Math.sin(tt * 1.6) * 8 * (gaya === "zoom" ? 1 : Math.min(1, Math.max(0, tt - 0.6) / 0.5)) + dy;
       let uk = o.ukuran || 54, baris = [], cw, lh;
       const kata = String(o.teks || "").replace(/\s+/g, " ").trim().split(" ").filter(Boolean);
       for (; uk >= 30; uk -= 2) { cw = uk * 0.6; lh = uk * 1.3; const mk = Math.floor((W - 90) / cw); baris = []; let cur = ""; kata.forEach((w) => { if (cur && (cur + " " + w).length > mk) { baris.push(cur); cur = w; } else cur = cur ? cur + " " + w : w; }); if (cur) baris.push(cur); if (baris.length * lh <= (o.arab ? 380 : 520)) break; }
@@ -838,7 +845,7 @@
         akata.forEach((w) => { const test = acur ? acur + " " + w : w; if (acur && test.length * acw > amaxw) { abaris.push(acur); acur = w; } else acur = test; });
         if (acur) abaris.push(acur); }
       const arabH = adaArab ? abaris.length * alh + 70 : 0, H = 330 + arabH + baris.length * lh + 80, top = -H / 2;
-      g = `<g transform="translate(0 ${melayang}) rotate(${rot}) scale(${k})" opacity="${clamp(tt / 0.15)}">
+      g = `<g transform="translate(${dx} ${melayang}) rotate(${rot}) scale(${k})" opacity="${clamp(tt / 0.15)}">
         <defs><linearGradient id="kdk" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fffaf0"/><stop offset="1" stop-color="#f1e3c3"/></linearGradient>
         <linearGradient id="kdh" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#0d4a3a"/><stop offset="1" stop-color="#1b7a5c"/></linearGradient>
         <clipPath id="kdc"><rect x="${-W / 2}" y="${top}" width="${W}" height="${H}" rx="34"/></clipPath></defs>

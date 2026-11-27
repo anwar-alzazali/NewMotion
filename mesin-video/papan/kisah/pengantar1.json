@@ -1,0 +1,1347 @@
+{
+ "latar": "gelap",
+ "stempel": true,
+ "musik": false,
+ "dekor": false,
+ "volume_efek": 0,
+ "cerita": {
+  "suku": "arab",
+  "kilat": false,
+  "label": "KISAH KUBUR",
+  "shot": [
+   {
+    "narasi": "Saat kamu dikubur, tiga hal ikut mengantarmu.",
+    "intonasi": "berat",
+    "jeda": 0.3,
+    "palet": "pantai_siang",
+    "malam": 0,
+    "langit": 0.6,
+    "horizon": 1150,
+    "tanah": "pasir",
+    "kamera": {
+     "z": [
+      1.05,
+      1.12
+     ],
+     "x": [
+      360,
+      520
+     ],
+     "y": 1180
+    },
+    "benda": [
+     {
+      "jenis": "makam",
+      "x": 1150,
+      "y": 1290,
+      "n": 3,
+      "jarak": 140,
+      "s": 0.7
+     },
+     {
+      "jenis": "jenazah",
+      "x": [
+       [
+        0,
+        270.0
+       ],
+       [
+        9.0,
+        690
+       ]
+      ],
+      "y": 1075,
+      "s": 0.8,
+      "kain": "#1f6b3a",
+      "dipikul": true
+     }
+    ],
+    "boneka": [
+     {
+      "npc": 20,
+      "jenis_kelamin": "pria",
+      "x": [
+       [
+        0,
+        -260.0
+       ],
+       [
+        9.0,
+        160
+       ]
+      ],
+      "y": 1560,
+      "s": 0.85,
+      "profil": "kanan",
+      "pose": "jalan",
+      "wajah": "sedih",
+      "mata": "bawah"
+     },
+     {
+      "npc": 21,
+      "jenis_kelamin": "pria",
+      "x": [
+       [
+        0,
+        -355.0
+       ],
+       [
+        9.0,
+        65
+       ]
+      ],
+      "y": 1600,
+      "s": 0.9,
+      "profil": "kanan",
+      "pose": "jalan",
+      "wajah": "sedih",
+      "mata": "bawah"
+     },
+     {
+      "npc": 22,
+      "jenis_kelamin": "pria",
+      "x": [
+       [
+        0,
+        -450.0
+       ],
+       [
+        9.0,
+        -30
+       ]
+      ],
+      "y": 1560,
+      "s": 0.85,
+      "profil": "kanan",
+      "pose": "jalan",
+      "wajah": "sedih",
+      "mata": "bawah"
+     },
+     {
+      "npc": 23,
+      "jenis_kelamin": "pria",
+      "x": [
+       [
+        0,
+        -545.0
+       ],
+       [
+        9.0,
+        -125
+       ]
+      ],
+      "y": 1600,
+      "s": 0.9,
+      "profil": "kanan",
+      "pose": "jalan",
+      "wajah": "sedih",
+      "mata": "bawah"
+     },
+     {
+      "npc": 3,
+      "jenis_kelamin": "pria",
+      "x": [
+       [
+        0,
+        140.0
+       ],
+       [
+        9.0,
+        560
+       ]
+      ],
+      "y": 1500,
+      "s": 0.82,
+      "profil": "kanan",
+      "pose": "jalan",
+      "wajah": "sedih",
+      "mata": "bawah"
+     },
+     {
+      "npc": 5,
+      "jenis_kelamin": "pria",
+      "x": [
+       [
+        0,
+        400.0
+       ],
+       [
+        9.0,
+        820
+       ]
+      ],
+      "y": 1500,
+      "s": 0.82,
+      "profil": "kanan",
+      "pose": "jalan",
+      "wajah": "sedih",
+      "mata": "bawah"
+     },
+     {
+      "npc": 8,
+      "jenis_kelamin": "pria",
+      "x": [
+       [
+        0,
+        110.0
+       ],
+       [
+        9.0,
+        530
+       ]
+      ],
+      "y": 1580,
+      "s": 0.92,
+      "profil": "kanan",
+      "pose": "jalan",
+      "wajah": "sedih",
+      "mata": "bawah"
+     },
+     {
+      "npc": 12,
+      "jenis_kelamin": "pria",
+      "x": [
+       [
+        0,
+        370.0
+       ],
+       [
+        9.0,
+        790
+       ]
+      ],
+      "y": 1580,
+      "s": 0.92,
+      "profil": "kanan",
+      "pose": "jalan",
+      "wajah": "sedih",
+      "mata": "bawah"
+     }
+    ],
+    "teks": [
+     {
+      "at": "@tiga",
+      "teks": "TIGA YANG\nMENGANTARMU",
+      "y": 330,
+      "ukuran": 84,
+      "sub": "HR BUKHARI 6514"
+     }
+    ]
+   },
+   {
+    "narasi": "Keluargamu.",
+    "intonasi": "haru",
+    "jeda": 0.25,
+    "palet": "pantai_siang",
+    "malam": 0,
+    "langit": 0.6,
+    "horizon": 1150,
+    "tanah": "pasir",
+    "kamera": {
+     "z": 1.5,
+     "x": [
+      140,
+      190
+     ],
+     "y": 1300
+    },
+    "benda": [
+     {
+      "jenis": "jenazah",
+      "x": [
+       [
+        0,
+        419.33333333333337
+       ],
+       [
+        5.8,
+        690
+       ]
+      ],
+      "y": 1075,
+      "s": 0.8,
+      "kain": "#1f6b3a",
+      "dipikul": true
+     }
+    ],
+    "boneka": [
+     {
+      "npc": 20,
+      "jenis_kelamin": "pria",
+      "x": [
+       [
+        0,
+        -110.66666666666666
+       ],
+       [
+        5.8,
+        160
+       ]
+      ],
+      "y": 1560,
+      "s": 0.85,
+      "profil": "kanan",
+      "pose": "jalan",
+      "wajah": "sedih",
+      "mata": "bawah"
+     },
+     {
+      "npc": 21,
+      "jenis_kelamin": "pria",
+      "x": [
+       [
+        0,
+        -205.66666666666666
+       ],
+       [
+        5.8,
+        65
+       ]
+      ],
+      "y": 1600,
+      "s": 0.9,
+      "profil": "kanan",
+      "pose": "jalan",
+      "wajah": "sedih",
+      "mata": "bawah"
+     },
+     {
+      "npc": 22,
+      "jenis_kelamin": "pria",
+      "x": [
+       [
+        0,
+        -300.66666666666663
+       ],
+       [
+        5.8,
+        -30
+       ]
+      ],
+      "y": 1560,
+      "s": 0.85,
+      "profil": "kanan",
+      "pose": "jalan",
+      "wajah": "sedih",
+      "mata": "bawah"
+     },
+     {
+      "npc": 23,
+      "jenis_kelamin": "pria",
+      "x": [
+       [
+        0,
+        -395.66666666666663
+       ],
+       [
+        5.8,
+        -125
+       ]
+      ],
+      "y": 1600,
+      "s": 0.9,
+      "profil": "kanan",
+      "pose": "jalan",
+      "wajah": "sedih",
+      "mata": "bawah"
+     },
+     {
+      "npc": 3,
+      "jenis_kelamin": "pria",
+      "x": [
+       [
+        0,
+        289.33333333333337
+       ],
+       [
+        5.8,
+        560
+       ]
+      ],
+      "y": 1500,
+      "s": 0.82,
+      "profil": "kanan",
+      "pose": "jalan",
+      "wajah": "sedih",
+      "mata": "bawah"
+     },
+     {
+      "npc": 5,
+      "jenis_kelamin": "pria",
+      "x": [
+       [
+        0,
+        549.3333333333334
+       ],
+       [
+        5.8,
+        820
+       ]
+      ],
+      "y": 1500,
+      "s": 0.82,
+      "profil": "kanan",
+      "pose": "jalan",
+      "wajah": "sedih",
+      "mata": "bawah"
+     },
+     {
+      "npc": 8,
+      "jenis_kelamin": "pria",
+      "x": [
+       [
+        0,
+        259.33333333333337
+       ],
+       [
+        5.8,
+        530
+       ]
+      ],
+      "y": 1580,
+      "s": 0.92,
+      "profil": "kanan",
+      "pose": "jalan",
+      "wajah": "sedih",
+      "mata": "bawah"
+     },
+     {
+      "npc": 12,
+      "jenis_kelamin": "pria",
+      "x": [
+       [
+        0,
+        519.3333333333334
+       ],
+       [
+        5.8,
+        790
+       ]
+      ],
+      "y": 1580,
+      "s": 0.92,
+      "profil": "kanan",
+      "pose": "jalan",
+      "wajah": "sedih",
+      "mata": "bawah"
+     }
+    ],
+    "teks": [
+     {
+      "at": 0.1,
+      "teks": "KELUARGA",
+      "y": 360,
+      "ukuran": 84
+     }
+    ]
+   },
+   {
+    "narasi": "Hartamu.",
+    "intonasi": "haru",
+    "jeda": 0.25,
+    "palet": "pantai_siang",
+    "malam": 0,
+    "langit": 0.6,
+    "horizon": 1150,
+    "tanah": "pasir",
+    "kamera": {
+     "z": [
+      1.3,
+      1.38
+     ],
+     "x": 540,
+     "y": 1330
+    },
+    "benda": [
+     {
+      "jenis": "karung",
+      "x": 440,
+      "y": 1560,
+      "s": 0.55,
+      "penuh": 1
+     },
+     {
+      "jenis": "koin",
+      "x": 640,
+      "y": 1580,
+      "s": 0.6,
+      "n": 6,
+      "jatuh": 1
+     }
+    ],
+    "teks": [
+     {
+      "at": 0.1,
+      "teks": "HARTA",
+      "y": 360,
+      "ukuran": 84
+     }
+    ]
+   },
+   {
+    "narasi": "Dan amalmu.",
+    "intonasi": "haru",
+    "jeda": 0.6,
+    "palet": "pantai_siang",
+    "malam": 0,
+    "langit": 0.6,
+    "horizon": 1150,
+    "tanah": "pasir",
+    "kamera": {
+     "z": [
+      1.2,
+      1.3
+     ],
+     "x": 520,
+     "y": 1300
+    },
+    "benda": [
+     {
+      "jenis": "jenazah",
+      "x": [
+       [
+        0,
+        503.33333333333337
+       ],
+       [
+        4.0,
+        690
+       ]
+      ],
+      "y": 1075,
+      "s": 0.8,
+      "kain": "#1f6b3a",
+      "dipikul": true
+     },
+     {
+      "jenis": "lentera",
+      "x": [
+       [
+        0,
+        640
+       ],
+       [
+        3,
+        690
+       ]
+      ],
+      "y": 1640,
+      "s": 0.42,
+      "nyala": [
+       [
+        0,
+        0.4
+       ],
+       [
+        0.8,
+        1
+       ]
+      ],
+      "depan": true
+     }
+    ],
+    "boneka": [
+     {
+      "npc": 20,
+      "jenis_kelamin": "pria",
+      "x": [
+       [
+        0,
+        -26.666666666666657
+       ],
+       [
+        4.0,
+        160
+       ]
+      ],
+      "y": 1560,
+      "s": 0.85,
+      "profil": "kanan",
+      "pose": "jalan",
+      "wajah": "sedih",
+      "mata": "bawah"
+     },
+     {
+      "npc": 21,
+      "jenis_kelamin": "pria",
+      "x": [
+       [
+        0,
+        -121.66666666666666
+       ],
+       [
+        4.0,
+        65
+       ]
+      ],
+      "y": 1600,
+      "s": 0.9,
+      "profil": "kanan",
+      "pose": "jalan",
+      "wajah": "sedih",
+      "mata": "bawah"
+     },
+     {
+      "npc": 22,
+      "jenis_kelamin": "pria",
+      "x": [
+       [
+        0,
+        -216.66666666666666
+       ],
+       [
+        4.0,
+        -30
+       ]
+      ],
+      "y": 1560,
+      "s": 0.85,
+      "profil": "kanan",
+      "pose": "jalan",
+      "wajah": "sedih",
+      "mata": "bawah"
+     },
+     {
+      "npc": 23,
+      "jenis_kelamin": "pria",
+      "x": [
+       [
+        0,
+        -311.66666666666663
+       ],
+       [
+        4.0,
+        -125
+       ]
+      ],
+      "y": 1600,
+      "s": 0.9,
+      "profil": "kanan",
+      "pose": "jalan",
+      "wajah": "sedih",
+      "mata": "bawah"
+     },
+     {
+      "npc": 3,
+      "jenis_kelamin": "pria",
+      "x": [
+       [
+        0,
+        373.33333333333337
+       ],
+       [
+        4.0,
+        560
+       ]
+      ],
+      "y": 1500,
+      "s": 0.82,
+      "profil": "kanan",
+      "pose": "jalan",
+      "wajah": "sedih",
+      "mata": "bawah"
+     },
+     {
+      "npc": 5,
+      "jenis_kelamin": "pria",
+      "x": [
+       [
+        0,
+        633.3333333333334
+       ],
+       [
+        4.0,
+        820
+       ]
+      ],
+      "y": 1500,
+      "s": 0.82,
+      "profil": "kanan",
+      "pose": "jalan",
+      "wajah": "sedih",
+      "mata": "bawah"
+     },
+     {
+      "npc": 8,
+      "jenis_kelamin": "pria",
+      "x": [
+       [
+        0,
+        343.33333333333337
+       ],
+       [
+        4.0,
+        530
+       ]
+      ],
+      "y": 1580,
+      "s": 0.92,
+      "profil": "kanan",
+      "pose": "jalan",
+      "wajah": "sedih",
+      "mata": "bawah"
+     },
+     {
+      "npc": 12,
+      "jenis_kelamin": "pria",
+      "x": [
+       [
+        0,
+        603.3333333333334
+       ],
+       [
+        4.0,
+        790
+       ]
+      ],
+      "y": 1580,
+      "s": 0.92,
+      "profil": "kanan",
+      "pose": "jalan",
+      "wajah": "sedih",
+      "mata": "bawah"
+     }
+    ],
+    "teks": [
+     {
+      "at": 0.1,
+      "teks": "AMAL",
+      "y": 360,
+      "ukuran": 84
+     }
+    ]
+   },
+   {
+    "narasi": "Lalu dua di antaranya pulang.",
+    "intonasi": "berat",
+    "jeda": 0.3,
+    "palet": "pantai_siang",
+    "malam": 0,
+    "langit": 0.6,
+    "horizon": 1150,
+    "tanah": "pasir",
+    "kamera": {
+     "z": [
+      1.0,
+      1.05
+     ],
+     "x": 540,
+     "y": 1340
+    },
+    "benda": [
+     {
+      "jenis": "makam",
+      "x": 820,
+      "y": 1290,
+      "n": 2,
+      "jarak": 160,
+      "s": 0.7,
+      "belakang": true
+     },
+     {
+      "jenis": "makam",
+      "x": 540,
+      "y": 1640,
+      "n": 1,
+      "baru": true,
+      "s": 1.6,
+      "depan": true
+     }
+    ],
+    "boneka": [
+     {
+      "npc": 20,
+      "jenis_kelamin": "pria",
+      "x": 260,
+      "y": 1400,
+      "s": 0.72,
+      "pose": "berdiri",
+      "wajah": "sedih",
+      "mata": "normal",
+      "belakang": false
+     },
+     {
+      "npc": 21,
+      "jenis_kelamin": "pria",
+      "x": 380,
+      "y": 1430,
+      "s": 0.72,
+      "pose": "berdiri",
+      "wajah": "sedih",
+      "mata": "normal",
+      "belakang": false
+     },
+     {
+      "npc": 3,
+      "jenis_kelamin": "pria",
+      "x": 700,
+      "y": 1400,
+      "s": 0.72,
+      "pose": "berdiri",
+      "wajah": "sedih",
+      "mata": "normal",
+      "belakang": false
+     },
+     {
+      "npc": 5,
+      "jenis_kelamin": "pria",
+      "x": 820,
+      "y": 1430,
+      "s": 0.72,
+      "pose": "berdiri",
+      "wajah": "sedih",
+      "mata": "normal",
+      "belakang": false
+     },
+     {
+      "npc": 8,
+      "jenis_kelamin": "pria",
+      "x": 180,
+      "y": 1460,
+      "s": 0.78,
+      "pose": "berdiri",
+      "wajah": "sedih",
+      "mata": "normal",
+      "belakang": false
+     },
+     {
+      "npc": 12,
+      "jenis_kelamin": "pria",
+      "x": 900,
+      "y": 1460,
+      "s": 0.78,
+      "pose": "berdiri",
+      "wajah": "sedih",
+      "mata": "normal",
+      "belakang": false
+     }
+    ]
+   },
+   {
+    "narasi": "Keluargamu pulang. Hartamu pun kembali.",
+    "intonasi": "haru",
+    "jeda": 0.8,
+    "palet": "pantai_siang",
+    "malam": 0,
+    "langit": 0.6,
+    "horizon": 1150,
+    "tanah": "pasir",
+    "kamera": {
+     "z": [
+      1.05,
+      1.0
+     ],
+     "x": 540,
+     "y": 1340
+    },
+    "benda": [
+     {
+      "jenis": "makam",
+      "x": 820,
+      "y": 1290,
+      "n": 2,
+      "jarak": 160,
+      "s": 0.7,
+      "belakang": true
+     },
+     {
+      "jenis": "makam",
+      "x": 540,
+      "y": 1640,
+      "n": 1,
+      "baru": true,
+      "s": 1.6,
+      "depan": true
+     },
+     {
+      "jenis": "karung",
+      "x": [
+       [
+        0,
+        960
+       ],
+       [
+        2.9,
+        960
+       ],
+       [
+        6.1,
+        60
+       ]
+      ],
+      "y": 1470,
+      "s": 0.32,
+      "penuh": 1,
+      "op": [
+       [
+        0,
+        1
+       ],
+       [
+        5,
+        0
+       ]
+      ]
+     }
+    ],
+    "boneka": [
+     {
+      "npc": 8,
+      "jenis_kelamin": "pria",
+      "x": [
+       [
+        0,
+        180
+       ],
+       [
+        0.2,
+        180
+       ],
+       [
+        3.4000000000000004,
+        -720
+       ]
+      ],
+      "y": 1460,
+      "s": 0.78,
+      "profil": "kiri",
+      "pose": [
+       [
+        0,
+        "berdiri"
+       ],
+       [
+        0.2,
+        "jalan"
+       ]
+      ],
+      "wajah": "sedih",
+      "mata": "normal",
+      "belakang": false
+     },
+     {
+      "npc": 20,
+      "jenis_kelamin": "pria",
+      "x": [
+       [
+        0,
+        260
+       ],
+       [
+        0.7,
+        260
+       ],
+       [
+        3.9000000000000004,
+        -640
+       ]
+      ],
+      "y": 1400,
+      "s": 0.72,
+      "profil": "kiri",
+      "pose": [
+       [
+        0,
+        "berdiri"
+       ],
+       [
+        0.7,
+        "jalan"
+       ]
+      ],
+      "wajah": "sedih",
+      "mata": "normal",
+      "belakang": false
+     },
+     {
+      "npc": 21,
+      "jenis_kelamin": "pria",
+      "x": [
+       [
+        0,
+        380
+       ],
+       [
+        1.3,
+        380
+       ],
+       [
+        4.5,
+        -520
+       ]
+      ],
+      "y": 1430,
+      "s": 0.72,
+      "profil": "kiri",
+      "pose": [
+       [
+        0,
+        "berdiri"
+       ],
+       [
+        1.3,
+        "jalan"
+       ]
+      ],
+      "wajah": "sedih",
+      "mata": "normal",
+      "belakang": false
+     },
+     {
+      "npc": 3,
+      "jenis_kelamin": "pria",
+      "x": [
+       [
+        0,
+        700
+       ],
+       [
+        1.8,
+        700
+       ],
+       [
+        5.0,
+        -200
+       ]
+      ],
+      "y": 1400,
+      "s": 0.72,
+      "profil": "kiri",
+      "pose": [
+       [
+        0,
+        "berdiri"
+       ],
+       [
+        1.8,
+        "jalan"
+       ]
+      ],
+      "wajah": "sedih",
+      "mata": "normal",
+      "belakang": false
+     },
+     {
+      "npc": 5,
+      "jenis_kelamin": "pria",
+      "x": [
+       [
+        0,
+        820
+       ],
+       [
+        2.4,
+        820
+       ],
+       [
+        5.6,
+        -80
+       ]
+      ],
+      "y": 1430,
+      "s": 0.72,
+      "profil": "kiri",
+      "pose": [
+       [
+        0,
+        "berdiri"
+       ],
+       [
+        2.4,
+        "jalan"
+       ]
+      ],
+      "wajah": "sedih",
+      "mata": "normal",
+      "belakang": false
+     },
+     {
+      "npc": 12,
+      "jenis_kelamin": "pria",
+      "x": [
+       [
+        0,
+        900
+       ],
+       [
+        2.9,
+        900
+       ],
+       [
+        6.1,
+        0
+       ]
+      ],
+      "y": 1460,
+      "s": 0.78,
+      "profil": "kiri",
+      "pose": [
+       [
+        0,
+        "berdiri"
+       ],
+       [
+        2.9,
+        "jalan"
+       ]
+      ],
+      "wajah": "sedih",
+      "mata": "normal",
+      "belakang": false
+     }
+    ]
+   },
+   {
+    "narasi": "Yang tetap tinggal bersamamu, hanya satu: amalmu.",
+    "intonasi": "berat",
+    "jeda": 0.9,
+    "palet": "pantai_siang",
+    "malam": [
+     [
+      0,
+      0
+     ],
+     [
+      "@amalmu#2",
+      0.25
+     ]
+    ],
+    "langit": 0.6,
+    "horizon": 1150,
+    "tanah": "pasir",
+    "kamera": {
+     "z": [
+      1.1,
+      1.45
+     ],
+     "x": 560,
+     "y": [
+      1250,
+      1400
+     ]
+    },
+    "benda": [
+     {
+      "jenis": "makam",
+      "x": 820,
+      "y": 1290,
+      "n": 2,
+      "jarak": 160,
+      "s": 0.7,
+      "belakang": true
+     },
+     {
+      "jenis": "makam",
+      "x": 540,
+      "y": 1640,
+      "n": 1,
+      "baru": true,
+      "s": 1.6
+     },
+     {
+      "jenis": "lentera",
+      "x": 690,
+      "y": 1500,
+      "s": 0.9,
+      "nyala": [
+       [
+        0,
+        0.5
+       ],
+       [
+        "@amalmu#2",
+        1
+       ]
+      ]
+     }
+    ],
+    "teks": [
+     {
+      "at": "@amalmu#2",
+      "teks": "HANYA AMAL",
+      "y": 330,
+      "ukuran": 84,
+      "warna": "#ffd27a"
+     }
+    ]
+   },
+   {
+    "narasi": "Rasulullah shallallahu 'alaihi wa sallam bersabda: mayit diikuti tiga hal. Dua kembali, satu tetap bersamanya.",
+    "intonasi": "tenang",
+    "jeda": 1.2,
+    "palet": "pantai_siang",
+    "malam": 0.2,
+    "langit": 0.6,
+    "horizon": 1150,
+    "tanah": "pasir",
+    "kamera": {
+     "z": 1.0,
+     "x": 540,
+     "y": 1250
+    },
+    "benda": [
+     {
+      "jenis": "makam",
+      "x": 820,
+      "y": 1290,
+      "n": 2,
+      "jarak": 160,
+      "s": 0.7,
+      "belakang": true
+     },
+     {
+      "jenis": "makam",
+      "x": 540,
+      "y": 1640,
+      "n": 1,
+      "baru": true,
+      "s": 1.6
+     },
+     {
+      "jenis": "lentera",
+      "x": 690,
+      "y": 1500,
+      "s": 0.9,
+      "nyala": 1
+     },
+     {
+      "jenis": "kartu_dalil",
+      "x": 540,
+      "y": 1025.0,
+      "s": 1.155,
+      "at": "@bersabda",
+      "kitab": "HR. Bukhari",
+      "label": "HADIS",
+      "teks": "Ia diikuti keluarga, harta, dan amalnya. Keluarga dan hartanya kembali, amalnya tetap tinggal.",
+      "ukuran": 44,
+      "tulis_at": 0.4,
+      "latar": 0.4,
+      "no": "6514",
+      "arab": "يَتْبَعُهُ أَهْلُهُ وَمَالُهُ وَعَمَلُهُ، فَيَرْجِعُ أَهْلُهُ وَمَالُهُ، وَيَبْقَى عَمَلُهُ",
+      "arab_ukuran": 55.0,
+      "arab_baris": [
+       "يَتْبَعُهُ أَهْلُهُ وَمَالُهُ وَعَمَلُهُ،",
+       "فَيَرْجِعُ أَهْلُهُ وَمَالُهُ، وَيَبْقَى عَمَلُهُ"
+      ],
+      "arab_at": 0.15,
+      "masuk": "jatuh",
+      "sorot": "amalnya tetap tinggal",
+      "tulis": 3.2
+     }
+    ]
+   },
+   {
+    "narasi": "Hari ini, kamu sibuk mengumpulkan yang mana?",
+    "intonasi": "tegas",
+    "jeda": 1.0,
+    "palet": "pantai_siang",
+    "malam": 0.2,
+    "langit": 0.6,
+    "horizon": 1150,
+    "tanah": "pasir",
+    "kamera": {
+     "z": [
+      1.2,
+      1.3
+     ],
+     "x": 600,
+     "y": 1350
+    },
+    "benda": [
+     {
+      "jenis": "makam",
+      "x": 820,
+      "y": 1290,
+      "n": 2,
+      "jarak": 160,
+      "s": 0.7,
+      "belakang": true
+     },
+     {
+      "jenis": "makam",
+      "x": 540,
+      "y": 1640,
+      "n": 1,
+      "baru": true,
+      "s": 1.6
+     },
+     {
+      "jenis": "lentera",
+      "x": 690,
+      "y": 1500,
+      "s": 0.9,
+      "nyala": 1
+     }
+    ],
+    "teks": [
+     {
+      "at": "@mengumpulkan",
+      "teks": "KAMU SIBUK\nMENGUMPULKAN\nYANG MANA?",
+      "y": 330,
+      "ukuran": 76,
+      "warna": "#ffd27a"
+     }
+    ]
+   }
+  ]
+ },
+ "rekaman": [
+  {
+   "berkas": "../../aset/suara/angin_gurun.mp3",
+   "at": 0,
+   "sampai": "@bersabda",
+   "vol": 0.18,
+   "ulang": true
+  },
+  {
+   "berkas": "../../aset/suara/langkah_pelan.mp3",
+   "at": 0,
+   "sampai": "@Lalu",
+   "vol": 0.32,
+   "ulang": true
+  },
+  {
+   "berkas": "../../aset/suara/dengung_haru.mp3",
+   "at": "@tiga",
+   "vol": 0.3
+  },
+  {
+   "berkas": "../../aset/suara/koin_jatuh.mp3",
+   "at": "@Hartamu",
+   "vol": 0.35
+  },
+  {
+   "berkas": "../../aset/suara/kilau_cahaya.mp3",
+   "at": "@amalmu",
+   "vol": 0.35
+  },
+  {
+   "berkas": "../../aset/suara/langkah_pelan.mp3",
+   "at": "@Keluargamu#2",
+   "sampai": "@Yang",
+   "vol": 0.3,
+   "ulang": true
+  },
+  {
+   "berkas": "../../aset/suara/isak_lembut.mp3",
+   "at": "@Keluargamu#2",
+   "vol": 0.16
+  },
+  {
+   "berkas": "../../aset/suara/kilau_cahaya.mp3",
+   "at": "@amalmu#2",
+   "vol": 0.4
+  },
+  {
+   "berkas": "../../aset/suara/senandung_haru.mp3",
+   "at": "@amalmu#2",
+   "vol": 0.2,
+   "ulang": true
+  },
+  {
+   "berkas": "../../aset/suara/hentak_serius.mp3",
+   "at": "@mengumpulkan",
+   "vol": 0.35
+  }
+ ]
+}
