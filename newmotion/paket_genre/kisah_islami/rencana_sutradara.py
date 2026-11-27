@@ -491,6 +491,8 @@ def subjek_dari_rencana(rb: Mapping, teks: str, ds: float, seed: int, bagian: tu
                 o.pop("belakang", None)
         for k, v in (s.get("keadaan") or {}).items():
             o[k] = _nilai(v, ds, *bagian)
+        if s["jenis"] == "laut_terbelah" and isinstance(o.get("tinggi"), (int, float)) and o["tinggi"] < 800:
+            o.pop("tinggi")  # "laksana gunung" (QS 26:63): dinding air tidak boleh tampak rendah; pakai bawaan 1100
         if s["jenis"] == "nur":
             o.setdefault("nama_letak", "atas")  # (27 Nov) nama nabi di atas cahaya, tidak tertutup tanah/ombak
         if isinstance(tempat, str) and tempat.startswith("di_lubang:"):
