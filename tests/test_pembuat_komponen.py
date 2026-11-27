@@ -6,6 +6,7 @@ from types import SimpleNamespace
 import pytest
 
 from newmotion.application import pembuat_komponen as P
+from newmotion.application import penerbit_komponen as R
 
 
 KODE = '''else if (j === "kendi_besar") { // kendi penyimpanan; isi 0 kosong, 1 penuh
@@ -78,3 +79,22 @@ def test_skill_pembuat_melarang_wujud_tokoh_mulia_dan_raster():
     assert "Allah" in isi and "nabi/rasul" in isi
     assert "gambar raster" in isi
     assert "parameter" in isi
+
+
+
+def test_penerbit_menyisipkan_cabang_baru_sebelum_return_tanpa_mengubah_cabang_lama():
+    sumber = '''function benda(o, t, d) {
+    if (j === "cahaya") { // cabang lama
+      g = "cahaya";
+    }
+    return `<g data-j="${j}">${g}</g>`;
+  }
+
+  // ---- TITIK KAIT
+'''
+    hasil = R.sisipkan_cabang(sumber, KODE, "kendi_besar")
+    assert 'if (j === "cahaya")' in hasil
+    assert '} else if (j === "kendi_besar") {' in hasil
+    assert hasil.index('j === "kendi_besar"') < hasil.index("return `<g")
+    with pytest.raises(ValueError, match="sudah ada"):
+        R.sisipkan_cabang(hasil, KODE, "kendi_besar")
