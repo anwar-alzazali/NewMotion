@@ -37,3 +37,7 @@ model = ["gemini", "claude-haiku-5-5"]
 [produksi]
 sutradara = "llm"
 periksa_putaran = 1      # putaran periksa visual + revisi rencana (0 = mati)
+
+
+[tahap.komponen_renderer] # draf kode benda vektor berdasarkan kebutuhan visual
+model = ["claude-sonnet-5-5", "gemini"]
