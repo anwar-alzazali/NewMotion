@@ -1,11 +1,13 @@
 """Pemeriksa independen naskah terhadap teks dalil yang telah diverifikasi."""
 from __future__ import annotations
 
-import copy
 import json
 from pathlib import Path
 
-AKAR = Path(__file__).resolve().parents[2]\n_PATH_SKILL = AKAR / "newmotion" / "paket_genre" / "kisah_islami" / "skill" / "periksa_naskah.md"\n\nKATEGORI = {
+AKAR = Path(__file__).resolve().parents[2]
+_PATH_SKILL = AKAR / "newmotion" / "paket_genre" / "kisah_islami" / "skill" / "periksa_naskah.md"
+
+KATEGORI = {
     "detail_tanpa_dalil",
     "hook_lemah",
     "fakta_kuat_terlewat",
@@ -48,7 +50,8 @@ def validasi_hasil(data: dict, naskah: dict) -> list[str]:
                 continue
             if d.get("id") in ids:
                 galat.append(f"usulan dalil {i}: id sudah dipakai")
-            if d.get("jenis") != "quran" or not isinstance(d.get("surah"), int) or not isinstance(d.get("ayat"), str):
+            if (d.get("jenis") != "quran" or not isinstance(d.get("surah"), int)
+                    or isinstance(d.get("surah"), bool) or not isinstance(d.get("ayat"), str)):
                 galat.append(f"usulan dalil {i}: hanya rujukan Quran dengan surah/ayat eksplisit yang boleh diusulkan")
             if not isinstance(d.get("alasan"), str) or not d["alasan"].strip():
                 galat.append(f"usulan dalil {i}: alasan wajib diisi")
@@ -59,18 +62,21 @@ def periksa(naskah: dict, *, panggil=None):
     """Periksa naskah. Dalil yang disajikan ke model hanya teks resmi hasil verifikasi."""
     from newmotion.infrastructure import llm
 
-    data_naskah = copy.deepcopy(naskah)
+    if not _PATH_SKILL.is_file():
+        raise RuntimeError("Skill pemeriksa naskah tidak ditemukan")
     dalil = []
-    for d in data_naskah.get("dalil", []):
+    for d in naskah.get("dalil", []):
         dalil.append({
             "id": d.get("id"), "label": d.get("label"), "status": d.get("status"),
             "derajat": d.get("derajat"), "terjemah_resmi": d.get("terjemah"),
             "sumber_teks": d.get("sumber_teks"),
         })
-    isi = json.dumps({"judul": data_naskah.get("judul"), "inti": data_naskah.get("inti"),
-                      "beat": data_naskah.get("beat"), "dalil_terverifikasi": dalil},
-                     ensure_ascii=False, indent=2)
-    if not _PATH_SKILL.is_file():\n        raise RuntimeError("Skill pemeriksa naskah tidak ditemukan")\n    sistem = _PATH_SKILL.read_text(encoding="utf-8").strip() + "\\n\\n" + (\n        "Periksa naskah Kisah Islami secara independen terhadap teks dalil resmi yang disertakan. "
+    isi = json.dumps({
+        "judul": naskah.get("judul"), "inti": naskah.get("inti"),
+        "beat": naskah.get("beat"), "dalil_terverifikasi": dalil,
+    }, ensure_ascii=False, indent=2)
+    sistem = _PATH_SKILL.read_text(encoding="utf-8").strip() + (
+        "\n\nPeriksa naskah Kisah Islami secara independen terhadap teks dalil resmi yang disertakan. "
         "Jangan menganggap fakta benar hanya karena narasi menyebutnya. Setiap temuan harus menunjuk "
         "nomor beat dan bukti frasa. Kategori wajib: detail_tanpa_dalil, hook_lemah, fakta_kuat_terlewat, "
         "janji_tidak_dijawab, kalimat_mengulang. Tingkat: berat, sedang, ringan. "
@@ -79,10 +85,12 @@ def periksa(naskah: dict, *, panggil=None):
         "Usulan belum boleh dipakai sampai mesin memverifikasi dari sumber resmi. "
         "Keluarkan JSON: {temuan:[{beat,kategori,tingkat,bukti,alasan,saran}],usulan_dalil:[]}."
     )
-    pemeriksa = lambda hasil: validasi_hasil(hasil, data_naskah)
+    pemeriksa = lambda hasil: validasi_hasil(hasil, naskah)
     if panggil is None:
-        hasil = llm.panggil("periksa_naskah", sistem, isi, json=True,
-                            validasi=pemeriksa, maks_token=5000, ulang_validasi=1)
+        hasil = llm.panggil(
+            "periksa_naskah", sistem, isi, json=True,
+            validasi=pemeriksa, maks_token=5000, ulang_validasi=1,
+        )
     else:
         hasil = panggil("periksa_naskah", sistem, isi, json=True, validasi=pemeriksa)
     return hasil.data, hasil
