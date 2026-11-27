@@ -41,6 +41,10 @@ jobs:
         run: python -m pip install -e '.[uji]'
       - name: Periksa sintaks Python
         run: python -m compileall -q newmotion tests
+      - name: Periksa Ruff pada berkas Python yang berubah
+        run: |
+          python -m pip install ruff==0.14.10
+          ruff check newmotion/application/kebutuhan_renderer.py newmotion/paket_genre/kisah_islami/rencana_sutradara.py newmotion/paket_genre/kisah_islami/sutradara_llm.py newmotion/paket_genre/kisah_islami/sutradara_hibrida.py newmotion/paket_genre/kisah_islami/periksa_visual.py tests/test_kebutuhan_renderer.py
       - name: Uji runtime
         run: python -m pytest
       - name: Uji bot
