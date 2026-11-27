@@ -22,8 +22,8 @@ def jarak(a, b):
 
 
 def buat_spek():
-    pemberi = {**TOKOH, "id": 0, "x": 440, "y": 1700, "s": 0.8, "pose": "pegang_surat", "profil": "kanan"}
-    penerima = {**TOKOH, "id": 1, "x": 570, "y": 1700, "s": 0.8, "pose": "berdiri", "profil": "kiri"}
+    pemberi = {**TOKOH, "id": 0, "x": 400, "y": 1700, "s": 0.8, "pose": "pegang_surat", "profil": "kanan"}
+    penerima = {**TOKOH, "id": 1, "x": 580, "y": 1700, "s": 0.8, "pose": "berdiri", "profil": "kiri"}
     return {
         "latar": "gelap", "musik": False, "stempel": False, "dekor": False, "durasi": 2.4,
         "cerita": {"shot": [{
