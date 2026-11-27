@@ -16,6 +16,7 @@ on:
       - 'tugas-*'
     paths:
       - 'newmotion/**'
+      - 'mesin-video/papan/**'
       - 'config/**'
       - 'tests/**'
       - 'pyproject.toml'
