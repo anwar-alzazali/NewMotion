@@ -511,7 +511,8 @@ def teks_tinjauan(n: dict) -> list[str]:
     potong, buf = [], ""
     for bagian in out:  # batas pesan Telegram 4096
         if len(buf) + len(bagian) > 3800:
-            potong.append(buf); buf = ""
+            potong.append(buf)
+            buf = ""
         buf += bagian + "\n"
     return potong + [buf]
 
@@ -592,5 +593,6 @@ if __name__ == "__main__":  # python -m newmotion.application.antrean_naskah <id
     from newmotion.paket_genre.kisah_islami.dalil.quran import QuranBertingkat, QuranComPublik, QuranFoundation
     q = QuranBertingkat(QuranFoundation() if os.environ.get("QURAN_FOUNDATION_CLIENT_ID") else None, QuranComPublik())
     hasil = proses(sys.argv[1], sys.argv[2], quran=q)
-    print(kartu(hasil)); print("penyedia AI:", hasil.get("penyedia_ai", "-"))
+    print(kartu(hasil))
+    print("penyedia AI:", hasil.get("penyedia_ai", "-"))
     sys.exit(1 if "gagal" in hasil["tahap"]["diterima"] else 0)
