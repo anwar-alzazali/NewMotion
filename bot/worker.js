@@ -505,6 +505,25 @@ async function catatHasil(env, id, teks) {
   return kirim(env, `📊 Tercatat ${id} — ${e.platform} hari ${e.hari}: ${e.tayang} tayang, ${e.suka} suka, ${e.komentar} komentar, ${e.bagikan} bagikan${e.tuntas != null ? `, ${e.tuntas}% tuntas` : ""} (interaksi ${er}%).`, tombolHasil(id));
 }
 
+// Bekal penulis JSON papan manual: berkas dari repo dikirim sebagai dokumen untuk dilampirkan ke sesi chat AI.
+async function kirimBekal(env) {
+  const r = await GH(env, `/contents/docs/BEKAL_PAPAN_MANUAL.md?ref=${env.GH_BRANCH}`, { headers: { accept: "application/vnd.github.raw" } });
+  if (!r.ok) return kirim(env, "Gagal mengambil bekal dari repo (" + r.status + ").");
+  const fd = new FormData();
+  fd.append("chat_id", String(env.CHAT || env.TELEGRAM_CHAT_ID));
+  fd.append("caption", "📎 Bekal papan manual: lampirkan ke sesi chat AI bersama prompt di docs/PROMPT_JSON_LENGKAP.md (atau /prompt).");
+  fd.append("document", new Blob([await r.text()], { type: "text/markdown" }), "BEKAL_PAPAN_MANUAL.md");
+  const k = await fetch(`https://api.telegram.org/bot${env.TELEGRAM_BOT_TOKEN}/sendDocument`, { method: "POST", body: fd });
+  return k.ok ? null : kirim(env, "Gagal mengirim bekal ke Telegram.");
+}
+async function kirimPrompt(env) {
+  const r = await GH(env, `/contents/docs/PROMPT_JSON_LENGKAP.md?ref=${env.GH_BRANCH}`, { headers: { accept: "application/vnd.github.raw" } });
+  if (!r.ok) return kirim(env, "Gagal mengambil prompt dari repo (" + r.status + ").");
+  const teks = await r.text();
+  const m = /```text\n([\s\S]*?)```/.exec(teks); // prompt pertama (sesi chat tanpa akses repo)
+  return kirim(env, m ? m[1].trim().slice(0, 4000) : "Prompt tidak ditemukan di docs/PROMPT_JSON_LENGKAP.md.");
+}
+
 async function tandaiPesan(env, q, teks, id) {  // tombol diganti hasil keputusan + tombol Ubah
   const m = q.message; if (!m) return;
   await TG(env, "editMessageReplyMarkup", { chat_id: m.chat.id, message_id: m.message_id, reply_markup: { inline_keyboard: tombolSesudah(id, teks) } });
@@ -552,7 +571,7 @@ const BANTUAN = `Mesin KONTEN (pribadi)
 • 💡 Ide: tulis topik, AI menyusun naskah (Gemini gratis; bila gagal, Claude ±Rp500), dalil diverifikasi, Anda cek.
 • Setelah naskah disetujui, bot membuat pratinjau visual MP4 tanpa TTS. Tinjau blocking, aksi, tokoh, latar, dan kamera; pilih Setujui visual atau Revisi visual. TTS belum dimulai sebelum visual disetujui.
 • Video baru datang dengan tombol ✅ Setujui / ❌ Tolak. Tolak → pilih alasan (atau "Lainnya" lalu ketik). Berubah pikiran? Ketuk ↩️ Ubah. Keputusan tersimpan di repo (keputusan lama ikut tercatat) dan jadi bahan belajar mesin.
-• 🧾 Jalur manual (tanpa LLM): kirim berkas .json papan tulisan tangan (format seperti mahsyar1.json), atau /papan <nama> untuk papan yang sudah ada di repo. Bila shot berisi "narasi", suara ElevenLabs dibuat sekali dan waktu shot mengikuti rekaman; lalu render → periksa → video dikirim. Format: docs/FORMAT_PAPAN_MANUAL.md.
+• 🧾 Jalur manual (tanpa LLM): kirim berkas .json papan tulisan tangan (format seperti mahsyar1.json), atau /papan <nama> untuk papan yang sudah ada di repo. Bila shot berisi "narasi", suara ElevenLabs dibuat sekali dan waktu shot mengikuti rekaman; lalu render → periksa → video dikirim. Untuk AI penulis JSON: /bekal (berkas lampiran) dan /prompt (teks prompt).
 • 📊 Statistik: video final punya tombol "Catat hasil" (tayang, suka, komentar, bagikan, % tuntas; hari 1 dan 7; TikTok/FB). Dipakai untuk melihat pola setelah ±20 video.
 • Balas komentar: kirim tangkapan layar komentar (tanpa keterangan, atau keterangan "k" + catatan, mis. "k jawab singkat").
 • Tanya apa saja: ketik pesan biasa. /reset = hapus riwayat obrolan.`;
@@ -560,6 +579,8 @@ const BANTUAN = `Mesin KONTEN (pribadi)
 const PERINTAH = [{ command: "menu", description: "Menu utama" }, { command: "naskah", description: "Kirim naskah jadi" },
   { command: "ide", description: "Ide jadi naskah" }, { command: "status", description: "Lihat proses antrean" },
   { command: "papan", description: "Render papan JSON di repo tanpa LLM" },
+  { command: "bekal", description: "Berkas bekal untuk AI penulis JSON" },
+  { command: "prompt", description: "Prompt AI penulis JSON lengkap" },
   { command: "bantuan", description: "Cara pakai" }, { command: "reset", description: "Hapus riwayat obrolan" }];
 
 async function tangani(env0, u) {
@@ -615,6 +636,8 @@ async function tangani(env0, u) {
   if (t === "/ide") return sisa ? antreanBaru(env, "ide", sisa) : tanyaIde(env);
   if (t === "/status") return daftarStatus(env);
   if (t === "/papan") return renderPapanRepo(env, sisa);
+  if (t === "/bekal") return kirimBekal(env);
+  if (t === "/prompt") return kirimPrompt(env);
   if (t === "/reset") { await simpanPengaturan(env, "chat_" + env.DARI, "[]"); return kirim(env, "Riwayat obrolan dihapus."); }
   if (teks.startsWith("/")) return kirim(env, "Perintah tidak dikenal. /bantuan");
   return chatPribadi(env, teks);

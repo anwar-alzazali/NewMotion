@@ -1,117 +1,74 @@
 # NewMotion
 
-NewMotion disiapkan sebagai fondasi aplikasi yang rapi, dengan batas domain yang jelas dan tidak mengunci pilihan teknologi terlalu dini.
+Mesin produksi video pendek vertikal milik Anwar Alzazali, dengan prioritas **Kisah Islami**. Visual digambar
+vektor oleh renderer sendiri (tanpa gambar AI), suara oleh ElevenLabs, dan semuanya dikendalikan dari bot
+Telegram **Mesin KONTEN**.
 
-## Arah arsitektur
+## Dua jalur membuat video
 
-Mulai dengan **monolit modular**: pisahkan tanggung jawab domain, alur aplikasi, infrastruktur, dan antarmuka. Semua integrasi eksternal dibuat agar bisa diganti tanpa mengubah aturan inti aplikasi. Pecah menjadi layanan terpisah hanya jika kebutuhan skala, penerapan, keamanan, atau kepemilikan memang mengharuskannya.
+- **Jalur hibrida (LLM):** kirim ide atau naskah ke bot → naskah + verifikasi dalil → tinjau → pratinjau
+  visual tanpa suara → tinjau → video final bersuara.
+- **Jalur manual (tanpa LLM):** AI sesi chat atau AI berakses GitHub menulis satu JSON lengkap (visual +
+  narasi) → kirim ke bot → video bersuara langsung jadi. Paling irit.
 
-## Ketentuan bahasa dan penamaan
+Cara pakai lengkap: **[docs/CARA_PAKAI.md](docs/CARA_PAKAI.md)**.
 
-**Bahasa Indonesia adalah standar utama proyek ini, mengikuti gaya penulisan `mesin-video`.** Nama variabel, konstanta, fungsi, metode, kelas, modul, serta komentar dan docstring wajib menggunakan bahasa Indonesia yang jelas dan konsisten. Nama folder dan berkas juga gunakan bahasa Indonesia jika tidak berbenturan dengan kebiasaan alat atau kontrak teknis yang sudah ada.
+## Dokumen
 
-Pengecualian hanya untuk sintaks bahasa pemrograman, nama bawaan framework atau pustaka, API eksternal, protokol, serta identifier yang memang diwajibkan sistem terkait. Jangan menerjemahkan identifier eksternal yang harus persis.
+| Dokumen | Isi |
+|---|---|
+| [docs/CARA_PAKAI.md](docs/CARA_PAKAI.md) | langkah kedua jalur, statistik, biaya, rahasia, pemecahan masalah |
+| [docs/FORMAT_PAPAN_MANUAL.md](docs/FORMAT_PAPAN_MANUAL.md) | format JSON jalur manual dan resep tokoh |
+| [docs/PROMPT_JSON_LENGKAP.md](docs/PROMPT_JSON_LENGKAP.md) | prompt AI penulis JSON (sesi chat / berakses GitHub) |
+| [docs/BEKAL_PAPAN_MANUAL.md](docs/BEKAL_PAPAN_MANUAL.md) | format + katalog benda, tokoh, suara terbaru (dibuat otomatis) |
+| [docs/ROADMAP.md](docs/ROADMAP.md) | yang sudah jadi, sekarang, berikutnya |
+| [docs/TUGAS_GPT.md](docs/TUGAS_GPT.md) | protokol, batas wajib, dan peta sistem untuk sesi AI pengerja |
+| [docs/ATURAN_KOMPONEN.md](docs/ATURAN_KOMPONEN.md) | aturan membuat komponen renderer dari naskah |
+| [docs/TUGAS_ANTARMUKA.md](docs/TUGAS_ANTARMUKA.md) | rencana halaman web Studio Alur |
+| [bot/README.md](bot/README.md) | deploy dan rahasia bot Cloudflare |
+| [newmotion/paket_genre/kisah_islami/PANDUAN_GAYA.md](newmotion/paket_genre/kisah_islami/PANDUAN_GAYA.md) | cara menggambarkan tokoh (adab) |
+| `docs/log_kerja/` | catatan kerja per sesi (riwayat keputusan) |
+| `docs/arsip/` | dokumen lama (arsitektur awal, audit, spesifikasi tugas selesai) |
 
-Contoh:
+## Batas wajib isi
 
-```python
-def buat_video(naskah, folder_hasil):
-    """Membuat video berdasarkan naskah dan menyimpan hasilnya."""
-    durasi_video = hitung_durasi(naskah)
-    return durasi_video
+Allah tidak digambar. Nabi, rasul, dan malaikat berupa cahaya + nama; sahabat bertubuh berwajah cahaya.
+Bacaan Arab tidak disuarakan AI (tulisan Arab + latin + arti di layar). Hanya dalil sahih/hasan dengan sumber
+tampil di layar. Label AI aktif saat unggah; tanpa watermark. Rinciannya di `docs/TUGAS_GPT.md` dan panduan gaya.
+
+## Struktur kode
+
+```
+bot/                     Worker Telegram (deploy otomatis dari main)
+mesin-video/             renderer (papan/cerita.js), papan_buat.py, periksa.py, aset, papan kisah referensi
+newmotion/
+  infrastructure/llm.py  pemanggil LLM bersama (model per tahap: config/model.toml)
+  application/           antrean naskah, pratinjau, produksi final, jalur manual, statistik, katalog, tata letak
+  paket_genre/kisah_islami/  skill LLM, sutradara, penjaga adab, verifikasi dalil, narasi
+antrean/<id>/            status, naskah, rencana, papan, audio, statistik tiap video
+.github/workflows/       semua manual atau dipicu bot (naskah, visual, final, manual, uji)
 ```
 
-Dokumentasi, pesan internal pengembang, panduan penggunaan, dan komentar konfigurasi juga ditulis dalam bahasa Indonesia. Istilah teknis boleh dipertahankan jika lebih tepat, tetapi penjelasannya tetap berbahasa Indonesia.
+## Menjalankan lokal
 
-## Status saat ini
-
-- [x] Struktur awal repositori diperiksa.
-- [x] Batas arsitektur dan arah adaptasi awal didokumentasikan.
-- [ ] Domain produk dan alur utama pengguna dikonfirmasi.
-- [ ] Bahasa pemrograman, runtime, dan target penerapan dipilih.
-- [x] Runtime bootstrap, konfigurasi profil, lifecycle, logging, CLI, kontrak job, validasi masukan, orkestrasi job lokal, dan adapter renderer lama ditambahkan.
-- [ ] Inventaris dependensi lengkap, lockfile, dan instalasi bersih diverifikasi.
-- [ ] Orkestrasi job, kontrak domain, dan pipeline render terpadu diselesaikan.
-
-Fondasi runtime NewMotion kini tersedia pada branch kerja: paket Python `newmotion`, konfigurasi profil TOML, CLI, pemeriksaan lingkungan, kontrak dan orkestrasi job render lokal, serta adapter ke renderer lama. Dependensi renderer lama masih dipisahkan sebagai ekstra opsional dan belum dikunci sampai audit impor serta uji instalasi bersih selesai. Implementasi `mesin-video/` tetap dipertahankan.
-
-## Menjalankan runtime
-
-Gunakan Python 3.11 atau lebih baru:
+Python 3.11+, FFmpeg, dan Chromium Playwright:
 
 ```bash
-python -m pip install -e '.[uji]'
-newmotion --version
-newmotion doctor
-newmotion render mesin-video/papan/kisah/yajuj2_visual3.json -o yajuj2_visual3.mp4
-# Untuk naskah berstruktur {judul, adegan:[{nama, teks}, ...]}:
-newmotion render naskah.json --naskah -o hasil.mp4
-# Mode --naskah menyimpan papan hasil pengarah sebagai hasil.papan.json
+python -m pip install -e '.[uji,render]'
+python -m playwright install chromium
+python -m pytest -q                                   # uji (tanpa LLM/TTS sungguhan)
+node --test bot/*.test.mjs                            # uji bot
+python mesin-video/papan_buat.py mesin-video/papan/kisah/mahsyar1.json -o mahsyar1.mp4
+python -m newmotion.application.jalur_manual mesin-video/papan/kisah/mahsyar1.json -o hasil.mp4
+python mesin-video/papan/uji_tokoh.py -o /tmp/uji_tokoh    # uji anatomi tokoh (Lapis A)
 ```
 
-Ekstra `render` menyediakan pustaka Python yang telah teridentifikasi pada jalur papan, tetapi pemasangan browser Playwright dan FFmpeg sistem tetap perlu disiapkan sesuai lingkungan. Perintah `render` tanpa `--naskah` meneruskan spesifikasi papan yang sudah jadi ke `mesin-video/papan_buat.py`. Dengan `--naskah`, NewMotion memilih pengarah dari manifest genre, menghasilkan spesifikasi papan, menyimpannya sebagai `<nama-keluaran>.papan.json`, lalu meneruskannya ke renderer lama. Renderer tetap menjadi adapter kompatibilitas; integrasi ini belum menggantikan mesin render.
+## Ketentuan bahasa
 
-## Dokumentasi
-
-- [Gambaran arsitektur](docs/architecture/overview.md)
-- [Peta adaptasi dari mesin-video](docs/architecture/adoption-map.md)
-- [Pemisahan inti dan paket genre](docs/architecture/pemisahan-genre.md)
-- [ADR 0001 — Monolit modular](docs/decisions/0001-modular-monolith.md)
+Bahasa Indonesia adalah standar proyek: nama variabel, fungsi, modul, komentar, docstring, dan dokumentasi.
+Pengecualian hanya untuk sintaks, nama bawaan pustaka, API eksternal, dan identifier yang diwajibkan sistem lain.
 
 ## Keamanan
 
-Jangan pernah memasukkan kredensial, kunci API, token akses, data pribadi pengguna, hasil produksi, atau berkas konfigurasi lokal ke repositori. Simpan rahasia melalui pengelola rahasia platform dan gunakan contoh data yang sudah disamarkan.
-
-
-### Render dari naskah dengan paket genre
-
-Tentukan genre pada metadata naskah (`"genre": "kisah_islami"`) atau secara eksplisit melalui CLI:
-
-```bash
-newmotion render naskah.json --naskah --genre kisah_islami -o hasil.mp4
-```
-
-Sutradara inti memilih paket, memvalidasi kontrak naskah, memanggil pengarah paket satu kali,
-dan memeriksa hasil shot sebelum meneruskannya ke renderer. Genre tidak ditebak secara
-diam-diam; naskah baru tanpa genre harus diberi pilihan eksplisit. Opsi `--genre`
-mengungguli metadata naskah. Papan hasil pengarahan disimpan sebagai
-`<nama-keluaran>.papan.json`. Render spesifikasi papan lama tetap mempertahankan
-perilaku kompatibilitas.
-
-
-### Genre dan konteks konten
-
-Pada mode `--naskah`, `genre` memilih strategi penceritaan, sedangkan
-`konteks_konten` memilih lapisan batasan isi. Keduanya tidak harus sama:
-
-```json
-{
-  "judul": "Kisah komedi kehidupan santri",
-  "genre": "komedi",
-  "konteks_konten": "islami",
-  "adegan": [
-    {"nama": "pembuka", "teks": "Dua santri bersiap untuk kegiatan pagi."}
-  ]
-}
-```
-
-Contoh di atas menunjukkan bentuk kontrak metadata; paket genre komedi belum
-disediakan pada tahap ini. Setelah paket komedi tersedia, genre komedi tetap
-menggunakan pengarah komedi. Konteks Islami mengaktifkan penjaga adab tokoh dan
-verifikasi dalil di gerbang renderer. Untuk naskah baru selain
-`kisah_islami`, kolom `konteks_konten` wajib diisi eksplisit; ini mencegah
-cerita bertema Islam dianggap umum hanya karena konteksnya terlupa. Nilai konteks
-yang didukung: `umum`, `islami`, `sejarah_islam`, dan `kehidupan_muslim`.
-
-
-### Gerbang pratinjau visual sebelum TTS
-
-Alur antrean bot Kisah Islami kini memisahkan persetujuan naskah dari persetujuan visual:
-
-1. Naskah dan dalil disusun/diverifikasi, lalu ditinjau pemilik.
-2. Tombol Lanjut memicu workflow `.github/workflows/visual.yml`.
-3. Pengarah Kisah Islami membentuk papan kisah; renderer membuat MP4 storyboard tanpa TTS.
-4. Pemilik meninjau pratinjau di Telegram. Penolakan visual memblokir TTS; persetujuan visual membuka tahap TTS.
-5. Produksi TTS dan render final belum otomatis dijalankan pada tahap migrasi ini.
-
-Pratinjau memakai renderer yang sudah ada, bukan renderer alternatif. Hasil MP4 diunggah sebagai artefak Actions selama tujuh hari, sedangkan papan JSON dan status tinjauan disimpan di folder antrean. Render pratinjau dilindungi agar tidak terpicu ulang ketika status masih menunggu tinjauan atau sudah disetujui.
+Jangan memasukkan kredensial, kunci API, token, atau data pribadi ke repo. Rahasia disimpan di GitHub Actions
+Secrets dan Cloudflare Worker Secrets. Workflow baru hanya `workflow_dispatch` atau dipicu bot.
