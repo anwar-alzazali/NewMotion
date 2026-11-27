@@ -32,7 +32,8 @@ Bila narasi menyebut dua orang biasa berhadapan, gunakan dua entri figuran berna
 - `hadap_ke`: nama figuran lain; mesin memilih profil kiri/kanan otomatis dari posisi mereka.
 - `pegang`: salah satu jenis pada daftar "benda yang dapat dipegang" di atas. Renderer menempelkan benda ke tangan kanan tokoh.
 - Figuran yang diberi `nama` atau `hadap_ke` harus `jumlah: 1`; tempatkan pada posisi horizontal berbeda (mis. kiri dan kanan).
-Contoh: `{"nama":"pemberi","hadap_ke":"penerima","pegang":"surat","tempat":"kiri"}` dan `{"nama":"penerima","hadap_ke":"pemberi","pegang":"kendi","tempat":"kanan"}`.
+- Untuk memberi benda, tambahkan `serahkan_ke` pada figuran pemberi; nama penerima harus ada di beat yang sama. Benda kecil yang dapat diserahkan: surat, kendi, gelas, karung_kecil, gulungan, roti, koin. Sistem menggerakkan kedua tangan mengikuti satu lintasan benda selama durasi serah-terima.
+Contoh: `{"nama":"pemberi","hadap_ke":"penerima","pegang":"surat","serahkan_ke":"penerima","tempat":"kiri"}` dan `{"nama":"penerima","hadap_ke":"pemberi","tempat":"kanan"}`.
 Jangan gunakan identitas tokoh nabi, rasul, malaikat, atau sahabat; pagar adab figuran tetap berlaku.
 
 ## Adab (WAJIB, pelanggaran membuat rencana ditolak)
