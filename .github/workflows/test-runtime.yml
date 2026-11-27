@@ -12,6 +12,7 @@ on:
     branches:
       - 'feature/pembuat-karakter-gabungan'
       - 'tugas-1-llm-naskah'
+      - 'tugas-*'
     paths:
       - 'newmotion/**'
       - 'config/**'
