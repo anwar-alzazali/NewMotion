@@ -1,0 +1,1224 @@
+{
+ "model": "eleven_v4",
+ "suara": "UdQDnhmw5mrED2XYPXhu",
+ "huruf": 1423,
+ "kata": [
+  {
+   "teks": "[serious]",
+   "t0": 0.0,
+   "t1": 0.064
+  },
+  {
+   "teks": "Firaun",
+   "t0": 0.08,
+   "t1": 0.56
+  },
+  {
+   "teks": "sempat",
+   "t0": 0.64,
+   "t1": 1.04
+  },
+  {
+   "teks": "menyatakan",
+   "t0": 1.12,
+   "t1": 1.52
+  },
+  {
+   "teks": "beriman.",
+   "t0": 1.6,
+   "t1": 2.32
+  },
+  {
+   "teks": "Tapi",
+   "t0": 2.56,
+   "t1": 2.8
+  },
+  {
+   "teks": "imannya",
+   "t0": 2.88,
+   "t1": 3.2
+  },
+  {
+   "teks": "ditolak,",
+   "t0": 3.32,
+   "t1": 4.08
+  },
+  {
+   "teks": "karena",
+   "t0": 4.12,
+   "t1": 4.32
+  },
+  {
+   "teks": "diucapkan",
+   "t0": 4.36,
+   "t1": 4.88
+  },
+  {
+   "teks": "saat",
+   "t0": 4.96,
+   "t1": 5.2
+  },
+  {
+   "teks": "air",
+   "t0": 5.28,
+   "t1": 5.52
+  },
+  {
+   "teks": "sudah",
+   "t0": 5.56,
+   "t1": 5.76
+  },
+  {
+   "teks": "menenggelamkannya.",
+   "t0": 5.84,
+   "t1": 6.84
+  },
+  {
+   "teks": "[tense]",
+   "t0": 7.04,
+   "t1": 7.16
+  },
+  {
+   "teks": "Pagi",
+   "t0": 7.2,
+   "t1": 7.28
+  },
+  {
+   "teks": "itu,",
+   "t0": 7.36,
+   "t1": 7.8
+  },
+  {
+   "teks": "saat",
+   "t0": 7.92,
+   "t1": 8.16
+  },
+  {
+   "teks": "matahari",
+   "t0": 8.24,
+   "t1": 8.56
+  },
+  {
+   "teks": "terbit,",
+   "t0": 8.64,
+   "t1": 9.44
+  },
+  {
+   "teks": "Firaun",
+   "t0": 9.52,
+   "t1": 9.92
+  },
+  {
+   "teks": "dan",
+   "t0": 10.0,
+   "t1": 10.08
+  },
+  {
+   "teks": "bala",
+   "t0": 10.16,
+   "t1": 10.32
+  },
+  {
+   "teks": "tentaranya",
+   "t0": 10.44,
+   "t1": 10.88
+  },
+  {
+   "teks": "menyusul",
+   "t0": 10.96,
+   "t1": 11.36
+  },
+  {
+   "teks": "Nabi",
+   "t0": 11.44,
+   "t1": 11.6
+  },
+  {
+   "teks": "Musa",
+   "t0": 11.68,
+   "t1": 12.0
+  },
+  {
+   "teks": "sampai",
+   "t0": 12.08,
+   "t1": 12.4
+  },
+  {
+   "teks": "ke",
+   "t0": 12.48,
+   "t1": 12.52
+  },
+  {
+   "teks": "tepi",
+   "t0": 12.56,
+   "t1": 12.72
+  },
+  {
+   "teks": "laut.",
+   "t0": 12.8,
+   "t1": 13.28
+  },
+  {
+   "teks": "[tense]",
+   "t0": 13.44,
+   "t1": 13.488
+  },
+  {
+   "teks": "Di",
+   "t0": 13.504,
+   "t1": 13.52
+  },
+  {
+   "teks": "depan,",
+   "t0": 13.6,
+   "t1": 14.16
+  },
+  {
+   "teks": "laut.",
+   "t0": 14.32,
+   "t1": 14.92
+  },
+  {
+   "teks": "Di",
+   "t0": 15.12,
+   "t1": 15.2
+  },
+  {
+   "teks": "belakang,",
+   "t0": 15.28,
+   "t1": 15.76
+  },
+  {
+   "teks": "pasukan.",
+   "t0": 15.92,
+   "t1": 16.56
+  },
+  {
+   "teks": "Pengikut",
+   "t0": 16.96,
+   "t1": 17.28
+  },
+  {
+   "teks": "Musa",
+   "t0": 17.32,
+   "t1": 17.52
+  },
+  {
+   "teks": "berseru:",
+   "t0": 17.64,
+   "t1": 18.08
+  },
+  {
+   "teks": "kita",
+   "t0": 18.32,
+   "t1": 18.48
+  },
+  {
+   "teks": "pasti",
+   "t0": 18.64,
+   "t1": 18.96
+  },
+  {
+   "teks": "tersusul!",
+   "t0": 19.08,
+   "t1": 19.68
+  },
+  {
+   "teks": "[firm]",
+   "t0": 19.92,
+   "t1": 19.968
+  },
+  {
+   "teks": "Nabi",
+   "t0": 19.984,
+   "t1": 20.16
+  },
+  {
+   "teks": "Musa",
+   "t0": 20.24,
+   "t1": 20.48
+  },
+  {
+   "teks": "menjawab:",
+   "t0": 20.56,
+   "t1": 21.04
+  },
+  {
+   "teks": "sekali-kali",
+   "t0": 21.36,
+   "t1": 22.08
+  },
+  {
+   "teks": "tidak.",
+   "t0": 22.16,
+   "t1": 22.48
+  },
+  {
+   "teks": "Tuhanku",
+   "t0": 22.8,
+   "t1": 23.32
+  },
+  {
+   "teks": "bersamaku,",
+   "t0": 23.36,
+   "t1": 24.32
+  },
+  {
+   "teks": "Dia",
+   "t0": 24.4,
+   "t1": 24.64
+  },
+  {
+   "teks": "akan",
+   "t0": 24.72,
+   "t1": 24.88
+  },
+  {
+   "teks": "memberiku",
+   "t0": 24.96,
+   "t1": 25.28
+  },
+  {
+   "teks": "petunjuk.",
+   "t0": 25.36,
+   "t1": 25.92
+  },
+  {
+   "teks": "[firm]",
+   "t0": 26.16,
+   "t1": 26.208
+  },
+  {
+   "teks": "Musa",
+   "t0": 26.224,
+   "t1": 26.48
+  },
+  {
+   "teks": "diperintahkan",
+   "t0": 26.52,
+   "t1": 27.12
+  },
+  {
+   "teks": "memukul",
+   "t0": 27.24,
+   "t1": 27.6
+  },
+  {
+   "teks": "laut",
+   "t0": 27.68,
+   "t1": 27.92
+  },
+  {
+   "teks": "dengan",
+   "t0": 27.96,
+   "t1": 28.16
+  },
+  {
+   "teks": "tongkatnya.",
+   "t0": 28.2,
+   "t1": 28.8
+  },
+  {
+   "teks": "Laut",
+   "t0": 29.12,
+   "t1": 29.36
+  },
+  {
+   "teks": "terbelah,",
+   "t0": 29.48,
+   "t1": 30.0
+  },
+  {
+   "teks": "setiap",
+   "t0": 30.24,
+   "t1": 30.64
+  },
+  {
+   "teks": "belahannya",
+   "t0": 30.72,
+   "t1": 31.12
+  },
+  {
+   "teks": "seperti",
+   "t0": 31.2,
+   "t1": 31.44
+  },
+  {
+   "teks": "gunung",
+   "t0": 31.6,
+   "t1": 31.84
+  },
+  {
+   "teks": "yang",
+   "t0": 31.92,
+   "t1": 32.0
+  },
+  {
+   "teks": "besar.",
+   "t0": 32.08,
+   "t1": 32.56
+  },
+  {
+   "teks": "[calm]",
+   "t0": 32.72,
+   "t1": 32.773
+  },
+  {
+   "teks": "Di",
+   "t0": 32.787,
+   "t1": 32.8
+  },
+  {
+   "teks": "antara",
+   "t0": 32.88,
+   "t1": 33.2
+  },
+  {
+   "teks": "dua",
+   "t0": 33.28,
+   "t1": 33.4
+  },
+  {
+   "teks": "dinding",
+   "t0": 33.44,
+   "t1": 33.68
+  },
+  {
+   "teks": "air",
+   "t0": 33.76,
+   "t1": 34.08
+  },
+  {
+   "teks": "terbentang",
+   "t0": 34.16,
+   "t1": 34.72
+  },
+  {
+   "teks": "jalan",
+   "t0": 34.8,
+   "t1": 35.04
+  },
+  {
+   "teks": "yang",
+   "t0": 35.12,
+   "t1": 35.2
+  },
+  {
+   "teks": "kering.",
+   "t0": 35.24,
+   "t1": 35.68
+  },
+  {
+   "teks": "Bani",
+   "t0": 36.08,
+   "t1": 36.24
+  },
+  {
+   "teks": "Israil",
+   "t0": 36.32,
+   "t1": 36.72
+  },
+  {
+   "teks": "menyeberang,",
+   "t0": 36.8,
+   "t1": 37.6
+  },
+  {
+   "teks": "semuanya",
+   "t0": 37.72,
+   "t1": 38.16
+  },
+  {
+   "teks": "selamat.",
+   "t0": 38.24,
+   "t1": 38.72
+  },
+  {
+   "teks": "[tense]",
+   "t0": 38.96,
+   "t1": 39.008
+  },
+  {
+   "teks": "Firaun",
+   "t0": 39.024,
+   "t1": 39.44
+  },
+  {
+   "teks": "tidak",
+   "t0": 39.6,
+   "t1": 39.84
+  },
+  {
+   "teks": "berhenti.",
+   "t0": 39.92,
+   "t1": 40.4
+  },
+  {
+   "teks": "Ia",
+   "t0": 40.8,
+   "t1": 40.96
+  },
+  {
+   "teks": "dan",
+   "t0": 41.04,
+   "t1": 41.12
+  },
+  {
+   "teks": "pasukannya",
+   "t0": 41.2,
+   "t1": 41.68
+  },
+  {
+   "teks": "masuk",
+   "t0": 41.8,
+   "t1": 42.0
+  },
+  {
+   "teks": "ke",
+   "t0": 42.08,
+   "t1": 42.12
+  },
+  {
+   "teks": "jalan",
+   "t0": 42.16,
+   "t1": 42.4
+  },
+  {
+   "teks": "yang",
+   "t0": 42.44,
+   "t1": 42.48
+  },
+  {
+   "teks": "sama.",
+   "t0": 42.56,
+   "t1": 43.04
+  },
+  {
+   "teks": "[serious]",
+   "t0": 43.2,
+   "t1": 43.248
+  },
+  {
+   "teks": "Lalu",
+   "t0": 43.264,
+   "t1": 43.52
+  },
+  {
+   "teks": "laut",
+   "t0": 43.76,
+   "t1": 44.0
+  },
+  {
+   "teks": "menutup.",
+   "t0": 44.08,
+   "t1": 44.64
+  },
+  {
+   "teks": "Saat",
+   "t0": 44.96,
+   "t1": 45.2
+  },
+  {
+   "teks": "air",
+   "t0": 45.28,
+   "t1": 45.52
+  },
+  {
+   "teks": "menenggelamkannya,",
+   "t0": 45.6,
+   "t1": 46.56
+  },
+  {
+   "teks": "Firaun",
+   "t0": 46.6,
+   "t1": 46.96
+  },
+  {
+   "teks": "berkata:",
+   "t0": 47.04,
+   "t1": 47.52
+  },
+  {
+   "teks": "aku",
+   "t0": 47.92,
+   "t1": 48.16
+  },
+  {
+   "teks": "percaya",
+   "t0": 48.32,
+   "t1": 48.72
+  },
+  {
+   "teks": "tidak",
+   "t0": 48.8,
+   "t1": 48.92
+  },
+  {
+   "teks": "ada",
+   "t0": 48.96,
+   "t1": 49.12
+  },
+  {
+   "teks": "tuhan",
+   "t0": 49.2,
+   "t1": 49.52
+  },
+  {
+   "teks": "selain",
+   "t0": 49.6,
+   "t1": 50.0
+  },
+  {
+   "teks": "yang",
+   "t0": 50.04,
+   "t1": 50.08
+  },
+  {
+   "teks": "dipercayai",
+   "t0": 50.12,
+   "t1": 50.72
+  },
+  {
+   "teks": "Bani",
+   "t0": 50.773,
+   "t1": 50.88
+  },
+  {
+   "teks": "Israil.",
+   "t0": 50.96,
+   "t1": 51.6
+  },
+  {
+   "teks": "[whispers]",
+   "t0": 51.76,
+   "t1": 51.813
+  },
+  {
+   "teks": "Jawabannya:",
+   "t0": 51.827,
+   "t1": 52.48
+  },
+  {
+   "teks": "apakah",
+   "t0": 52.88,
+   "t1": 53.2
+  },
+  {
+   "teks": "baru",
+   "t0": 53.28,
+   "t1": 53.36
+  },
+  {
+   "teks": "sekarang?",
+   "t0": 53.44,
+   "t1": 54.08
+  },
+  {
+   "teks": "Padahal",
+   "t0": 54.48,
+   "t1": 54.8
+  },
+  {
+   "teks": "sebelumnya",
+   "t0": 54.88,
+   "t1": 55.28
+  },
+  {
+   "teks": "engkau",
+   "t0": 55.36,
+   "t1": 55.52
+  },
+  {
+   "teks": "durhaka.",
+   "t0": 55.6,
+   "t1": 56.4
+  },
+  {
+   "teks": "[calm]",
+   "t0": 56.56,
+   "t1": 56.651
+  },
+  {
+   "teks": "Rasulullah",
+   "t0": 56.674,
+   "t1": 57.04
+  },
+  {
+   "teks": "shallallahu",
+   "t0": 57.12,
+   "t1": 57.68
+  },
+  {
+   "teks": "'alaihi",
+   "t0": 57.72,
+   "t1": 58.0
+  },
+  {
+   "teks": "wa",
+   "t0": 58.08,
+   "t1": 58.16
+  },
+  {
+   "teks": "sallam",
+   "t0": 58.2,
+   "t1": 58.4
+  },
+  {
+   "teks": "bersabda:",
+   "t0": 58.48,
+   "t1": 59.04
+  },
+  {
+   "teks": "Allah",
+   "t0": 59.44,
+   "t1": 59.68
+  },
+  {
+   "teks": "menerima",
+   "t0": 59.76,
+   "t1": 60.16
+  },
+  {
+   "teks": "tobat",
+   "t0": 60.24,
+   "t1": 60.56
+  },
+  {
+   "teks": "seorang",
+   "t0": 60.6,
+   "t1": 60.88
+  },
+  {
+   "teks": "hamba",
+   "t0": 60.96,
+   "t1": 61.36
+  },
+  {
+   "teks": "selama",
+   "t0": 61.52,
+   "t1": 61.92
+  },
+  {
+   "teks": "nyawanya",
+   "t0": 62.0,
+   "t1": 62.4
+  },
+  {
+   "teks": "belum",
+   "t0": 62.48,
+   "t1": 62.72
+  },
+  {
+   "teks": "sampai",
+   "t0": 62.8,
+   "t1": 63.12
+  },
+  {
+   "teks": "di",
+   "t0": 63.2,
+   "t1": 63.28
+  },
+  {
+   "teks": "kerongkongan.",
+   "t0": 63.32,
+   "t1": 63.92
+  },
+  {
+   "teks": "[touched]",
+   "t0": 64.16,
+   "t1": 64.256
+  },
+  {
+   "teks": "Dan",
+   "t0": 64.288,
+   "t1": 64.32
+  },
+  {
+   "teks": "badan",
+   "t0": 64.4,
+   "t1": 64.56
+  },
+  {
+   "teks": "Firaun",
+   "t0": 64.64,
+   "t1": 65.04
+  },
+  {
+   "teks": "diselamatkan,",
+   "t0": 65.12,
+   "t1": 66.0
+  },
+  {
+   "teks": "agar",
+   "t0": 66.32,
+   "t1": 66.48
+  },
+  {
+   "teks": "menjadi",
+   "t0": 66.56,
+   "t1": 66.88
+  },
+  {
+   "teks": "tanda",
+   "t0": 66.96,
+   "t1": 67.28
+  },
+  {
+   "teks": "bagi",
+   "t0": 67.36,
+   "t1": 67.52
+  },
+  {
+   "teks": "orang-orang",
+   "t0": 67.6,
+   "t1": 68.0
+  },
+  {
+   "teks": "sesudahnya.",
+   "t0": 68.08,
+   "t1": 68.72
+  },
+  {
+   "teks": "[calm]",
+   "t0": 69.04,
+   "t1": 69.093
+  },
+  {
+   "teks": "Hari",
+   "t0": 69.107,
+   "t1": 69.2
+  },
+  {
+   "teks": "itu",
+   "t0": 69.28,
+   "t1": 69.6
+  },
+  {
+   "teks": "Allah",
+   "t0": 69.76,
+   "t1": 70.0
+  },
+  {
+   "teks": "menyelamatkan",
+   "t0": 70.08,
+   "t1": 70.64
+  },
+  {
+   "teks": "Musa",
+   "t0": 70.72,
+   "t1": 71.12
+  },
+  {
+   "teks": "dan",
+   "t0": 71.28,
+   "t1": 71.36
+  },
+  {
+   "teks": "menenggelamkan",
+   "t0": 71.44,
+   "t1": 72.08
+  },
+  {
+   "teks": "Firaun.",
+   "t0": 72.16,
+   "t1": 72.72
+  },
+  {
+   "teks": "Karena",
+   "t0": 73.12,
+   "t1": 73.36
+  },
+  {
+   "teks": "itu",
+   "t0": 73.44,
+   "t1": 73.68
+  },
+  {
+   "teks": "Rasulullah",
+   "t0": 73.92,
+   "t1": 74.4
+  },
+  {
+   "teks": "shallallahu",
+   "t0": 74.48,
+   "t1": 75.04
+  },
+  {
+   "teks": "'alaihi",
+   "t0": 75.12,
+   "t1": 75.36
+  },
+  {
+   "teks": "wa",
+   "t0": 75.44,
+   "t1": 75.52
+  },
+  {
+   "teks": "sallam",
+   "t0": 75.56,
+   "t1": 75.84
+  },
+  {
+   "teks": "berpuasa",
+   "t0": 75.96,
+   "t1": 76.48
+  },
+  {
+   "teks": "di",
+   "t0": 76.52,
+   "t1": 76.56
+  },
+  {
+   "teks": "hari",
+   "t0": 76.64,
+   "t1": 76.8
+  },
+  {
+   "teks": "Asyura,",
+   "t0": 76.88,
+   "t1": 77.6
+  },
+  {
+   "teks": "dan",
+   "t0": 77.68,
+   "t1": 77.76
+  },
+  {
+   "teks": "menyuruh",
+   "t0": 77.84,
+   "t1": 78.16
+  },
+  {
+   "teks": "umatnya",
+   "t0": 78.24,
+   "t1": 78.64
+  },
+  {
+   "teks": "berpuasa.",
+   "t0": 78.72,
+   "t1": 79.4
+  },
+  {
+   "teks": "[relieved]",
+   "t0": 79.52,
+   "t1": 79.573
+  },
+  {
+   "teks": "Kamu",
+   "t0": 79.587,
+   "t1": 79.76
+  },
+  {
+   "teks": "masih",
+   "t0": 79.84,
+   "t1": 80.04
+  },
+  {
+   "teks": "bernapas.",
+   "t0": 80.08,
+   "t1": 80.88
+  },
+  {
+   "teks": "Pintu",
+   "t0": 81.2,
+   "t1": 81.44
+  },
+  {
+   "teks": "tobatmu",
+   "t0": 81.48,
+   "t1": 81.92
+  },
+  {
+   "teks": "masih",
+   "t0": 82.0,
+   "t1": 82.16
+  },
+  {
+   "teks": "terbuka.",
+   "t0": 82.28,
+   "t1": 82.88
+  },
+  {
+   "teks": "Jangan",
+   "t0": 83.28,
+   "t1": 83.52
+  },
+  {
+   "teks": "tunggu",
+   "t0": 83.6,
+   "t1": 83.92
+  },
+  {
+   "teks": "air",
+   "t0": 84.0,
+   "t1": 84.16
+  },
+  {
+   "teks": "sampai",
+   "t0": 84.24,
+   "t1": 84.4
+  },
+  {
+   "teks": "ke",
+   "t0": 84.48,
+   "t1": 84.52
+  },
+  {
+   "teks": "leher.",
+   "t0": 84.56,
+   "t1": 85.28
+  }
+ ],
+ "subtitle": [
+  [
+   0.0,
+   2.32,
+   "[serious] Firaun sempat menyatakan beriman."
+  ],
+  [
+   2.56,
+   4.08,
+   "Tapi imannya ditolak,"
+  ],
+  [
+   4.12,
+   6.84,
+   "karena diucapkan saat air sudah menenggelamkannya."
+  ],
+  [
+   7.04,
+   7.8,
+   "[tense] Pagi itu,"
+  ],
+  [
+   7.92,
+   9.44,
+   "saat matahari terbit,"
+  ],
+  [
+   9.52,
+   11.6,
+   "Firaun dan bala tentaranya menyusul Nabi"
+  ],
+  [
+   11.68,
+   13.28,
+   "Musa sampai ke tepi laut."
+  ],
+  [
+   13.44,
+   14.16,
+   "[tense] Di depan,"
+  ],
+  [
+   14.32,
+   14.92,
+   "laut."
+  ],
+  [
+   15.12,
+   15.76,
+   "Di belakang,"
+  ],
+  [
+   15.92,
+   16.56,
+   "pasukan."
+  ],
+  [
+   16.96,
+   18.08,
+   "Pengikut Musa berseru:"
+  ],
+  [
+   18.32,
+   19.68,
+   "kita pasti tersusul!"
+  ],
+  [
+   19.92,
+   21.04,
+   "[firm] Nabi Musa menjawab:"
+  ],
+  [
+   21.36,
+   22.48,
+   "sekali-kali tidak."
+  ],
+  [
+   22.8,
+   24.32,
+   "Tuhanku bersamaku,"
+  ],
+  [
+   24.4,
+   25.92,
+   "Dia akan memberiku petunjuk."
+  ],
+  [
+   26.16,
+   28.16,
+   "[firm] Musa diperintahkan memukul laut dengan"
+  ],
+  [
+   28.2,
+   28.8,
+   "tongkatnya."
+  ],
+  [
+   29.12,
+   30.0,
+   "Laut terbelah,"
+  ],
+  [
+   30.24,
+   32.56,
+   "setiap belahannya seperti gunung yang besar."
+  ],
+  [
+   32.72,
+   34.08,
+   "[calm] Di antara dua dinding air"
+  ],
+  [
+   34.16,
+   35.68,
+   "terbentang jalan yang kering."
+  ],
+  [
+   36.08,
+   37.6,
+   "Bani Israil menyeberang,"
+  ],
+  [
+   37.72,
+   38.72,
+   "semuanya selamat."
+  ],
+  [
+   38.96,
+   40.4,
+   "[tense] Firaun tidak berhenti."
+  ],
+  [
+   40.8,
+   42.4,
+   "Ia dan pasukannya masuk ke jalan"
+  ],
+  [
+   42.44,
+   43.04,
+   "yang sama."
+  ],
+  [
+   43.2,
+   44.64,
+   "[serious] Lalu laut menutup."
+  ],
+  [
+   44.96,
+   46.56,
+   "Saat air menenggelamkannya,"
+  ],
+  [
+   46.6,
+   47.52,
+   "Firaun berkata:"
+  ],
+  [
+   47.92,
+   50.0,
+   "aku percaya tidak ada tuhan selain"
+  ],
+  [
+   50.04,
+   51.6,
+   "yang dipercayai Bani Israil."
+  ],
+  [
+   51.76,
+   52.48,
+   "[whispers] Jawabannya:"
+  ],
+  [
+   52.88,
+   54.08,
+   "apakah baru sekarang?"
+  ],
+  [
+   54.48,
+   56.4,
+   "Padahal sebelumnya engkau durhaka."
+  ],
+  [
+   56.56,
+   58.4,
+   "[calm] Rasulullah shallallahu 'alaihi wa sallam"
+  ],
+  [
+   58.48,
+   59.04,
+   "bersabda:"
+  ],
+  [
+   59.44,
+   61.92,
+   "Allah menerima tobat seorang hamba selama"
+  ],
+  [
+   62.0,
+   63.92,
+   "nyawanya belum sampai di kerongkongan."
+  ],
+  [
+   64.16,
+   66.0,
+   "[touched] Dan badan Firaun diselamatkan,"
+  ],
+  [
+   66.32,
+   68.72,
+   "agar menjadi tanda bagi orang-orang sesudahnya."
+  ],
+  [
+   69.04,
+   71.12,
+   "[calm] Hari itu Allah menyelamatkan Musa"
+  ],
+  [
+   71.28,
+   72.72,
+   "dan menenggelamkan Firaun."
+  ],
+  [
+   73.12,
+   75.52,
+   "Karena itu Rasulullah shallallahu 'alaihi wa"
+  ],
+  [
+   75.56,
+   77.6,
+   "sallam berpuasa di hari Asyura,"
+  ],
+  [
+   77.68,
+   79.4,
+   "dan menyuruh umatnya berpuasa."
+  ],
+  [
+   79.52,
+   80.88,
+   "[relieved] Kamu masih bernapas."
+  ],
+  [
+   81.2,
+   82.88,
+   "Pintu tobatmu masih terbuka."
+  ],
+  [
+   83.28,
+   85.28,
+   "Jangan tunggu air sampai ke leher."
+  ]
+ ]
+}
