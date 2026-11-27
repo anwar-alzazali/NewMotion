@@ -96,8 +96,8 @@ def test_perbaikan_otomatis_satu_putaran_dan_pemeriksaan_ulang(tmp_path, monkeyp
     tersimpan = json.loads((antrean / "naskah.json").read_text(encoding="utf-8"))
     assert panggilan_penulis == ["ide", "revisi"]
     assert "Saat tenggelam" in tersimpan["beat"][0]["narasi"]
-    assert status["pemeriksaan_naskah"]["temuan"] == []
-    assert status["pemeriksaan_naskah_ringkas"] == "tidak ada temuan"
+    assert status["pemeriksaan_naskah"]["temuan_akhir"] == []
+    assert "hook_lemah" in status["pemeriksaan_naskah_ringkas"]\n    assert "sisa 0" in status["pemeriksaan_naskah_ringkas"]
     assert status["pemeriksaan_naskah_ai"]["tahap"] == "periksa_naskah"
 
 def test_usulan_yunus_92_harus_lolos_verifikasi_resmi_sebelum_dipakai():
