@@ -97,7 +97,8 @@ def test_perbaikan_otomatis_satu_putaran_dan_pemeriksaan_ulang(tmp_path, monkeyp
     assert panggilan_penulis == ["ide", "revisi"]
     assert "Saat tenggelam" in tersimpan["beat"][0]["narasi"]
     assert status["pemeriksaan_naskah"]["temuan_akhir"] == []
-    assert "hook_lemah" in status["pemeriksaan_naskah_ringkas"]\n    assert "sisa 0" in status["pemeriksaan_naskah_ringkas"]
+    assert "hook_lemah" in status["pemeriksaan_naskah_ringkas"]
+    assert "sisa 0" in status["pemeriksaan_naskah_ringkas"]
     assert status["pemeriksaan_naskah_ai"]["tahap"] == "periksa_naskah"
 
 def test_usulan_yunus_92_harus_lolos_verifikasi_resmi_sebelum_dipakai():
