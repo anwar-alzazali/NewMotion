@@ -1,14 +1,14 @@
 {
  "id": "261127-1134-buatkan-saya-naskah-tentang",
- "judul": "Buatkan saya naskah tentang kisah nabi musa yg di kejar fira",
+ "judul": "Detik Terakhir Firaun di Dasar Laut",
  "sumber": "ide",
  "chat": 7576750901,
  "genre": "kisah_islami",
  "konteks_konten": "islami",
  "tahap": {
-  "diterima": "jalan",
-  "dalil": "belum",
-  "tinjau": "belum",
+  "diterima": "selesai",
+  "dalil": "selesai",
+  "tinjau": "jalan",
   "sutradara": "belum",
   "tinjau_visual": "belum",
   "narasi": "belum",
@@ -17,8 +17,21 @@
   "kirim": "belum"
  },
  "ket": {
-  "diterima": "mengantre di GitHub Actions…"
+  "diterima": "8 beat, 6 dalil · Gemini",
+  "dalil": "6/6",
+  "tinjau": "menunggu Anda membaca naskah"
  },
  "dibuat": "2026-11-27T04:34:37.402Z",
- "pesan_kartu": 434
+ "diperbarui": "2026-11-27T04:35:11+00:00",
+ "token_ai": 2892,
+ "penyedia_ai": "Gemini gemini-3.8-flash (gratis)",
+ "laporan_dalil": [
+  "✓ QS ASY-SYU'ARA 60 (label disarankan: QS ASH-SHU'ARA 60)",
+  "✓ QS ASY-SYU'ARA 61 (label disarankan: QS ASH-SHU'ARA 61)",
+  "✓ QS ASY-SYU'ARA 62 (label disarankan: QS ASH-SHU'ARA 62)",
+  "✓ QS ASY-SYU'ARA 63 (label disarankan: QS ASH-SHU'ARA 63)",
+  "✓ QS ASY-SYU'ARA 65-66 (label disarankan: QS ASH-SHU'ARA 65-66)",
+  "✓ QS YUNUS 90-91"
+ ],
+ "pesan_kartu": 436
 }
