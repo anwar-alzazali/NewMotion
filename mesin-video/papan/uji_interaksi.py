@@ -45,18 +45,22 @@ def uji(keluaran: Path, chrome: str | None = None) -> dict:
             temuan.append({"kode": "SERAH_DATA_HILANG", "pesan": "catatan lintasan tidak tersedia"})
             continue
         c = catatan[0]
-        for peran in ("tangan_pemberi", "tangan_penerima"):
+        fase = float(c.get("fase", 0))
+        peran_aktif = (("tangan_pemberi",) if fase < 0.25 else
+                       ("tangan_pemberi", "tangan_penerima") if fase <= 0.75 else
+                       ("tangan_penerima",))
+        for peran in peran_aktif:
             tangan = c.get(peran)
             if tangan is None:
                 temuan.append({"kode": "TANGAN_TIDAK_TERCATAT", "t": c["t"], "peran": peran})
                 continue
             galat = jarak(tangan, c["posisi"])
-            bukti.append({"t": c["t"], "peran": peran, "jarak_px": round(galat, 3),
+            bukti.append({"t": c["t"], "fase": fase, "peran": peran, "jarak_px": round(galat, 3),
                           "tangan": tangan, "benda": c["posisi"]})
             if galat > BATAS_TANGAN:
                 temuan.append({"kode": "TANGAN_TIDAK_MENEMPEL", "t": c["t"], "peran": peran,
                                "jarak_px": round(galat, 3), "batas_px": BATAS_TANGAN})
-    if len(bukti) < len(WAKTU) * 2:
+    if len(bukti) < len(WAKTU) + 2:
         temuan.append({"kode": "SAMPEL_TIDAK_LENGKAP", "jumlah": len(bukti), "target": len(WAKTU) * 2})
     posisi_awal = gambar[0][2][0]["posisi"] if gambar and gambar[0][2] else None
     posisi_akhir = gambar[-1][2][0]["posisi"] if gambar and gambar[-1][2] else None
