@@ -148,7 +148,7 @@ Lembar kontak + video + hasil `periksa.py`. GAGAL = kerusakan teknis atau batas 
 - ombak: banjir / laut badai berlapis (15 Nov): y = permukaan air; tinggi = amplitudo px (300 = "laksana gunung"); lapis, jarak, panjang, cepat, warna [atas, bawah], buih [keadaan: buih, cepat, jarak, kilap*, lapis, panjang, tinggi*]
 - pagar: pagar besi/kayu sepanjang w; {w, warna, model: kayu|tembok} [keadaan: model, w]
 - pancar: mata air memancar dari bumi (QS 54:12): kuat 0-1, tinggi px [keadaan: kuat*, tinggi]
-- pantai: pantai: laut dari cakrawala (y=-ting) ke garis pantai (y=0) + pasir; ombak bergerak; {tinggi} [keadaan: tinggi]
+- pantai: pantai: laut dari cakrawala (y=-ting) ke garis pantai (y=0) + pasir; ombak bergerak; {tinggi, warna [jauh, dekat]} [keadaan: tinggi]
 - pedang_tersarung: pedang selalu tersarung; tidak menyediakan adegan kekerasan [keadaan: ornamen*]
 - pemimpin: siluet pemimpin di atas batu; angkat 0-1 = lengan terangkat [keadaan: angkat*, rim*]
 - penggali: siluet mengayun beliung ke satu titik. x,y = titik gali; aktif 0|1, pulang 0-1 (berbalik lalu pergi ke samping-depan), n, rim [keadaan: aktif*, n, pulang*, rim*]

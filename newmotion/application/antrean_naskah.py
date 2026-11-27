@@ -33,7 +33,23 @@ from pathlib import Path
 
 AKAR = Path(__file__).resolve().parents[2]
 ANTREAN = AKAR / "antrean"
-SUASANA = ["senja", "dhuha", "malam", "malam_merah", "fajar"]
+SUASANA_DUNIA = ["fajar", "dhuha", "siang", "sore", "senja", "malam"]
+SUASANA_AKHIRAT = ["mahsyar", "neraka", "surga", "kubur"]
+SUASANA = SUASANA_DUNIA + SUASANA_AKHIRAT
+# Dasar suasana (27 Nov, keputusan pemilik): suasana dipakai hanya bila narasi/label dalil menyebutnya;
+# tanpa dasar -> waktu yang sudah disebut sebelumnya (berlaku sampai ada keterangan baru), atau siang.
+DASAR_SUASANA = {
+    "fajar": r"fajar|subuh|terbit|musyriq",
+    "dhuha": r"dhuha|duha|pagi|terbit|musyriq",
+    "siang": r"siang|terik|tengah hari",
+    "sore": r"sore|ashar|asar",
+    "senja": r"senja|maghrib|magrib|terbenam",
+    "malam": r"malam|isya|gelap gulita",
+    "mahsyar": r"mahsyar|dibangkitkan|padang|hari kiamat|kebangkitan",
+    "neraka": r"neraka|jahannam|jahanam|api yang menyala",
+    "surga": r"surga|jannah|firdaus",
+    "kubur": r"kubur|barzakh|liang lahat",
+}
 KITAB = ["bukhari", "muslim", "abudawud", "tirmidhi", "nasai", "ibnmajah"]
 TAHAP = [("diterima", "Naskah diterima"), ("dalil", "Dalil diverifikasi"), ("tinjau", "Tinjauan naskah"),
          ("sutradara", "Pratinjau visual"), ("tinjau_visual", "Tinjauan visual"),
@@ -182,10 +198,34 @@ def normalisasi(n: dict) -> dict:
                     n["peringatan"] = peringatan
                 peringatan.append(
                     f"beat {i}: rujukan {', '.join(map(str, hilang))} tidak ditemukan di daftar dalil")
-        if b.get("suasana") not in SUASANA:
-            b.pop("suasana", None)
         _rapikan_dialog(b, n)
+    _rapikan_suasana(n)
     return n
+
+
+def _rapikan_suasana(n: dict) -> None:
+    """Suasana tanpa dasar tidak menolak naskah: diganti waktu terakhir yang berdasar, atau siang."""
+    import re as _re
+
+    label = {str(d.get("id")): str(d.get("label") or "") for d in n.get("dalil", []) if isinstance(d, dict)}
+    berlaku = None
+    for i, b in enumerate(n.get("beat", []), 1):
+        if not isinstance(b, dict):
+            continue
+        teks = " ".join([str(b.get("narasi", ""))] + [label.get(str(x), "") for x in b.get("dalil", []) or []])
+        diminta = b.get("suasana")
+        disebut = [w for w, pola in DASAR_SUASANA.items() if _re.search(rf"\b(?:{pola})", teks, _re.IGNORECASE)]
+        if diminta in SUASANA and (diminta in disebut or diminta == "siang"):
+            pakai = diminta
+        elif disebut:
+            pakai = disebut[0]
+        else:
+            pakai = berlaku or "siang"
+        if diminta and diminta != pakai:
+            n.setdefault("peringatan", []).append(f"beat {i}: suasana {diminta!r} tanpa dasar di narasi/dalil -> {pakai}")
+        b["suasana"] = pakai
+        if pakai in SUASANA_DUNIA:
+            berlaku = pakai
 
 
 def _sakral(x: object) -> bool:
