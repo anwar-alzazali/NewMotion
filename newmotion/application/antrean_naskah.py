@@ -625,7 +625,8 @@ def proses(id_: str, mode: str, *, folder: Path = ANTREAN, tanya=None, quran=Non
                 and d.get("diverifikasi_oleh")
                 and (d.get("derajat", "sahih") in ("sahih", "hasan"))
             ]
-        temuan_awal = copy.deepcopy(temuan.get("temuan", []))\n        berat = [x for x in temuan_awal if x.get("tingkat") == "berat"]
+        temuan_awal = copy.deepcopy(temuan.get("temuan", []))
+        berat = [x for x in temuan_awal if x.get("tingkat") == "berat"]
         if berat and mode != "tempel":
             arahan = {
                 "temuan_pemeriksa": temuan.get("temuan", []),
