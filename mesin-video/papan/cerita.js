@@ -486,23 +486,27 @@
         const f = (xx) => yy - a * (0.62 * Math.sin(xx / L + t * sp + ph) + 0.28 * Math.sin(xx / (L * 0.41) - t * sp * 1.6 + ph * 2) + 0.1 * Math.sin(xx / (L * 0.17) + t * 2.3));
         let dd = `M -1400 ${f(-1400).toFixed(1)}`; for (let xx = -1360; xx <= 1400; xx += 40) dd += ` L ${xx} ${f(xx).toFixed(1)}`;
         g += `<path d="${dd} L 1400 2600 L -1400 2600 Z" fill="url(#${id})"/><path d="${dd}" stroke="${o.buih || "#ffe9b8"}" stroke-width="${5 + i * 1.5}" fill="none" opacity="${(0.55 - i * 0.08) * v(o.kilap, t, d, 1)}" stroke-linecap="round" stroke-dasharray="${90 + i * 30} ${70 + i * 25}" stroke-dashoffset="${(t * 40 * sp).toFixed(1)}"/>`; }
-    } else if (j === "laut_terbelah") { // laut terbelah dua (QS 26:63): lorong dasar laut kering di antara dua dinding air "laksana gunung", dilihat dari pangkal lorong; (0,0) = tengah pangkal lorong. belah 0-1 (0 = laut rata, 1 = terbelah penuh; turunkan lagi untuk dinding runtuh menutup), tinggi = tinggi dinding px di depan (bawaan 1100), lebar = lebar lorong di depan px (bawaan 560), jauh = jarak ke ujung lorong px (bawaan 560), warna [muka, dalam]
-      const bl = v(o.belah, t, d, 1), e = bl * bl * (3 - 2 * bl), Ht = (o.tinggi || 1100) * e, W2 = ((o.lebar || 560) / 2) * (0.35 + 0.65 * e), D = o.jauh || 560, w2 = 34 * (0.3 + 0.7 * e), Hj = Ht * 0.22, ca = o.warna || ["#123a63", "#2f8fb0"], id = "lt" + Math.round(x) + "_" + Math.round(y), R = rng(o.seed || 5);
-      g = `<defs><linearGradient id="${id}m" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${ca[1]}"/><stop offset=".25" stop-color="${ca[0]}"/><stop offset="1" stop-color="#06162a"/></linearGradient><linearGradient id="${id}d" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="${ca[0]}"/><stop offset="1" stop-color="${ca[1]}"/></linearGradient><linearGradient id="${id}p" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8a7556"/><stop offset="1" stop-color="#5c4a33"/></linearGradient></defs>`;
-      g += `<rect x="-1500" y="${-D - 26}" width="3000" height="40" fill="${ca[0]}"/>`; // laut di kejauhan, di ujung lorong
+    } else if (j === "laut_terbelah") { // laut terbelah dua (QS 26:63), gaya air sama dengan ombak kisah Nuh: lorong dasar laut kering di antara dua dinding air "laksana gunung", dilihat dari pangkal lorong; (0,0) = tengah pangkal lorong. belah 0-1 (0 = laut berombak rata, 1 = terbelah penuh; turunkan lagi = air runtuh menutup), tinggi = tinggi dinding px di depan (bawaan 1100), lebar = lebar lorong di depan (bawaan 560), jauh = jarak ke ujung lorong (bawaan 560), warna [atas, bawah], buih
+      const bl = v(o.belah, t, d, 1), e = bl * bl * (3 - 2 * bl), Ht = (o.tinggi || 1100) * e, W2 = ((o.lebar || 560) / 2) * (0.35 + 0.65 * e), D = o.jauh || 560, w2 = 34 * (0.3 + 0.7 * e), Hj = Ht * 0.22;
+      const ca = o.warna || ["#2b4a78", "#0b1832"], bu = o.buih || "#ffe9b8", id = "lt" + Math.round(x) + "_" + Math.round(y), R = rng(o.seed || 5);
+      const gel = (xx, ph, a, L, sp) => a * (0.62 * Math.sin(xx / L + t * sp + ph) + 0.28 * Math.sin(xx / (L * 0.41) - t * sp * 1.6 + ph * 2) + 0.1 * Math.sin(xx / (L * 0.17) + t * 2.3)); // rumus gelombang ombak Nuh
+      g = `<defs><linearGradient id="${id}a" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${ca[0]}"/><stop offset=".35" stop-color="${ca[1]}"/><stop offset="1" stop-color="#03060f"/></linearGradient><linearGradient id="${id}d" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="${ca[1]}"/><stop offset=".7" stop-color="${ca[0]}"/><stop offset="1" stop-color="${warna(ca[0], "#ffffff", 0.18)}"/></linearGradient><linearGradient id="${id}p" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#6d5c43"/><stop offset="1" stop-color="#4a3c2a"/></linearGradient></defs>`;
+      let jauh = `M -1500 ${(-D - 20 + gel(-1500, 1, 8, 260, 0.8)).toFixed(1)}`; for (let xx = -1460; xx <= 1500; xx += 40) jauh += ` L ${xx} ${(-D - 20 + gel(xx, 1, 8, 260, 0.8)).toFixed(1)}`;
+      g += `<path d="${jauh} L 1500 ${-D + 30} L -1500 ${-D + 30} Z" fill="url(#${id}a)"/>`; // laut di ujung lorong
       g += `<path d="M ${-W2} 0 L ${-w2} ${-D} L ${w2} ${-D} L ${W2} 0 Z" fill="url(#${id}p)" stroke="${INK}" stroke-width="5" stroke-linejoin="round"/>`; // dasar laut yang kering
-      for (let i = 0; i < 9; i++) { const f = R(), yy = -D * f, ww = W2 + (w2 - W2) * f; g += `<ellipse cx="${(R() - 0.5) * 1.4 * ww}" cy="${yy}" rx="${(14 + R() * 18) * (1 - f * 0.7)}" ry="${(6 + R() * 6) * (1 - f * 0.7)}" fill="#3e3021" opacity=".55"/>`; } // batu dan genangan kecil
-      if (e < 0.98) g += `<path d="M ${-1500} ${-D - 6} L 1500 ${-D - 6} L 1500 60 L -1500 60 Z" fill="url(#${id}d)" opacity="${(1 - e).toFixed(3)}"/><path d="M -1500 ${-6 - 8 * Math.sin(t * 2)} Q 0 ${-24 * (1 - e)} 1500 ${-6 + 8 * Math.sin(t * 2)}" stroke="#d8f2ff" stroke-width="6" fill="none" opacity="${(0.6 * (1 - e)).toFixed(3)}" stroke-dasharray="120 80" stroke-dashoffset="${(t * 30).toFixed(1)}"/>`; // air yang menutup lorong
+      for (let i = 0; i < 10; i++) { const f = R(), ww = W2 + (w2 - W2) * f; g += `<ellipse cx="${((R() - 0.5) * 1.4 * ww).toFixed(1)}" cy="${(-D * f).toFixed(1)}" rx="${((14 + R() * 18) * (1 - f * 0.7)).toFixed(1)}" ry="${((5 + R() * 6) * (1 - f * 0.7)).toFixed(1)}" fill="#2f2619" opacity=".5"/>`; } // batu dan genangan
+      if (e < 0.98) { const tk = 1 - e; for (let i = 0; i < 3; i++) { const yy = -D + 30 + i * (D / 3), a = (40 + 30 * i) * tk; let dd = `M -1500 ${(yy - gel(-1500, i * 1.9, a, 260, 0.9 + i * 0.25)).toFixed(1)}`; for (let xx = -1460; xx <= 1500; xx += 40) dd += ` L ${xx} ${(yy - gel(xx, i * 1.9, a, 260, 0.9 + i * 0.25)).toFixed(1)}`;
+          g += `<path d="${dd} L 1500 60 L -1500 60 Z" fill="url(#${id}a)" opacity="${Math.min(1, tk * 1.6).toFixed(3)}"/><path d="${dd}" stroke="${bu}" stroke-width="${5 + i * 1.5}" fill="none" opacity="${((0.55 - i * 0.08) * tk).toFixed(3)}" stroke-linecap="round" stroke-dasharray="${90 + i * 30} ${70 + i * 25}" stroke-dashoffset="${(t * 40).toFixed(1)}"/>`; } } // laut berombak yang menutup lorong (sama dengan ombak Nuh)
       [-1, 1].forEach((sg) => { if (Ht < 4) return;
-        let tepi = ""; for (let k2 = 0; k2 <= 10; k2++) { const yy = -Ht * k2 / 10; tepi += ` L ${(sg * (W2 + (16 + 10 * k2 / 10) * Math.sin(k2 * 1.7 + t * 1.8 + sg))).toFixed(1)} ${yy.toFixed(1)}`; } // tepi depan dinding bergelombang
-        const muka = `M ${sg * w2} ${-D}${tepi} L ${sg * w2} ${-D - Hj} Z`,
-          luar = `M ${sg * W2} 60${tepi} Q ${sg * (W2 + 380)} ${-Ht * 1.02} ${sg * 1500} ${-D - Hj * 0.9} L ${sg * 1500} 60 Z`;
-        g += `<path d="${luar}" fill="url(#${id}m)" stroke="${INK}" stroke-width="6" stroke-linejoin="round"/>`; // tubuh air di sisi luar
-        g += `<path d="${muka}" fill="url(#${id}d)" stroke="${INK}" stroke-width="7" stroke-linejoin="round"/>`; // dinding air yang menghadap lorong
-        for (let k2 = 1; k2 < 8; k2++) { const f = k2 / 8, xa = sg * (W2 + (w2 - W2) * f), ya = -D * f, yb = -(Ht + (D + Hj - Ht) * f);
-          g += `<path d="M ${xa.toFixed(1)} ${yb.toFixed(1)} L ${xa.toFixed(1)} ${ya.toFixed(1)}" stroke="#bfeaff" stroke-width="${(5 * (1 - f * 0.6)).toFixed(1)}" opacity=".35" stroke-dasharray="${60 - 40 * f} ${40 - 20 * f}" stroke-dashoffset="${(-t * (80 - 50 * f)).toFixed(1)}" stroke-linecap="round"/>`; } // arus tertahan mengalir di permukaan dinding
+        let tepi = ""; for (let k2 = 0; k2 <= 12; k2++) { const yy = -Ht * k2 / 12; tepi += ` L ${(sg * (W2 + (14 + 12 * k2 / 12) * Math.sin(k2 * 1.7 + t * 1.8 + sg))).toFixed(1)} ${yy.toFixed(1)}`; } // tepi depan dinding bergolak
+        let atas = ""; for (let k2 = 1; k2 <= 16; k2++) { const xx = sg * (W2 + k2 * 70); atas += ` L ${xx.toFixed(1)} ${(-Ht * (1 - k2 / 22) - gel(xx, sg * 2, 26, 200, 1.1)).toFixed(1)}`; }
+        g += `<path d="M ${sg * W2} 60${tepi}${atas} L ${sg * 1500} 60 Z" fill="url(#${id}a)" stroke="${INK}" stroke-width="6" stroke-linejoin="round"/>`; // tubuh air di sisi luar, punggungnya berombak
+        g += `<path d="M ${sg * W2} ${-Ht}${atas}" stroke="${bu}" stroke-width="7" fill="none" opacity=".5" stroke-linecap="round" stroke-dasharray="110 80" stroke-dashoffset="${(t * 40).toFixed(1)}"/>`;
+        g += `<path d="M ${sg * w2} ${-D}${tepi} L ${sg * w2} ${-D - Hj} Z" fill="url(#${id}d)" stroke="${INK}" stroke-width="7" stroke-linejoin="round"/>`; // dinding air yang menghadap lorong
+        for (let k2 = 1; k2 <= 7; k2++) { const f = k2 / 8; let dd = ""; for (let m = 0; m <= 10; m++) { const u = m / 10, xa = sg * (W2 + (w2 - W2) * u), ya = -Ht * f * (1 - u) + (-D - Hj * f) * u - (-D * u) * (1 - f); dd += `${m ? " L" : "M"} ${xa.toFixed(1)} ${(ya + 10 * Math.sin(u * 7 + t * (1.2 + f) + k2)).toFixed(1)}`; }
+          g += `<path d="${dd}" stroke="${bu}" stroke-width="${(6 - 3 * f).toFixed(1)}" fill="none" opacity="${(0.42 - 0.2 * f).toFixed(2)}" stroke-linecap="round" stroke-dasharray="${90 - 40 * f} ${70 - 30 * f}" stroke-dashoffset="${(sg * t * (40 + 20 * f)).toFixed(1)}"/>`; } // lapisan gelombang yang tertahan tegak, buih seperti ombak Nuh
         let cr = `M ${sg * W2} ${-Ht}`; for (let k2 = 1; k2 <= 12; k2++) { const f = k2 / 12; cr += ` L ${(sg * (W2 + (w2 - W2) * f)).toFixed(1)} ${(-(Ht + (D + Hj - Ht) * f) - (10 - 7 * f) * Math.sin(t * 3 + k2 * 1.3 + sg)).toFixed(1)}`; }
-        g += `<path d="${cr}" stroke="#f2fbff" stroke-width="10" fill="none" stroke-linecap="round" stroke-linejoin="round" opacity=".85"/>`; // buih di puncak dinding
+        g += `<path d="${cr}" stroke="${bu}" stroke-width="10" fill="none" stroke-linecap="round" stroke-linejoin="round" opacity=".85" stroke-dasharray="70 26" stroke-dashoffset="${(t * 30).toFixed(1)}"/>`; // buih di puncak dinding
       });
     } else if (j === "bahtera") { // kapal Nabi Nuh dari papan dan pasak (QS 54:13), tampak samping; (0,0) = lunas. jadi 0-1 (rusuk -> papan -> rumah geladak), goyang (derajat), cahaya 0-1, orang n (siluet kecil di geladak), pintu 0-1 (+titian), darat (penyangga + bayangan)
       const jd = v(o.jadi, t, d, 1), gy = v(o.goyang, t, d, 0), ch = v(o.cahaya, t, d, 0.8), pt = v(o.pintu, t, d, 0), W = 460, H = 250, R = rng(11);
@@ -1734,6 +1738,10 @@
       for (let i = 0; i < 4; i++) s += `<circle cx="0" cy="${-370 + i * 30 + n}" r="5" fill="${G(0.45)}"/>`;
       if (P.motif === "bordir") for (let i = 0; i < 4; i++) s += `<path d="M -16 ${-372 + i * 30 + n} q 6 -8 12 0 M 4 ${-372 + i * 30 + n} q 6 -8 12 0" stroke="${P.bordir || "#c9a24a"}" stroke-width="3" fill="none"/>`;
     }
+    if (P.kalung === "usekh") { // kalung lebar raja Mesir kuno: pita setengah lingkaran berlapis emas-biru-merah di bahu dan dada
+      [["#e2b13c", 0], ["#1f3f8a", 15], ["#e2b13c", 28], ["#b8402e", 41], ["#e2b13c", 52]].forEach(([c, r]) => { s += `<path d="M ${-34 - r} ${-404 + n} Q 0 ${-370 + n + r * 1.4} ${34 + r} ${-404 + n}" fill="none" stroke="${c}" stroke-width="13" stroke-linecap="round"/>`; });
+      s += `<path d="M -88 ${-404 + n} Q 0 ${-290 + n} 88 ${-404 + n}" fill="none" stroke="${INK}" stroke-width="4"/>`;
+    }
     if (P.handuk) { const H = P.handuk; s += `<path d="M -56 ${-398 + n} Q 0 ${-366 + n} 56 ${-398 + n}" stroke="${H}" stroke-width="24" fill="none" stroke-linecap="round"/><rect x="28" y="${-402 + n}" width="30" height="104" rx="8" fill="${H}" stroke="${warna(H, "#000000", 0.3)}" stroke-width="3" transform="rotate(-6 43 ${-400 + n})"/><path d="M 28 ${-310 + n} l 30 -3" stroke="#e03131" stroke-width="5" transform="rotate(-6 43 ${-400 + n})"/>`; }
     return s;
   }
@@ -2147,12 +2155,18 @@
         else if (rb === "belah") k += `<path d="M -76 -2 C -86 -96, 84 -104, 76 -2 C 70 -50, 30 -66, 8 -70 L 0 -40 L -8 -70 C -30 -66, -70 -50, -76 -2 Z" fill="${RB}"/>`;
         if (b.janggut) {
           const jb = b.janggut_model || "pendek";
+          if (jb === "firaun") { // janggut upacara raja Mesir kuno: sempit, panjang, berpilin
+            k += `<path d="M -16 58 L 16 58 L 13 132 Q 0 142 -13 132 Z" fill="${b.janggut === true ? "#1d2747" : b.janggut}" stroke="${INK}" stroke-width="4"/>`;
+            for (let i = 0; i < 4; i++) k += `<line x1="-14" y1="${74 + i * 16}" x2="14" y2="${74 + i * 16}" stroke="#e2b13c" stroke-width="4"/>`;
+            k += `<path d="M -16 60 Q -40 50 -54 30 M 16 60 Q 40 50 54 30" stroke="#1d2747" stroke-width="4" fill="none"/>`; // tali pengikat ke telinga
+          } else {
           const janggutD = jb === "tipis"
             ? "M -58 30 Q 0 58 58 30 Q 36 54 0 52 Q -36 54 -58 30 Z"
             : jb === "panjang"
               ? "M -58 30 C -50 92, 50 92, 58 30 L 46 92 Q 0 138 -46 92 Z"
               : "M -58 30 C -50 92, 50 92, 58 30 C 40 70, -40 70, -58 30 Z";
           k += `<path d="${janggutD}" fill="${b.janggut === true ? RB : b.janggut}"/>`;
+          }
         }
         if (b.keriput) k += `<path d="M -40 -46 q 10 -4 20 0 M 20 -46 q 10 -4 20 0 M -58 22 q 4 8 10 10 M 58 22 q -4 8 -10 10" fill="none" stroke="${INK}" stroke-width="3" opacity=".5"/>`;
       }
@@ -2193,6 +2207,7 @@
         k += `<path d="M 58 -52 Q 44 -118 -20 -116 Q -92 -108 -96 -30 Q -100 40 -92 112 L -34 116 Q -46 50 -30 -4 Q -10 -40 58 -52 Z" fill="${WN}" stroke="${INK}" stroke-width="6" stroke-linejoin="round"/>`;
         for (let i = 0; i < 5; i++) { const yy = -70 + i * 36; k += `<path d="M -88 ${yy} Q -66 ${yy - 8} ${-44 - (i > 1 ? 4 : 0)} ${yy + 2}" stroke="${GN}" stroke-width="8" fill="none" stroke-linecap="round"/>`; } // garis di sayap kain belakang
         k += `<path d="M 60 -54 Q 0 -70 -84 -48" stroke="${GN}" stroke-width="10" fill="none" stroke-linecap="round"/><path d="M -96 -20 Q -112 30 -104 70" stroke="${INK}" stroke-width="12" fill="none" stroke-linecap="round"/>`;
+        if (b.ureus !== false) k += `<path d="M 50 -54 Q 66 -70 58 -86 Q 74 -92 70 -102 Q 58 -100 50 -90 Q 40 -74 42 -56 Z" fill="#e8b934" stroke="${INK}" stroke-width="4" stroke-linejoin="round"/>`; // kobra di dahi dari samping
       }
       else if (b.penutup_kepala === "mahkota") // mahkota emas raja dari samping
         k += `<path d="M -70 -56 L 60 -56 L 66 -104 L 34 -82 L 4 -122 L -26 -82 L -62 -108 Z" fill="${b.warna_penutup || "#e8b934"}" stroke="${INK}" stroke-width="6" stroke-linejoin="round"/><rect x="-72" y="-66" width="136" height="16" rx="5" fill="#b8841c" stroke="${INK}" stroke-width="4"/><circle cx="-4" cy="-58" r="6" fill="#c0392b" stroke="${INK}" stroke-width="2"/>`;
@@ -2210,6 +2225,7 @@
         [-1, 1].forEach((sg) => { for (let i = 0; i < 5; i++) { const yy = 18 + i * 24, lu = 70 + ((yy + 40) / 168) * 40 - 6, da = 72 + (i > 2 ? 2 : 0); k += `<path d="M ${sg * da} ${yy} L ${sg * lu} ${yy + 4}" stroke="${GN}" stroke-width="8" stroke-linecap="round"/>`; } }); // garis di dalam sayap kain
         for (let i = 0; i < 4; i++) k += `<path d="M ${-60 + i * 4} ${-96 + i * 16} Q 0 ${-116 + i * 16} ${60 - i * 4} ${-96 + i * 16}" stroke="${GN}" stroke-width="8" fill="none" stroke-linecap="round"/>`;
         k += `<path d="M -66 -44 Q 0 -64 66 -44" stroke="#b8841c" stroke-width="12" fill="none" stroke-linecap="round"/><path d="M -66 -44 Q 0 -64 66 -44" stroke="${INK}" stroke-width="3" fill="none"/>`;
+        if (b.ureus !== false) k += `<path d="M -6 -52 Q -16 -74 -4 -86 Q -14 -98 0 -108 Q 14 -98 4 -86 Q 16 -74 6 -52 Z" fill="#e8b934" stroke="${INK}" stroke-width="4" stroke-linejoin="round"/><circle cx="0" cy="-96" r="3" fill="${INK}"/>`; // kobra kecil di dahi, ciri hiasan raja Mesir kuno
       } else if (b.penutup_kepala === "mahkota") { // mahkota emas raja: pita dan lima puncak
         const WM = b.warna_penutup || "#e8b934";
         k += `<path d="M -70 -58 L 70 -58 L 82 -116 L 44 -88 L 22 -130 L 0 -92 L -22 -130 L -44 -88 L -82 -116 Z" fill="${WM}" stroke="${INK}" stroke-width="6" stroke-linejoin="round"/><rect x="-74" y="-70" width="148" height="18" rx="6" fill="#b8841c" stroke="${INK}" stroke-width="4"/>`;
