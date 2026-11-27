@@ -756,7 +756,7 @@ def arahkan(naskah: dict, waktu_adegan: list[float] | None = None,
                 s["resap"] = {"p": 0.85, "dalam": 700}
             if re.search(r"\b(naungan|teduh)\b", teks, re.I):
                 s["naungan"] = {"x": 540, "y": 1100, "r": 300, "kuat": 1}
-            if re.search(r"\b(retak|terbelah|terbelahnya)\b", teks, re.I):
+            if not rb and re.search(r"\b(retak|terbelah|terbelahnya)\b", teks, re.I):  # rencana: sutradara yang memutuskan (laut terbelah bukan tanah retak)
                 s["retak"] = {"x": 540, "y": 1500, "p": 0.7}
             if re.search(r"\b(hujan|tercurah)\b", teks, re.I):
                 s["hujan"] = 0.8

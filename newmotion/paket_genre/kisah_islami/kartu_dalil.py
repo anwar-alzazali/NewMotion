@@ -15,6 +15,7 @@ import unicodedata
 
 ARAB_MIN_1, ARAB_MIN_2, ARAB_MAKS = 42.0, 34.0, 56.0
 KARTU_MAKS_HURUF = 200
+LATAR_KARTU = 0.72  # latar kartu tembus pandang (27 Nov, permintaan pemilik): adegan tetap terlihat di belakang
 ZONA_ATAS, ZONA_TINGGI = 170, 1130
 
 
@@ -87,7 +88,7 @@ def buat_kartu(dalil: dict, *, at: float = 0.0) -> dict:
     y = ZONA_ATAS + (ZONA_TINGGI - tinggi * s) / 2 + tinggi * s / 2
     kartu = {"jenis": "kartu_dalil", "x": 540, "y": round(y, 1), "s": round(s, 3), "at": round(at, 2),
              "kitab": dalil.get("kitab", ""), "label": dalil.get("label") or "DALIL", "teks": teks,
-             "ukuran": uk, "tulis_at": 0.4}
+             "ukuran": uk, "tulis_at": 0.4, "latar": LATAR_KARTU}
     if ta:
         kartu.update(arab=arab, arab_ukuran=ta[0], arab_baris=ta[1], arab_at=0.15)
     return kartu

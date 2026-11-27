@@ -771,7 +771,7 @@
         <path d="M -60 -60 L 60 -60 L 85 70 L -85 70 Z" fill="#6b4a2a" stroke="${INK}" stroke-width="6"/><rect x="-62" y="-78" width="124" height="26" rx="6" fill="#c0392b" stroke="${INK}" stroke-width="5"/>`;
       for (let i = -70; i <= 70; i += 14) g += `<line x1="${i * 0.8}" y1="-50" x2="${i}" y2="68" stroke="#3d2a18" stroke-width="3"/>`;
       g += `</g>`;
-    } else if (j === "nur") { // cahaya lembut setinggi orang menandai nabi (TIDAK digambar sosoknya): fokus, tidak silau, nama di bawah
+    } else if (j === "nur") { // cahaya lembut setinggi orang menandai nabi (TIDAK digambar sosoknya): fokus, tidak silau, nama di bawah (nama_letak "atas" = di atas cahaya)
       const wn = o.warna || "#fff1c4", den = 0.92 + 0.08 * Math.sin(t * 2.2), id = "nur" + Math.round(x);
       g = `<defs><radialGradient id="${id}a"><stop offset="0" stop-color="#ffffff" stop-opacity=".95"/><stop offset=".35" stop-color="${wn}" stop-opacity=".75"/><stop offset="1" stop-color="${wn}" stop-opacity="0"/></radialGradient>
         <linearGradient id="${id}b" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${wn}" stop-opacity="0"/><stop offset=".55" stop-color="${wn}" stop-opacity=".45"/><stop offset="1" stop-color="${wn}" stop-opacity=".15"/></linearGradient></defs>
@@ -780,7 +780,8 @@
         <ellipse cx="0" cy="-300" rx="${150 * den}" ry="${330 * den}" fill="url(#${id}a)"/>
         <ellipse cx="0" cy="-300" rx="46" ry="200" fill="#ffffff" opacity="${0.55 * den}"/>`;
       const R = rng(o.seed || 5); for (let i = 0; i < 14; i++) { const h = ((R() * 700 + t * (40 + R() * 40)) % 700), bx = (R() - 0.5) * 220; g += `<circle cx="${bx}" cy="${-h}" r="${2 + R() * 4}" fill="#fff" opacity="${0.6 * (1 - h / 700)}"/>`; }
-      if (o.nama) { const nm = esc(o.nama), w2 = o.nama.length * 25 + 60; g += `<g transform="scale(${o.nama_s || 1})" font-family="DejaVu Sans, Arial, sans-serif" font-weight="800" text-anchor="middle"><rect x="${-w2 / 2}" y="40" width="${w2}" height="74" rx="37" fill="#1d1520" opacity=".78"/><text y="90" font-size="44" fill="#ffe6a0">${nm}</text></g>`; }
+      if (o.nama) { const nm = esc(o.nama), w2 = o.nama.length * 25 + 60, ny = o.nama_letak === "atas" ? -720 : 40; // nama_letak "atas": di atas cahaya (27 Nov)
+        g += `<g transform="scale(${o.nama_s || 1})" font-family="DejaVu Sans, Arial, sans-serif" font-weight="800" text-anchor="middle"><rect x="${-w2 / 2}" y="${ny}" width="${w2}" height="74" rx="37" fill="#1d1520" opacity=".78"/><text y="${ny + 50}" font-size="44" fill="#ffe6a0">${nm}</text></g>`; }
     } else if (j === "jenazah") { // jenazah berkafan putih di atas keranda kayu (sopan, tanpa wajah); o.kain = warna kain penutup opsional
       const kw = "#7a5432";
       g = `<ellipse cx="0" cy="40" rx="430" ry="34" fill="#000" opacity=".25"/>
@@ -813,6 +814,7 @@
       };
       if (o.sub) { const w2 = o.sub.length * 25 + 70; g += `<g font-family="DejaVu Sans, Arial, sans-serif" font-weight="800" text-anchor="middle"><rect x="${-w2 / 2}" y="60" width="${w2}" height="80" rx="40" fill="#1d1520" opacity=".85"/><text y="114" font-size="46" fill="#ffd27a">${esc(o.sub)}</text></g>`; }
     } else if (j === "kartu_dalil") { // kartu dalil 2D: {kitab:"HR. Bukhari", no:"6507", teks, sorot:"frasa", arab:"teks Arab terverifikasi", label:"DALIL", ukuran, sorot_at}
+      const LTR = clamp(o.latar == null ? 1 : o.latar); // (27 Nov) latar kartu 0-1: <1 = tembus pandang, adegan di belakang tetap terlihat
       const W = 780, tt = tl, masuk = halus(tt / 0.45), ov = tt < 0.45 ? 1 + (1 - masuk) * 0.0 : 1;
       const k = 0.55 + 0.45 * masuk + (tt > 0.45 && tt < 0.7 ? Math.sin((tt - 0.45) / 0.25 * Math.PI) * 0.03 : 0);
       const rot = (1 - masuk) * -9 + Math.sin(tt * 1.3) * 0.6, melayang = Math.sin(tt * 1.6) * 8;
@@ -830,11 +832,11 @@
         <defs><linearGradient id="kdk" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fffaf0"/><stop offset="1" stop-color="#f1e3c3"/></linearGradient>
         <linearGradient id="kdh" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#0d4a3a"/><stop offset="1" stop-color="#1b7a5c"/></linearGradient>
         <clipPath id="kdc"><rect x="${-W / 2}" y="${top}" width="${W}" height="${H}" rx="34"/></clipPath></defs>
-        <rect x="${-W / 2 + 10}" y="${top + 16}" width="${W}" height="${H}" rx="34" fill="#000" opacity=".35"/>
-        <rect x="${-W / 2}" y="${top}" width="${W}" height="${H}" rx="34" fill="url(#kdk)" stroke="#e8c26a" stroke-width="12"/>
+        <rect x="${-W / 2 + 10}" y="${top + 16}" width="${W}" height="${H}" rx="34" fill="#000" opacity="${0.35 * LTR}"/>
+        <rect x="${-W / 2}" y="${top}" width="${W}" height="${H}" rx="34" fill="url(#kdk)" fill-opacity="${LTR}" stroke="#e8c26a" stroke-width="12"/>
         <rect x="${-W / 2 + 22}" y="${top + 22}" width="${W - 44}" height="${H - 44}" rx="22" fill="none" stroke="#b07a2a" stroke-width="3" opacity=".8"/>`;
       // pola bintang delapan samar + sudut berornamen
-      for (let i = 0; i < 5; i++) for (let j2 = 0; j2 < 7; j2++) { const px = -W / 2 + 60 + i * 165, py = top + 200 + j2 * ((H - 260) / 6); g += `<path d="M ${px} ${py - 18} L ${px + 6} ${py - 6} L ${px + 18} ${py} L ${px + 6} ${py + 6} L ${px} ${py + 18} L ${px - 6} ${py + 6} L ${px - 18} ${py} L ${px - 6} ${py - 6} Z" fill="#b07a2a" opacity=".07"/>`; }
+      if (LTR >= 1) for (let i = 0; i < 5; i++) for (let j2 = 0; j2 < 7; j2++) { const px = -W / 2 + 60 + i * 165, py = top + 200 + j2 * ((H - 260) / 6); g += `<path d="M ${px} ${py - 18} L ${px + 6} ${py - 6} L ${px + 18} ${py} L ${px + 6} ${py + 6} L ${px} ${py + 18} L ${px - 6} ${py + 6} L ${px - 18} ${py} L ${px - 6} ${py - 6} Z" fill="#b07a2a" opacity=".07"/>`; }
       [[-1, -1], [1, -1], [-1, 1], [1, 1]].forEach(([sx, sy]) => { const cx = sx * (W / 2 - 40), cy = (sy < 0 ? top + 40 : top + H - 40); g += `<path d="M ${cx} ${cy} q ${-sx * 50} 0 ${-sx * 50} ${sy * 50}" stroke="#b07a2a" stroke-width="5" fill="none"/><circle cx="${cx - sx * 22}" cy="${cy + sy * 22}" r="7" fill="#e8c26a" stroke="#b07a2a" stroke-width="2"/>`; });
       // pita hijau + label
       g += `<g clip-path="url(#kdc)"><rect x="${-W / 2}" y="${top}" width="${W}" height="150" fill="url(#kdh)"/><path d="M ${-W / 2} ${top + 150} H ${W / 2}" stroke="#e8c26a" stroke-width="8"/></g>

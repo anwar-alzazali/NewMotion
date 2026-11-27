@@ -52,7 +52,8 @@ Bedanya: di contoh itu waktu sudah angka karena rekamannya sudah ada. Di papan m
 - **Raja Mesir kuno / Firaun:** `"penutup_kepala": "nemes", "janggut": true, "janggut_model": "firaun",
   "pakaian": {"jenis": "jubah", "warna": "#f4ecd8", "bisht": "#3a2a1e", "kalung": "usekh"}`.
 - **Rombongan Arab:** `"cerita": {"suku": "arab", ...}` lalu figuran `{"npc": <angka acak tetap>}`; membelakangi kamera: `"belakang": true`.
-- **Nabi:** benda `{"jenis": "nur", "nama": "Nabi Musa ﷺ"}`, tidak pernah boneka.
+- **Nabi:** benda `{"jenis": "nur", "nama": "Nabi Musa ﷺ", "nama_letak": "atas"}`, tidak pernah boneka.
+- **Kartu dalil tembus pandang:** benda `kartu_dalil` dengan `"latar": 0.72` (1 = kartu penuh); tampilkan di beat kutipan saja.
 - **Jasad tanpa luka:** boneka `"pose": "rebahan", "mata": "tutup"` di benda `pantai`.
 - **Laut terbelah:** benda `{"jenis": "laut_terbelah", "belah": [[0, 0], [2.5, 1]]}` (turunkan lagi = laut menutup).
 

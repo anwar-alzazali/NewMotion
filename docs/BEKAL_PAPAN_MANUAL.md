@@ -52,7 +52,8 @@ Bedanya: di contoh itu waktu sudah angka karena rekamannya sudah ada. Di papan m
 - **Raja Mesir kuno / Firaun:** `"penutup_kepala": "nemes", "janggut": true, "janggut_model": "firaun",
   "pakaian": {"jenis": "jubah", "warna": "#f4ecd8", "bisht": "#3a2a1e", "kalung": "usekh"}`.
 - **Rombongan Arab:** `"cerita": {"suku": "arab", ...}` lalu figuran `{"npc": <angka acak tetap>}`; membelakangi kamera: `"belakang": true`.
-- **Nabi:** benda `{"jenis": "nur", "nama": "Nabi Musa ﷺ"}`, tidak pernah boneka.
+- **Nabi:** benda `{"jenis": "nur", "nama": "Nabi Musa ﷺ", "nama_letak": "atas"}`, tidak pernah boneka.
+- **Kartu dalil tembus pandang:** benda `kartu_dalil` dengan `"latar": 0.72` (1 = kartu penuh); tampilkan di beat kutipan saja.
 - **Jasad tanpa luka:** boneka `"pose": "rebahan", "mata": "tutup"` di benda `pantai`.
 - **Laut terbelah:** benda `{"jenis": "laut_terbelah", "belah": [[0, 0], [2.5, 1]]}` (turunkan lagi = laut menutup).
 
@@ -142,7 +143,7 @@ Lembar kontak + video + hasil `periksa.py`. GAGAL = kerusakan teknis atau batas 
 - motor: motor matic tampak samping; {warna, arah -1}. Titik kait: KAIT.motor (jok, setang, dek kaki) [keadaan: arah]
 - naungan_kelompok: awan peneduh + bayangan nyata untuk kelompok; luas 0-1, kuat 0-1 [keadaan: kuat*, luas*]
 - ngarai: dinding besi-tembaga Zulkarnain di celah dua gunung (QS 18:93-97). x,y = kaki dinding; lubang 0-1 (galian, inti terang = hampir tembus), jebol 0-1, kilap = detik dinding "utuh kembali" [keadaan: gaya, jebol*, kilap, lubang*, lx, ly]
-- nur: cahaya lembut setinggi orang menandai nabi (TIDAK digambar sosoknya): fokus, tidak silau, nama di bawah [keadaan: nama, nama_s]
+- nur: cahaya lembut setinggi orang menandai nabi (TIDAK digambar sosoknya): fokus, tidak silau, nama di bawah (nama_letak "atas" = di atas cahaya) [keadaan: nama, nama_letak, nama_s]
 - obat: botol obat + strip
 - ombak: banjir / laut badai berlapis (15 Nov): y = permukaan air; tinggi = amplitudo px (300 = "laksana gunung"); lapis, jarak, panjang, cepat, warna [atas, bawah], buih [keadaan: buih, cepat, jarak, kilap*, lapis, panjang, tinggi*]
 - pagar: pagar besi/kayu sepanjang w; {w, warna, model: kayu|tembok} [keadaan: model, w]
