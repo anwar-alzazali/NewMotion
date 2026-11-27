@@ -549,7 +549,7 @@
     } else if (j === "genangan_tubuh") { // genangan pada tubuh simbolis umum; tinggi 0-500 dari telapak (35 mata kaki, 110 lutut, 210 pinggang, 320 dada, 440 mulut), riak 0-1
       const tinggi = clamp(v(o.tinggi, t, d, 110), 0, 500), riak = clamp(v(o.riak, t, d, 0.65));
       const permukaan = -tinggi + Math.sin(t * 2.6) * 5 * riak;
-      const air = "#63c9df", terang = "#d9fbff";
+      const terang = "#d9fbff";
       g = `<defs><linearGradient id="gnt" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#245c85"/><stop offset=".5" stop-color="#63c9df"/><stop offset="1" stop-color="#245c85"/></linearGradient></defs>
         <ellipse cx="0" cy="8" rx="185" ry="20" fill="#000" opacity=".18"/>
         <path d="M -52 0 L -60 -190 Q -72 -300 -92 -410 Q -112 -500 -74 -550 Q 0 -585 74 -550 Q 112 -500 92 -410 Q 72 -300 60 -190 L 52 0 Z" fill="#8b786e" stroke="${INK}" stroke-width="9"/>
