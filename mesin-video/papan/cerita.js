@@ -578,7 +578,7 @@
         <g transform="rotate(${mir} 0 -296)"><rect x="-190" y="-306" width="380" height="20" rx="10" fill="url(#tbg)" stroke="${INK}" stroke-width="4"/>
         ${[-1, 1].map((sd) => { const px = sd * 172; return `<g transform="rotate(${-mir} ${px} -296)"><path d="M ${px} -296 L ${px - 62} -168 M ${px} -296 L ${px + 62} -168" stroke="#a87420" stroke-width="4" stroke-dasharray="10 6"/><circle cx="${px}" cy="-296" r="9" fill="#ffe9a0" stroke="${INK}" stroke-width="3"/><path d="M ${px - 78} -170 Q ${px} -96 ${px + 78} -170 Z" fill="url(#tbp)" stroke="${INK}" stroke-width="5"/><ellipse cx="${px}" cy="-170" rx="78" ry="12" fill="#ffe9a0" stroke="${INK}" stroke-width="4"/></g>`; }).join("")}</g>
         <circle cx="0" cy="-322" r="24" fill="url(#tbp)" stroke="${INK}" stroke-width="4"/>${bintik4(-10, -332, 12, 0.6 + 0.4 * Math.sin(t * 3))}`;
-    } else if (j === "genangan_tubuh") { // genangan pada tubuh simbolis umum; tinggi 0-500 dari telapak (35 mata kaki, 110 lutut, 210 pinggang, 320 dada, 440 mulut), riak 0-1
+    } else if (j === "genangan_tubuh") { // KHUSUS keringat Padang Mahsyar: diagram air di tubuh + label mata kaki/lutut/pinggang/dada/mulut (bukan air laut/banjir/tenggelam); tinggi 0-500 dari telapak (35 mata kaki, 110 lutut, 210 pinggang, 320 dada, 440 mulut), riak 0-1
       const tinggi = clamp(v(o.tinggi, t, d, 110), 0, 500), riak = clamp(v(o.riak, t, d, 0.65));
       const permukaan = -tinggi + Math.sin(t * 2.6) * 5 * riak;
       const terang = "#d9fbff";

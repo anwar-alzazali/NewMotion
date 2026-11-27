@@ -44,18 +44,36 @@ Bedanya: di contoh itu waktu sudah angka karena rekamannya sudah ada. Di papan m
 
 ## Batas wajib (dicek mesin; papan ditolak bila dilanggar)
 - Allah tidak digambar; nabi dan malaikat tidak digambar (cahaya/nur + nama). Sahabat tidak digambar berwajah.
-- Bacaan Arab tidak disuarakan: huruf Arab dilarang di `narasi`; tulis Arab + latin + arti di `teks` layar.
-- Hanya dalil sahih/hasan, sumber tampil di layar (`sub`), nomor dicek oleh penulis JSON. Jalur ini tidak memverifikasi dalil.
+- Bacaan Arab tidak disuarakan: huruf Arab dilarang di `narasi`. Teks Arab dalil hanya lewat `kartu_dalil` (kolom `arab`),
+  supaya dicocokkan dengan sumbernya; teks layar biasa memuat latin/arti dan sumber.
+- Hanya dalil sahih/hasan, sumber tampil di layar (`sub`). Kartu dalil dicocokkan mesin dengan Al-Qur'an/dataset hadis;
+  yang tidak cocok satu huruf pun ditolak. Sumber di `sub` teks biasa tetap tanggung jawab penulis JSON.
 - Tanpa watermark. Label AI tetap aktif saat unggah.
 
 ## Resep tokoh yang sering dipakai
 - **Raja Mesir kuno / Firaun:** `"penutup_kepala": "nemes", "janggut": true, "janggut_model": "firaun",
   "pakaian": {"jenis": "jubah", "warna": "#f4ecd8", "bisht": "#3a2a1e", "kalung": "usekh"}`.
 - **Rombongan Arab:** `"cerita": {"suku": "arab", ...}` lalu figuran `{"npc": <angka acak tetap>}`; membelakangi kamera: `"belakang": true`.
-- **Nabi:** benda `{"jenis": "nur", "nama": "Nabi Musa ﷺ", "nama_letak": "atas"}`, tidak pernah boneka.
-- **Kartu dalil tembus pandang:** benda `kartu_dalil` dengan `"latar": 0.4` (1 = kartu penuh); tampilkan di beat kutipan saja.
+- **Nabi:** benda `{"jenis": "nur", "nama": "Nabi Musa a.s.", "nama_letak": "atas"}`, tidak pernah boneka.
+- **Kartu dalil tembus pandang** (tampilkan di beat kutipan saja; `latar` 1 = kartu penuh):
+  `{"jenis": "kartu_dalil", "label": "QUR'AN", "kitab": "QS 26:62", "teks": "<terjemahan Indonesia>", "arab": "<teks Arab persis dari mushaf>", "latar": 0.4, "x": 540, "y": 700, "at": "@menjawab"}`
+  Hadis: `"label": "HADIS", "kitab": "HR. Tirmidzi", "no": "3537"`. `teks` = terjemahan (bukan Arab); opsional `sorot` (frasa yang disorot kuning).
 - **Jasad tanpa luka:** boneka `"pose": "rebahan", "mata": "tutup"` di benda `pantai`.
 - **Laut terbelah:** benda `{"jenis": "laut_terbelah", "belah": [[0, 0], [2.5, 1]]}` (turunkan lagi = laut menutup).
+
+## Aturan penulisan yang sering salah (dicek validator sebelum narasi dibuat)
+- **Parameter benda ditulis langsung**, tidak dibungkus: `{"jenis": "surya", "x": 790, "y": 840, "r": 115, "terang": 1}`.
+  Bukan `{"jenis": "surya", "o": {"r": 115}}`: isi `o` diabaikan renderer.
+- **Semua benda masuk daftar `benda`**, termasuk matahari (`surya`). Kunci shot hanya yang tercantum di kerangka/contoh
+  (`langit`, `horizon`, `malam`, `palet`, `kamera`, `benda`, `boneka`, `teks`, ...).
+- **Teks layar tidak dipecah otomatis.** Pecah sendiri dengan `"\n"`: di ukuran 72 muat ±16 huruf kapital per baris,
+  di ukuran 90 ±13. Teks yang lebih lebar dari layar ditolak. `sub` cukup sumber singkat (mis. `"QS Yunus 10:92"`).
+- **`@kata` = kata persis di narasi tanpa tanda baca/tanda hubung:** "sekali-kali" ditulis `@sekalikali`.
+  Waktu dicari dari kemunculan pertama di seluruh narasi; bila kata itu sudah muncul di shot sebelumnya, pakai `@kata#2`.
+- **Efek suara hanya dari katalog** (`../../aset/suara/<nama>.mp3`); nama yang tidak ada ditolak.
+- **Benda berlabel KHUSUS** di katalog hanya untuk kisahnya (mis. `genangan_tubuh` = keringat Padang Mahsyar).
+- Bila ditolak, mesin mengirim daftar kesalahan bernomor; salin daftar itu ke sesi chat penulis JSON lalu kirim ulang.
+  Narasi belum dibuat saat itu, jadi kredit ElevenLabs tidak terpakai.
 
 ## Yang dikirim balik
 Lembar kontak + video + hasil `periksa.py`. GAGAL = kerusakan teknis atau batas wajib; PERIKSA = pedoman, keputusan Anda.
@@ -73,7 +91,7 @@ Lembar kontak + video + hasil `periksa.py`. GAGAL = kerusakan teknis atau batas 
 - bambu: rumpun bambu
 - batu: batu gelap latar depan (pakai kabur:true agar tampak dekat kamera)
 - bawah_laut: kedalaman laut: berkas cahaya samar, gelembung naik, partikel [keadaan: terang*]
-- bayang_misteri: massa gelap ambigu: bentuk TIDAK dipastikan (bukan tokoh/monster) - hanya siluet bergeser, berdenyut, dikelilingi cahaya retakan. o.besar skala, o.nafas amplitudo denyut, o.cahaya warna rim [keadaan: besar*, cahaya, nafas]
+- bayang_misteri: massa gelap ambigu: bentuk TIDAK dipastikan (bukan tokoh/monster) - hanya siluet bergeser, berdenyut, dikelilingi cahaya retakan. besar skala, nafas amplitudo denyut, cahaya warna rim [keadaan: besar*, cahaya, nafas]
 - belah: (16 Nov) bumi terbelah dalam PERSPEKTIF (tampak samping): (0,0) = ujung celah di cakrawala; celah melebar ke arah kamera sampai y = H. buka 0-1, lebar px di bawah, cahaya warna, goyang px, seed [keadaan: buka*, cahaya, debu, goyang, lebar, tanah, tanah_atas]
 - bintang: - [keadaan: n, tinggi]
 - buku: kitab terbuka + label sumber: {teks (baris di halaman), sub (pil sumber), buka 0-1} [keadaan: buka*, sub, teks, ukuran]
@@ -82,24 +100,24 @@ Lembar kontak + video + hasil `periksa.py`. GAGAL = kerusakan teknis atau batas 
 - cawan: (16 Nov) periuk/bejana berisi cairan mendidih: gelembung + uap (QS 47:15; HR Bukhari 6562 'seperti periuk'). didih 0-1, warna cairan, uap 0-1 [keadaan: didih*, uap*]
 - danau: - [keadaan: isi*]
 - domba: domba berbulu; jalan 0-1 menggerakkan langkah [keadaan: jalan*]
-- dompet: dompet terbuka; o.isi = jumlah lembar 0-3 (tipis = 1) [keadaan: isi*]
-- gapura: gerbang batu (gerbang Ludd): dua tiang + lengkung, cahaya emas dari dalam; o.cahaya 0-1 [keadaan: cahaya*]
-- gedung: deretan gedung pencakar langit; o.tumbuh 0-1 = gedung naik dari tanah (berlomba meninggikan bangunan) [keadaan: derek, lebar, malam, n, tinggi, tumbuh*]
-- genangan_tubuh: genangan pada tubuh simbolis umum; tinggi 0-500 dari telapak (35 mata kaki, 110 lutut, 210 pinggang, 320 dada, 440 mulut), riak 0-1 [keadaan: riak*, tinggi*]
-- gerbang: gerbang bercahaya (pintu surga): o.buka 0-1 = daun pintu terbuka [keadaan: buka*, nama]
+- dompet: dompet terbuka; isi = jumlah lembar 0-3 (tipis = 1) [keadaan: isi*]
+- gapura: gerbang batu (gerbang Ludd): dua tiang + lengkung, cahaya emas dari dalam; cahaya 0-1 [keadaan: cahaya*]
+- gedung: deretan gedung pencakar langit; tumbuh 0-1 = gedung naik dari tanah (berlomba meninggikan bangunan) [keadaan: derek, lebar, malam, n, tinggi, tumbuh*]
+- genangan_tubuh: KHUSUS keringat Padang Mahsyar: diagram air di tubuh + label mata kaki/lutut/pinggang/dada/mulut (bukan air laut/banjir/tenggelam); tinggi 0-500 dari telapak (35 mata kaki, 110 lutut, 210 pinggang, 320 dada, 440 mulut),  [keadaan: riak*, tinggi*]
+- gerbang: gerbang bercahaya (pintu surga): buka 0-1 = daun pintu terbuka [keadaan: buka*, nama]
 - gua: -
 - gunung: - [keadaan: bentuk, kilau]
 - hati: -
 - hewan: siluet hewan berpasangan berjalan ke kanan (QS 11:40); macam gajah|jerapah|unta|rusa|burung; pasang:false = satu; jalan 0-1; cahaya dari kiri-atas (garis tepi emas) [keadaan: jalan*, macam, pasang, rim]
 - hp: ponsel menyala di tangan
-- ikan: ikan besar (paus) siluet berenang pelan; o.arah -1 = menghadap kiri [keadaan: arah]
+- ikan: ikan besar (paus) siluet berenang pelan; arah -1 = menghadap kiri [keadaan: arah]
 - infus: tiang infus dengan kantong cairan menetes
 - jalan: jalan aspal + garis tengah putus-putus + trotoar; {w, y_lebar} [keadaan: lebar, w]
 - jam_pasir: jam pasir; sisa 0-1 menunjukkan pasir di ruang atas [keadaan: sisa*]
 - jembatan: shirath: jembatan sangat tipis di atas jurang api
 - jembatan_desa: jembatan desa: badan jembatan kayu/beton melintasi sungai, dengan pagar dan tiang penyangga [keadaan: air, lebar, warna_pagar]
-- jenazah: jenazah berkafan putih di atas keranda kayu (sopan, tanpa wajah); o.kain = warna kain penutup opsional [keadaan: kain]
-- jendela: jendela kamar dengan cahaya Subuh masuk; o.terang 0-1 [keadaan: terang*]
+- jenazah: jenazah berkafan putih di atas keranda kayu (sopan, tanpa wajah); kain = warna kain penutup opsional [keadaan: kain]
+- jendela: jendela kamar dengan cahaya Subuh masuk; terang 0-1 [keadaan: terang*]
 - jurang: (16 Nov) jurang neraka dilihat dari tepi atas: cincin tebing mengecil ke dasar membara. jatuh 0-1 (batu dari atas ke dasar), dasar 0-1 terang, cahaya warna [keadaan: cahaya, dasar*, jatuh*]
 - kambing: kambing kampung bertubuh berisi, tanduk pendek, telinga jatuh, berjanggut [keadaan: jalan*]
 - kamboja: pohon kamboja (kuburan) berbunga putih-kuning
@@ -116,26 +134,26 @@ Lembar kontak + video + hasil `periksa.py`. GAGAL = kerusakan teknis atau batas 
 - kipas: kipas angin berdiri, baling-baling berputar; {putar 0-1} [keadaan: putar*]
 - koin: koin emas (dinar): {n, jatuh 0-1} [keadaan: jatuh*, n]
 - kompor: meja dapur + kompor gas; {nyala 0-1} [keadaan: nyala*]
-- kota: siluet kota tua (kubah, menara kecil, rumah bertingkat) dengan beberapa jendela menyala; o.w lebar, o.seed [keadaan: w]
+- kota: siluet kota tua (kubah, menara kecil, rumah bertingkat) dengan beberapa jendela menyala; w lebar, seed [keadaan: w]
 - kue: kue ulang tahun kecil + lilin menyala: {nyala 0-1} [keadaan: nyala*]
 - kulkas: kulkas dua pintu + magnet
 - kursi: kursi kayu; dudukan y -125. {warna, sandaran:false} [keadaan: sandaran]
 - ladang_gandum: hamparan batang gandum berbulir; matang 0-1, angin mengayunkan malai [keadaan: angin*, matang*, n]
 - lahar: (16 Nov) dataran batu hitam berurat lava dalam perspektif: (0,0) = tengah cakrawala, sampai y = H. seed, cahaya warna, kuat 0-1 [keadaan: cahaya, kuat*]
 - lapak: lapak pasar: meja + terpal + dagangan; {terpal, isi: buah|sayur|ikan} [keadaan: isi, terpal]
-- laut: permukaan laut malam: o.y = garis permukaan; o.pantul = x pantulan bulan (relatif) [keadaan: pantul]
+- laut: permukaan laut malam: y = garis permukaan; pantul = x pantulan bulan (relatif) [keadaan: pantul]
 - laut_terbelah: laut terbelah dua (QS 26:63), gaya air sama dengan ombak kisah Nuh: lorong dasar laut kering di antara dua dinding air "laksana gunung", dilihat dari pangkal lorong; (0,0) = tengah pangkal lorong. belah 0-1 (0 = laut ber [keadaan: belah*, buih, jauh, lapis, lebar, tinggi]
 - lemari: lemari pakaian dua pintu; {w, warna, buka 0-1} [keadaan: buka*, w]
 - lentera: lentera minyak; nyala 0-1 mengatur cahaya [keadaan: nyala*]
-- makam: gundukan tanah + nisan; o.n = jumlah makam berjejer, o.baru = gundukan segar [keadaan: baru, jarak, n]
+- makam: gundukan tanah + nisan; n = jumlah makam berjejer, baru = gundukan segar [keadaan: baru, jarak, n]
 - mangga: pohon rindang (mangga/beringin kecil), opsional buah [keadaan: buah, lebar]
 - masjid: -
 - masjid_kampung: masjid kampung berwarna: kubah hijau, menara, pagar [keadaan: dinding, kubah]
 - massa_api: (16 Nov) massa api raksasa berdenyut (neraka didatangkan); r jari-jari, kuat 0-1 [keadaan: kuat*, r*]
-- meja: meja di depan (pakai depan:true); o.w lebar [keadaan: w]
+- meja: meja di depan (pakai depan:true); w lebar [keadaan: w]
 - meja_belajar: meja + lampu + buku + laptop; {lampu 0-1, laptop} [keadaan: lampu*, laptop]
 - meja_kantor: meja kerja + monitor + kursi kantor; {layar} [keadaan: layar]
-- menara: menara putih (pilot tanda kiamat): badan pucat, satu sisi tersinari emas, balkon dua tingkat, kubah kecil; o.cahaya 0-1 = pendar di sekelilingnya [keadaan: cahaya*]
+- menara: menara putih (pilot tanda kiamat): badan pucat, satu sisi tersinari emas, balkon dua tingkat, kubah kecil; cahaya 0-1 = pendar di sekelilingnya [keadaan: cahaya*]
 - menara_pengawas: menara pengawas; penjaga 0-1 membuka celah pengamatan [keadaan: penjaga*]
 - mik: mikrofon podcast di meja (7 Nov): {arah ±1 = arah mulut, tinggi}; pangkal di (0,0) = permukaan meja [keadaan: arah, tinggi]
 - mobil_luar: mobil taksi online tampak samping + stiker pintu (7 Nov): {warna, aksen, stiker, sub, arah ±1, jalan px/dtk roda berputar} [keadaan: aksen, aksen2, arah, jalan*, stiker, sub]
@@ -166,14 +184,14 @@ Lembar kontak + video + hasil `periksa.py`. GAGAL = kerusakan teknis atau batas 
 - rantai_belenggu: mata rantai besar dan borgol; tegang 0 kendur, 1 lurus [keadaan: n, tegang*]
 - rantai_tarik: (16 Nov) puluhan rantai tegang dari luar layar menuju (0,0); tarik = jarak geser mata rantai (px, boleh [[t,v]]); n; malaikat TIDAK digambar [keadaan: n, putar, r0, tarik*]
 - resapan_tanah: penampang tanah; kedalaman 0-1, alir 0-1, garis rembesan bergerak [keadaan: alir*, kedalaman*]
-- retakan: tanah merekah: celah gelap bercahaya dari dalam + debu naik. o.buka 0-1 (lebar celah), o.cahaya warna pijar, o.goyang getaran halus, o.seed varian bentuk [keadaan: buka*, cahaya, goyang]
+- retakan: tanah merekah: celah gelap bercahaya dari dalam + debu naik. buka 0-1 (lebar celah), cahaya warna pijar, goyang getaran halus, seed varian bentuk [keadaan: buka*, cahaya, goyang]
 - rumah: -
 - rumah_kampung: rumah kampung: dinding, atap genteng, pintu, jendela, teras; {w, dinding, atap, pintu, lampu 0-1, buka 0-1} [keadaan: atap, buka*, dinding, lampu*, pintu, w]
 - rumah_sakit_gedung: gedung rumah sakit (tampak luar) [keadaan: nama]
 - rumput: rumpun rumput bergoyang; {n, w} [keadaan: n, w]
-- saf: barisan orang tampak belakang (siluet, cahaya tepi emas dari depan); o.n per baris, o.baris, o.jarak [keadaan: baris, jarak, n]
+- saf: barisan orang tampak belakang (siluet, cahaya tepi emas dari depan); n per baris, baris, jarak [keadaan: baris, jarak, n]
 - sajadah: -
-- sapu: sapu ijuk; o.rot = sudut (derajat), pangkal di (0,0) [keadaan: rot*]
+- sapu: sapu ijuk; rot = sudut (derajat), pangkal di (0,0) [keadaan: rot*]
 - sawah: hamparan sawah bertingkat dari cakrawala (y=0) ke depan; {w, gubuk, hijau 0-1 (0 = menguning)} [keadaan: gubuk, hijau*, w]
 - sekolah: gedung sekolah dua lantai + tiang bendera + papan nama [keadaan: atap, dinding, nama]
 - semak: semak/perdu, opsional bunga [keadaan: bunga, w]
@@ -181,7 +199,7 @@ Lembar kontak + video + hasil `periksa.py`. GAGAL = kerusakan teknis atau batas 
 - sofa: sofa; dudukan y -125. {w, warna, bantal} [keadaan: bantal, w]
 - sumur: sumur batu; air 0-1 mengatur tinggi air [keadaan: air*, timba*]
 - sungai: sungai bertepi jelas; arus 0-1 mengatur kecepatan riak yang bergerak [keadaan: arus*, lebar]
-- surya: matahari besar di cakrawala (piringan + pendar emas + sinar tipis); o.r jari-jari, o.terang 0-1 [keadaan: r*, terang*]
+- surya: matahari besar di cakrawala (piringan + pendar emas + sinar tipis); r jari-jari, terang 0-1 [keadaan: r*, terang*]
 - tebing: puncak batu curam; (0,0) = pijakan di puncak; cahaya dari kiri-atas
 - telaga: - [keadaan: h, kilau, w]
 - tenda_badui: tenda badui kain bergaris; buka 0-1 membuka tirai [keadaan: buka*]

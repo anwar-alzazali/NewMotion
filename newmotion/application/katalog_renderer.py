@@ -40,7 +40,8 @@ def _baca(jalur: str) -> dict[str, dict]:
         param = sorted(set(re.findall(r"\bo\.([a-z_][a-z_0-9]*)", badan)) - UMUM)
         # parameter yang dibaca lewat v(o.x, t, ...) bisa dianimasikan [awal, akhir]
         animasi = sorted(set(re.findall(r"\bv\(o\.([a-z_][a-z_0-9]*)", badan)) & set(param))
-        ket = (m.group(2) or "").strip()
+        # "o.x" adalah nama variabel di renderer; di JSON kuncinya ditulis langsung ("x"), jadi "o." dibuang
+        ket = re.sub(r"\bo\.(?=[a-z_])", "", (m.group(2) or "").strip())
         for nama in re.findall(r'"([a-z_0-9]+)"', m.group(1)):
             if nama not in katalog:
                 katalog[nama] = {"keterangan": ket[:220], "parameter": param, "animasi": animasi}

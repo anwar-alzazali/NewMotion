@@ -44,18 +44,36 @@ Bedanya: di contoh itu waktu sudah angka karena rekamannya sudah ada. Di papan m
 
 ## Batas wajib (dicek mesin; papan ditolak bila dilanggar)
 - Allah tidak digambar; nabi dan malaikat tidak digambar (cahaya/nur + nama). Sahabat tidak digambar berwajah.
-- Bacaan Arab tidak disuarakan: huruf Arab dilarang di `narasi`; tulis Arab + latin + arti di `teks` layar.
-- Hanya dalil sahih/hasan, sumber tampil di layar (`sub`), nomor dicek oleh penulis JSON. Jalur ini tidak memverifikasi dalil.
+- Bacaan Arab tidak disuarakan: huruf Arab dilarang di `narasi`. Teks Arab dalil hanya lewat `kartu_dalil` (kolom `arab`),
+  supaya dicocokkan dengan sumbernya; teks layar biasa memuat latin/arti dan sumber.
+- Hanya dalil sahih/hasan, sumber tampil di layar (`sub`). Kartu dalil dicocokkan mesin dengan Al-Qur'an/dataset hadis;
+  yang tidak cocok satu huruf pun ditolak. Sumber di `sub` teks biasa tetap tanggung jawab penulis JSON.
 - Tanpa watermark. Label AI tetap aktif saat unggah.
 
 ## Resep tokoh yang sering dipakai
 - **Raja Mesir kuno / Firaun:** `"penutup_kepala": "nemes", "janggut": true, "janggut_model": "firaun",
   "pakaian": {"jenis": "jubah", "warna": "#f4ecd8", "bisht": "#3a2a1e", "kalung": "usekh"}`.
 - **Rombongan Arab:** `"cerita": {"suku": "arab", ...}` lalu figuran `{"npc": <angka acak tetap>}`; membelakangi kamera: `"belakang": true`.
-- **Nabi:** benda `{"jenis": "nur", "nama": "Nabi Musa ﷺ", "nama_letak": "atas"}`, tidak pernah boneka.
-- **Kartu dalil tembus pandang:** benda `kartu_dalil` dengan `"latar": 0.4` (1 = kartu penuh); tampilkan di beat kutipan saja.
+- **Nabi:** benda `{"jenis": "nur", "nama": "Nabi Musa a.s.", "nama_letak": "atas"}`, tidak pernah boneka.
+- **Kartu dalil tembus pandang** (tampilkan di beat kutipan saja; `latar` 1 = kartu penuh):
+  `{"jenis": "kartu_dalil", "label": "QUR'AN", "kitab": "QS 26:62", "teks": "<terjemahan Indonesia>", "arab": "<teks Arab persis dari mushaf>", "latar": 0.4, "x": 540, "y": 700, "at": "@menjawab"}`
+  Hadis: `"label": "HADIS", "kitab": "HR. Tirmidzi", "no": "3537"`. `teks` = terjemahan (bukan Arab); opsional `sorot` (frasa yang disorot kuning).
 - **Jasad tanpa luka:** boneka `"pose": "rebahan", "mata": "tutup"` di benda `pantai`.
 - **Laut terbelah:** benda `{"jenis": "laut_terbelah", "belah": [[0, 0], [2.5, 1]]}` (turunkan lagi = laut menutup).
+
+## Aturan penulisan yang sering salah (dicek validator sebelum narasi dibuat)
+- **Parameter benda ditulis langsung**, tidak dibungkus: `{"jenis": "surya", "x": 790, "y": 840, "r": 115, "terang": 1}`.
+  Bukan `{"jenis": "surya", "o": {"r": 115}}`: isi `o` diabaikan renderer.
+- **Semua benda masuk daftar `benda`**, termasuk matahari (`surya`). Kunci shot hanya yang tercantum di kerangka/contoh
+  (`langit`, `horizon`, `malam`, `palet`, `kamera`, `benda`, `boneka`, `teks`, ...).
+- **Teks layar tidak dipecah otomatis.** Pecah sendiri dengan `"\n"`: di ukuran 72 muat ±16 huruf kapital per baris,
+  di ukuran 90 ±13. Teks yang lebih lebar dari layar ditolak. `sub` cukup sumber singkat (mis. `"QS Yunus 10:92"`).
+- **`@kata` = kata persis di narasi tanpa tanda baca/tanda hubung:** "sekali-kali" ditulis `@sekalikali`.
+  Waktu dicari dari kemunculan pertama di seluruh narasi; bila kata itu sudah muncul di shot sebelumnya, pakai `@kata#2`.
+- **Efek suara hanya dari katalog** (`../../aset/suara/<nama>.mp3`); nama yang tidak ada ditolak.
+- **Benda berlabel KHUSUS** di katalog hanya untuk kisahnya (mis. `genangan_tubuh` = keringat Padang Mahsyar).
+- Bila ditolak, mesin mengirim daftar kesalahan bernomor; salin daftar itu ke sesi chat penulis JSON lalu kirim ulang.
+  Narasi belum dibuat saat itu, jadi kredit ElevenLabs tidak terpakai.
 
 ## Yang dikirim balik
 Lembar kontak + video + hasil `periksa.py`. GAGAL = kerusakan teknis atau batas wajib; PERIKSA = pedoman, keputusan Anda.
