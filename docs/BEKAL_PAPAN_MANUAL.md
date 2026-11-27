@@ -65,7 +65,7 @@ Lembar kontak + video + hasil `periksa.py`. GAGAL = kerusakan teknis atau batas 
 - amplop: amplop uang [keadaan: uang]
 - api: (16 Nov, diperhalus) api unggun: lidah api bergradasi berkedip + kayu + pendar lembut
 - api_unggun: api unggun dan kayu; nyala 0-1 mengatur besar api [keadaan: nyala*]
-- arus: kerumunan siluet bergerak. mode lereng (turun dari dua punggung bukit ke (0,0)), cahaya (berlari masuk ke cahaya di (0,0)), lari (mendatar ke kanan); maju = kemajuan, rebah 0-1 [keadaan: maju*, mode, n, rebah*, rim]
+- arus: kerumunan siluet bergerak. mode lereng (turun dari dua punggung bukit ke (0,0)), cahaya (berlari masuk ke cahaya di (0,0)), lari (mendatar ke kanan), lorong (masuk menjauh ke ujung lorong laut_terbelah; otomatis menempel [keadaan: jauh, maju*, mode, n, rebah*, rim]
 - awan: -
 - awan_badai: awan badai; hujan 0-1 mengatur hujan dan gelap 0-1 warna awan [keadaan: gelap*, hujan*]
 - awan_gelap: awan gelap; kilat 0-1 mengatur kilatan [keadaan: kilat*]

@@ -303,7 +303,7 @@ def lengkapi_figuran(rb: Mapping, peran: list[str], teks: str = "") -> dict:
         return dict(rb)
     if POLA_SAKRAL.search(teks or ""):
         return dict(rb, subjek=list(rb.get("subjek", [])) + [
-            {"jenis": "arus", "tempat": "tengah", "keadaan": {"mode": "lari", "n": 14, "maju": [0.1, 0.9]}}])
+            {"jenis": "arus", "tempat": "tengah", "keadaan": {"mode": "lorong" if "laut_terbelah" in {x.get("jenis") for x in rb.get("subjek", [])} else "lari", "n": 14, "maju": [0.1, 0.9]}}])
     jenis = {x.get("jenis") for x in rb.get("subjek", [])}
     tempat = "di_lorong:laut_terbelah" if "laut_terbelah" in jenis else ("kanan" if "nur" in jenis else "tengah")
     fig = []
@@ -498,6 +498,12 @@ def subjek_dari_rencana(rb: Mapping, teks: str, ds: float, seed: int, bagian: tu
         if isinstance(tempat, str) and tempat.startswith("di_lubang:"):
             o["_di_lubang"] = True  # diikat ke lubang oleh _ikat_posisi_subjek
         benda.append(o)
+    lorong = next((b for b in benda if b.get("jenis") == "laut_terbelah"), None)
+    for b in benda:  # (27 Nov) rombongan di beat laut terbelah berjalan MASUK ke lorong, bukan menyamping
+        if b.get("jenis") == "arus" and lorong is not None and b.get("mode") in (None, "lari", "lorong"):
+            b.update(mode="lorong", x=lorong.get("x", 540), y=lorong.get("y", 1000), s=lorong.get("s", 1))
+            b.pop("depan", None)
+            b.pop("belakang", None)
     teks_layar = []
     if rb.get("teks_layar"):
         baris = str(rb["teks_layar"]).split("\n")
