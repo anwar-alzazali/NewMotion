@@ -7,10 +7,18 @@ on:
         description: "Jalur papan di repo, mis. mesin-video/papan/kisah/mahsyar1.json atau antrean/<id>/papan_manual.json"
         required: true
         type: string
+      mode:
+        description: "Pratinjau visual tanpa TTS atau render final dengan TTS"
+        required: true
+        type: choice
+        options:
+          - pratinjau
+          - final
+        default: pratinjau
       kirim:
-        description: "Kirim hasil ke Telegram"
+        description: "Kirim hasil final ke Telegram (diabaikan pada mode pratinjau)"
         required: false
-        default: "true"
+        default: "false"
         type: string
 
 permissions:
@@ -46,6 +54,7 @@ jobs:
         env:
           SPEK: ${{ inputs.spek }}
           KIRIM: ${{ inputs.kirim }}
+          MODE: ${{ inputs.mode }}
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
           ELEVENLABS_API_KEY: ${{ secrets.ELEVENLABS_API_KEY }}
@@ -56,10 +65,14 @@ jobs:
           set -euo pipefail
           mkdir -p hasil
           tambahan=()
-          [[ "$KIRIM" == "true" ]] && tambahan+=(--kirim)
+          if [[ "$MODE" == "pratinjau" ]]; then
+            tambahan+=(--pratinjau-visual)
+          else
+            [[ "$KIRIM" == "true" ]] && tambahan+=(--kirim)
+          fi
           python -m newmotion.application.jalur_manual "$SPEK" -o hasil/video.mp4 "${tambahan[@]}"
       - name: Simpan narasi buatan (supaya kredit ElevenLabs tidak terpakai lagi)
-        if: always()
+        if: always() && inputs.mode == 'final'
         env:
           SPEK: ${{ inputs.spek }}
         shell: bash
