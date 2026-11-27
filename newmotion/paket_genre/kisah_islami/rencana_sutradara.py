@@ -194,6 +194,8 @@ def _validasi_figuran(fig: Any, jenis_beat: set, narasi: str, lbl: str) -> list[
             g.append(f"{lbl}: figuran.nama harus ID sederhana 1..24 karakter")
         if (nama is not None or f.get("hadap_ke") is not None) and n != 1:
             g.append(f"{lbl}: figuran bernama/berelasi harus jumlah 1")
+        if f.get("hadap_ke") is not None and nama is None:
+            g.append(f"{lbl}: figuran.hadap_ke mewajibkan figuran.nama")
         if f.get("hadap_ke") is not None:
             if not isinstance(f["hadap_ke"], str) or f["hadap_ke"] == nama or f["hadap_ke"] not in nama_figuran:
                 g.append(f"{lbl}: figuran.hadap_ke harus nama figuran lain pada beat yang sama")
@@ -243,10 +245,8 @@ def figuran_dari_rencana(rb: Mapping, benda: list[dict], kunci: int, ds: float =
         for k in range(n):
             x = round(x0 + (k - (n - 1) / 2) * 150 * sk)
             gerak = f.get("gerak", "berdiri")
-            identitas = kunci * 10 + i * 3 + k
+            identitas = kunci * 100 + i * 10 + k
             o = {"id": identitas, "npc": identitas, "pose": gerak, "x": x, "y": y0 + (k % 2) * 18, "s": sk}
-            if f.get("nama"):
-                o["_nama_interaksi"] = f["nama"]
             if f.get("pegang"):
                 o["pose"] = f"pegang_{f['pegang']}"
             if f.get("suku"):  # tanpa suku: ikut suku cerita
@@ -257,7 +257,7 @@ def figuran_dari_rencana(rb: Mapping, benda: list[dict], kunci: int, ds: float =
                 target = next((q for q in rb.get("figuran", []) if q.get("nama") == f["hadap_ke"]), None)
                 if target is not None:
                     tx0 = LETAK_FIGURAN[target.get("tempat", "tengah")][0]
-                    tx = tx0 + (int(target.get("jumlah", 1)) - 1) * 0  # pasangan bernama selalu satu orang
+                    tx = tx0  # pasangan bernama selalu satu orang
                     o["profil"] = "kanan" if tx > x else "kiri"
             pindah = f.get("pindah")
             if pindah:  # bergerak sepanjang beat; berpencar = separuh ke kiri, separuh ke kanan (saling menjauh)
