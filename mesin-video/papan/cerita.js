@@ -1371,7 +1371,7 @@
   // ditempelkan: pinggul ke dudukan, kaki ke pijakan, tangan ke pegangan (IK dua tulang), sudut tokoh mengikuti benda.
   const KAIT = {
     motor: { sudut: "samping", duduk: [-36, -250], pegang: [[118, -334], [110, -330]], pijak: [[44, -108], [56, -108]], skala: 0.85 },
-    perahu_kecil: { sudut: "samping", duduk: [0, -120], pegang: [[-130, -100], [130, -100]], pijak: [[-60, -90], [60, -90]], skala: 0.82 },
+    perahu_kecil: { sudut: "samping", duduk: [0, -120], pijak: [[-60, -90], [60, -90]], skala: 0.82 }, // penumpang duduk; tidak ada pegangan tetap
     kursi: { sudut: "depan", duduk: [0, -125], skala: 1 },
     sofa: { sudut: "depan", duduk: [0, -125], skala: 1 },
     kasur: { sudut: "depan", duduk: [0, -130], skala: 1 },
