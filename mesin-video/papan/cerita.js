@@ -1674,6 +1674,15 @@
     p[1] -= tubuh + (J.turun || 0);
     return putarTitik(p, -(J.badan || 0));
   }
+  function posisiTanganBawaan(b, t, d) {
+    const J = poseKini(b, t, false), x = v(b.x, t, d, 540), y = v(b.y, t, d, 1500);
+    const sk = v(b.s, t, d, 1), a1 = (J.ra || [8, 4])[0] * Math.PI / 180, a2 = (J.ra || [8, 4])[1] * Math.PI / 180;
+    const S = [62, -360], E = [S[0] + Math.sin(a1) * 85, S[1] + Math.cos(a1) * 85];
+    let H = [E[0] + Math.sin(a2) * 80, E[1] + Math.cos(a2) * 80];
+    H = putarTitik(H, J.badan || 0); H[1] += (J.turun || 0);
+    const cermin = b.cermin || b.profil === "kiri";
+    return [x + H[0] * sk * (cermin ? -1 : 1), y + H[1] * sk];
+  }
   function gambarBendaSerah(jenis, x, y, sk = 1) {
     let isi = "";
     if (jenis === "surat") isi = `<rect x="-34" y="-42" width="68" height="84" rx="4" fill="#f5e7c4" stroke="#8b6b42" stroke-width="5"/><path d="M -22 -20 L 22 -20 M -22 -4 L 22 -4 M -22 12 L 12 12" stroke="#9c8059" stroke-width="4"/>`;
@@ -1965,9 +1974,13 @@
     const kaitL = b._kaitDunia ? (() => { const cm = b.cermin || b.profil === "kiri" ? -1 : 1, L = (p) => [cm * (p[0] - x) / s, (p[1] - y) / s - tubuh], K = b._kaitDunia;
       return { pijak: K.pijak && K.pijak.map(L), pegang: K.pegang && K.pegang.map(L) }; })() : null;
     if (RIG && b._serahTarget) {
-      RIG.pegang = b._serahPegang || null;
+      RIG.pegang = null;
       RIG.tanganTarget = targetTanganLokal(b._serahTarget, x, y, s, b.cermin || b.profil === "kiri", tubuh, RIG);
-    } else if (RIG && Object.prototype.hasOwnProperty.call(b, "_serahPegang")) RIG.pegang = b._serahPegang;
+    }
+    if (RIG && Object.prototype.hasOwnProperty.call(b, "_serahPegang")) {
+      if (b._serahPegang) Object.assign(RIG, POSE["pegang_" + b._serahPegang] || {}, { pegang: b._serahPegang });
+      else { RIG.pegang = null; RIG.ra = POSE.berdiri.ra.slice(); }
+    }
     let RG = null; if (RIG) { RG = rangka(RIG, { P, BD, WC, KLB, nafas, ayun, bawahP, t: HD ? ta : t, gm: GM, aksi: RIG && RIG._aksi || b.aksi, id: b.npc != null ? b.npc : b.id, offset: b._gerak_offset, profilMotor: (b.profil === "kanan" || b.profil === true || b.profil === "kiri") && !!RIG,
       kait: kaitL, tanganTarget: RIG.tanganTarget }); g = RG.g;
       if (window.__tanganBoneka) window.__tanganBoneka[b.id] = tanganDunia({ sendi: RG.sendi, x, y, s, tubuh, guling: RG.guling }, b);
