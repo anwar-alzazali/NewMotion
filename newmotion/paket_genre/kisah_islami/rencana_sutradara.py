@@ -254,9 +254,11 @@ def figuran_dari_rencana(rb: Mapping, benda: list[dict], kunci: int, ds: float =
             if f.get("hadap") in ("kanan", "kiri"):
                 o["profil"] = f["hadap"]
             if f.get("hadap_ke"):
-                target = next((q for q in keluar if q.get("_nama_interaksi") == f["hadap_ke"]), None)
+                target = next((q for q in rb.get("figuran", []) if q.get("nama") == f["hadap_ke"]), None)
                 if target is not None:
-                    o["profil"] = "kanan" if target["x"] > x else "kiri"
+                    tx0 = LETAK_FIGURAN[target.get("tempat", "tengah")][0]
+                    tx = tx0 + (int(target.get("jumlah", 1)) - 1) * 0  # pasangan bernama selalu satu orang
+                    o["profil"] = "kanan" if tx > x else "kiri"
             pindah = f.get("pindah")
             if pindah:  # bergerak sepanjang beat; berpencar = separuh ke kiri, separuh ke kanan (saling menjauh)
                 arah = -1 if pindah == "ke_kiri" or (pindah == "berpencar" and k < n / 2) else 1
