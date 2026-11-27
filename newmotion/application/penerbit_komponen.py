@@ -28,7 +28,7 @@ def sisipkan_cabang(sumber: str, codigo: str, nome: str) -> str:
     absolute = inicio + pos
     if sumber[absolute - 1] != "\n":
         raise ValueError("format return akhir fungsi benda() berubah")
-    cabang = " else if (j === " + json.dumps(nome) + ") {\n" + codigo.strip() + "\n    }\n"
+    cabang = " " + codigo.strip() + "\n"
     return sumber[:absolute - 1] + cabang + sumber[absolute:]
 
 
