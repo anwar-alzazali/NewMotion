@@ -210,7 +210,9 @@ def _validasi_figuran(fig: Any, jenis_beat: set, narasi: str, lbl: str) -> list[
                 g.append(f"{lbl}: figuran.serahkan_ke mewajibkan nama pemberi yang berbeda dari penerima")
             if f.get("serahkan_ke") not in nama_figuran:
                 g.append(f"{lbl}: figuran.serahkan_ke harus nama figuran penerima pada beat yang sama")
-            if f.get("pegang") not in {"surat", "kendi", "gelas", "karung_kecil", "gulungan", "roti", "koin"}:
+            benda_serah = f.get("pegang")
+            if not isinstance(benda_serah, str) or benda_serah not in {
+                    "surat", "kendi", "gelas", "karung_kecil", "gulungan", "roti", "koin"}:
                 g.append(f"{lbl}: figuran.serahkan_ke memerlukan benda kecil yang didukung serah-terima")
             if n != 1:
                 g.append(f"{lbl}: figuran pemberi serah-terima harus jumlah 1")
