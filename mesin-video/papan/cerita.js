@@ -1682,8 +1682,10 @@
   function posisiTanganBawaan(b, t, d) {
     const J = poseKini(b, t, false), x = v(b.x, t, d, 540), y = v(b.y, t, d, 1500);
     const sk = v(b.s, t, d, 1), samping = b.profil === "kanan" || b.profil === "kiri" || b.profil === true;
-    const a1 = (samping ? Math.abs((J.ra || [8, 4])[0]) : (J.ra || [8, 4])[0]) * Math.PI / 180;
-    const a2 = (samping ? Math.abs((J.ra || [8, 4])[1]) : (J.ra || [8, 4])[1]) * Math.PI / 180;
+    const barangKecil = ["surat", "kendi", "gelas", "karung_kecil", "gulungan", "roti", "koin"].includes(J.pegang);
+    const sudutTangan = samping && barangKecil ? [40, 90] : (J.ra || [8, 4]);
+    const a1 = (samping ? Math.abs(sudutTangan[0]) : sudutTangan[0]) * Math.PI / 180;
+    const a2 = (samping ? Math.abs(sudutTangan[1]) : sudutTangan[1]) * Math.PI / 180;
     const S = [samping ? 42 : 62, -360], E = [S[0] + Math.sin(a1) * 85, S[1] + Math.cos(a1) * 85];
     let H = [E[0] + Math.sin(a2) * 80, E[1] + Math.cos(a2) * 80];
     H = putarTitik(H, J.badan || 0); H[1] += (J.turun || 0);
@@ -1990,6 +1992,9 @@
       if (b._serahPegang) Object.assign(RIG, POSE["pegang_" + b._serahPegang] || {}, { pegang: b._serahPegang });
       else { RIG.pegang = null; RIG.ra = POSE.berdiri.ra.slice(); }
     }
+    if (RIG && (b.profil === "kanan" || b.profil === "kiri" || b.profil === true)
+        && ["surat", "kendi", "gelas", "karung_kecil", "gulungan", "roti", "koin"].includes(RIG.pegang))
+      RIG.ra = [40, 90];
     let RG = null; if (RIG) { RG = rangka(RIG, { P, BD, WC, KLB, nafas, ayun, bawahP, t: HD ? ta : t, gm: GM, aksi: RIG && RIG._aksi || b.aksi, id: b.npc != null ? b.npc : b.id, offset: b._gerak_offset, profilMotor: (b.profil === "kanan" || b.profil === true || b.profil === "kiri") && !!RIG,
       kait: kaitL, tanganTarget: RIG.tanganTarget }); g = RG.g;
       if (window.__tanganBoneka) window.__tanganBoneka[b.id] = tanganDunia({ sendi: RG.sendi, x, y, s, tubuh, guling: RG.guling }, b);
