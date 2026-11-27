@@ -206,6 +206,25 @@ def test_peta_tempel_menolak_urutan_terbalik_dan_nomor_di_luar_naskah():
                for x in A.validasi_peta_tempel(di_luar, jumlah_paragraf=2))
 
 
+def test_peta_tempel_tidak_boleh_menambah_atau_menghilangkan_rujukan():
+    dasar = {"judul": "Judul", "inti": "Inti", "dalil": [],
+             "beat": [{"paragraf": [1]}]}
+    sumber = ["(QS Hud 50)"]
+    assert any("tidak boleh menambah" in x
+               for x in A.validasi_peta_tempel(dasar, 1, sumber))
+
+    palsu = {"judul": "Judul", "inti": "Inti",
+             "dalil": [{"id": "ayat", "label": "QS Al-Baqarah 255"}],
+             "beat": [{"paragraf": [1]}]}
+    assert any("tidak boleh menambah" in x
+               for x in A.validasi_peta_tempel(palsu, 1, sumber))
+
+    benar = {"judul": "Judul", "inti": "Inti",
+             "dalil": [{"id": "hud50", "label": "QS HUD 50"}],
+             "beat": [{"paragraf": [1]}]}
+    assert A.validasi_peta_tempel(benar, 1, sumber) == []
+
+
 
 def test_jalur_ide_revisi_dan_tempel_memakai_tahap_llm_yang_tepat(monkeypatch):
     from newmotion.infrastructure import llm
