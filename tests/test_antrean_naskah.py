@@ -117,6 +117,28 @@ def test_kebijakan_naskah_mempertahankan_pagar_islami_dari_metadata_status():
     assert hasil["kebijakan"]["aktifkan_kebijakan_islami"] is True
 
 
+def test_status_menandai_biaya_gemini_belum_terverifikasi(tmp_path, monkeypatch):
+    from newmotion.infrastructure.llm import Jawaban
+
+    folder = tmp_path / "antrean"
+    antrean = folder / "uji-biaya-gemini"
+    antrean.mkdir(parents=True)
+    status = A.status_baru("uji-biaya-gemini", "Uji biaya", "ide")
+    (antrean / "status.json").write_text(json.dumps(status), encoding="utf-8")
+    (antrean / "masukan.txt").write_text("Ide cerita", encoding="utf-8")
+
+    def verifikasi(naskah, *, quran=None):
+        return json.loads(json.dumps(naskah)), ["uji"]
+
+    monkeypatch.setattr("newmotion.paket_genre.kisah_islami.dalil.verifikasi.verifikasi", verifikasi)
+    jawaban = Jawaban("{}", "gemini-3-flash", "google", biaya_usd=0, data=NASKAH)
+    monkeypatch.setattr(A, "buat_naskah", lambda *args, **kwargs: (NASKAH, jawaban))
+
+    hasil = A.proses("uji-biaya-gemini", "ide", folder=folder, kirim_tg=False)
+    assert hasil["biaya_ai_status"] == "belum_terverifikasi"
+    assert hasil["naskah_ai"]["biaya_status"] == "belum_terverifikasi"
+
+
 def test_proses_menyimpan_metadata_kebijakan_ke_naskah(tmp_path, monkeypatch):
     folder = tmp_path / "antrean"
     antrean = folder / "uji-metadata-hasil"
