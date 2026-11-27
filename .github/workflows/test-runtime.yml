@@ -23,6 +23,10 @@ on:
 permissions:
   contents: write
 
+concurrency:
+  group: uji-runtime-${{ github.event.pull_request.head.ref || github.ref_name }}
+  cancel-in-progress: false
+
 jobs:
   uji-runtime:
     runs-on: ubuntu-latest
@@ -74,7 +78,11 @@ jobs:
           git add newmotion/application/data/ukuran_benda.json
           if git diff --cached --quiet; then exit 0; fi
           git commit -m "Tugas 3: simpan ukuran benda hasil renderer"
-          git push origin "HEAD:$GITHUB_REF_NAME"
+          for percobaan in 1 2 3; do
+            git pull --rebase origin "$GITHUB_REF_NAME" && git push origin "HEAD:$GITHUB_REF_NAME" && exit 0
+            sleep 5
+          done
+          exit 1
       - name: Periksa Ruff pada berkas Python yang berubah
         run: |
           python -m pip install ruff==0.14.10
