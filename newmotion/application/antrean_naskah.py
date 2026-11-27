@@ -473,6 +473,31 @@ def buat_naskah(mode, masukan, naskah_lama=None, *, tanya=None):
             "inti": data.get("inti", ""), "dalil": data.get("dalil", []), "beat": beat}, hasil_ai
 
 
+# ---------------- pembelajaran dari revisi dan naskah disetujui ----------------
+def simpan_revisi(d: Path, catatan: str, sebelum: dict, sesudah: dict) -> dict:
+    """Arsipkan satu revisi lengkap dan tambahkan satu baris data pelajaran."""
+    folder = d / "revisi"
+    folder.mkdir(parents=True, exist_ok=True)
+    nomor = max((int(p.stem) for p in folder.glob("[0-9][0-9][0-9][0-9].json")), default=0) + 1
+    data = {"nomor": nomor, "waktu": _sekarang(), "catatan_pemilik": catatan, "sebelum": sebelum, "sesudah": sesudah}
+    (folder / f"{nomor:04d}.json").write_text(json.dumps(data, ensure_ascii=False, indent=2) + "\\n", encoding="utf-8")
+    baris = {"id": d.name, "nomor": nomor, "catatan_pemilik": catatan, "sebelum": sebelum, "sesudah": sesudah}
+    data_dir = AKAR / "newmotion" / "application" / "data"
+    data_dir.mkdir(parents=True, exist_ok=True)
+    with (data_dir / "pelajaran_naskah.jsonl").open("a", encoding="utf-8") as f:
+        f.write(json.dumps(baris, ensure_ascii=False) + "\\n")
+    return data
+
+def simpan_contoh_disetujui(d: Path, naskah: dict, status: dict) -> None:
+    """Simpan contoh sekali setelah produksi final benar-benar selesai."""
+    data_dir = AKAR / "newmotion" / "application" / "data" / "contoh_naskah"
+    data_dir.mkdir(parents=True, exist_ok=True)
+    tujuan = data_dir / f"{d.name}.json"
+    if tujuan.exists():
+        return
+    isi = {"id": d.name, "judul": naskah.get("judul"), "inti": naskah.get("inti"), "genre": status.get("genre"), "naskah": naskah, "disetujui": _sekarang()}
+    tujuan.write_text(json.dumps(isi, ensure_ascii=False, indent=2) + "\\n", encoding="utf-8")
+
 # ---------------- Telegram ----------------
 def tg(metode: str, badan: dict) -> dict:
     token = (os.environ.get("TELEGRAM_BOT_TOKEN") or "").strip()
@@ -556,6 +581,7 @@ def proses(id_: str, mode: str, *, folder: Path = ANTREAN, tanya=None, quran=Non
     st = json.loads((d / "status.json").read_text(encoding="utf-8"))
     masukan = (d / ("catatan.txt" if mode == "revisi" else "masukan.txt")).read_text(encoding="utf-8")
     lama = json.loads((d / "naskah.json").read_text(encoding="utf-8")) if mode == "revisi" else None
+    sebelum_revisi = copy.deepcopy(lama) if mode == "revisi" else None
     atur(st, "diterima", "jalan", "naskah sedang disusun AI" if mode != "tempel" else "naskah sedang dirapikan")
     for k in ("dalil", "tinjau"):
         atur(st, k, "belum")
@@ -602,6 +628,9 @@ def proses(id_: str, mode: str, *, folder: Path = ANTREAN, tanya=None, quran=Non
     _tulis(d, st, n, kirim_tg)
     from newmotion.paket_genre.kisah_islami.dalil.verifikasi import verifikasi
     n, laporan = verifikasi(n, quran=quran)
+    if mode == "revisi" and sebelum_revisi is not None:
+        simpan_revisi(d, masukan, sebelum_revisi, n)
+        st["jumlah_revisi_terarsip"] = st.get("jumlah_revisi_terarsip", 0) + 1
 
     # Pemeriksa independen hanya dijalankan pada jalur produksi; seam tanya dipakai tes tanpa biaya.
     if tanya is None:
