@@ -191,7 +191,6 @@ Lembar kontak + video + hasil `periksa.py`. GAGAL = kerusakan teknis atau batas 
 - rumput: rumpun rumput bergoyang; {n, w} [keadaan: n, w]
 - saf: barisan orang tampak belakang (siluet, cahaya tepi emas dari depan); n per baris, baris, jarak [keadaan: baris, jarak, n]
 - sajadah: -
-- tasbih: untaian tasbih sebagai simbol zikir; bukan cahaya/ruh [keadaan: n]
 - sapu: sapu ijuk; rot = sudut (derajat), pangkal di (0,0) [keadaan: rot*]
 - sawah: hamparan sawah bertingkat dari cakrawala (y=0) ke depan; {w, gubuk, hijau 0-1 (0 = menguning)} [keadaan: gubuk, hijau*, w]
 - sekolah: gedung sekolah dua lantai + tiang bendera + papan nama [keadaan: atap, dinding, nama]
@@ -201,6 +200,7 @@ Lembar kontak + video + hasil `periksa.py`. GAGAL = kerusakan teknis atau batas 
 - sumur: sumur batu; air 0-1 mengatur tinggi air [keadaan: air*, timba*]
 - sungai: sungai bertepi jelas; arus 0-1 mengatur kecepatan riak yang bergerak [keadaan: arus*, lebar]
 - surya: matahari besar di cakrawala (piringan + pendar emas + sinar tipis); r jari-jari, terang 0-1 [keadaan: r*, terang*]
+- tasbih: untaian tasbih sebagai simbol zikir; bukan cahaya/ruh [keadaan: n]
 - tebing: puncak batu curam; (0,0) = pijakan di puncak; cahaya dari kiri-atas
 - telaga: - [keadaan: h, kilau, w]
 - tenda_badui: tenda badui kain bergaris; buka 0-1 membuka tirai [keadaan: buka*]
