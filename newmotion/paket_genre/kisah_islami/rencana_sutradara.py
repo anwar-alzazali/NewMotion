@@ -284,6 +284,39 @@ def _letak_lorong(target: Mapping) -> tuple[float, float, float]:
     return sx, sy - (target.get("jauh") if isinstance(target.get("jauh"), (int, float)) else 560) * ss * 0.3, 0.55 * ss
 
 
+# Tampilan tokoh sejarah yang sering muncul (manusia biasa; tokoh mulia tidak pernah di sini).
+TAMPILAN_PERAN = {
+    "firaun": {"penutup_kepala": "nemes", "janggut": True, "janggut_model": "firaun", "jenis_kelamin": "pria",
+               "pakaian": {"jenis": "jubah", "warna": "#f4ecd8", "bisht": "#3a2a1e", "kalung": "usekh"}},
+}
+SUBJEK_MANUSIA = {"kerumunan", "arus", "pemimpin", "penggali", "saf"}
+
+
+def lengkapi_figuran(rb: Mapping, peran: list[str], teks: str = "") -> dict:
+    """Tokoh manusia yang disebut beat tetapi tidak dipasang sutradara -> figuran bawaan (tidak menolak rencana).
+    Di beat laut terbelah, mereka berada di lorong (dan tertelan bila laut menutup).
+    Bila narasi beat menyebut nabi/malaikat/sahabat, penjaga adab melarang figuran berwajah: rombongan tampil
+    sebagai kerumunan siluet bergerak (`arus`), tanpa wajah."""
+    manusia = [p for p in peran if isinstance(p, str) and p.strip() and not POLA_SAKRAL.search(p)
+               and p.strip().lower() not in ("allah", "tuhan", "allah swt")]
+    if not manusia or rb.get("figuran") or {x.get("jenis") for x in rb.get("subjek", [])} & SUBJEK_MANUSIA:
+        return dict(rb)
+    if POLA_SAKRAL.search(teks or ""):
+        return dict(rb, subjek=list(rb.get("subjek", [])) + [
+            {"jenis": "arus", "tempat": "tengah", "keadaan": {"mode": "lari", "n": 14, "maju": [0.1, 0.9]}}])
+    jenis = {x.get("jenis") for x in rb.get("subjek", [])}
+    tempat = "di_lorong:laut_terbelah" if "laut_terbelah" in jenis else ("kanan" if "nur" in jenis else "tengah")
+    fig = []
+    for p in manusia[:3]:
+        khusus = TAMPILAN_PERAN.get(p.strip().lower())
+        if khusus:
+            fig.append({"jumlah": 1, "tempat": tempat, "gerak": "berdiri", "hadap": "depan", **json.loads(json.dumps(khusus))})
+        else:  # kaum/pasukan/pengikut: beberapa orang
+            fig.append({"jumlah": 3, "tempat": tempat, "gerak": "berdiri", "hadap": "depan",
+                        **({"jenis_kelamin": "pria"} if re.search(r"tentara|pasukan|prajurit|bala", p, re.IGNORECASE) else {})})
+    return dict(rb, figuran=fig)
+
+
 KUNCI_TAMPILAN_FIGURAN = ("jenis_kelamin", "penutup_kepala", "warna_penutup", "janggut", "janggut_model", "pakaian", "mata", "wajah",
                           "rambut", "warna_rambut", "kulit")
 

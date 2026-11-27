@@ -121,10 +121,15 @@ def test_beat_dipecah_melanjutkan_perubahan():
     assert a[-1][1] == b[0][1] and b[-1][1] == 0
 
 
-def test_sutradara_wajib_menampilkan_tokoh_manusia():
+def test_tokoh_yang_terlupa_dilengkapi_mesin():
+    from newmotion.paket_genre.kisah_islami.rencana_sutradara import lengkapi_figuran
     naskah = {"judul": "U", "adegan": [{"nama": "adegan_1", "teks": "Firaun dan tentaranya mengejar.",
                                         "peran": ["Nabi Musa", "Firaun", "tentara Firaun"]}]}
     assert "[tokoh: Firaun, tentara Firaun]" in pesan_sutradara(naskah)
-    beat = [{"beat": 1, "bukti": "Firaun dan tentaranya mengejar", "subjek": [], "kamu": "tidak",
-             "kamera": {"bidikan": "lebar", "aksen": None}, "teks_layar": None, "klimaks": False}]
-    assert any("tidak tampil" in g for g in validasi_lengkap({"objek_inti": None, "beat": beat}, naskah))
+    rb = {"subjek": [{"jenis": "laut_terbelah", "tempat": "tengah"}, {"jenis": "nur", "tempat": "kiri"}]}
+    fig = lengkapi_figuran(rb, naskah["adegan"][0]["peran"])["figuran"]
+    assert [f["tempat"] for f in fig] == ["di_lorong:laut_terbelah"] * 2
+    assert fig[0]["penutup_kepala"] == "nemes" and fig[1]["jenis_kelamin"] == "pria" and fig[1]["jumlah"] == 3
+    assert "figuran" not in lengkapi_figuran(rb, ["Nabi Musa", "malaikat Jibril"])
+    siluet = lengkapi_figuran(rb, ["Bani Israil"], "Nabi Musa dan pengikutnya menyeberang")
+    assert "figuran" not in siluet and siluet["subjek"][-1]["jenis"] == "arus"

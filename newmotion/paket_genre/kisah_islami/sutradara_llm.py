@@ -49,9 +49,6 @@ def dalil_per_beat(naskah: Mapping) -> dict[int, str]:
     return keluar
 
 
-SUBJEK_MANUSIA = {"kerumunan", "arus", "pemimpin", "penggali", "saf"}
-
-
 def peran_manusia(naskah: Mapping) -> dict[int, list[str]]:
     """Nomor beat -> tokoh manusia biasa yang disebut beat itu (nabi/malaikat/sahabat/Allah tidak termasuk)."""
     from .rencana_sutradara import POLA_SAKRAL
@@ -87,14 +84,6 @@ def validasi_lengkap(rencana: Any, naskah: Mapping) -> list[str]:
     salah = [n for n in kartu if n not in dalil]
     if salah:
         return [f"beat {salah}: kartu_dalil hanya untuk beat yang bertanda [dalil: ...]"]
-    hilang = []
-    for b in rencana.get("beat", []):
-        tokoh = peran_manusia(naskah).get(b.get("beat"))
-        if tokoh and not b.get("figuran") and not ({x.get("jenis") for x in b.get("subjek", [])} & SUBJEK_MANUSIA):
-            hilang.append(f"beat {b.get('beat')}: tokoh {', '.join(tokoh)} disebut tetapi tidak tampil; "
-                          "tambahkan figuran (atau kerumunan/arus untuk rombongan besar)")
-    if hilang:
-        return hilang
     from newmotion.application.pengarah_inti import arahkan_naskah
 
     from .penjaga_tokoh import periksa_adab_tokoh
