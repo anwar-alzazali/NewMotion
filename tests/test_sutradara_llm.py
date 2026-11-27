@@ -190,3 +190,20 @@ def test_figuran_naik_benda_menempel_lewat_kait():
 def test_skill_memuat_kemampuan_tokoh():
     skill = S.skill_sutradara()
     assert "{KEMAMPUAN_TOKOH}" not in skill and "motor (samping)" in skill and "- aksi berulang:" in skill
+
+
+def test_figuran_berpencar_saling_menjauh():
+    from newmotion.paket_genre.kisah_islami.rencana_sutradara import figuran_dari_rencana
+
+    fig = figuran_dari_rencana({"figuran": [{"jumlah": 4, "pindah": "berpencar"}]}, [], 1, ds=4.0)
+    arah = [(f["x"][-1][1] - f["x"][0][1], f["profil"]) for f in fig]
+    assert [a < 0 for a, _ in arah] == [True, True, False, False]
+    assert [p for _, p in arah] == ["kiri", "kiri", "kanan", "kanan"] and all(f["pose"] == "jalan" for f in fig)
+    r = copy.deepcopy(RENCANA)
+    r["beat"][2]["figuran"] = [{"jumlah": 2, "pindah": "terbang"}]
+    assert any("pindah" in g for g in validasi_rencana(r, NARASI))
+
+
+def test_variasi_dan_tanah_per_tema():
+    spek, _, _ = arahkan_naskah(terapkan_rencana(NASKAH, RENCANA))
+    assert spek["cerita"]["variasi"] == NASKAH["judul"]

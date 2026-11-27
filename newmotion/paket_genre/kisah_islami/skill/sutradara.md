@@ -18,7 +18,8 @@ Selain siluet (`kerumunan`, `arus`), renderer bisa menggambar figuran berwajah: 
 kaum yang diajak bicara, orang yang lewat. Pakai bila adegan butuh manusia yang terasa hidup dari dekat;
 untuk massa jauh tetap siluet. Figuran HANYA orang biasa: dilarang di beat yang menyebut nabi, malaikat,
 atau sahabat (rencana ditolak). Kisah berlatar Jazirah Arab: tulis `"suku": "arab"` di tingkat rencana
-(semua figuran berjubah/berabaya), atau per figuran.
+(semua figuran berjubah/berabaya), atau per figuran. `pindah` membuat figuran berjalan/berlari selama beat;
+`berpencar` = separuh ke kiri, separuh ke kanan, saling menjauh (mis. orang yang lari dari keluarganya).
 {KEMAMPUAN_TOKOH}
 
 ## Adab (WAJIB, pelanggaran membuat rencana ditolak)
@@ -59,7 +60,7 @@ sapuan lembut di awal beat. `intonasi` memberi arah pembaca narasi (dipakai taha
      "suara": {"suasana": "<nama>|null", "efek": [{"nama": "<nama>", "pada": "<kata>|null", "keras": "lemah|sedang|kuat", "ulang": 1}],
                "transisi": false, "intonasi": "<intonasi>"},
      "figuran": [{"jumlah": 2, "suku": "arab|umum", "tempat": "<tempat>", "gerak": "<pose atau aksi>", "hadap": "depan|kanan|kiri",
-                  "naik": "<jenis yang bisa dinaiki, ada di subjek beat>|null"}]}
+                  "pindah": "ke_kiri|ke_kanan|berpencar|null", "naik": "<jenis yang bisa dinaiki, ada di subjek beat>|null"}]}
   ],
   "suku": "umum|arab"
 }

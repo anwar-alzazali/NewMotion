@@ -148,6 +148,8 @@ def validasi_rencana(rencana: Any, narasi_beat: list[str]) -> list[str]:
 
 
 MAKS_FIGURAN = 6
+PINDAH = ("ke_kiri", "ke_kanan", "berpencar")  # gerak figuran sepanjang beat (berpencar = saling menjauh)
+JARAK_PINDAH = 300
 POLA_SAKRAL = re.compile(r"\b(?:rasulullah|rasul|nabi|malaikat|jibril|mikail|israfil|sahabat|abu bakar|umar|"
                          r"utsman|usman|ali bin abi thalib)\b", re.IGNORECASE)
 
@@ -177,6 +179,8 @@ def _validasi_figuran(fig: Any, jenis_beat: set, narasi: str, lbl: str) -> list[
             g.append(f"{lbl}: figuran.gerak {f.get('gerak')!r} tidak dikenal renderer")
         if f.get("hadap", "depan") not in HADAP:
             g.append(f"{lbl}: figuran.hadap harus {HADAP}")
+        if f.get("pindah") not in (None, *PINDAH):
+            g.append(f"{lbl}: figuran.pindah harus salah satu {PINDAH} atau null")
         if f.get("naik") is not None:
             if f["naik"] not in kait:
                 g.append(f"{lbl}: figuran.naik hanya untuk {tuple(kait)}")
@@ -195,19 +199,27 @@ LETAK_FIGURAN = {  # (x, y kaki, skala, jauh)
 }
 
 
-def figuran_dari_rencana(rb: Mapping, benda: list[dict], kunci: int) -> list[dict]:
-    """Rencana figuran satu beat -> boneka figuran (npc) dengan posisi, gerak, hadap, dan kait."""
+def figuran_dari_rencana(rb: Mapping, benda: list[dict], kunci: int, ds: float = 4.0) -> list[dict]:
+    """Rencana figuran satu beat -> boneka figuran (npc) dengan posisi, gerak, hadap, pindah, dan kait."""
     keluar: list[dict] = []
     for i, f in enumerate(rb.get("figuran") or []):
         x0, y0, sk, blk = LETAK_FIGURAN[f.get("tempat", "tengah")]
         n = int(f.get("jumlah", 1))
         for k in range(n):
-            o = {"npc": kunci * 10 + i * 3 + k, "pose": f.get("gerak", "berdiri"),
-                 "x": round(x0 + (k - (n - 1) / 2) * 150 * sk), "y": y0 + (k % 2) * 18, "s": sk}
+            x = round(x0 + (k - (n - 1) / 2) * 150 * sk)
+            gerak = f.get("gerak", "berdiri")
+            o = {"npc": kunci * 10 + i * 3 + k, "pose": gerak, "x": x, "y": y0 + (k % 2) * 18, "s": sk}
             if f.get("suku"):  # tanpa suku: ikut suku cerita
                 o["suku"] = f["suku"]
             if f.get("hadap") in ("kanan", "kiri"):
                 o["profil"] = f["hadap"]
+            pindah = f.get("pindah")
+            if pindah:  # bergerak sepanjang beat; berpencar = separuh ke kiri, separuh ke kanan (saling menjauh)
+                arah = -1 if pindah == "ke_kiri" or (pindah == "berpencar" and k < n / 2) else 1
+                o["x"] = [[0, x], [round(max(0.6, ds * 0.9), 2), round(x + arah * JARAK_PINDAH * sk)]]
+                o["profil"] = "kiri" if arah < 0 else "kanan"
+                if gerak == "berdiri":
+                    o["pose"] = "jalan"
             if f.get("naik"):
                 target = next((b for b in benda if b.get("jenis") == f["naik"]), None)
                 if target is not None:
