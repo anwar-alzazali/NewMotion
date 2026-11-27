@@ -2349,9 +2349,15 @@
       const awal = posisiTanganBawaan(asal, tl, d);
       const tujuanDenganBenda = Object.assign({}, tujuan, { pose: "pegang_" + r.benda });
       const akhir = posisiTanganBawaan(tujuanDenganBenda, tl, d);
+      const tengah = [(awal[0] + akhir[0]) / 2, (awal[1] + akhir[1]) / 2];
       const lama = Math.max(0.1, Number(r.durasi) || 1.2), q0 = clamp((tl - (Number(r.at) || 0)) / lama);
-      const q = q0 * q0 * (3 - 2 * q0), posisi = [mix(awal[0], akhir[0], q), mix(awal[1], akhir[1], q)];
-      return { r, awal, akhir, posisi, aktif: tl >= (Number(r.at) || 0) && tl <= (Number(r.at) || 0) + lama };
+      const halusSerah = (u) => { u = clamp(u); return u * u * (3 - 2 * u); };
+      let posisi;
+      if (q0 < 0.25) { const q = halusSerah(q0 / 0.25); posisi = [mix(awal[0], tengah[0], q), mix(awal[1], tengah[1], q)]; }
+      else if (q0 <= 0.75) posisi = tengah;
+      else { const q = halusSerah((q0 - 0.75) / 0.25); posisi = [mix(tengah[0], akhir[0], q), mix(tengah[1], akhir[1], q)]; }
+      return { r, awal, tengah, akhir, posisi, fase: q0,
+        aktif: tl >= (Number(r.at) || 0) && tl <= (Number(r.at) || 0) + lama };
     });
     (S.boneka || []).forEach((b, i) => {
       // Ikatan kendaraan membuat pengendara mengikuti posisi motor setiap frame.
@@ -2371,10 +2377,10 @@
         const r = lintas.r, mulai = Number(r.at) || 0, akhir = mulai + Math.max(0.1, Number(r.durasi) || 1.2);
         if (i === r.dari) {
           if (tl >= mulai) tokoh._serahPegang = null;
-          if (lintas.aktif) tokoh._serahTarget = lintas.posisi;
+          if (lintas.aktif && lintas.fase <= 0.75) tokoh._serahTarget = lintas.posisi;
         }
         if (i === r.ke) {
-          if (tl >= mulai && tl <= akhir) tokoh._serahTarget = lintas.posisi;
+          if (lintas.aktif && lintas.fase >= 0.25) tokoh._serahTarget = lintas.posisi;
           else if (tl > akhir) tokoh._serahPegang = r.benda;
         }
       }
@@ -2389,7 +2395,7 @@
       if (lintas.aktif) {
         isi += gambarBendaSerah(r.benda, lintas.posisi[0], lintas.posisi[1], Number(r.skala) || 0.48);
         const a = window.__tanganBoneka[r.dari], b = window.__tanganBoneka[r.ke];
-        window.__catatSerahTerima.push({ t: tl, benda: r.benda, posisi: lintas.posisi, tangan_pemberi: a || null, tangan_penerima: b || null });
+        window.__catatSerahTerima.push({ t: tl, fase: lintas.fase, benda: r.benda, posisi: lintas.posisi, meio: lintas.tengah, mão: null, tangan_pemberi: a || null, tangan_penerima: b || null });
       }
     }
     (S.benda || []).filter((o) => o.depan).forEach((o) => { isi += o.hias ? `<g data-hias="1">${benda(o, tl, d)}</g>` : benda(o, tl, d); });
