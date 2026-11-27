@@ -86,3 +86,31 @@ def test_temuan_pemeriksa_dapat_menjadi_kebutuhan():
     }]}
     [hasil] = dari_temuan(temuan)
     assert hasil["nama"] == "jembatan gantung" and hasil["beat"] == 3
+
+
+def test_rencana_belum_ada_lolos_dengan_http_palsu(monkeypatch):
+    import copy
+    import json
+
+    from newmotion.paket_genre.kisah_islami import sutradara_llm as S
+
+    from pathlib import Path
+    data = Path(__file__).parent / "data"
+    naskah = json.loads((data / "tolok_ukur" / "yajuj1.json").read_text(encoding="utf-8"))
+    rencana = json.loads((data / "rencana" / "yajuj1.json").read_text(encoding="utf-8"))
+    rencana = copy.deepcopy(rencana)
+    rencana["belum_ada"] = [{
+        "nama": "timbangan gandum",
+        "alasan": "alat timbang tidak tersedia di katalog",
+        "bukti": "Ada satu dinding yang harus ditembus",
+    }]
+    monkeypatch.setenv("ANTHROPIC_API_KEY", "uji")
+    monkeypatch.setenv("NEWMOTION_MODEL_SUTRADARA", "claude-sonnet-5-5")
+
+    def http(url, badan, kepala, batas):
+        return {"content": [{"type": "text", "text": json.dumps(rencana)}],
+                "usage": {"input_tokens": 100, "output_tokens": 50}}
+
+    jawaban = S.buat_rencana(naskah, http=http)
+    assert jawaban.data["belum_ada"][0]["nama"] == "timbangan gandum"
+    assert S.validasi_lengkap(jawaban.data, naskah) == []
