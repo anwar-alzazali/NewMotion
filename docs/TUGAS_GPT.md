@@ -10,9 +10,14 @@ Pemilik: Anwar Alzazali. Bahasa kerja: Indonesia. Ditulis 27 Nov 2026 oleh Claud
    sendiri menyatakan ada masalah.
 3. **Cabang kerja = `gpt/integrasi`** (bukan `main`). Satu tugas = satu branch dari `gpt/integrasi` terbaru
    = satu PR **ke `gpt/integrasi`**. Jangan menggabungkan dua tugas dalam satu PR. Jangan membuat PR ke `main`.
-4. Sebelum merge: `python -m pytest -q` lulus semua (saat ini 384), `ruff check` bersih untuk berkas yang
-   kamu ubah, dan `node --test bot/` lulus bila menyentuh bot.
-5. **Jangan menunggu audit.** Bila semua pemeriksaan butir 4 lulus, merge sendiri PR-mu ke `gpt/integrasi`,
+4. **Uji lewat CI (bukan lokal).** Sesi pengerja tidak bisa menjalankan pytest/browser sendiri; yang
+   menjalankan adalah workflow `Uji runtime NewMotion` (`.github/workflows/test-runtime.yml`), otomatis
+   setiap push ke branch bernama `tugas-*`. Ia menjalankan: sintaks Python/JS, ruff untuk berkas yang
+   berubah (hanya galat ruff BARU yang menggagalkan; galat lama di berkas itu boleh tetap), ukur ulang benda (dan meng-commit `ukuran_benda.json` ke branch-mu bila berubah — tarik dulu
+   sebelum push berikutnya), seluruh pytest, uji bot, dan uji tokoh lapis A (harus 0 temuan). Lembar
+   bukti PNG ada di artefak run. Jadi: beri nama branch `tugas-<nomor>-<ringkas>`, push, tunggu run itu
+   hijau, baru merge. Bila merah, baca log run, perbaiki, push lagi (ingat batas macet butir 7).
+5. **Jangan menunggu audit.** Bila run CI butir 4 hijau, merge sendiri PR-mu ke `gpt/integrasi`,
    centang tugasnya `[x]` di daftar di bawah, lalu langsung lanjut ke tugas berikutnya. Pemilik/Claude
    mengaudit seluruh `gpt/integrasi` sekaligus setelah semua tugas selesai, lalu menggabungkannya ke `main`.
    (Cabang terpisah ini menjaga bot produksi, yang otomatis ter-deploy dari `main`, tetap aman.)
@@ -28,7 +33,8 @@ Pemilik: Anwar Alzazali. Bahasa kerja: Indonesia. Ditulis 27 Nov 2026 oleh Claud
 
 9. **Jangan audit diri berulang-ulang.** Satu putaran pemeriksaan sendiri + semua uji lulus = cukup, lalu
    merge dan lanjut. Hal yang belum pasti dicatat di log sebagai "catatan untuk audit", bukan alasan berhenti.
-   Uji dijalankan lokal (`pytest`, `ruff`, `node --test bot/`); jangan menambah workflow per-branch.
+   Jangan menambah workflow baru untuk menguji; `test-runtime.yml` sudah mencakup semuanya. Bila memang
+   butuh pemeriksaan baru, tambahkan langkah di workflow itu atau tambahkan uji pytest.
 
 ## Daftar tugas (centang bila selesai dan sudah di-merge ke `gpt/integrasi`)
 
@@ -292,3 +298,6 @@ Format: `- YYYY-MM-DD | Tugas N | status (selesai/sebagian/MACET) | PR #.. | cat
   temuan tanpa melonggarkan ambang. Tugas 3: 20 dari 24 benda layak; empat benda lemah dijadikan Tugas 5b
   (kerjakan setelah Tugas 5 selesai, sebelum Tugas 6). Catatan untuk audit akhir: test-runtime.yml kini
   terpicu push `tugas-*` dan meng-commit balik ukuran_benda.json — dirapikan saat merge ke main.
+- 2026-11-27 | Protokol | Claude | — | Pengerja tidak bisa pytest lokal: butir 4 kini resmi memakai CI
+  `test-runtime.yml` (dirapikan: push `tugas-*`, ruff otomatis untuk berkas berubah, ukur benda + commit balik,
+  pytest, bot, uji tokoh 0 temuan, artefak bukti). Workflow lama lint-naskah.yml dihapus (sudah tercakup).
