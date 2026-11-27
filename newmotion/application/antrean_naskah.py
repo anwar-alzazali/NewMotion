@@ -188,6 +188,10 @@ def normalisasi(n: dict) -> dict:
     return n
 
 
+def _sakral(x: object) -> bool:
+    return isinstance(x, str) and _polos(x) in {"allah", "tuhan", "allah swt"}
+
+
 def _rapikan_dialog(b: dict, n: dict) -> None:
     """Dialog dipakai untuk menata tokoh di layar. Firman Allah tidak dijadikan dialog bertokoh:
     kalimatnya tetap ada di narasi (dibacakan narator), giliran dialognya dibuang. Nama pembicara
@@ -202,11 +206,10 @@ def _rapikan_dialog(b: dict, n: dict) -> None:
         if not isinstance(g, dict):
             sisa.append(g)
             continue
-        sakral = lambda x: isinstance(x, str) and _polos(x) in {"allah", "tuhan", "allah swt"}
-        if sakral(g.get("penjawab")) and not sakral(g.get("pembicara")):
+        if _sakral(g.get("penjawab")) and not _sakral(g.get("pembicara")):
             g["penjawab"] = None  # ucapan manusia kepada Allah tetap dialog, tanpa lawan bicara bersosok
         nama = [g.get(k) for k in ("pembicara", "penjawab") if isinstance(g.get(k), str) and g.get(k).strip()]
-        if any(sakral(x) for x in nama):
+        if any(_sakral(x) for x in nama):
             n.setdefault("peringatan", []).append(
                 f"dialog yang melibatkan Allah dijadikan narasi saja: \"{str(g.get('ucapan', ''))[:60]}\"")
             continue
