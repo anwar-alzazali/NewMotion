@@ -85,7 +85,8 @@ def periksa(naskah: dict, *, panggil=None):
         "Usulan belum boleh dipakai sampai mesin memverifikasi dari sumber resmi. "
         "Keluarkan JSON: {temuan:[{beat,kategori,tingkat,bukti,alasan,saran}],usulan_dalil:[]}."
     )
-    pemeriksa = lambda hasil: validasi_hasil(hasil, naskah)
+    def pemeriksa(hasil):
+        return validasi_hasil(hasil, naskah)
     if panggil is None:
         hasil = llm.panggil(
             "periksa_naskah", sistem, isi, json=True,
