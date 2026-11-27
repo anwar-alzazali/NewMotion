@@ -1283,15 +1283,21 @@
     } else if (j === "kebun_kurma") { // kebun kurma berbaris; buah 0-1 menampakkan tandan
       const buah=v(o.buah,t,d,0.7), n=Math.max(2,Math.min(7,o.n||4));
       for(let i=0;i<n;i++){const xx=(i-(n-1)/2)*210, hh=560+(i%2)*70;g += '<path d="M '+(xx-24)+' 0 Q '+(xx-55)+' -280 '+xx+' -'+hh+' Q '+(xx+35)+' -280 '+(xx+24)+' 0 Z" fill="#765035" stroke="'+INK+'" stroke-width="9"/>';for(let k=0;k<7;k++){const aa=-Math.PI*.9+k*Math.PI*.3, ex=xx+Math.cos(aa)*180, ey=-hh+Math.sin(aa)*110;g += '<path d="M '+xx+' '+(-hh+20)+' Q '+(xx+Math.cos(aa)*80)+' '+(-hh-70)+' '+ex+' '+ey+'" stroke="#315b37" stroke-width="22" fill="none"/>';}for(let k=0;k<5;k++)g += '<circle cx="'+(xx-45+k*22)+'" cy="'+(-hh+115)+'" r="'+(13*buah)+'" fill="#d99a35"/>';}
-    } else if (j === "ladang_gandum") { // hamparan gandum berbulir; matang 0-1, angin mengayunkan batang
-      const matang=v(o.matang,t,d,0.8), angin=v(o.angin,t,d,0.65), n=Math.max(12,Math.min(64,o.n||38)), R=rng(o.seed||31);
-      const hijau=campur("#3f713d","#d6a83d",matang), bulir=campur("#6d9a49","#edc45b",matang);
+    } else if (j === "ladang_gandum") { // hamparan batang gandum berbulir; matang 0-1, angin mengayunkan malai
+      const matang=v(o.matang,t,d,0.8), angin=v(o.angin,t,d,0.65), n=Math.max(30,Math.min(100,o.n||58)), R=rng(o.seed||31);
+      const hijau=campur("#477b3c","#c69a32",matang), bulir=campur("#759e45","#edbd4b",matang);
+      // Baris belakang lebih rapat dan kecil; baris depan lebih lebar dan tinggi.
       for(let i=0;i<n;i++){
-        const z=i/n, xx=(R()-.5)*(500+z*520), sk=.48+z*.72, hh=(210+R()*150)*sk, fase=R()*Math.PI*2, ayun=Math.sin(t*2.4+fase)*angin*(8+z*16), x1=xx+ayun, y1=-hh;
-        g += '<path d="M '+xx+' 0 Q '+(xx-10*sk)+' '+(-hh*.48)+' '+x1+' '+y1+'" stroke="'+hijau+'" stroke-width="'+(7*sk)+'" fill="none" stroke-linecap="round"/>';
-        g += '<path d="M '+(xx-2)+' '+(-hh*.28)+' Q '+(xx-42*sk)+' '+(-hh*.43)+' '+(xx-58*sk)+' '+(-hh*.36)+' M '+(xx+2)+' '+(-hh*.53)+' Q '+(xx+38*sk)+' '+(-hh*.68)+' '+(xx+54*sk)+' '+(-hh*.59)+'" stroke="'+hijau+'" stroke-width="'+(9*sk)+'" fill="none" stroke-linecap="round"/>';
-        g += '<path d="M '+x1+' '+y1+' Q '+(x1+18*sk)+' '+(y1-22*sk)+' '+(x1+12*sk)+' '+(y1-66*sk)+'" stroke="'+bulir+'" stroke-width="'+(7*sk)+'" fill="none"/>';
-        for(let k=0;k<7;k++){const yy=y1-(k*8+8)*sk, side=k%2?1:-1, bx=x1+side*(9+k*1.2)*sk;g += '<ellipse cx="'+bx+'" cy="'+yy+'" rx="'+(7*sk)+'" ry="'+(13*sk)+'" transform="rotate('+(side*24)+' '+bx+' '+yy+')" fill="'+bulir+'" stroke="'+INK+'" stroke-width="'+(2.2*sk)+'"/>';}
+        const z=i/n, xx=(R()-.5)*(420+z*560), sk=.55+z*.72, dasar=-(1-z)*115;
+        const hh=(250+R()*180)*sk, fase=R()*Math.PI*2, ayun=Math.sin(t*2.4+fase)*angin*(10+z*22), x1=xx+ayun, y1=dasar-hh;
+        // Batang berbentuk bidang tertutup agar tetap terbaca pada thumbnail.
+        g += '<path d="M '+(xx-7*sk)+' '+dasar+' Q '+(xx-9*sk)+' '+(dasar-hh*.48)+' '+(x1-5*sk)+' '+y1+' L '+(x1+5*sk)+' '+y1+' Q '+(xx+10*sk)+' '+(dasar-hh*.45)+' '+(xx+7*sk)+' '+dasar+' Z" fill="'+hijau+'" stroke="'+INK+'" stroke-width="'+(2.4*sk)+'"/>';
+        g += '<path d="M '+xx+' '+(dasar-hh*.28)+' Q '+(xx-48*sk)+' '+(dasar-hh*.48)+' '+(xx-88*sk)+' '+(dasar-hh*.39)+' Q '+(xx-47*sk)+' '+(dasar-hh*.34)+' '+xx+' '+(dasar-hh*.28)+' Z" fill="'+hijau+'" stroke="'+INK+'" stroke-width="'+(1.8*sk)+'"/>';
+        g += '<path d="M '+xx+' '+(dasar-hh*.52)+' Q '+(xx+42*sk)+' '+(dasar-hh*.72)+' '+(xx+78*sk)+' '+(dasar-hh*.63)+' Q '+(xx+40*sk)+' '+(dasar-hh*.58)+' '+xx+' '+(dasar-hh*.52)+' Z" fill="'+hijau+'" stroke="'+INK+'" stroke-width="'+(1.8*sk)+'"/>';
+        g += '<path d="M '+x1+' '+y1+' Q '+(x1+16*sk)+' '+(y1-30*sk)+' '+(x1+10*sk)+' '+(y1-76*sk)+'" stroke="'+bulir+'" stroke-width="'+(8*sk)+'" fill="none"/>';
+        for(let k=0;k<8;k++){const yy=y1-(k*9+8)*sk, side=k%2?1:-1, bx=x1+side*(10+k*1.1)*sk;
+          g += '<ellipse cx="'+bx+'" cy="'+yy+'" rx="'+(8*sk)+'" ry="'+(15*sk)+'" transform="rotate('+(side*24)+' '+bx+' '+yy+')" fill="'+bulir+'" stroke="'+INK+'" stroke-width="'+(2.4*sk)+'"/>';
+        }
       }
     } else if (j === "sungai") { // sungai bertepi jelas; arus 0-1 mengatur kecepatan riak yang bergerak
       const arus=v(o.arus,t,d,0.5), lebar=o.lebar||620, warna=o.warna||"#397f9a", fase=(t*(1.2+arus*5.5))%1;
