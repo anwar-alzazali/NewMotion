@@ -1,0 +1,1 @@
+{"text": "A heavy staff strikes the sea with a deep thunderous boom, then a colossal roaring rush of ocean water tearing apart and rising into two towering walls of water, massive rumbling low bass, spray, epic and cinematic, no music, no voices", "prompt_influence": 0.5, "duration_seconds": 8.0}
