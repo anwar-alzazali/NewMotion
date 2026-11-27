@@ -176,6 +176,10 @@ def _validasi_figuran(fig: Any, jenis_beat: set, narasi: str, lbl: str) -> list[
     if fig and POLA_SAKRAL.search(narasi):
         return [f"{lbl}: figuran tidak boleh di beat yang menyebut nabi, malaikat, atau sahabat (adab); pakai kerumunan siluet atau tanpa tokoh"]
     g, total, kait = [], 0, kemampuan()["kait"]
+    pegang_sah = set(kemampuan()["pegang"])
+    nama_figuran = [f.get("nama") for f in fig if isinstance(f, Mapping) and f.get("nama") is not None]
+    if len(nama_figuran) != len(set(nama_figuran)):
+        g.append(f"{lbl}: nama figuran harus unik dalam satu beat")
     for f in fig:
         if not isinstance(f, Mapping):
             g.append(f"{lbl}: figuran harus objek")
@@ -185,6 +189,16 @@ def _validasi_figuran(fig: Any, jenis_beat: set, narasi: str, lbl: str) -> list[
             g.append(f"{lbl}: figuran.jumlah 1..{MAKS_FIGURAN}")
             n = 1
         total += n
+        nama = f.get("nama")
+        if nama is not None and (not isinstance(nama, str) or not re.fullmatch(r"[a-zA-Z][a-zA-Z0-9_-]{0,23}", nama)):
+            g.append(f"{lbl}: figuran.nama harus ID sederhana 1..24 karakter")
+        if (nama is not None or f.get("hadap_ke") is not None) and n != 1:
+            g.append(f"{lbl}: figuran bernama/berelasi harus jumlah 1")
+        if f.get("hadap_ke") is not None:
+            if not isinstance(f["hadap_ke"], str) or f["hadap_ke"] == nama or f["hadap_ke"] not in nama_figuran:
+                g.append(f"{lbl}: figuran.hadap_ke harus nama figuran lain pada beat yang sama")
+        if f.get("pegang") is not None and f["pegang"] not in pegang_sah:
+            g.append(f"{lbl}: figuran.pegang harus salah satu {tuple(sorted(pegang_sah))}")
         if f.get("suku", "umum") not in SUKU:
             g.append(f"{lbl}: figuran.suku harus {SUKU}")
         if f.get("tempat", "tengah") not in TEMPAT_DASAR:
@@ -202,6 +216,13 @@ def _validasi_figuran(fig: Any, jenis_beat: set, narasi: str, lbl: str) -> list[
                 g.append(f"{lbl}: figuran.naik {f['naik']!r} harus ada di subjek beat ini")
             elif n != 1:
                 g.append(f"{lbl}: figuran yang naik/duduk di benda jumlahnya 1")
+    if any(isinstance(f, Mapping) and f.get("hadap_ke") for f in fig):
+        nama_x = {f.get("nama"): LETAK_FIGURAN.get(f.get("tempat", "tengah"), LETAK_FIGURAN["tengah"])[0]
+                  for f in fig if isinstance(f, Mapping) and f.get("nama")}
+        for f in fig:
+            if isinstance(f, Mapping) and f.get("hadap_ke") in nama_x and f.get("nama") in nama_x:
+                if nama_x[f["hadap_ke"]] == nama_x[f["nama"]]:
+                    g.append(f"{lbl}: pasangan hadap_ke tidak boleh berada pada tempat horizontal yang sama")
     if total > MAKS_FIGURAN:
         g.append(f"{lbl}: total figuran maksimal {MAKS_FIGURAN} per beat")
     return g
@@ -222,11 +243,20 @@ def figuran_dari_rencana(rb: Mapping, benda: list[dict], kunci: int, ds: float =
         for k in range(n):
             x = round(x0 + (k - (n - 1) / 2) * 150 * sk)
             gerak = f.get("gerak", "berdiri")
-            o = {"npc": kunci * 10 + i * 3 + k, "pose": gerak, "x": x, "y": y0 + (k % 2) * 18, "s": sk}
+            identitas = kunci * 10 + i * 3 + k
+            o = {"id": identitas, "npc": identitas, "pose": gerak, "x": x, "y": y0 + (k % 2) * 18, "s": sk}
+            if f.get("nama"):
+                o["_nama_interaksi"] = f["nama"]
+            if f.get("pegang"):
+                o["pose"] = f"pegang_{f['pegang']}"
             if f.get("suku"):  # tanpa suku: ikut suku cerita
                 o["suku"] = f["suku"]
             if f.get("hadap") in ("kanan", "kiri"):
                 o["profil"] = f["hadap"]
+            if f.get("hadap_ke"):
+                target = next((q for q in keluar if q.get("_nama_interaksi") == f["hadap_ke"]), None)
+                if target is not None:
+                    o["profil"] = "kanan" if target["x"] > x else "kiri"
             pindah = f.get("pindah")
             if pindah:  # bergerak sepanjang beat; berpencar = separuh ke kiri, separuh ke kanan (saling menjauh)
                 arah = -1 if pindah == "ke_kiri" or (pindah == "berpencar" and k < n / 2) else 1
