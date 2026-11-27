@@ -9,7 +9,14 @@ from newmotion.application import antrean_naskah as A
 NASKAH = {
     "judul": "Uji antrean",
     "inti": "Cerita uji.",
-    "uji_cerita": {"kalimat_inti":"Cerita uji.","fakta_terkuat_detik_0":"Fakta pembuka.","jawaban_hook":"Jawaban video.","momen_emosi_kejutan":"Momen beat satu.","alasan_interaksi":"Pertanyaan relevan.","kalimat_dibuang":[]},
+    "uji_cerita": {
+        "kalimat_inti": "Cerita uji.",
+        "fakta_terkuat_detik_0": "Fakta pembuka.",
+        "jawaban_hook": "Jawaban video.",
+        "momen_emosi_kejutan": "Momen beat satu.",
+        "alasan_interaksi": "Pertanyaan relevan.",
+        "kalimat_dibuang": [],
+    },
     "dalil": [],
     "beat": [{
         "narasi": "Tokoh memulai perjalanan.",
@@ -169,3 +176,50 @@ def test_kartu_telegram_memuat_ringkasan_uji_cerita():
 
 def test_peta_tempel_menolak_nomor_paragraf_nol():
     assert A.validasi_peta_tempel({"beat": [{"paragraf": [0]}]})
+
+
+def test_uji_cerita_memvalidasi_enam_unsur():
+    assert A.validasi_uji_cerita(NASKAH) == []
+    rusak = json.loads(json.dumps(NASKAH))
+    del rusak["uji_cerita"]["jawaban_hook"]
+    assert any("jawaban_hook" in x for x in A.validasi_uji_cerita(rusak))
+
+
+def test_kartu_telegram_memuat_ringkasan_uji_cerita():
+    st = A.status_baru("uji", "Uji", "ide")
+    st["uji_cerita_ringkas"] = "Inti | fakta detik nol | jawaban hook"
+    assert "Uji cerita" in A.kartu(st)
+
+
+def test_peta_tempel_menolak_nomor_paragraf_nol():
+    assert A.validasi_peta_tempel({"beat": [{"paragraf": [0]}]})
+
+
+def test_jalur_ide_revisi_dan_tempel_memakai_tahap_llm_yang_tepat(monkeypatch):
+    from newmotion.infrastructure import llm
+
+    jawaban = llm.Jawaban(json.dumps(NASKAH), "model-uji", "anthropic")
+    panggilan = []
+
+    def palsu(tahap, sistem, isi, **kwargs):
+        panggilan.append((tahap, kwargs.get("validasi")))
+        return jawaban
+
+    monkeypatch.setattr(llm, "panggil", palsu)
+    monkeypatch.setattr(A, "_PATH_SKILL", Path(__file__).parents[1] / "newmotion/paket_genre/kisah_islami/skill/naskah.md")
+
+    A.buat_naskah("ide", "Ide uji")
+    A.buat_naskah("revisi", "Ubah satu kalimat", NASKAH)
+    assert [x[0] for x in panggilan] == ["naskah", "naskah"]
+    assert all(callable(x[1]) for x in panggilan)
+
+    hasil_tempel = {
+        "judul": "Tempel",
+        "inti": "Naskah asli",
+        "dalil": [],
+        "beat": [{"paragraf": [1], "dalil": [], "kata_kunci": [], "peran": []}],
+    }
+    jawaban.data = hasil_tempel
+    A.buat_naskah("tempel", "Kalimat pemilik harus utuh.")
+    assert panggilan[-1][0] == "rapikan"
+    assert A.buat_naskah("tempel", "Kalimat pemilik harus utuh.")[0]["beat"][0]["narasi"] == "Kalimat pemilik harus utuh."
