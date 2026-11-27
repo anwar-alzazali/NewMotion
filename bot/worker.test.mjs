@@ -100,3 +100,11 @@ test("pratinjau gagal menampilkan tombol ulang, tetapi status jalan/selesai tida
   assert.equal(tombolKartu({ ...dasar, tahap: { ...dasar.tahap, tinjau_visual: "jalan" } })[0][0].callback_data, "menu");
   assert.equal(tombolKartu({ ...dasar, tahap: { ...dasar.tahap, tinjau_visual: "selesai" } })[0][0].callback_data, "menu");
 });
+
+test("produksi final gagal memberi tombol ulangi", async () => {
+  const { tombolKartu, bacaTombol } = await import("./worker.js");
+  const st = { id: "a1", tahap: { tinjau: "selesai", dalil: "selesai", sutradara: "selesai", tinjau_visual: "selesai", narasi: "gagal", render: "belum" } };
+  const t = tombolKartu(st);
+  assert.equal(t[0][0].callback_data, "fu:a1");
+  assert.deepEqual(bacaTombol("fu:a1"), { aksi: "fu", id: "a1", alasan: null });
+});

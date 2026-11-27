@@ -1,0 +1,111 @@
+name: Produksi final (narasi + render bersuara)
+
+# Dipicu bot setelah pemilik menyetujui pratinjau visual. Rencana sutradara dari pratinjau
+# dipakai ulang (tanpa LLM); narasi ElevenLabs dibuat sekali lalu disimpan di antrean/<id>/audio.
+on:
+  workflow_dispatch:
+    inputs:
+      id:
+        description: "ID antrean yang visualnya sudah disetujui"
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+concurrency:
+  group: final-${{ inputs.id }}
+  cancel-in-progress: false
+
+jobs:
+  final:
+    runs-on: ubuntu-latest
+    timeout-minutes: 50
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Pasang renderer dan dependensi
+        run: |
+          python -m pip install -e '.[render]'
+          python -m playwright install --with-deps chromium
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg fonts-noto-core
+      - name: Narasi dan render final
+        env:
+          ID: ${{ inputs.id }}
+          ELEVENLABS_API_KEY: ${{ secrets.ELEVENLABS_API_KEY }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          [[ "$ID" =~ ^[a-z0-9_-]{1,60}$ ]] || { echo "::error::id tidak sah"; exit 1; }
+          python -m newmotion.application.produksi_final "$ID"
+      - name: Simpan narasi, papan final, dan status
+        if: always()
+        env:
+          ID: ${{ inputs.id }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          [[ "$ID" =~ ^[a-z0-9_-]{1,60}$ ]] || exit 1
+          git config user.name "github-actions[bot]"
+          git config user.email "41898333+github-actions[bot]@users.noreply.github.com"
+          git add "antrean/$ID/status.json"
+          for f in papan_final.json audio/narasi.mp3 audio/narasi.waktu.json audio/waktu_adegan.json audio/mentah.mp3 audio/mentah.waktu.json; do
+            if [[ -f "antrean/$ID/$f" ]]; then git add "antrean/$ID/$f"; fi
+          done
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m "Antrean $ID: simpan narasi dan papan final"
+          for i in 1 2 3; do
+            git pull --rebase -q origin main && git push -q origin HEAD:main && exit 0
+            sleep 5
+          done
+          exit 1
+      - name: Kirim video final
+        if: success()
+        env:
+          ID: ${{ inputs.id }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: python -m newmotion.application.produksi_final "$ID" --kirim-saja
+      - name: Tandai gagal agar bisa dicoba ulang
+        if: failure()
+        env:
+          ID: ${{ inputs.id }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          [[ "$ID" =~ ^[a-z0-9_-]{1,60}$ ]] || exit 1
+          python - <<'PY'
+          import json, os
+          from datetime import datetime, timezone
+          from pathlib import Path
+          p = Path("antrean") / os.environ["ID"] / "status.json"
+          if p.is_file():
+              s = json.loads(p.read_text(encoding="utf-8"))
+              t = s.setdefault("tahap", {})
+              for k in ("narasi", "render"):
+                  if t.get(k) == "jalan":
+                      t[k] = "gagal"
+              s.setdefault("ket", {})["render"] = "produksi final gagal; audio yang sudah dibuat disimpan dan dipakai ulang saat dicoba lagi"
+              s["diperbarui"] = datetime.now(timezone.utc).isoformat()
+              p.write_text(json.dumps(s, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
+          PY
+          git config user.name "github-actions[bot]"
+          git config user.email "41898333+github-actions[bot]@users.noreply.github.com"
+          git add -A "antrean/$ID" 2>/dev/null || true
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m "Antrean $ID: tandai produksi final gagal"
+          for i in 1 2 3; do
+            git pull --rebase -q origin main && git push -q origin HEAD:main && exit 0
+            sleep 5
+          done
+          exit 1
+      - name: Unggah video final
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: final-${{ inputs.id }}
+          path: ${{ runner.temp }}/newmotion-${{ inputs.id }}-final.mp4
+          if-no-files-found: ignore

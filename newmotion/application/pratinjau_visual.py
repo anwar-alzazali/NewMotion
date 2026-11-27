@@ -1,6 +1,6 @@
 """Pratinjau visual storyboard NewMotion sebelum produksi narasi/TTS.
 
-Alur: naskah terverifikasi -> pengarah Kisah Islami -> papan JSON -> MP4 tanpa audio.
+Alur: naskah terverifikasi -> sutradara (hibrida LLM + mesin, atau aturan) -> papan JSON -> MP4 tanpa audio.
 Tidak ada pemanggilan TTS pada modul ini.
 """
 from __future__ import annotations
@@ -218,9 +218,16 @@ def buat_pratinjau(id_: str, *, folder: Path = ANTREAN, keluaran: Path | None = 
     sumber = naskah_untuk_pengarah(
         naskah, genre=genre, konteks_konten=konteks_konten
     )
-    spek, nama_paket, jumlah_shot = arahkan_naskah(
-        sumber, genre_pilihan=sumber["genre"]
-    )
+    info_sutradara: dict = {"mode": "aturan"}
+    if sumber["genre"] == "kisah_islami":  # sutradara hibrida (rencana LLM + periksa visual), jatuh ke aturan
+        from newmotion.paket_genre.kisah_islami.sutradara_hibrida import arahkan_hibrida
+
+        spek, info_sutradara = arahkan_hibrida(sumber, d, genre=sumber["genre"])
+        nama_paket, jumlah_shot = sumber["genre"], len(spek["cerita"]["shot"])
+    else:
+        spek, nama_paket, jumlah_shot = arahkan_naskah(
+            sumber, genre_pilihan=sumber["genre"]
+        )
     spek["judul"] = sumber["judul"]
     spek["genre"] = nama_paket
     spek["konteks_konten"] = sumber["konteks_konten"]
@@ -242,43 +249,50 @@ def buat_pratinjau(id_: str, *, folder: Path = ANTREAN, keluaran: Path | None = 
         raise RuntimeError("Renderer tidak menghasilkan video pratinjau yang valid.")
     status.setdefault("tahap", {})["sutradara"] = "selesai"
     status["tahap"]["tinjau_visual"] = "jalan"
-    status.setdefault("ket", {})["sutradara"] = f"{jumlah_shot} shot disusun oleh {nama_paket}"
+    ringkas = (f"sutradara LLM {info_sutradara.get('model')}, biaya ${info_sutradara.get('biaya_usd', 0):.2f}"
+               if info_sutradara.get("mode") == "llm" else "sutradara aturan")
+    if info_sutradara.get("catatan"):
+        ringkas += f" ({info_sutradara['catatan']})"
+    status.setdefault("ket", {})["sutradara"] = f"{jumlah_shot} shot disusun oleh {nama_paket}; {ringkas}"
+    status["sutradara"] = info_sutradara
     status["ket"]["tinjau_visual"] = "menunggu tinjauan visual pemilik; TTS belum dibuat"
     status["pratinjau_visual"] = str(papan.relative_to(AKAR))
     status_path.write_text(json.dumps(status, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
     return papan, video
 
 
-def kirim_ke_telegram(id_: str, video: Path) -> None:
+def kirim_ke_telegram(id_: str, video: Path, *, caption: str | None = None, tombol: dict | None = None,
+                      nama_berkas: str = "pratinjau-visual.mp4") -> None:
     status = json.loads((ANTREAN / id_ / "status.json").read_text(encoding="utf-8"))
     token = (os.environ.get("TELEGRAM_BOT_TOKEN") or "").strip()
     chat = str(status.get("chat") or os.environ.get("TELEGRAM_CHAT_ID") or "").strip()
     if not token or not chat:
         raise RuntimeError("TELEGRAM_BOT_TOKEN atau TELEGRAM_CHAT_ID belum tersedia.")
     if video.stat().st_size > 49 * 1024 * 1024:
-        raise RuntimeError("Pratinjau melebihi batas unggah Telegram 49 MB; gunakan artefak GitHub Actions.")
+        raise RuntimeError("Video melebihi batas unggah Telegram 49 MB; gunakan artefak GitHub Actions.")
     boundary = "----NewMotionVisualPreview"
-    tombol = {"inline_keyboard": [[
-        {"text": "✅ Setujui visual", "callback_data": f"va:{id_}"},
-        {"text": "❌ Tolak visual", "callback_data": f"vr:{id_}"},
-    ]]}
-    caption = (
-        f"🎬 Pratinjau visual — {status.get('judul') or id_}\n"
-        "Video ini tanpa TTS. Tinjau urutan adegan, tokoh, aksi, latar, blocking, dan kamera.\n"
-        "TTS dan render final belum dimulai."
-    )
+    if tombol is None:
+        tombol = {"inline_keyboard": [[
+            {"text": "✅ Setujui visual", "callback_data": f"va:{id_}"},
+            {"text": "❌ Tolak visual", "callback_data": f"vr:{id_}"},
+        ]]}
+    if caption is None:
+        caption = (
+            f"🎬 Pratinjau visual — {status.get('judul') or id_}\n"
+            "Video ini tanpa TTS. Tinjau urutan adegan, tokoh, aksi, latar, blocking, dan kamera.\n"
+            "TTS dan render final belum dimulai."
+        )
     fields = [
         ("chat_id", chat.encode()),
         ("caption", caption.encode()),
         ("supports_streaming", b"true"),
-        ("reply_markup", json.dumps(tombol, ensure_ascii=False).encode()),
-    ]
+    ] + ([("reply_markup", json.dumps(tombol, ensure_ascii=False).encode())] if tombol else [])
     body = bytearray()
     for name, value in fields:
         body.extend(f"--{boundary}\r\nContent-Disposition: form-data; name=\"{name}\"\r\n\r\n".encode())
         body.extend(value + b"\r\n")
     body.extend(
-        f"--{boundary}\r\nContent-Disposition: form-data; name=\"video\"; filename=\"pratinjau-visual.mp4\"\r\nContent-Type: video/mp4\r\n\r\n".encode()
+        f"--{boundary}\r\nContent-Disposition: form-data; name=\"video\"; filename=\"{nama_berkas}\"\r\nContent-Type: video/mp4\r\n\r\n".encode()
     )
     body.extend(video.read_bytes() + b"\r\n")
     body.extend(f"--{boundary}--\r\n".encode())
