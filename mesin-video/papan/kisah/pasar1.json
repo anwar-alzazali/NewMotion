@@ -9,49 +9,367 @@
         "narasi": "Pagi itu, pasar mulai ramai. Seorang anak datang membeli buah.",
         "intonasi": "tenang",
         "jeda": 0.25,
-        "ruang": {"jenis": "pasar", "waktu": "siang"},
-        "kamera": {"x": 540, "y": 1450, "z": 1.0},
+        "ruang": {
+          "jenis": "pasar",
+          "waktu": "siang"
+        },
+        "kamera": {
+          "x": 540,
+          "y": 1450,
+          "z": 1
+        },
         "benda": [
-          {"jenis": "kios_pasar", "x": 155, "y": 1250, "s": 0.82, "nama": "BUAH", "dagangan": 0.9},
-          {"jenis": "keranjang", "x": 820, "y": 1570, "s": 0.62, "penuh": 0.8, "isi": "#d84a38"}
+          {
+            "jenis": "kios_pasar",
+            "x": 155,
+            "y": 1250,
+            "s": 0.82,
+            "nama": "BUAH",
+            "dagangan": 0.9
+          },
+          {
+            "jenis": "keranjang",
+            "x": 820,
+            "y": 1570,
+            "s": 0.62,
+            "penuh": 0.8,
+            "isi": "#d84a38"
+          }
         ],
         "boneka": [
-          {"npc": 42, "x": 340, "y": 1740, "s": 1.0, "utama": true, "pose": "jalan", "wajah": "senang", "mata": "depan", "pakaian": {"jenis": "kaus", "warna": "#3f8a8a", "bawah": "celana", "bawah_warna": "#3b4656"}},
-          {"npc": 43, "x": 760, "y": 1710, "s": 1.08, "utama": true, "pose": "berdiri", "wajah": "bangga", "mata": "depan", "pakaian": {"jenis": "koko", "warna": "#d9a65a", "bawah": "celana", "bawah_warna": "#4b5947"}}
+          {
+            "npc": 42,
+            "x": 340,
+            "y": 1740,
+            "s": 1,
+            "utama": true,
+            "pose": "jalan",
+            "wajah": [
+              [
+                0,
+                "senang"
+              ],
+              [
+                1,
+                "penasaran"
+              ],
+              [
+                2.2,
+                "senang"
+              ]
+            ],
+            "mata": "depan",
+            "pakaian": {
+              "jenis": "kaus",
+              "warna": "#3f8a8a",
+              "bawah": "celana",
+              "bawah_warna": "#3b4656"
+            },
+            "arah": [
+              [
+                0,
+                0
+              ],
+              [
+                1,
+                0.25
+              ],
+              [
+                2.2,
+                0
+              ]
+            ],
+            "reaksi": [
+              [
+                0.8,
+                "miring",
+                0.7
+              ],
+              [
+                1.9,
+                "angguk",
+                0.8
+              ]
+            ]
+          },
+          {
+            "npc": 43,
+            "x": 760,
+            "y": 1710,
+            "s": 1.08,
+            "utama": true,
+            "pose": "berdiri",
+            "wajah": [
+              [
+                0,
+                "bangga"
+              ],
+              [
+                1.4,
+                "senang"
+              ]
+            ],
+            "mata": "depan",
+            "pakaian": {
+              "jenis": "koko",
+              "warna": "#d9a65a",
+              "bawah": "celana",
+              "bawah_warna": "#4b5947"
+            },
+            "reaksi": [
+              [
+                1.1,
+                "angguk",
+                0.7
+              ]
+            ]
+          }
         ],
-        "teks": [{"at": 0.1, "teks": "PASAR PAGI", "y": 360, "ukuran": 88}]
+        "teks": [
+          {
+            "at": 0.1,
+            "teks": "PASAR PAGI",
+            "y": 360,
+            "ukuran": 88
+          }
+        ]
       },
       {
         "narasi": "Pedagang itu menimbang buah dengan teliti, lalu menunjukkan hasil timbangannya.",
         "intonasi": "tenang",
         "jeda": 0.35,
-        "ruang": {"jenis": "pasar", "waktu": "siang"},
-        "kamera": {"x": 540, "y": 1500, "z": 1.18},
+        "ruang": {
+          "jenis": "pasar",
+          "waktu": "siang"
+        },
+        "kamera": {
+          "x": 540,
+          "y": 1500,
+          "z": 1.18
+        },
         "benda": [
-          {"jenis": "timbangan", "x": 565, "y": 1480, "s": 0.72, "miring": [[0, -2], [1.8, 2]]},
-          {"jenis": "keranjang", "x": 820, "y": 1570, "s": 0.58, "penuh": 0.95, "isi": "#e6ad35"}
+          {
+            "jenis": "timbangan",
+            "x": 565,
+            "y": 1480,
+            "s": 0.72,
+            "miring": [
+              [
+                0,
+                -2
+              ],
+              [
+                1.8,
+                2
+              ]
+            ]
+          },
+          {
+            "jenis": "keranjang",
+            "x": 820,
+            "y": 1570,
+            "s": 0.58,
+            "penuh": 0.95,
+            "isi": "#e6ad35"
+          }
         ],
         "boneka": [
-          {"npc": 42, "x": 330, "y": 1740, "s": 1.0, "utama": true, "pose": "condong", "wajah": "fokus", "mata": "depan"},
-          {"npc": 43, "x": 760, "y": 1710, "s": 1.08, "utama": true, "pose": "jelaskan", "wajah": [[0, "bangga"], [1.8, "senang"]], "mata": "depan"}
+          {
+            "npc": 42,
+            "x": 330,
+            "y": 1740,
+            "s": 1,
+            "utama": true,
+            "pose": "condong",
+            "wajah": [
+              [
+                0,
+                "fokus"
+              ],
+              [
+                1.2,
+                "penasaran"
+              ],
+              [
+                2.3,
+                "fokus"
+              ]
+            ],
+            "mata": "depan",
+            "tunduk": [
+              [
+                0,
+                0.08
+              ],
+              [
+                0.9,
+                0.25
+              ],
+              [
+                1.8,
+                0.08
+              ]
+            ],
+            "reaksi": [
+              [
+                0.8,
+                "angguk",
+                0.8
+              ],
+              [
+                2.1,
+                "angguk",
+                0.5
+              ]
+            ]
+          },
+          {
+            "npc": 43,
+            "x": 760,
+            "y": 1710,
+            "s": 1.08,
+            "utama": true,
+            "pose": "jelaskan",
+            "wajah": [
+              [
+                0,
+                "fokus"
+              ],
+              [
+                1.3,
+                "bangga"
+              ],
+              [
+                2.3,
+                "senang"
+              ]
+            ],
+            "mata": "depan",
+            "reaksi": [
+              [
+                0.5,
+                "angguk",
+                0.8
+              ],
+              [
+                1.8,
+                "miring",
+                0.6
+              ]
+            ]
+          }
         ],
-        "teks": [{"at": 0.2, "teks": "DITIMBANG DENGAN TELITI", "y": 350, "ukuran": 62}]
+        "teks": [
+          {
+            "at": 0.2,
+            "teks": "DITIMBANG DENGAN TELITI",
+            "y": 350,
+            "ukuran": 62
+          }
+        ]
       },
       {
         "narasi": "Anak itu tersenyum. Ia tahu, jual beli yang baik dimulai dari kejujuran.",
         "intonasi": "haru",
         "jeda": 0.4,
-        "ruang": {"jenis": "pasar", "waktu": "sore"},
-        "kamera": {"x": 540, "y": 1480, "z": 1.08},
+        "ruang": {
+          "jenis": "pasar",
+          "waktu": "sore"
+        },
+        "kamera": {
+          "x": 540,
+          "y": 1480,
+          "z": 1.08
+        },
         "benda": [
-          {"jenis": "keranjang", "x": 545, "y": 1570, "s": 0.66, "penuh": 1, "isi": "#d84a38"}
+          {
+            "jenis": "keranjang",
+            "x": 545,
+            "y": 1570,
+            "s": 0.66,
+            "penuh": 1,
+            "isi": "#d84a38"
+          }
         ],
         "boneka": [
-          {"npc": 42, "x": 410, "y": 1740, "s": 1.0, "utama": true, "pose": "tangan_dada", "wajah": [[0, "terharu"], [1.2, "senang"]], "mata": "depan"},
-          {"npc": 43, "x": 690, "y": 1710, "s": 1.08, "utama": true, "pose": "lambai", "wajah": "bangga", "mata": "depan"}
+          {
+            "npc": 42,
+            "x": 410,
+            "y": 1740,
+            "s": 1,
+            "utama": true,
+            "pose": "tangan_dada",
+            "wajah": [
+              [
+                0,
+                "terharu"
+              ],
+              [
+                1.2,
+                "senang"
+              ],
+              [
+                2.4,
+                "terharu"
+              ]
+            ],
+            "mata": "depan",
+            "reaksi": [
+              [
+                0.7,
+                "angguk",
+                0.8
+              ],
+              [
+                2,
+                "kedip",
+                1
+              ]
+            ]
+          },
+          {
+            "npc": 43,
+            "x": 690,
+            "y": 1710,
+            "s": 1.08,
+            "utama": true,
+            "pose": "lambai",
+            "wajah": [
+              [
+                0,
+                "bangga"
+              ],
+              [
+                1.4,
+                "senang"
+              ]
+            ],
+            "mata": "depan",
+            "reaksi": [
+              [
+                0.9,
+                "angguk",
+                0.8
+              ],
+              [
+                1.8,
+                "miring",
+                0.6
+              ]
+            ]
+          }
         ],
-        "teks": [{"at": 0.1, "teks": "JUJUR ITU BERKAH", "y": 350, "ukuran": 84}]
+        "teks": [
+          {
+            "at": 0.1,
+            "teks": "JUJUR ITU BERKAH",
+            "y": 350,
+            "ukuran": 84
+          }
+        ]
       }
-    ]
+    ],
+    "hidup": true,
+    "dua": false
   }
 }
