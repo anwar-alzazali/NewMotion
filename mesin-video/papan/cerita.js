@@ -1333,7 +1333,6 @@
       const jalan=v(o.jalan,t,d,0), langkah=Math.sin(t*8)*22*jalan;
       g += '<ellipse cx="-8" cy="-190" rx="218" ry="132" fill="#d6c5a7" stroke="'+INK+'" stroke-width="13"/>';
       g += '<path d="M 112 -245 Q 158 -325 220 -350 L 286 -305 L 274 -170 Q 222 -126 160 -142 Z" fill="#cbb797" stroke="'+INK+'" stroke-width="12"/>';
-      g += '<path d="M 218 -325 Q 260 -405 306 -374 Q 326 -350 296 -328 L 260 -312 Z" fill="#d6c5a7" stroke="'+INK+'" stroke-width="10"/>';
       // Telinga panjang menggantung; kedua sisi sedikit berbeda agar terbaca dari samping.
       g += '<path d="M 224 -326 Q 174 -354 151 -322 Q 146 -278 193 -258 Q 212 -282 224 -326 Z M 280 -326 Q 333 -354 352 -318 Q 352 -278 304 -260 Q 286 -282 280 -326 Z" fill="#b99c7c" stroke="'+INK+'" stroke-width="9"/>';
       // Tanduk pendek melengkung ke luar, bukan lingkaran panjang.
