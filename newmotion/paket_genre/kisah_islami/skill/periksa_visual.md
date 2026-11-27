@@ -20,6 +20,9 @@ menilai selera kecil. Gaya kartun/siluet itu disengaja; stempel "ILUSTRASI" waji
 
 Tokoh "kamu" (anak berkaos) adalah penonton yang diajak masuk cerita; tidak wajib ada.
 
+## Kebutuhan objek yang tidak tersedia
+Jika objek yang disebut narasi tidak tampak karena renderer memang tidak memiliki bentuknya, buat temuan dengan \`berat: "berat"\` dan sertakan \`kebutuhan: {"nama":"objek konkret","alasan":"mengapa dibutuhkan","bukti":"potongan narasi"}\`. Jangan gunakan kategori ini bila objek sebenarnya sudah ada tetapi salah posisi, tertutup, atau parameter visualnya keliru; itu temuan visual biasa.
+
 ## Berat
 - "berat": adab, visual bertentangan dengan narasi, benda inti hilang/tertutup. Harus diperbaiki.
 - "ringan": sisanya. Boleh diperbaiki bila mudah.
