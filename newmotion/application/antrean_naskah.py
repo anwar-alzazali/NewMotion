@@ -638,7 +638,6 @@ def proses(id_: str, mode: str, *, folder: Path = ANTREAN, tanya=None, quran=Non
                     "Sertakan uji_cerita lengkap.",
                 ],
             }
-            lama_naskah = json.dumps(n, ensure_ascii=False)
             revisi, meta_penulis = buat_naskah(
                 "revisi", "PERBAIKAN WAJIB BERDASARKAN PEMERIKSA INDEPENDEN:\\n"
                 + json.dumps(arahan, ensure_ascii=False), n
@@ -674,7 +673,6 @@ def proses(id_: str, mode: str, *, folder: Path = ANTREAN, tanya=None, quran=Non
                 })
         st["pemeriksaan_naskah"] = temuan
         jumlah_t = len(temuan.get("temuan", []))
-        jumlah_perbaikan = len(berat) if berat and mode != "tempel" else 0
         st["pemeriksaan_naskah_ringkas"] = (
             f"{jumlah_t} temuan; 1 putaran perbaikan otomatis"
             if jumlah_t else "tidak ada temuan"
