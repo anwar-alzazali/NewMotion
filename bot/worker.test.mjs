@@ -62,6 +62,12 @@ test("tombol Lanjut hanya muncul bila semua dalil lolos", () => {
     assert.ok(!tombolKartu({ ...st, tahap: { ...st.tahap, dalil } }).flat().some((b) => b.callback_data === "nl:uji-dalil"));
 });
 
+test("naskah yang gagal divalidasi tidak buntu: ada Revisi dan Batal", () => {
+  const st = { id: "uji-gagal", tahap: { diterima: "gagal", dalil: "belum", tinjau: "belum" }, ket: {} };
+  const t = tombolKartu(st).flat().map((b) => b.callback_data);
+  assert.ok(t.includes("nr:uji-gagal") && t.includes("nb:uji-gagal") && !t.includes("nl:uji-gagal"));
+});
+
 test("id antrean aman, pendek, dan tombolnya terbaca", () => {
   const id = idAntrean("Nabi Hud dan Kaum 'Ad — azab angin", new Date("2026-11-21T09:05:00Z"));
   assert.equal(id, "261121-1605-nabi-hud-dan-kaum");
