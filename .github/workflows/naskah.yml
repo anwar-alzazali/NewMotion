@@ -69,6 +69,8 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898333+github-actions[bot]@users.noreply.github.com"
           git add "antrean/$ID"
+          # berkas pelajaran baru ada setelah revisi pertama; git add jalur yang belum ada akan menggagalkan langkah ini
+          if [[ -f newmotion/application/data/pelajaran_naskah.jsonl ]]; then git add newmotion/application/data/pelajaran_naskah.jsonl; fi
           if git diff --cached --quiet; then
             echo "Tidak ada perubahan antrean."
             exit 0

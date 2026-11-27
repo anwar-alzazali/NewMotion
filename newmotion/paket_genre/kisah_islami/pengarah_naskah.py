@@ -123,7 +123,7 @@ SUPPORTED_JENIS = frozenset({
     "amplop", "api", "arus", "awan", "bahtera", "bambu", "batu", "bawah_laut",
     "bayang_misteri", "belah", "bingkai", "bintang", "buku", "bulan", "cahaya",
     "cawan", "chat", "danau", "dompet", "gapura",
-    "gedung", "gelap", "gerbang", "gua", "gunung", "hati", "hewan",
+    "gedung", "gelap", "genangan_tubuh", "gerbang", "gua", "gunung", "hati", "hewan",
     "hp", "ikan", "infus", "jalan", "jembatan", "jenazah",
     "jendela", "jurang", "kalender", "kamboja", "kantong",
     "kantor_gedung", "kartu_dalil", "kasur", "kelapa", "kerumunan", "kipas",
@@ -132,8 +132,8 @@ SUPPORTED_JENIS = frozenset({
     "massa_api", "meja", "meja_belajar", "meja_kantor", "menara", "mik", "mobil_luar",
     "monitor", "motor", "ngarai", "nur", "obat", "ombak", "pagar", "pancar",
     "pantai", "pemimpin", "penggali", "petir", "pisang", "pohon", "ponsel",
-    "pot", "rak_buku", "ranjang_rs", "rantai", "rantai_tarik", "retakan", "rincian", "rumah",
-    "rumah_kampung", "rumah_sakit_gedung", "rumput", "saf", "sajadah", "sapu", "sawah",
+    "pot", "rak_buku", "ranjang_rs", "rantai", "rantai_tarik", "resapan_tanah", "retakan", "rincian", "rumah",
+    "rumah_kampung", "rumah_sakit_gedung", "rumput", "saf", "sajadah", "sapu", "sawah", "naungan_kelompok",
     "sekolah", "semak", "setir", "sofa", "stempel", "surya",
     "tanda", "tebing", "telaga", "tiang_listrik", "timbangan", "toko", "tv",
     "uang", "unta", "warung", "zaqqum",
@@ -700,6 +700,18 @@ def arahkan(naskah: dict, waktu_adegan: list[float] | None = None,
                 from .rencana_sutradara import figuran_dari_rencana
 
                 s["boneka"] = s["boneka"] + figuran_dari_rencana(rb, s["benda"], idx * 10 + j, ds)
+                indeks_nama = {tokoh.get("_nama_interaksi"): n for n, tokoh in enumerate(s["boneka"])
+                               if tokoh.get("_nama_interaksi")}
+                for pemberi in rb.get("figuran", []):
+                    if pemberi.get("serahkan_ke"):
+                        s["serah_terima"] = {
+                            "dari": indeks_nama[pemberi["nama"]],
+                            "ke": indeks_nama[pemberi["serahkan_ke"]],
+                            "benda": pemberi["pegang"],
+                            "at": round(ds * 0.25, 2),
+                            "durasi": round(max(0.8, ds * 0.45), 2),
+                            "skala": 0.48,
+                        }
             # Kerumunan latar hanya di tema "padang terbuka" (di kota/kampung/ruang dalam
             # kerumunan siluet di cakrawala terlihat janggal).
             if (tema in AV.TEMA_BOLEH_KERUMUNAN and not ruang

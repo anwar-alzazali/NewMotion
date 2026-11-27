@@ -189,7 +189,7 @@ def test_figuran_naik_benda_menempel_lewat_kait():
 
 def test_skill_memuat_kemampuan_tokoh():
     skill = S.skill_sutradara()
-    assert "{KEMAMPUAN_TOKOH}" not in skill and "motor (samping)" in skill and "- aksi berulang:" in skill
+    assert "{KEMAMPUAN_TOKOH}" not in skill and "motor (samping)" in skill and "- aksi berulang:" in skill and "benda yang dapat dipegang" in skill
 
 
 def test_figuran_berpencar_saling_menjauh():
@@ -207,3 +207,84 @@ def test_figuran_berpencar_saling_menjauh():
 def test_variasi_dan_tanah_per_tema():
     spek, _, _ = arahkan_naskah(terapkan_rencana(NASKAH, RENCANA))
     assert spek["cerita"]["variasi"] == NASKAH["judul"]
+
+
+def test_figuran_saling_menghadap_dan_memegang_benda():
+    from newmotion.paket_genre.kisah_islami.rencana_sutradara import figuran_dari_rencana
+
+    r = {"figuran": [
+        {"nama": "pemberi", "hadap_ke": "penerima", "pegang": "surat", "tempat": "kiri"},
+        {"nama": "penerima", "hadap_ke": "pemberi", "pegang": "kendi", "tempat": "kanan"},
+    ]}
+    assert S.validasi_rencana({**copy.deepcopy(RENCANA), "beat": [
+        {**copy.deepcopy(RENCANA["beat"][0]), "figuran": r["figuran"]}
+    ] + copy.deepcopy(RENCANA["beat"][1:])}, NARASI) == []
+    tokoh = figuran_dari_rencana(r, [], 7)
+    assert tokoh[0]["profil"] == "kanan" and tokoh[1]["profil"] == "kiri"
+    assert tokoh[0]["pose"] == "pegang_surat"
+    assert tokoh[1]["pose"] == "pegang_kendi"
+    assert tokoh[0]["id"] != tokoh[1]["id"]
+
+
+def test_figuran_interaksi_menolak_rujukan_dan_benda_tidak_dikenal():
+    from newmotion.paket_genre.kisah_islami.rencana_sutradara import _validasi_figuran
+
+    jenis = {"penduduk"}
+    narasi = "Dua penduduk saling menyerahkan surat."
+    galat = _validasi_figuran([
+        {"nama": "a", "hadap_ke": "hilang", "pegang": "senjata_api", "tempat": "kiri"},
+        {"nama": "a", "hadap_ke": "a", "tempat": "kanan"},
+    ], jenis, narasi, "beat 1")
+    assert any("nama figuran harus unik" in e for e in galat)
+    assert any("hadap_ke" in e for e in galat)
+    assert any("pegang" in e for e in galat)
+
+
+def test_validasi_interaksi_menolak_tipe_data_tidak_sah_tanpa_crash():
+    from newmotion.paket_genre.kisah_islami.rencana_sutradara import _validasi_figuran
+
+    galat = _validasi_figuran([
+        {"nama": ["bukan", "teks"], "hadap_ke": [], "pegang": ["surat"], "tempat": "kiri"},
+        {"nama": "penerima", "tempat": "tempat_tidak_ada"},
+    ], set(), "Dua orang bertemu.", "beat 1")
+    assert any("nama" in e for e in galat)
+    assert any("hadap_ke" in e for e in galat)
+    assert any("pegang" in e for e in galat)
+
+
+def test_katalog_benda_genggam_dibaca_dari_renderer():
+    from newmotion.application.kemampuan_tokoh import kemampuan, teks_kemampuan_tokoh
+
+    k = kemampuan()
+    assert {"tongkat", "kendi", "lentera", "keranjang", "tasbih", "surat", "gulungan", "karung_kecil", "roti", "koin"} <= set(k["pegang"])
+    teks = teks_kemampuan_tokoh()
+    assert "- benda yang dapat dipegang: " in teks
+    assert "karung_kecil" in teks
+
+
+def test_rencana_serah_terima_diterjemahkan_ke_papan():
+    r = copy.deepcopy(RENCANA)
+    r["beat"][8]["figuran"] = [
+        {"nama": "pemberi", "hadap_ke": "penerima", "pegang": "surat",
+         "serahkan_ke": "penerima", "tempat": "kiri"},
+        {"nama": "penerima", "hadap_ke": "pemberi", "tempat": "kanan"},
+    ]
+    assert S.validasi_lengkap(r, NASKAH) == []
+    spek, _, _ = arahkan_naskah(terapkan_rencana(NASKAH, r))
+    adegan = [sh for sh in spek["cerita"]["shot"] if sh.get("serah_terima")]
+    assert adegan
+    transfer = adegan[0]["serah_terima"]
+    assert transfer["benda"] == "surat" and transfer["dari"] != transfer["ke"]
+    tokoh = adegan[0]["boneka"]
+    assert tokoh[transfer["dari"]]["pose"] == "pegang_surat"
+    assert tokoh[transfer["ke"]]["_nama_interaksi"] == "penerima"
+
+
+def test_serah_terima_ditolak_bila_penerima_tidak_ada_atau_benda_tidak_sah():
+    r = copy.deepcopy(RENCANA)
+    r["beat"][8]["figuran"] = [
+        {"nama": "pemberi", "pegang": "pedang", "serahkan_ke": "orang_hilang", "tempat": "kiri"}
+    ]
+    galat = validasi_rencana(r, NARASI)
+    assert any("serahkan_ke" in e for e in galat)
+    assert any("serah-terima" in e for e in galat)

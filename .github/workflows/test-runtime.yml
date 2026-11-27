@@ -1,83 +1,140 @@
 name: Uji runtime NewMotion
 
+# Pengganti "uji lokal" untuk sesi AI yang tidak bisa menjalankan pytest/browser sendiri.
+# Terpicu push ke branch tugas-* (dan PR ke gpt/integrasi atau main). Repo publik: Actions gratis.
 on:
-  pull_request:
-    paths:
-      - 'newmotion/**'
-      - 'config/**'
-      - 'tests/**'
-      - 'pyproject.toml'
-      - '.github/workflows/test-runtime.yml'
   push:
     branches:
-      - 'feature/pembuat-karakter-gabungan'
+      - 'tugas-*'
     paths:
       - 'newmotion/**'
+      - 'mesin-video/papan/**'
       - 'config/**'
       - 'tests/**'
+      - 'bot/**'
       - 'pyproject.toml'
       - '.github/workflows/test-runtime.yml'
+  pull_request:
+    branches: ['gpt/integrasi', 'main']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: uji-runtime-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
-  uji-runtime:
+  uji:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      - name: Pastikan FFmpeg tersedia untuk doctor
+      - name: Pasang paket, renderer, dan alat
         run: |
-          if command -v ffmpeg >/dev/null 2>&1 && command -v ffprobe >/dev/null 2>&1; then
-            ffmpeg -version | head -n 1
-            ffprobe -version | head -n 1
-          else
-            sudo apt-get update -qq
-            sudo apt-get install -y -qq ffmpeg
-          fi
-
-      - name: Pasang paket dan alat uji
-        run: python -m pip install -e '.[uji]'
-      - name: Periksa sintaks Python
-        run: python -m compileall -q newmotion tests
-      - name: Uji runtime
-        run: python -m pytest
+          sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg fonts-dejavu-core
+          python -m pip install -e '.[uji,render]' ruff==0.14.10
+          python -m playwright install --with-deps chromium
+      - name: Sintaks Python dan JavaScript
+        run: |
+          python -m compileall -q newmotion tests
+          node --check mesin-video/papan/cerita.js
+          node --check bot/worker.js
+      - name: Ruff pada berkas Python yang berubah (hanya galat baru yang menggagalkan)
+        shell: bash
+        run: |
+          set -euo pipefail
+          dasar=$(git merge-base HEAD origin/gpt/integrasi 2>/dev/null || git merge-base HEAD origin/main)
+          python - "$dasar" <<'PY'
+          import subprocess, sys, tempfile, os
+          dasar = sys.argv[1]
+          berkas = subprocess.run(["git", "diff", "--name-only", "--diff-filter=AM", dasar, "HEAD", "--", "*.py"],
+                                  capture_output=True, text=True, check=True).stdout.split()
+          def hitung(jalur):
+              r = subprocess.run(["ruff", "check", "--output-format", "concise", "--no-cache", jalur], capture_output=True, text=True)
+              return [x for x in r.stdout.splitlines() if ":" in x and not x.startswith("Found")]
+          gagal = False
+          for f in berkas:
+              sekarang = hitung(f)
+              lama = subprocess.run(["git", "show", f"{dasar}:{f}"], capture_output=True, text=True)
+              sebelum = 0
+              if lama.returncode == 0:
+                  with tempfile.NamedTemporaryFile("w", suffix=".py", dir=os.path.dirname(f) or ".", delete=False) as t:
+                      t.write(lama.stdout)
+                  try:
+                      sebelum = len(hitung(t.name))
+                  finally:
+                      os.unlink(t.name)
+              if len(sekarang) > sebelum:
+                  gagal = True
+                  print(f"::error file={f}::ruff {len(sekarang)} galat (sebelumnya {sebelum})")
+                  print("\n".join(sekarang))
+              else:
+                  print(f"{f}: ruff {len(sekarang)} galat (sebelumnya {sebelum}) - tidak bertambah")
+          sys.exit(1 if gagal else 0)
+          PY
+      - name: Ukur ulang benda (ukuran_benda.json selalu sesuai renderer)
+        run: python mesin-video/papan/ukur_benda.py
+      - name: Simpan ukuran benda ke branch tugas bila berubah
+        if: github.event_name == 'push'
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898333+github-actions[bot]@users.noreply.github.com"
+          git add newmotion/application/data/ukuran_benda.json
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m "Ukuran benda diukur ulang oleh CI"
+          for i in 1 2 3; do
+            git pull --rebase -q origin "$GITHUB_REF_NAME" && git push -q origin "HEAD:$GITHUB_REF_NAME" && exit 0
+            sleep 5
+          done
+          exit 1
+      - name: Uji Python
+        run: python -m pytest -q
       - name: Uji bot
+        run: cd bot && npm install --silent && node --test
+      - name: Uji tokoh (lapis A harus 0 temuan) dan lembar bukti
+        shell: bash
         run: |
-          cd bot
-          npm install
-          node --test
-      - name: Bandingkan skor dengan alat ukur PR #29 (tanpa mengubah file alat ukur PR #28)
-        run: |
-          git fetch origin main
-          git fetch origin perbaikan/leksikon-arus
-          git show FETCH_HEAD:newmotion/application/ukur_kedalaman.py > /tmp/ukur_kedalaman_pr29.py
-          mkdir -p /tmp/newmotion-baseline
-          git archive origin/main | tar -x -C /tmp/newmotion-baseline
-          mkdir -p /tmp/newmotion-baseline/tests/data/tolok_ukur_tambahan
-          mkdir -p /tmp/newmotion-baseline/tests/data/tolok_ukur_buta
-          cp tests/laporan_ukur_perbandingan.py /tmp/newmotion-baseline/tests/
-          cp tests/data/tolok_ukur_tambahan/*.json /tmp/newmotion-baseline/tests/data/tolok_ukur_tambahan/
-          cp tests/data/tolok_ukur_buta/*.json /tmp/newmotion-baseline/tests/data/tolok_ukur_buta/
-          cp /tmp/ukur_kedalaman_pr29.py /tmp/newmotion-baseline/newmotion/application/ukur_kedalaman.py
-          cp newmotion/application/ukur_kedalaman.py /tmp/ukur_kedalaman_pr28.py
-          cp /tmp/ukur_kedalaman_pr29.py newmotion/application/ukur_kedalaman.py
-          echo "=== BASELINE MAIN + ALAT UKUR PR #29: 4 TOLok UKUR ==="
-          (cd /tmp/newmotion-baseline && PYTHONPATH=. python tests/laporan_ukur_perbandingan.py --folder tests/data/tolok_ukur)
-          echo "=== BASELINE MAIN + ALAT UKUR PR #29: HOLDOUT TERDAFTAR ==="
-          (cd /tmp/newmotion-baseline && PYTHONPATH=. python tests/laporan_ukur_perbandingan.py --folder tests/data/tolok_ukur_tambahan)
-          echo "=== BRANCH PR #28 + ALAT UKUR PR #29: 4 TOLok UKUR ==="
-          PYTHONPATH=. python tests/laporan_ukur_perbandingan.py --folder tests/data/tolok_ukur
-          echo "=== BRANCH PR #28 + ALAT UKUR PR #29: HOLDOUT LAMA (SUDAH TERLIHAT) ==="
-          PYTHONPATH=. python tests/laporan_ukur_perbandingan.py --folder tests/data/tolok_ukur_tambahan
-          echo "=== BASELINE MAIN + ALAT UKUR PR #29: BLIND HOLDOUT TERDAFTAR ==="
-          (cd /tmp/newmotion-baseline && PYTHONPATH=. python tests/laporan_ukur_perbandingan.py --folder tests/data/tolok_ukur_buta)
-          echo "=== BRANCH PR #28 + ALAT UKUR PR #29: BLIND HOLDOUT TERDAFTAR ==="
-          PYTHONPATH=. python tests/laporan_ukur_perbandingan.py --folder tests/data/tolok_ukur_buta
-          cp /tmp/ukur_kedalaman_pr28.py newmotion/application/ukur_kedalaman.py
-      - name: Uji CLI ukur asli PR #28 (alat ukur tidak dimodifikasi)
-        run: newmotion ukur
-      - name: Periksa CLI
+          set -euo pipefail
+          python mesin-video/papan/uji_tokoh.py -o hasil/uji_tokoh
+          python mesin-video/papan/lembar_benda_baru.py || true
+          python mesin-video/papan/lembar_konsep_abstrak.py
+          python - <<'PY'
+          import json, os
+          from collections import Counter
+          r = json.load(open("hasil/uji_tokoh/laporan.json", encoding="utf-8"))
+          c = Counter(t["kode"] for t in r["temuan"])
+          ringkas = ", ".join(f"{k}: {v}" for k, v in sorted(c.items())) or "0 temuan"
+          with open(os.environ["GITHUB_STEP_SUMMARY"], "a", encoding="utf-8") as f:
+              f.write(f"### Uji tokoh lapis A\n{ringkas}\n")
+          assert not r["temuan"], f"uji tokoh lapis A: {ringkas}"
+          PY
+      - name: Bukti render komponen-draf (hanya PR berlabel cabang komponen-draf)
+        if: startsWith(github.head_ref, 'komponen-draf-') || startsWith(github.ref_name, 'komponen-draf-')
+        run: python mesin-video/papan/lembar_komponen_draf.py hasil/komponen-draf/komponen_draf.json
+      - name: Unggah bukti visual
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: bukti-uji-${{ github.run_id }}
+          path: |
+            hasil/uji_tokoh/*.png
+            hasil/uji_tokoh/laporan.json
+            hasil/pustaka-benda-baru.png
+            hasil/konsep-abstrak.png
+            hasil/komponen-draf/*.png
+            hasil/komponen-draf/*-laporan.json
+          if-no-files-found: ignore
+          retention-days: 14
+      - name: CLI
         run: |
           newmotion --version
           newmotion doctor

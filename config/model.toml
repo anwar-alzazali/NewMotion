@@ -12,6 +12,12 @@ model = ["claude-sonnet-5-5", "gemini"]
 [tahap.sutradara]        # naskah -> rencana sutradara: keputusan makna dan adab
 model = ["claude-sonnet-5-5", "gemini"]
 
+[tahap.ringkas_pelajaran] # ringkasan manual pola revisi pemilik
+model = ["claude-haiku-5-5", "gemini"]
+
+[tahap.periksa_naskah]  # pemeriksaan independen naskah terhadap teks dalil
+model = ["claude-sonnet-5-5", "gemini"]
+
 [tahap.periksa_visual]   # lembar frame -> temuan: kesalahan halus termasuk adab
 model = ["claude-sonnet-5-5", "gemini"]
 
@@ -31,3 +37,7 @@ model = ["gemini", "claude-haiku-5-5"]
 [produksi]
 sutradara = "llm"
 periksa_putaran = 1      # putaran periksa visual + revisi rencana (0 = mati)
+
+
+[tahap.komponen_renderer] # draf kode benda vektor berdasarkan kebutuhan visual
+model = ["claude-sonnet-5-5", "gemini"]

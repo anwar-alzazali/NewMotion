@@ -486,6 +486,28 @@
         const f = (xx) => yy - a * (0.62 * Math.sin(xx / L + t * sp + ph) + 0.28 * Math.sin(xx / (L * 0.41) - t * sp * 1.6 + ph * 2) + 0.1 * Math.sin(xx / (L * 0.17) + t * 2.3));
         let dd = `M -1400 ${f(-1400).toFixed(1)}`; for (let xx = -1360; xx <= 1400; xx += 40) dd += ` L ${xx} ${f(xx).toFixed(1)}`;
         g += `<path d="${dd} L 1400 2600 L -1400 2600 Z" fill="url(#${id})"/><path d="${dd}" stroke="${o.buih || "#ffe9b8"}" stroke-width="${5 + i * 1.5}" fill="none" opacity="${(0.55 - i * 0.08) * v(o.kilap, t, d, 1)}" stroke-linecap="round" stroke-dasharray="${90 + i * 30} ${70 + i * 25}" stroke-dashoffset="${(t * 40 * sp).toFixed(1)}"/>`; }
+    } else if (j === "laut_terbelah") { // laut terbelah dua (QS 26:63), gaya air sama dengan ombak kisah Nuh: lorong dasar laut kering di antara dua dinding air "laksana gunung", dilihat dari pangkal lorong; (0,0) = tengah pangkal lorong. belah 0-1 (0 = laut berombak rata, 1 = terbelah penuh; turunkan lagi = air runtuh menutup), tinggi = tinggi dinding px di depan (bawaan 1100), lebar = lebar lorong di depan (bawaan 560), jauh = jarak ke ujung lorong (bawaan 560), warna [atas, bawah], buih
+      const bl = v(o.belah, t, d, 1), e = bl * bl * (3 - 2 * bl), Ht = (o.tinggi || 1100) * e, W2 = ((o.lebar || 560) / 2) * (0.35 + 0.65 * e), D = o.jauh || 560, w2 = 34 * (0.3 + 0.7 * e), Hj = Ht * 0.22;
+      const ca = o.warna || ["#2b4a78", "#0b1832"], bu = o.buih || "#ffe9b8", id = "lt" + Math.round(x) + "_" + Math.round(y), R = rng(o.seed || 5);
+      const gel = (xx, ph, a, L, sp) => a * (0.62 * Math.sin(xx / L + t * sp + ph) + 0.28 * Math.sin(xx / (L * 0.41) - t * sp * 1.6 + ph * 2) + 0.1 * Math.sin(xx / (L * 0.17) + t * 2.3)); // rumus gelombang ombak Nuh
+      g = `<defs><linearGradient id="${id}a" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${ca[0]}"/><stop offset=".35" stop-color="${ca[1]}"/><stop offset="1" stop-color="#03060f"/></linearGradient><linearGradient id="${id}d" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="${ca[1]}"/><stop offset=".7" stop-color="${ca[0]}"/><stop offset="1" stop-color="${warna(ca[0], "#ffffff", 0.18)}"/></linearGradient><linearGradient id="${id}p" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#6d5c43"/><stop offset="1" stop-color="#4a3c2a"/></linearGradient></defs>`;
+      let jauh = `M -1500 ${(-D - 20 + gel(-1500, 1, 8, 260, 0.8)).toFixed(1)}`; for (let xx = -1460; xx <= 1500; xx += 40) jauh += ` L ${xx} ${(-D - 20 + gel(xx, 1, 8, 260, 0.8)).toFixed(1)}`;
+      g += `<path d="${jauh} L 1500 ${-D + 30} L -1500 ${-D + 30} Z" fill="url(#${id}a)"/>`; // laut di ujung lorong
+      g += `<path d="M ${-W2} 0 L ${-w2} ${-D} L ${w2} ${-D} L ${W2} 0 Z" fill="url(#${id}p)" stroke="${INK}" stroke-width="5" stroke-linejoin="round"/>`; // dasar laut yang kering
+      for (let i = 0; i < 10; i++) { const f = R(), ww = W2 + (w2 - W2) * f; g += `<ellipse cx="${((R() - 0.5) * 1.4 * ww).toFixed(1)}" cy="${(-D * f).toFixed(1)}" rx="${((14 + R() * 18) * (1 - f * 0.7)).toFixed(1)}" ry="${((5 + R() * 6) * (1 - f * 0.7)).toFixed(1)}" fill="#2f2619" opacity=".5"/>`; } // batu dan genangan
+      if (e < 0.98) { const tk = 1 - e; for (let i = 0; i < 3; i++) { const yy = -D + 30 + i * (D / 3), a = (40 + 30 * i) * tk; let dd = `M -1500 ${(yy - gel(-1500, i * 1.9, a, 260, 0.9 + i * 0.25)).toFixed(1)}`; for (let xx = -1460; xx <= 1500; xx += 40) dd += ` L ${xx} ${(yy - gel(xx, i * 1.9, a, 260, 0.9 + i * 0.25)).toFixed(1)}`;
+          g += `<path d="${dd} L 1500 60 L -1500 60 Z" fill="url(#${id}a)" opacity="${Math.min(1, tk * 1.6).toFixed(3)}"/><path d="${dd}" stroke="${bu}" stroke-width="${5 + i * 1.5}" fill="none" opacity="${((0.55 - i * 0.08) * tk).toFixed(3)}" stroke-linecap="round" stroke-dasharray="${90 + i * 30} ${70 + i * 25}" stroke-dashoffset="${(t * 40).toFixed(1)}"/>`; } } // laut berombak yang menutup lorong (sama dengan ombak Nuh)
+      [-1, 1].forEach((sg) => { if (Ht < 4) return;
+        let tepi = ""; for (let k2 = 0; k2 <= 12; k2++) { const yy = -Ht * k2 / 12; tepi += ` L ${(sg * (W2 + (14 + 12 * k2 / 12) * Math.sin(k2 * 1.7 + t * 1.8 + sg))).toFixed(1)} ${yy.toFixed(1)}`; } // tepi depan dinding bergolak
+        let atas = ""; for (let k2 = 1; k2 <= 16; k2++) { const xx = sg * (W2 + k2 * 70); atas += ` L ${xx.toFixed(1)} ${(-Ht * (1 - k2 / 22) - gel(xx, sg * 2, 26, 200, 1.1)).toFixed(1)}`; }
+        g += `<path d="M ${sg * W2} 60${tepi}${atas} L ${sg * 1500} 60 Z" fill="url(#${id}a)" stroke="${INK}" stroke-width="6" stroke-linejoin="round"/>`; // tubuh air di sisi luar, punggungnya berombak
+        g += `<path d="M ${sg * W2} ${-Ht}${atas}" stroke="${bu}" stroke-width="7" fill="none" opacity=".5" stroke-linecap="round" stroke-dasharray="110 80" stroke-dashoffset="${(t * 40).toFixed(1)}"/>`;
+        g += `<path d="M ${sg * w2} ${-D}${tepi} L ${sg * w2} ${-D - Hj} Z" fill="url(#${id}d)" stroke="${INK}" stroke-width="7" stroke-linejoin="round"/>`; // dinding air yang menghadap lorong
+        for (let k2 = 1; k2 <= 7; k2++) { const f = k2 / 8; let dd = ""; for (let m = 0; m <= 10; m++) { const u = m / 10, xa = sg * (W2 + (w2 - W2) * u), ya = -Ht * f * (1 - u) + (-D - Hj * f) * u - (-D * u) * (1 - f); dd += `${m ? " L" : "M"} ${xa.toFixed(1)} ${(ya + 10 * Math.sin(u * 7 + t * (1.2 + f) + k2)).toFixed(1)}`; }
+          g += `<path d="${dd}" stroke="${bu}" stroke-width="${(6 - 3 * f).toFixed(1)}" fill="none" opacity="${(0.42 - 0.2 * f).toFixed(2)}" stroke-linecap="round" stroke-dasharray="${90 - 40 * f} ${70 - 30 * f}" stroke-dashoffset="${(sg * t * (40 + 20 * f)).toFixed(1)}"/>`; } // lapisan gelombang yang tertahan tegak, buih seperti ombak Nuh
+        let cr = `M ${sg * W2} ${-Ht}`; for (let k2 = 1; k2 <= 12; k2++) { const f = k2 / 12; cr += ` L ${(sg * (W2 + (w2 - W2) * f)).toFixed(1)} ${(-(Ht + (D + Hj - Ht) * f) - (10 - 7 * f) * Math.sin(t * 3 + k2 * 1.3 + sg)).toFixed(1)}`; }
+        g += `<path d="${cr}" stroke="${bu}" stroke-width="10" fill="none" stroke-linecap="round" stroke-linejoin="round" opacity=".85" stroke-dasharray="70 26" stroke-dashoffset="${(t * 30).toFixed(1)}"/>`; // buih di puncak dinding
+      });
     } else if (j === "bahtera") { // kapal Nabi Nuh dari papan dan pasak (QS 54:13), tampak samping; (0,0) = lunas. jadi 0-1 (rusuk -> papan -> rumah geladak), goyang (derajat), cahaya 0-1, orang n (siluet kecil di geladak), pintu 0-1 (+titian), darat (penyangga + bayangan)
       const jd = v(o.jadi, t, d, 1), gy = v(o.goyang, t, d, 0), ch = v(o.cahaya, t, d, 0.8), pt = v(o.pintu, t, d, 0), W = 460, H = 250, R = rng(11);
       const pp = clamp((jd - 0.12) / 0.55), rh = clamp((jd - 0.7) / 0.3), lamb = `M ${-W} ${-H} Q ${-W + 20} ${-50} ${-W + 190} 0 L ${W - 170} 0 Q ${W + 10} ${-70} ${W + 70} ${-H - 46} L ${W - 20} ${-H} Z`;
@@ -546,6 +568,34 @@
         <g transform="rotate(${mir} 0 -296)"><rect x="-190" y="-306" width="380" height="20" rx="10" fill="url(#tbg)" stroke="${INK}" stroke-width="4"/>
         ${[-1, 1].map((sd) => { const px = sd * 172; return `<g transform="rotate(${-mir} ${px} -296)"><path d="M ${px} -296 L ${px - 62} -168 M ${px} -296 L ${px + 62} -168" stroke="#a87420" stroke-width="4" stroke-dasharray="10 6"/><circle cx="${px}" cy="-296" r="9" fill="#ffe9a0" stroke="${INK}" stroke-width="3"/><path d="M ${px - 78} -170 Q ${px} -96 ${px + 78} -170 Z" fill="url(#tbp)" stroke="${INK}" stroke-width="5"/><ellipse cx="${px}" cy="-170" rx="78" ry="12" fill="#ffe9a0" stroke="${INK}" stroke-width="4"/></g>`; }).join("")}</g>
         <circle cx="0" cy="-322" r="24" fill="url(#tbp)" stroke="${INK}" stroke-width="4"/>${bintik4(-10, -332, 12, 0.6 + 0.4 * Math.sin(t * 3))}`;
+    } else if (j === "genangan_tubuh") { // genangan pada tubuh simbolis umum; tinggi 0-500 dari telapak (35 mata kaki, 110 lutut, 210 pinggang, 320 dada, 440 mulut), riak 0-1
+      const tinggi = clamp(v(o.tinggi, t, d, 110), 0, 500), riak = clamp(v(o.riak, t, d, 0.65));
+      const permukaan = -tinggi + Math.sin(t * 2.6) * 5 * riak;
+      const terang = "#d9fbff";
+      g = `<defs><linearGradient id="gnt" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#245c85"/><stop offset=".5" stop-color="#63c9df"/><stop offset="1" stop-color="#245c85"/></linearGradient></defs>
+        <ellipse cx="0" cy="8" rx="185" ry="20" fill="#000" opacity=".18"/>
+        <path d="M -52 0 L -60 -190 Q -72 -300 -92 -410 Q -112 -500 -74 -550 Q 0 -585 74 -550 Q 112 -500 92 -410 Q 72 -300 60 -190 L 52 0 Z" fill="#8b786e" stroke="${INK}" stroke-width="9"/>
+        <path d="M -52 0 L -60 -190 L -92 -410 L -74 -550 Q 0 -585 74 -550 L 92 -410 L 60 -190 L 52 0 Z" fill="#d8b99b" opacity=".42"/>
+        <path d="M -52 0 L -52 -185 L -86 -405 L -68 -540 Q 0 -570 68 -540 L 86 -405 L 52 -185 L 52 0 Z" fill="url(#gnt)" opacity=".18"/>
+        <path d="M -185 ${permukaan} Q -95 ${permukaan - 12} 0 ${permukaan} T 185 ${permukaan} L 185 30 L -185 30 Z" fill="url(#gnt)" opacity=".88"/>
+        <path d="M -185 ${permukaan} Q -95 ${permukaan - 12 - riak * 8} 0 ${permukaan} T 185 ${permukaan}" fill="none" stroke="${terang}" stroke-width="8" stroke-linecap="round"/>
+        ${[35,110,210,320,440].map((h0,i)=>{const label=["mata kaki","lutut","pinggang","dada","mulut"][i];return `<g opacity=".98"><path d="M 100 ${-h0} h 18" stroke="${INK}" stroke-width="8" stroke-linecap="round"/><circle cx="100" cy="${-h0}" r="8" fill="${i===4?"#ffd27a":"#fff"}" stroke="${INK}" stroke-width="3"/><text x="126" y="${-h0+10}" font-size="34" font-weight="800" fill="#fff" stroke="${INK}" stroke-width="7" paint-order="stroke">${label}</text></g>`;}).join("")}
+        ${Array.from({length:7},(_,i)=>{const xx=-130+i*42, yy=permukaan+14+Math.sin(t*3+i)*7*riak;return `<path d="M ${xx-18} ${yy} q 18 -8 36 0" stroke="${terang}" stroke-width="5" fill="none" opacity=".8"/>`;}).join("")}`;
+    } else if (j === "resapan_tanah") { // penampang tanah; kedalaman 0-1, alir 0-1, garis rembesan bergerak
+      const kedalaman=clamp(v(o.kedalaman,t,d,0.72)), alir=clamp(v(o.alir,t,d,0.7)), H=760*kedalaman, R=rng(o.seed||41);
+      g = `<defs><linearGradient id="rst" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#c88b56"/><stop offset=".35" stop-color="#8c5a42"/><stop offset="1" stop-color="#392c32"/></linearGradient></defs>
+        <path d="M -360 -12 Q -180 -30 0 -12 T 360 -12 L 360 80 L -360 80 Z" fill="#6d9a55" stroke="${INK}" stroke-width="8"/>
+        <rect x="-360" y="0" width="720" height="800" fill="url(#rst)" stroke="${INK}" stroke-width="8"/>
+        ${[120,260,420,590].map((yy,i)=>`<path d="M -360 ${yy} q 180 ${i%2?16:-16} 360 0 t 360 0" stroke="#4c342d" stroke-width="8" fill="none" opacity=".65"/>`).join("")}
+        ${Array.from({length:13},(_,i)=>{const xx=-300+i*50, len=H*(.72+R()*.28), sway=Math.sin(t*2.2+i)*16*alir, y2=Math.min(760,len);return `<path d="M ${xx} 8 q ${sway} ${y2*.32} ${sway*.3} ${y2*.68}" stroke="#68d8ee" stroke-width="${5+alir*5}" fill="none" stroke-linecap="round" opacity=".95"/><circle cx="${xx+sway*.3}" cy="${y2+8}" r="${5+alir*3}" fill="#d9fbff"/>`;}).join("")}
+        <path d="M -360 8 Q -180 -8 0 8 T 360 8" stroke="#e5c18c" stroke-width="12" fill="none"/>`;
+    } else if (j === "naungan_kelompok") { // awan peneduh + bayangan nyata untuk kelompok; luas 0-1, kuat 0-1
+      const luas=clamp(v(o.luas,t,d,0.78)), kuat=clamp(v(o.kuat,t,d,0.9)), w=220+luas*440, denyut=1+Math.sin(t*1.2)*.012;
+      g = `<ellipse cx="0" cy="10" rx="${w*1.12}" ry="${82*luas}" fill="#183c57" opacity="${.55*kuat}"/>
+        <path d="M ${-w} -330 Q ${-w*1.05} -430 ${-w*.72} -450 Q ${-w*.5} -590 ${-w*.22} -490 Q 0 -650 ${w*.22} -490 Q ${w*.58} -570 ${w*.72} -430 Q ${w*1.08} -430 ${w} -330 Z" fill="#e8f5fb" stroke="${INK}" stroke-width="10"/>
+        <path d="M ${-w*.9} -330 Q 0 -365 ${w*.9} -330 L ${w*1.08} -40 Q 0 -85 ${-w*1.08} -40 Z" fill="#bfefff" opacity="${.2*kuat}"/>
+        ${[-150,0,150].map((xx,i)=>`<g transform="translate(${xx*luas} 0) scale(${denyut})"><ellipse cx="0" cy="-110" rx="24" ry="27" fill="#51465a"/><path d="M -34 -78 Q 0 -105 34 -78 L 48 -8 L -48 -8 Z" fill="#51465a" stroke="${INK}" stroke-width="7"/><path d="M -20 -8 L -24 0 M 20 -8 L 24 0" stroke="#51465a" stroke-width="12" stroke-linecap="round"/></g>`).join("")}
+        <path d="M ${-w*.8} 8 Q 0 -24 ${w*.8} 8" stroke="#dff8ff" stroke-width="8" fill="none" opacity="${.65*kuat}"/>`;
     } else if (j === "bulan") {
       g = `<circle r="220" fill="#fff6d8" opacity=".12"/><circle r="140" fill="#fff6d8" opacity=".14"/><path d="M 0 -90 A 90 90 0 1 0 0 90 A 70 70 0 1 1 0 -90 Z" fill="#fff4cf"/>`;
     } else if (j === "bintang") { const R = rng(o.seed || 9);
@@ -1274,6 +1324,131 @@
       g = `<g transform="rotate(${o.rot || 0})"><defs><filter id="${id}"><feGaussianBlur stdDeviation="10"/></filter></defs><rect x="-170" y="-220" width="340" height="440" rx="10" fill="#f2ead8" stroke="${INK}" stroke-width="8"/><rect x="-146" y="-196" width="292" height="330" fill="#2a2230"/>
         <path d="M -90 120 Q -110 -40 -10 -80 Q 90 -60 100 120 Z" fill="#0c0a10" filter="url(#${id})"/><text x="0" y="40" text-anchor="middle" font-size="150" font-weight="800" fill="#ffd27a" font-family="sans-serif" data-hias="1">?</text>
         <rect x="-120" y="160" width="240" height="18" rx="9" fill="#cfc6b4"/></g>`;
+    } else if (j === "tenda_badui") { // tenda badui kain bergaris; buka 0-1 membuka tirai
+      const buka=v(o.buka,t,d,0), warna=o.warna||"#c49a63";
+      g += '<path d="M -330 0 L -250 -270 L 0 -420 L 250 -270 L 330 0 Z" fill="'+warna+'" stroke="'+INK+'" stroke-width="12"/><path d="M -250 -270 L 0 -420 L 250 -270 M -110 -346 L -110 0 M 110 -346 L 110 0" stroke="#6b4933" stroke-width="8" fill="none"/><path d="M -100 0 L -70 -210 L 0 -250 L 100 0 Z" fill="#35251d" stroke="'+INK+'" stroke-width="8"/><path d="M -100 0 L -70 -210 L 0 -250 L 0 0 Z" fill="#d6b77c" opacity="'+buka+'"/>';
+    } else if (j === "sumur") { // sumur batu; air 0-1 mengatur tinggi air
+      const air=v(o.air,t,d,0.65), timba=v(o.timba,t,d,0.4);
+      g += '<path d="M -190 -150 L -170 0 L 170 0 L 190 -150" fill="#716b63" stroke="'+INK+'" stroke-width="12"/><ellipse cy="-145" rx="142" ry="43" fill="#183f50"/><ellipse cy="'+(-130+air*30)+'" rx="120" ry="30" fill="#4b9ca8"/><path d="M -220 -155 L -220 -470 L 220 -470 L 220 -155 M -220 -470 L 0 -530 L 220 -470" stroke="'+INK+'" stroke-width="15" fill="none"/><path d="M '+(130+timba*30)+' -390 L '+(130+timba*30)+' -210 l 90 0 l -8 65 l -74 0 Z" fill="#9a7449" stroke="'+INK+'" stroke-width="8"/>';
+    } else if (j === "kebun_kurma") { // kebun kurma berbaris; buah 0-1 menampakkan tandan
+      const buah=v(o.buah,t,d,0.7), n=Math.max(2,Math.min(7,o.n||4));
+      for(let i=0;i<n;i++){const xx=(i-(n-1)/2)*210, hh=560+(i%2)*70;g += '<path d="M '+(xx-24)+' 0 Q '+(xx-55)+' -280 '+xx+' -'+hh+' Q '+(xx+35)+' -280 '+(xx+24)+' 0 Z" fill="#765035" stroke="'+INK+'" stroke-width="9"/>';for(let k=0;k<7;k++){const aa=-Math.PI*.9+k*Math.PI*.3, ex=xx+Math.cos(aa)*180, ey=-hh+Math.sin(aa)*110;g += '<path d="M '+xx+' '+(-hh+20)+' Q '+(xx+Math.cos(aa)*80)+' '+(-hh-70)+' '+ex+' '+ey+'" stroke="#315b37" stroke-width="22" fill="none"/>';}for(let k=0;k<5;k++)g += '<circle cx="'+(xx-45+k*22)+'" cy="'+(-hh+115)+'" r="'+(13*buah)+'" fill="#d99a35"/>';}
+    } else if (j === "ladang_gandum") { // hamparan batang gandum berbulir; matang 0-1, angin mengayunkan malai
+      const matang=v(o.matang,t,d,0.8), angin=v(o.angin,t,d,0.65), n=Math.max(30,Math.min(100,o.n||58)), R=rng(o.seed||31);
+      const hijau=warna("#477b3c","#c69a32",matang), bulir=warna("#759e45","#edbd4b",matang);
+      // Baris belakang lebih rapat dan kecil; baris depan lebih lebar dan tinggi.
+      for(let i=0;i<n;i++){
+        const z=i/n, xx=(R()-.5)*(420+z*560), sk=.55+z*.72, dasar=-(1-z)*115;
+        const hh=(250+R()*180)*sk, fase=R()*Math.PI*2, ayun=Math.sin(t*2.4+fase)*angin*(10+z*22), x1=xx+ayun, y1=dasar-hh;
+        // Batang berbentuk bidang tertutup agar tetap terbaca pada thumbnail.
+        g += '<path d="M '+(xx-7*sk)+' '+dasar+' Q '+(xx-9*sk)+' '+(dasar-hh*.48)+' '+(x1-5*sk)+' '+y1+' L '+(x1+5*sk)+' '+y1+' Q '+(xx+10*sk)+' '+(dasar-hh*.45)+' '+(xx+7*sk)+' '+dasar+' Z" fill="'+hijau+'" stroke="'+INK+'" stroke-width="'+(2.4*sk)+'"/>';
+        g += '<path d="M '+xx+' '+(dasar-hh*.28)+' Q '+(xx-48*sk)+' '+(dasar-hh*.48)+' '+(xx-88*sk)+' '+(dasar-hh*.39)+' Q '+(xx-47*sk)+' '+(dasar-hh*.34)+' '+xx+' '+(dasar-hh*.28)+' Z" fill="'+hijau+'" stroke="'+INK+'" stroke-width="'+(1.8*sk)+'"/>';
+        g += '<path d="M '+xx+' '+(dasar-hh*.52)+' Q '+(xx+42*sk)+' '+(dasar-hh*.72)+' '+(xx+78*sk)+' '+(dasar-hh*.63)+' Q '+(xx+40*sk)+' '+(dasar-hh*.58)+' '+xx+' '+(dasar-hh*.52)+' Z" fill="'+hijau+'" stroke="'+INK+'" stroke-width="'+(1.8*sk)+'"/>';
+        g += '<path d="M '+x1+' '+y1+' Q '+(x1+16*sk)+' '+(y1-30*sk)+' '+(x1+10*sk)+' '+(y1-76*sk)+'" stroke="'+bulir+'" stroke-width="'+(8*sk)+'" fill="none"/>';
+        for(let k=0;k<8;k++){const yy=y1-(k*9+8)*sk, side=k%2?1:-1, bx=x1+side*(10+k*1.1)*sk;
+          g += '<ellipse cx="'+bx+'" cy="'+yy+'" rx="'+(8*sk)+'" ry="'+(15*sk)+'" transform="rotate('+(side*24)+' '+bx+' '+yy+')" fill="'+bulir+'" stroke="'+INK+'" stroke-width="'+(2.4*sk)+'"/>';
+        }
+      }
+    } else if (j === "sungai") { // sungai bertepi jelas; arus 0-1 mengatur kecepatan riak yang bergerak
+      const arus=v(o.arus,t,d,0.5), lebar=o.lebar||620, warna=o.warna||"#397f9a", fase=(t*(1.2+arus*5.5))%1;
+      g += '<path d="M '+(-lebar-34)+' 0 Q '+(-lebar*.38-30)+' -220 '+(-lebar*.55-30)+' -480 Q -34 -700 '+(lebar*.5-30)+' -900 L '+(lebar+34)+' -900 Q '+(lebar*.2+34)+' -600 '+(lebar*.55+34)+' -400 Q '+(lebar*.8)+' -170 '+(lebar+34)+' 0 Z" fill="#806443" stroke="'+INK+'" stroke-width="14"/>';
+      g += '<path d="M '+(-lebar)+' 0 Q '+(-lebar*.35)+' -220 '+(-lebar*.55)+' -480 Q 0 -700 '+(lebar*.5)+' -900 L '+lebar+' -900 Q '+(lebar*.2)+' -600 '+(lebar*.55)+' -400 Q '+(lebar*.8)+' -170 '+lebar+' 0 Z" fill="'+warna+'" stroke="'+INK+'" stroke-width="9"/>';
+      g += '<path d="M '+(-lebar+18)+' -8 Q '+(-lebar*.34)+' -230 '+(-lebar*.51)+' -480 Q -8 -700 '+(lebar*.51)+' -890 M '+(lebar-18)+' -8 Q '+(lebar*.27)+' -600 '+(lebar*.51)+' -410 Q '+(lebar*.2)+' -600 '+(lebar*.47)+' -890" stroke="#b7d7c1" stroke-width="12" fill="none" opacity=".8"/>';
+      for(let i=0;i<14;i++){const yy=-45-i*62, lebarRiak=70+(i%4)*24, xBase=Math.sin(i*1.7)*lebar*.22, bergerak=((fase*2.8+i*.19)%1), xx=xBase+(bergerak-.5)*lebar*.38;
+        g += '<path d="M '+(xx-lebarRiak)+' '+yy+' q '+(lebarRiak*.5)+' -18 '+lebarRiak+' 0 q '+(lebarRiak*.5)+' 18 '+lebarRiak+' 0" stroke="#d5f2ec" stroke-width="'+(4+arus*7)+'" opacity="'+(.28+arus*.65)+'" fill="none" stroke-linecap="round"/>';
+        g += '<path d="M '+(xx-lebarRiak*.45)+' '+(yy+13)+' q '+(lebarRiak*.35)+' -7 '+(lebarRiak*.7)+' 0" stroke="#2b647d" stroke-width="4" opacity=".65" fill="none"/>';
+      }
+    } else if (j === "perahu_kecil") { // perahu kecil kayu; goyang 0-1 mengatur olengan
+      const goyang=v(o.goyang,t,d,0.1), muatan=v(o.muatan,t,d,0.25);
+      g += '<g transform="rotate('+(goyang*8)+' 0 -80)"><path d="M -330 -90 L 330 -90 L 240 30 Q 0 110 -240 30 Z" fill="#8b5735" stroke="'+INK+'" stroke-width="12"/><path d="M -260 -80 L 260 -80 M -180 -35 L 180 -35" stroke="#d6a36a" stroke-width="12"/><path d="M 0 -100 L 0 -500 L 230 -180 L 0 -180 Z" fill="#e5d4a7" stroke="'+INK+'" stroke-width="10"/><path d="M 0 -500 L 0 -100" stroke="#65452e" stroke-width="12"/><rect x="-110" y="-180" width="'+(220*muatan)+'" height="75" rx="12" fill="#b48a53" stroke="'+INK+'" stroke-width="7"/></g>';
+    } else if (j === "lentera") { // lentera minyak; nyala 0-1 mengatur cahaya
+      const nyala=v(o.nyala,t,d,1), id="ln"+Math.round(x+y);
+      g += '<defs><radialGradient id="'+id+'"><stop stop-color="#fff4bd"/><stop offset=".5" stop-color="#ffb33f" stop-opacity=".8"/><stop offset="1" stop-color="#ff8b20" stop-opacity="0"/></radialGradient></defs><path d="M -75 -380 L 75 -380 L 95 -90 L -95 -90 Z" fill="#4b4034" stroke="'+INK+'" stroke-width="10"/><rect x="-58" y="-330" width="116" height="180" rx="24" fill="#f6c66b" opacity="'+(.25+.55*nyala)+'"/><circle cy="-240" r="'+(145*nyala)+'" fill="url(#'+id+')"/><path d="M -60 -380 Q -100 -520 0 -520 Q 100 -520 60 -380 M -100 -90 L 100 -90 L 70 0 L -70 0 Z" stroke="'+INK+'" stroke-width="12" fill="#76604a"/>';
+    } else if (j === "api_unggun") { // api unggun dan kayu; nyala 0-1 mengatur besar api
+      const nyala=v(o.nyala,t,d,1), R=rng(o.seed||7);
+      g += '<ellipse cy="-15" rx="230" ry="65" fill="#e96c25" opacity="'+(.18*nyala)+'"/><path d="M -180 -40 L 160 -120 M -160 -120 L 170 -35" stroke="#65402b" stroke-width="38" stroke-linecap="round"/>';
+      for(let i=0;i<7;i++){const xx=(R()-.5)*150, hh=(180+R()*150)*nyala;g += '<path d="M '+(xx-45)+' -70 Q '+(xx-90)+' '+(-70-hh*.45)+' '+xx+' '+(-70-hh)+' Q '+(xx+70)+' '+(-70-hh*.45)+' '+(xx+45)+' -70 Z" fill="'+(i%2?"#f17b2b":"#ffbd55")+'" stroke="#a93d1b" stroke-width="5"/>';}
+    } else if (j === "pintu_kota_kuno") { // pintu gerbang kota kuno; buka 0-1 membuka daun pintu
+      const buka=v(o.buka,t,d,0), tinggi=o.tinggi||720, bukaan=210*buka;
+      g += '<rect x="-430" y="'+(-tinggi)+'" width="180" height="'+tinggi+'" fill="#9b8060" stroke="'+INK+'" stroke-width="14"/><rect x="250" y="'+(-tinggi)+'" width="180" height="'+tinggi+'" fill="#9b8060" stroke="'+INK+'" stroke-width="14"/><path d="M -250 0 L -250 -360 Q 0 -650 250 -360 L 250 0 Z" fill="#4a392b" stroke="'+INK+'" stroke-width="18"/><path d="M -220 0 L -220 -350 Q 0 -600 220 -350 L 220 0 Z" fill="#2b211b"/><path d="M 0 0 L '+(-210+bukaan)+' -340 L '+(-210+bukaan)+' 0 Z M 0 0 L '+(210-bukaan)+' -340 L '+(210-bukaan)+' 0 Z" fill="#8b633d" stroke="#4d3625" stroke-width="10"/>';
+    } else if (j === "karung") { // karung dagangan; penuh 0-1 mengatur volume
+      const penuh=v(o.penuh,t,d,0.75);
+      g += '<path d="M -130 -430 Q '+(-230*penuh)+' -280 -190 0 Q 0 60 190 0 Q '+(230*penuh)+' -280 130 -430 L 70 -460 L -70 -460 Z" fill="#b28c58" stroke="'+INK+'" stroke-width="12"/><path d="M -90 -430 Q 0 -390 90 -430 M -130 -350 Q 0 -310 130 -350 M -90 -220 Q 0 -180 90 -220" stroke="#715338" stroke-width="10" fill="none"/>';
+    } else if (j === "keranjang") { // keranjang anyaman; penuh 0-1 mengatur isi
+      const penuh=v(o.penuh,t,d,0.6), isi=o.isi||"#d69b43";
+      g += '<path d="M -230 -260 L 230 -260 L 170 0 L -170 0 Z" fill="#b78248" stroke="'+INK+'" stroke-width="12"/><path d="M -230 -260 Q 0 -570 230 -260" stroke="#8a5b32" stroke-width="28" fill="none"/>';
+      for(let i=0;i<8;i++)g += '<path d="M '+(-180+i*50)+' -250 L '+(-145+i*42)+' -10" stroke="#e0b878" stroke-width="10"/>';
+      for(let i=0;i<5;i++)g += '<circle cx="'+(-120+i*60)+'" cy="'+(-300-(i%2)*35)+'" r="'+(22*penuh)+'" fill="'+isi+'"/>';
+    } else if (j === "kambing") { // kambing kampung bertubuh berisi, tanduk pendek, telinga jatuh, berjanggut
+      const jalan=v(o.jalan,t,d,0), langkah=Math.sin(t*8)*22*jalan;
+      g += '<ellipse cx="-8" cy="-190" rx="218" ry="132" fill="#d6c5a7" stroke="'+INK+'" stroke-width="13"/>';
+      g += '<path d="M 112 -245 Q 158 -325 220 -350 L 286 -305 L 274 -170 Q 222 -126 160 -142 Z" fill="#cbb797" stroke="'+INK+'" stroke-width="12"/>';
+      // Telinga panjang menggantung; kedua sisi sedikit berbeda agar terbaca dari samping.
+      g += '<path d="M 224 -326 Q 174 -354 151 -322 Q 146 -278 193 -258 Q 212 -282 224 -326 Z M 280 -326 Q 333 -354 352 -318 Q 352 -278 304 -260 Q 286 -282 280 -326 Z" fill="#b99c7c" stroke="'+INK+'" stroke-width="9"/>';
+      // Tanduk pendek melengkung ke luar, bukan lingkaran panjang.
+      g += '<path d="M 222 -365 Q 194 -390 205 -414 Q 224 -408 232 -374 Z M 280 -365 Q 308 -390 297 -414 Q 278 -408 270 -374 Z" fill="#9b8566" stroke="#5c4b38" stroke-width="8" stroke-linejoin="round"/>';
+      g += '<path d="M 280 -286 Q 326 -294 332 -260 Q 320 -230 280 -244 Z" fill="#b18f70" stroke="'+INK+'" stroke-width="8"/><circle cx="294" cy="-326" r="9" fill="'+INK+'"/>';
+      g += '<path d="M 260 -228 Q 280 -195 267 -165 Q 252 -184 260 -228 Z" fill="#8a7157" stroke="'+INK+'" stroke-width="6"/>';
+      // Empat kaki terpisah pada tampak samping, dengan sendi dan kuku gelap.
+      for(let i=0;i<4;i++){
+        const xx=[-150,-92,108,166][i], fase=i%2?Math.PI:0, ayun=Math.sin(t*8+fase)*18*jalan, yy=i<2?-98:-108;
+        g += '<path d="M '+xx+' '+yy+' L '+(xx+ayun*.45)+' -45 L '+(xx+ayun)+' 0" stroke="#75614d" stroke-width="29" fill="none" stroke-linecap="round"/>';
+        g += '<path d="M '+(xx+ayun-16)+' -2 L '+(xx+ayun+16)+' -2 L '+(xx+ayun+13)+' 13 L '+(xx+ayun-13)+' 13 Z" fill="#403a34" stroke="'+INK+'" stroke-width="4"/>';
+      }
+    } else if (j === "domba") { // domba berbulu; jalan 0-1 menggerakkan langkah
+      const jalan=v(o.jalan,t,d,0), langkah=Math.sin(t*8)*20*jalan;
+      g += '<ellipse cy="-170" rx="210" ry="130" fill="#eee5d2" stroke="'+INK+'" stroke-width="12"/>';
+      for(let i=0;i<13;i++){const aa=i*Math.PI*2/13;g += '<circle cx="'+(Math.cos(aa)*175)+'" cy="'+(-170+Math.sin(aa)*100)+'" r="62" fill="#f5eddf" stroke="'+INK+'" stroke-width="7"/>';}
+      g += '<path d="M 150 -250 Q 270 -330 300 -220 L 250 -120 L 170 -120 Z" fill="#9b765b" stroke="'+INK+'" stroke-width="10"/><circle cx="255" cy="-240" r="8" fill="'+INK+'"/>';
+      for(let i=0;i<4;i++){const xx=-135+(i%2)*220;g += '<path d="M '+xx+' -80 L '+(xx+langkah)+' 0" stroke="#6d5746" stroke-width="20"/>';}
+    } else if (j === "burung_kawanan") { // kawanan burung; terbang 0-1 mengatur kepak sayap
+      const terbang=v(o.terbang,t,d,0.7), n=Math.max(3,Math.min(30,o.n||12)), R=rng(o.seed||9);
+      for(let i=0;i<n;i++){const xx=(R()-.5)*850, yy=-180-R()*330, wing=(25+35*Math.sin(t*7+i))*terbang;g += '<path d="M '+(xx-42)+' '+(yy+wing)+' Q '+(xx-18)+' '+(yy-35)+' '+xx+' '+yy+' Q '+(xx+18)+' '+(yy-35)+' '+(xx+42)+' '+(yy+wing)+'" stroke="'+INK+'" stroke-width="10" fill="none" stroke-linecap="round"/>';}
+    } else if (j === "ular_siluet") { // ular berupa siluet sederhana, tidak agresif; gerak 0-1 mengubah gelombang
+      const gerak=v(o.gerak,t,d,0.4);
+      g += '<path d="M -360 -30 Q -240 '+(-190-80*gerak)+' -100 -60 T 160 -70 T 340 -20" stroke="#66804a" stroke-width="48" fill="none" stroke-linecap="round"/><ellipse cx="350" cy="-20" rx="48" ry="34" fill="#7e965a" stroke="'+INK+'" stroke-width="8"/><circle cx="365" cy="-30" r="5" fill="'+INK+'"/>';
+    } else if (j === "kapal_dagang") { // kapal dagang layar; muatan 0-1 mengatur peti di geladak
+      const muatan=v(o.muatan,t,d,0.5), layar=v(o.layar,t,d,1);
+      g += '<path d="M -470 -100 L 470 -100 L 330 60 Q 0 150 -330 60 Z" fill="#795039" stroke="'+INK+'" stroke-width="15"/><path d="M 0 -100 L 0 -900" stroke="#5c3c29" stroke-width="24"/><path d="M 20 -850 Q '+(420*layar)+' -650 20 -170 Z" fill="#e7d8b4" stroke="'+INK+'" stroke-width="12"/><path d="M -20 -780 Q '+(-280*layar)+' -570 -20 -220 Z" fill="#c7b58d" stroke="'+INK+'" stroke-width="10"/>';
+      for(let i=0;i<4;i++)g += '<rect x="'+(-220+i*115)+'" y="-180" width="'+(80*muatan)+'" height="75" fill="#a67a4c" stroke="'+INK+'" stroke-width="6"/>';
+    } else if (j === "menara_pengawas") { // menara pengawas; penjaga 0-1 membuka celah pengamatan
+      const penjaga=v(o.penjaga,t,d,0.3);
+      g += '<path d="M -170 0 L -130 -620 L 130 -620 L 170 0 Z" fill="#8c795f" stroke="'+INK+'" stroke-width="13"/><rect x="-250" y="-690" width="500" height="110" fill="#aa8d65" stroke="'+INK+'" stroke-width="12"/><path d="M -270 -690 L 0 -850 L 270 -690 Z" fill="#654b35" stroke="'+INK+'" stroke-width="12"/><rect x="-75" y="-570" width="150" height="100" fill="#30251e"/><rect x="-65" y="-560" width="'+(130*penjaga)+'" height="80" fill="#d4b77d"/>';
+    } else if (j === "rak_kitab") { // rak kitab kayu; isi 0-1 mengatur kepadatan kitab
+      const isi=v(o.isi,t,d,0.8);
+      g += '<rect x="-230" y="-600" width="460" height="600" fill="#805b3b" stroke="'+INK+'" stroke-width="15"/><path d="M -230 -400 L 230 -400 M -230 -200 L 230 -200" stroke="'+INK+'" stroke-width="16"/>';
+      for(let rr=0;rr<3;rr++)for(let i=0;i<5;i++){const xx=-180+i*75, yy=-565+rr*200, hh=95+((i+rr)%3)*22;g += '<rect x="'+xx+'" y="'+yy+'" width="'+(58*isi)+'" height="'+hh+'" rx="5" fill="'+["#b98a55","#6d8790","#9c6d52"][i%3]+'" stroke="#392b22" stroke-width="5"/>';}
+    } else if (j === "jam_pasir") { // jam pasir; sisa 0-1 menunjukkan pasir di ruang atas
+      const sisa=v(o.sisa,t,d,0.5);
+      g += '<path d="M -130 -600 L 130 -600 L 35 -310 L 130 0 L -130 0 L -35 -310 Z" fill="#d7c7a3" stroke="'+INK+'" stroke-width="14"/><path d="M -90 -550 L 90 -550 L 22 -320 L -22 -320 Z" fill="#c58b3d" opacity="'+sisa+'"/><path d="M -22 -300 L 22 -300 L 90 -50 L -90 -50 Z" fill="#c58b3d" opacity="'+(1-sisa)+'"/><path d="M -150 -650 L 150 -650 M -150 40 L 150 40" stroke="#6d4c32" stroke-width="25"/>';
+    } else if (j === "rantai_belenggu") { // mata rantai besar dan borgol; tegang 0 kendur, 1 lurus
+      const tegang=v(o.tegang,t,d,0.3), n=Math.max(5,Math.min(24,o.n||10)), kendur=(1-tegang)*155, titik=[];
+      for(let i=0;i<n;i++){const u=i/(n-1), xx=-310+u*620, yy=-125+Math.sin(u*Math.PI)*kendur;titik.push([xx,yy]);}
+      for(let i=0;i<n-1;i++){const a=titik[i],b=titik[i+1],rot=Math.atan2(b[1]-a[1],b[0]-a[0])*180/Math.PI,mx=(a[0]+b[0])/2,my=(a[1]+b[1])/2;
+        g += '<line x1="'+a[0]+'" y1="'+a[1]+'" x2="'+b[0]+'" y2="'+b[1]+'" stroke="#383b40" stroke-width="28" stroke-linecap="round"/>';
+        g += '<ellipse cx="'+mx+'" cy="'+my+'" rx="36" ry="22" fill="none" stroke="#777d86" stroke-width="17" transform="rotate('+rot+' '+mx+' '+my+')"/>';
+        g += '<path d="M '+(a[0]-10)+' '+(a[1]-8)+' Q '+mx+' '+(Math.min(a[1],b[1])-27)+' '+(b[0]+10)+' '+(b[1]-8)+'" stroke="#c5c9ce" stroke-width="5" fill="none" opacity=".8"/>';
+      }
+      for(const xx of [-350,350]){g += '<circle cx="'+xx+'" cy="-125" r="58" fill="#4b4e54" stroke="'+INK+'" stroke-width="12"/>';
+        g += '<circle cx="'+xx+'" cy="-125" r="35" fill="#d2d5d8" stroke="#6d7279" stroke-width="9"/>';
+        g += '<rect x="'+(xx-18)+'" y="-205" width="36" height="24" rx="7" fill="#8e949b" stroke="'+INK+'" stroke-width="6"/>';
+        g += '<path d="M '+(xx-42)+' -165 Q '+xx+' -182 '+(xx+42)+' -165" stroke="#eef0f2" stroke-width="7" fill="none"/>';
+      }
+    } else if (j === "pedang_tersarung") { // pedang selalu tersarung; tidak menyediakan adegan kekerasan
+      const ornamen=v(o.ornamen,t,d,0.5);
+      g += '<path d="M -15 -180 L 0 -680 L 15 -180 Z" fill="#776d62" stroke="'+INK+'" stroke-width="9"/><path d="M -90 -180 L 90 -180 L 90 -140 L -90 -140 Z" fill="#8a6846" stroke="'+INK+'" stroke-width="9"/><rect x="-25" y="-140" width="50" height="140" rx="18" fill="#5d4030" stroke="'+INK+'" stroke-width="8"/><circle cy="-660" r="'+(18+12*ornamen)+'" fill="#c7a46b"/>';
+    } else if (j === "awan_badai") { // awan badai; hujan 0-1 mengatur hujan dan gelap 0-1 warna awan
+      const hujan=v(o.hujan,t,d,0.2), gelap=v(o.gelap,t,d,0.8), warna=campur("#9aa3a8","#303a48",gelap);
+      g += '<g fill="'+warna+'" stroke="'+INK+'" stroke-width="10"><circle cx="-180" cy="-130" r="145"/><circle cy="-220" r="190"/><circle cx="190" cy="-130" r="150"/><rect x="-300" y="-180" width="600" height="170" rx="80"/></g>';
+      for(let i=0;i<9;i++)g += '<path d="M '+(-230+i*58)+' 30 l -28 90" stroke="#74a6bd" stroke-width="8" opacity="'+hujan+'"/>';
+    } else if (j === "kios_pasar") { // kios pasar beratap kain; dagangan 0-1 mengatur isi meja
+      const dagangan=v(o.dagangan,t,d,0.7);
+      g += '<rect x="-300" y="-260" width="600" height="260" fill="#a77b4c" stroke="'+INK+'" stroke-width="12"/><path d="M -340 -270 L 340 -270 L 260 -470 L -260 -470 Z" fill="#d7b36e" stroke="'+INK+'" stroke-width="12"/>';
+      for(let i=0;i<6;i++)g += '<path d="M '+(-300+i*100)+' -470 L '+(-260+i*86)+' -270" stroke="#875b3a" stroke-width="12"/>';
+      g += '<rect x="-260" y="'+(-220+60*dagangan)+'" width="'+(520*dagangan)+'" height="95" fill="#9d7545" stroke="'+INK+'" stroke-width="7"/>';
+    } else if (j === "awan_gelap") { // awan gelap; kilat 0-1 mengatur kilatan
+      const kilat=v(o.kilat,t,d,0);
+      g += '<path d="M -340 -80 Q -360 -280 -180 -290 Q -80 -500 90 -350 Q 280 -390 340 -170 Q 420 -20 210 0 L -230 0 Q -390 -10 -340 -80 Z" fill="#46505b" stroke="'+INK+'" stroke-width="12"/><path d="M 30 -10 L -35 140 L 55 95 L 0 250 L 140 55 L 55 90 L 105 -10 Z" fill="#f4d36a" opacity="'+kilat+'"/>';
     } else if (j === "cahaya") { // berkas cahaya turun dari atas
       g = `<defs><linearGradient id="cb" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e8fbff" stop-opacity=".0"/><stop offset=".4" stop-color="#e8fbff" stop-opacity=".35"/><stop offset="1" stop-color="#bfefff" stop-opacity=".05"/></linearGradient></defs><path d="M -90 -1400 L 90 -1400 L 260 0 L -260 0 Z" fill="url(#cb)"/>`;
     }
@@ -1285,6 +1460,7 @@
   // ditempelkan: pinggul ke dudukan, kaki ke pijakan, tangan ke pegangan (IK dua tulang), sudut tokoh mengikuti benda.
   const KAIT = {
     motor: { sudut: "samping", duduk: [-36, -250], pegang: [[118, -334], [110, -330]], pijak: [[44, -108], [56, -108]], skala: 0.85 },
+    perahu_kecil: { sudut: "samping", duduk: [0, -120], pijak: [[-60, -90], [60, -90]], skala: 0.82 }, // penumpang duduk; tidak ada pegangan tetap
     kursi: { sudut: "depan", duduk: [0, -125], skala: 1 },
     sofa: { sudut: "depan", duduk: [0, -125], skala: 1 },
     kasur: { sudut: "depan", duduk: [0, -130], skala: 1 },
@@ -1325,6 +1501,16 @@
     // Pengendara duduk stabil, lutut menekuk dan kedua tangan menjangkau setang.
     mengendarai_motor: { turun: 70, pp: 0.3, lk: [18, 34], rk: [18, 34], la: [88, 88], ra: [88, 88], badan: -3 },
     duduk_samping: { turun: 70, badan: 4 }, // dipakai tokoh berkait tampak samping: kaki/tangan diatur titik kait
+    pegang_tongkat: { ra: [24, -18], pegang: "tongkat" },
+    pegang_kendi: { ra: [22, -28], pegang: "kendi" },
+    pegang_lentera: { ra: [18, -36], pegang: "lentera" },
+    pegang_keranjang: { ra: [28, -22], pegang: "keranjang" },
+    pegang_tasbih: { ra: [18, -70], pegang: "tasbih" },
+    pegang_surat: { ra: [20, -54], pegang: "surat" },
+    pegang_gulungan: { ra: [20, -48], pegang: "gulungan" },
+    pegang_karung_kecil: { ra: [30, -20], pegang: "karung_kecil" },
+    pegang_roti: { ra: [28, -34], pegang: "roti" },
+    pegang_koin: { ra: [24, -58], pegang: "koin" },
     // Penolong merendahkan pusat tubuh dan menjulurkan kedua lengan ke arah korban.
     menolong: { turun: 70, badan: 22, kepala: 8, la: [15, 20], ra: [88, 35], depan: 1 },
     peluk_lutut: { turun: 70, pp: 0.3, lk: [8, 2], rk: [8, 2], la: [-4, -22], ra: [-4, -22], badan: 0 },
@@ -1479,10 +1665,14 @@
     if (nama === "joget") return { geser: 12 * s, badan: -6 * s, kepala: 6 * Math.sin(f + .6), turun: -6 * Math.abs(s),
       ra: [140 + 25 * s, 165 + 20 * Math.sin(f + 1)], la: [140 - 25 * s, 165 - 20 * Math.sin(f + 1)],
       rk: [8 + 4 * s, -6 * Math.max(0, s)], lk: [8 - 4 * s, -6 * Math.max(0, -s)] };
-    if (nama === "lompat") { const u = ((t % 1.2) + 1.2) % 1.2 / 1.2;
-      if (u < .2) { const k = Math.sin(Math.PI * u / .4); return { turun: 22 * k, pp: 1 - .25 * k, rk: [8, -10 * k], lk: [8, -10 * k] }; }
-      if (u < .75) { const k = (u - .2) / .55; return { turun: -120 * Math.sin(Math.PI * k), pp: .75, rk: [10, -25], lk: [10, -25], ra: [150, 170], la: [150, 170] }; }
-      const k = 1 - (u - .75) / .25; return { turun: 18 * k, pp: 1 - .2 * k, rk: [8, -8 * k], lk: [8, -8 * k] };
+    if (nama === "lompat") {
+      const u = ((t % 1.2) + 1.2) % 1.2 / 1.2;
+      // Satu lintasan periodik dengan turunan nol pada sambungan siklus (tanpa patahan saat modulo berulang).
+      const q = 0.5 - 0.5 * Math.cos(2 * Math.PI * u);
+      const angkat = q * q * (3 - 2 * q);
+      return { turun: -120 * angkat, pp: 1 - .25 * angkat,
+        rk: [8 + 2 * angkat, -25 * angkat], lk: [8 + 2 * angkat, -25 * angkat],
+        ra: [8 + 142 * angkat, 4 + 166 * angkat], la: [8 + 142 * angkat, 4 + 166 * angkat] };
     }
     if (nama === "melambai") return { ra: [150, 160 + 25 * Math.sin(t * 2 * Math.PI * 1.6)], kepala: 4 };
     if (nama === "menggeleng") return { toleh: .8 * Math.sin(t * 2 * Math.PI * 1.6) };
@@ -1520,9 +1710,14 @@
   }
   // gambar badan bersendi (kaki di tanah, badan + lengan dalam bingkai T). Mengembalikan {g, depan, T, kepala, guling}
   // detail baju (7 Nov, akun komedi): kaus|koko|gamis|jaket{logo,aksen}|kemeja{motif batik}|daster|hoodie|blazer + handuk leher; gm = gemuk 0-1
-  function bajuDetail(P, BD, n, gm) {
+  function bajuDetail(P, BD, n, gm, blk) {
     const G = (f) => warna(BD, "#000000", f), W = 70 + 30 * gm, j = P.jenis;
     let s = "";
+    if (blk) { // (27 Nov) tampak belakang: tanpa kerah, kancing, celah dada, atau kalung; hanya garis punggung tipis
+      s += `<path d="M -30 ${-404 + n} Q 0 ${-398 + n} 30 ${-404 + n}" fill="none" stroke="${G(0.3)}" stroke-width="5"/>`;
+      if (P.handuk) s += `<path d="M -56 ${-398 + n} Q 0 ${-376 + n} 56 ${-398 + n}" stroke="${P.handuk}" stroke-width="24" fill="none" stroke-linecap="round"/>`;
+      return s;
+    }
     if (j === "kaus") s += `<path d="M -26 ${-393 + n} Q 0 ${-360 + n} 26 ${-393 + n}" fill="none" stroke="${G(0.3)}" stroke-width="6"/>`;
     else if (j === "jaket") {
       const A = P.aksen || "#ffc83d";
@@ -1548,6 +1743,10 @@
       for (let i = 0; i < 4; i++) s += `<circle cx="0" cy="${-370 + i * 30 + n}" r="5" fill="${G(0.45)}"/>`;
       if (P.motif === "bordir") for (let i = 0; i < 4; i++) s += `<path d="M -16 ${-372 + i * 30 + n} q 6 -8 12 0 M 4 ${-372 + i * 30 + n} q 6 -8 12 0" stroke="${P.bordir || "#c9a24a"}" stroke-width="3" fill="none"/>`;
     }
+    if (P.kalung === "usekh") { // kalung lebar raja Mesir kuno: pita setengah lingkaran berlapis emas-biru-merah di bahu dan dada
+      [["#e2b13c", 0], ["#1f3f8a", 15], ["#e2b13c", 28], ["#b8402e", 41], ["#e2b13c", 52]].forEach(([c, r]) => { s += `<path d="M ${-34 - r} ${-404 + n} Q 0 ${-370 + n + r * 1.4} ${34 + r} ${-404 + n}" fill="none" stroke="${c}" stroke-width="13" stroke-linecap="round"/>`; });
+      s += `<path d="M -88 ${-404 + n} Q 0 ${-290 + n} 88 ${-404 + n}" fill="none" stroke="${INK}" stroke-width="4"/>`;
+    }
     if (P.handuk) { const H = P.handuk; s += `<path d="M -56 ${-398 + n} Q 0 ${-366 + n} 56 ${-398 + n}" stroke="${H}" stroke-width="24" fill="none" stroke-linecap="round"/><rect x="28" y="${-402 + n}" width="30" height="104" rx="8" fill="${H}" stroke="${warna(H, "#000000", 0.3)}" stroke-width="3" transform="rotate(-6 43 ${-400 + n})"/><path d="M 28 ${-310 + n} l 30 -3" stroke="#e03131" stroke-width="5" transform="rotate(-6 43 ${-400 + n})"/>`; }
     return s;
   }
@@ -1555,6 +1754,53 @@
   function keT(p, J) { // titik lokal boneka -> bingkai lengan (kebalikan T = translate(0 turun) rotate(badan 0 -200))
     const a = -(J.badan || 0) * Math.PI / 180, x0 = p[0], y0 = p[1] - J.turun + 200;
     return [x0 * Math.cos(a) - y0 * Math.sin(a), x0 * Math.sin(a) + y0 * Math.cos(a) - 200];
+  }
+  function putarTitik(p, derajat) {
+    const a = derajat * Math.PI / 180, x = p[0], y = p[1] + 200;
+    return [x * Math.cos(a) - y * Math.sin(a), x * Math.sin(a) + y * Math.cos(a) - 200];
+  }
+  function tanganDunia(catatan, b) {
+    const H = catatan && catatan.sendi && catatan.sendi.lengan && catatan.sendi.lengan[1] && catatan.sendi.lengan[1][2];
+    if (!H) return null;
+    let p = putarTitik(H, catatan.sendi.badan || 0);
+    p[1] += (catatan.sendi.turun || 0) + (catatan.sendi.geserY || 0);
+    p = putarTitik(p, catatan.guling || 0);
+    p[1] += catatan.tubuh || 0;
+    const cermin = b.cermin || b.profil === "kiri";
+    const sk = catatan.s;
+    return [catatan.x + p[0] * sk * (cermin ? -1 : 1), catatan.y + p[1] * sk];
+  }
+  function targetTanganLokal(tujuan, x, y, sk, cermin, tubuh, J) {
+    let p = [(tujuan[0] - x) / (sk * (cermin ? -1 : 1)), (tujuan[1] - y) / sk];
+    p[1] -= tubuh;
+    p = putarTitik(p, -(J.guling || 0));
+    p[1] -= J.turun || 0;
+    return putarTitik(p, -(J.badan || 0));
+  }
+  function posisiTanganBawaan(b, t, d) {
+    const J = poseKini(b, t, false), x = v(b.x, t, d, 540), y = v(b.y, t, d, 1500);
+    const sk = v(b.s, t, d, 1), samping = b.profil === "kanan" || b.profil === "kiri" || b.profil === true;
+    const barangKecil = ["surat", "kendi", "gelas", "karung_kecil", "gulungan", "roti", "koin"].includes(J.pegang);
+    const sudutTangan = samping && barangKecil ? [40, 90] : (J.ra || [8, 4]);
+    const a1 = (samping ? Math.abs(sudutTangan[0]) : sudutTangan[0]) * Math.PI / 180;
+    const a2 = (samping ? Math.abs(sudutTangan[1]) : sudutTangan[1]) * Math.PI / 180;
+    const S = [samping ? 42 : 62, -360], E = [S[0] + Math.sin(a1) * 85, S[1] + Math.cos(a1) * 85];
+    let H = [E[0] + Math.sin(a2) * 80, E[1] + Math.cos(a2) * 80];
+    H = putarTitik(H, J.badan || 0); H[1] += (J.turun || 0);
+    const cermin = b.cermin || b.profil === "kiri";
+    return [x + H[0] * sk * (cermin ? -1 : 1), y + H[1] * sk];
+  }
+  function gambarBendaSerah(jenis, x, y, sk = 1) {
+    let isi = "";
+    if (jenis === "surat") isi = `<rect x="-34" y="-42" width="68" height="84" rx="4" fill="#f5e7c4" stroke="#8b6b42" stroke-width="5"/><path d="M -22 -20 L 22 -20 M -22 -4 L 22 -4 M -22 12 L 12 12" stroke="#9c8059" stroke-width="4"/>`;
+    else if (jenis === "kendi") isi = `<path d="M -10 -62 L 10 -62 L 12 -40 Q 44 -20 34 24 Q 28 60 -28 60 Q -44 28 -34 -6 Q -28 -32 -12 -40 Z" fill="#b97845" stroke="#503526" stroke-width="6"/><ellipse cx="0" cy="-62" rx="14" ry="7" fill="#d69b63" stroke="#503526" stroke-width="5"/>`;
+    else if (jenis === "gelas") isi = `<path d="M -20 -30 L 20 -30 L 16 30 L -16 30 Z" fill="#dff3ff" stroke="#34333a" stroke-width="5" opacity=".95"/>`;
+    else if (jenis === "karung_kecil") isi = `<path d="M -28 -38 Q 0 -54 28 -38 L 36 34 Q 0 56 -36 34 Z" fill="#b69a68" stroke="#6f5736" stroke-width="5"/><path d="M -24 -38 Q 0 -20 24 -38" fill="none" stroke="#6f5736" stroke-width="5"/>`;
+    else if (jenis === "gulungan") isi = `<rect x="-38" y="-42" width="76" height="84" rx="8" fill="#ead6a7" stroke="#9a7748" stroke-width="5"/><path d="M -28 -42 Q -40 -56 -42 -42 L -42 42 Q -40 56 -28 42 M 28 -42 Q 40 -56 42 -42 L 42 42 Q 40 56 28 42" fill="#d7bd87" stroke="#9a7748" stroke-width="5"/>`;
+    else if (jenis === "roti") isi = `<path d="M -42 18 Q -52 -20 -24 -34 Q -8 -54 14 -34 Q 48 -32 44 10 Q 40 34 0 32 Q -32 34 -42 18 Z" fill="#d89b52" stroke="#704522" stroke-width="5"/><path d="M -18 -20 Q -4 -4 0 8 M 12 -22 Q 24 -4 24 8" stroke="#f4d39b" stroke-width="5" fill="none"/>`;
+    else if (jenis === "koin") isi = `<circle r="30" fill="#e9bd4e" stroke="#805b1e" stroke-width="6"/><circle r="19" fill="none" stroke="#fff0a0" stroke-width="4"/>`;
+    else return "";
+    return `<g transform="translate(${x} ${y}) scale(${sk})">${isi}</g>`;
   }
   function rangka(J, o) {
     const { P, BD, WC, KLB, nafas, ayun, bawahP, t, aksi, id, offset } = o, GM = o.gm || 0, R = Math.PI / 180, hy0 = -200 + J.turun;
@@ -1580,7 +1826,15 @@
         const sw = (sg < 0 ? ayun : -ayun) * R;
         const p1 = angkat(pp) - 0.5 * Math.max(0, angkat(ppLawan) - angkat(pp)) + sw, p2 = p1 - (pk < 1 ? angkat(pk) : 0) - Math.max(0, -(s2 ? s2[1] : 0)) * 1.4 * R;
         const tekuk = pp <= 0.6 && J.turun >= 50 ? Math.min(p2, 0.12) : p2; // duduk: betis turun tegak
-        const H = [sg < 0 ? -6 : 10, hy0], K = [H[0] + Math.sin(p1) * 100, H[1] + Math.cos(p1) * 100], F = [K[0] + Math.sin(tekuk) * 100, K[1] + Math.cos(tekuk) * 100];
+        const H = [sg < 0 ? -6 : 10, hy0];
+        let K, F;
+        if (aksi === "menolong" || aksi === "gali") {
+          // Kedua kaki tetap menapak saat badan merendah; lutut menekuk dengan IK.
+          [K, F] = ik2(H, [sg < 0 ? -35 : 35, 0], 100, 100, true);
+        } else {
+          K = [H[0] + Math.sin(p1) * 100, H[1] + Math.cos(p1) * 100];
+          F = [K[0] + Math.sin(tekuk) * 100, K[1] + Math.cos(tekuk) * 100];
+        }
         titik.push([H, K, F]);
       });
       // berdiri/jalan: kaki yang menapak tepat di tanah (langkah miring memendekkan jangkauan vertikal)
@@ -1599,7 +1853,16 @@
       [-1, 1].forEach((sg) => {
         const s = sg < 0 ? J.lk : J.rk, sw = sg < 0 ? ayun : -ayun;
         const a1 = (sg * s[0] + sw) * R, a2 = (sg * s[1] + sw) * R;
-        const pp = sg < 0 ? (J.pp_ki == null ? J.pp : J.pp_ki) : (J.pp_ka == null ? J.pp : J.pp_ka), pk = sg < 0 ? (J.pk_ki == null ? J.pk : J.pk_ki) : (J.pk_ka == null ? J.pk : J.pk_ka); const H = [sg * 26, hy0], K = [H[0] + Math.sin(a1) * 100 * pp, H[1] + Math.cos(a1) * 100 * pp], F = [K[0] + Math.sin(a2) * 100 * pk, K[1] + Math.cos(a2) * 100 * pk];
+        const pp = sg < 0 ? (J.pp_ki == null ? J.pp : J.pp_ki) : (J.pp_ka == null ? J.pp : J.pp_ka), pk = sg < 0 ? (J.pk_ki == null ? J.pk : J.pk_ki) : (J.pk_ka == null ? J.pk : J.pk_ka);
+        const H = [sg * 26, hy0];
+        let K, F;
+        if (aksi === "menolong" || aksi === "gali") {
+          // Kaki menapak di tanah; lutut menyerap perubahan tinggi pinggul.
+          [K, F] = ik2(H, [sg * 42, 0], 100, 100, true);
+        } else {
+          K = [H[0] + Math.sin(a1) * 100 * pp, H[1] + Math.cos(a1) * 100 * pp];
+          F = [K[0] + Math.sin(a2) * 100 * pk, K[1] + Math.cos(a2) * 100 * pk];
+        }
         titik.push([H, K, F]);
         const dudukDepan = J.turun >= 50 && J.pp <= 0.6 && !J.guling && (!P || bawahP === "celana");
         kaki += `<polyline points="${H} ${K} ${F}" fill="none" stroke="${dudukDepan ? warna(wnK, "#000000", 0.12) : wnK}" stroke-width="${wKaki}" stroke-linecap="round" stroke-linejoin="round"/>`;
@@ -1624,11 +1887,12 @@
     let bdn = o.profilMotor
       ? `<path d="M -30 ${-396 + nafas} Q 22 ${-420 + nafas} 52 ${-382 + nafas} L 68 ${-270 + nafas} Q 56 ${-222 + nafas} 8 ${-206 + nafas} L -28 ${-244 + nafas} Z" fill="${BD}" stroke="${warna(BD, "#000000", 0.18)}" stroke-width="4"/>`
       : `<rect x="${-70 - 30 * GM}" y="${-395 + nafas}" width="${140 + 60 * GM}" height="215" rx="${58 + 20 * GM}" fill="${BD}"/>`;
-    if (P && !o.profilMotor) bdn += bajuDetail(P, BD, nafas, GM);
+    if (P && !o.profilMotor) bdn += bajuDetail(P, BD, nafas, GM, o.belakang);
     if (P && P.bisht) { // bisht: jubah luar terbuka berlis emas, dari bahu sampai betis
       const BS = P.bisht, lis = "#c9a24a", yb = hy0 + geserY + 150;
       bdn += o.profilMotor
         ? `<path d="M -26 ${-400 + nafas} Q -62 ${-300 + nafas} -70 ${yb} L -14 ${yb} Q -6 ${-250 + nafas} 14 ${-398 + nafas} Z" fill="${BS}" stroke="${INK}" stroke-width="4"/><path d="M 14 ${-398 + nafas} Q -6 ${-250 + nafas} -14 ${yb}" fill="none" stroke="${lis}" stroke-width="6"/>`
+        : o.belakang ? `<path d="M ${-78 - 30 * GM} ${-392 + nafas} Q 0 ${-410 + nafas} ${78 + 30 * GM} ${-392 + nafas} L ${104 + 30 * GM} ${yb} L ${-104 - 30 * GM} ${yb} Z" fill="${BS}" stroke="${INK}" stroke-width="4"/><path d="M -34 ${-402 + nafas} Q 0 ${-392 + nafas} 34 ${-402 + nafas}" stroke="${lis}" stroke-width="6" fill="none"/>` // bisht dari belakang: satu bidang utuh menutup punggung, lis emas hanya di kerah
         : [-1, 1].map((sg) => `<path d="M ${sg * 30} ${-404 + nafas} L ${sg * (78 + 30 * GM)} ${-392 + nafas} L ${sg * (104 + 30 * GM)} ${yb} L ${sg * 40} ${yb} Z" fill="${BS}" stroke="${INK}" stroke-width="4"/><path d="M ${sg * 30} ${-404 + nafas} L ${sg * 40} ${yb}" stroke="${lis}" stroke-width="6"/>`).join("");
     }
     // lengan
@@ -1650,14 +1914,26 @@
         const q = keT(tg, J);
         [E, H] = ik2(S, q, 85, 80, false);
       }
-      return { ats: `<line x1="${S[0]}" y1="${S[1]}" x2="${E[0]}" y2="${E[1]}" stroke="${BD}" stroke-width="36" stroke-linecap="round"/>`,
-               bwh: `<line x1="${E[0]}" y1="${E[1]}" x2="${H[0]}" y2="${H[1]}" stroke="${BD}" stroke-width="34" stroke-linecap="round"/><circle cx="${H[0]}" cy="${H[1]}" r="19" fill="${pakaiP ? KLB : BD}" stroke="${INK}" stroke-width="4"/>`, S, E, H };
+      if (sg > 0 && o.tanganTarget) [E, H] = ik2(S, o.tanganTarget, 85, 80, false);
+      const LB = P && P.bisht ? P.bisht : BD, lb = P && P.bisht ? 46 : 0, man = P && P.bisht ? `<line x1="${mix(E[0], H[0], 0.72)}" y1="${mix(E[1], H[1], 0.72)}" x2="${H[0]}" y2="${H[1]}" stroke="${BD}" stroke-width="28" stroke-linecap="round"/>` : ""; // (27 Nov) bisht: lengan di dalam lengan bisht yang lebar, ujung lengan jubah tampak di pergelangan
+      return { ats: `<line x1="${S[0]}" y1="${S[1]}" x2="${E[0]}" y2="${E[1]}" stroke="${LB}" stroke-width="${lb || 36}" stroke-linecap="round"/>`,
+               bwh: `<line x1="${E[0]}" y1="${E[1]}" x2="${H[0]}" y2="${H[1]}" stroke="${LB}" stroke-width="${lb ? lb - 2 : 34}" stroke-linecap="round"/>${man}<circle cx="${H[0]}" cy="${H[1]}" r="19" fill="${pakaiP ? KLB : BD}" stroke="${INK}" stroke-width="4"/>`, S, E, H };
     };
     const L = lengan(-1, J.la), Rk = lengan(1, J.ra);
     let barang = "";
     if (J.pegang === "hp") barang = `<g transform="translate(${Rk.H[0] - 14} ${Rk.H[1] - 30}) rotate(-8)"><rect x="-24" y="-44" width="48" height="84" rx="9" fill="#15121a" stroke="${INK}" stroke-width="4"/><rect x="-19" y="-38" width="38" height="70" rx="5" fill="#8fd0ff" opacity="${0.8 + 0.2 * Math.sin(t * 3)}"/></g>`;
     else if (J.pegang === "buku") barang = `<g transform="translate(${Rk.H[0] - 20} ${Rk.H[1] - 20})"><rect x="-40" y="-50" width="80" height="96" rx="6" fill="#7b2a20" stroke="${INK}" stroke-width="4"/><rect x="-32" y="-42" width="64" height="80" fill="#fbf2dc"/></g>`;
     else if (J.pegang === "gelas") barang = `<g transform="translate(${Rk.H[0]} ${Rk.H[1] - 26})"><path d="M -20 -30 L 20 -30 L 16 30 L -16 30 Z" fill="#dff3ff" stroke="${INK}" stroke-width="4" opacity=".9"/></g>`;
+    else if (J.pegang === "tongkat") barang = `<g transform="translate(${Rk.H[0]} ${Rk.H[1]}) rotate(-8)"><path d="M 0 12 Q -8 -72 2 -168" stroke="#80532f" stroke-width="18" fill="none" stroke-linecap="round"/><path d="M -2 -166 Q 28 -190 34 -156" stroke="#80532f" stroke-width="15" fill="none" stroke-linecap="round"/></g>`;
+    else if (J.pegang === "kendi") barang = `<g transform="translate(${Rk.H[0]} ${Rk.H[1] - 16})"><path d="M -10 -62 L 10 -62 L 12 -40 Q 44 -20 34 24 Q 28 60 -28 60 Q -44 28 -34 -6 Q -28 -32 -12 -40 Z" fill="#b97845" stroke="#503526" stroke-width="6"/><ellipse cx="0" cy="-62" rx="14" ry="7" fill="#d69b63" stroke="#503526" stroke-width="5"/></g>`;
+    else if (J.pegang === "lentera") barang = `<g transform="translate(${Rk.H[0]} ${Rk.H[1] - 18})"><path d="M -24 -46 Q 0 -86 24 -46" fill="none" stroke="#9a7445" stroke-width="7"/><rect x="-28" y="-42" width="56" height="76" rx="8" fill="#d9a34a" stroke="#503526" stroke-width="6"/><path d="M 0 -30 Q -18 -4 0 20 Q 18 -4 0 -30" fill="#fff0a0" opacity=".85"/></g>`;
+    else if (J.pegang === "keranjang") barang = `<g transform="translate(${Rk.H[0]} ${Rk.H[1] - 10})"><path d="M -42 -26 Q 0 -90 42 -26" fill="none" stroke="#8b5a2b" stroke-width="9"/><path d="M -46 -24 L 46 -24 L 34 42 L -34 42 Z" fill="#bd8b4b" stroke="#704522" stroke-width="6"/><path d="M -28 -20 L -20 38 M -4 -20 L 0 40 M 20 -20 L 24 38 M -40 0 L 40 0" stroke="#704522" stroke-width="5"/></g>`;
+    else if (J.pegang === "tasbih") barang = `<g transform="translate(${Rk.H[0]} ${Rk.H[1] - 8})"><path d="M -24 -12 C -74 -70 50 -100 52 -24 C 54 36 -32 54 -24 -12 Z" fill="none" stroke="#8b5a35" stroke-width="7"/>${Array.from({length:11},(_,i)=>{const a=i*Math.PI*2/11;return `<circle cx="${14+34*Math.cos(a)}" cy="${-20+34*Math.sin(a)}" r="7" fill="#5a3828"/>`;}).join("")}</g>`;
+    else if (J.pegang === "surat") barang = `<g transform="translate(${Rk.H[0] - 12} ${Rk.H[1] - 18}) rotate(-8)"><rect x="-34" y="-42" width="68" height="84" rx="4" fill="#f5e7c4" stroke="#8b6b42" stroke-width="5"/><path d="M -22 -20 L 22 -20 M -22 -4 L 22 -4 M -22 12 L 12 12" stroke="#9c8059" stroke-width="4"/></g>`;
+    else if (J.pegang === "gulungan") barang = `<g transform="translate(${Rk.H[0]} ${Rk.H[1] - 12}) rotate(-8)"><rect x="-38" y="-42" width="76" height="84" rx="8" fill="#ead6a7" stroke="#9a7748" stroke-width="5"/><path d="M -28 -42 Q -40 -56 -42 -42 L -42 42 Q -40 56 -28 42 M 28 -42 Q 40 -56 42 -42 L 42 42 Q 40 56 28 42" fill="#d7bd87" stroke="#9a7748" stroke-width="5"/></g>`;
+    else if (J.pegang === "karung_kecil") barang = `<g transform="translate(${Rk.H[0]} ${Rk.H[1] - 12})"><path d="M -28 -38 Q 0 -54 28 -38 L 36 34 Q 0 56 -36 34 Z" fill="#b69a68" stroke="#6f5736" stroke-width="5"/><path d="M -24 -38 Q 0 -20 24 -38" fill="none" stroke="#6f5736" stroke-width="5"/></g>`;
+    else if (J.pegang === "roti") barang = `<g transform="translate(${Rk.H[0]} ${Rk.H[1] - 8})"><path d="M -42 18 Q -52 -20 -24 -34 Q -8 -54 14 -34 Q 48 -32 44 10 Q 40 34 0 32 Q -32 34 -42 18 Z" fill="#d89b52" stroke="#704522" stroke-width="5"/><path d="M -18 -20 Q -4 -4 0 8 M 12 -22 Q 24 -4 24 8" stroke="#f4d39b" stroke-width="5" fill="none"/></g>`;
+    else if (J.pegang === "koin") barang = `<g transform="translate(${Rk.H[0]} ${Rk.H[1]})"><circle r="30" fill="#e9bd4e" stroke="#805b1e" stroke-width="6"/><circle r="19" fill="none" stroke="#fff0a0" stroke-width="4"/></g>`;
     else if (J.pegang === "beliung") {
       // Satu gagang mengikuti kedua titik genggam, bukan menempel pada satu tangan.
       const dx = Rk.H[0] - L.H[0], dy = Rk.H[1] - L.H[1];
@@ -1695,10 +1971,11 @@
     const T = `translate(0 ${J.turun + geserY}) rotate(${J.badan} 0 -200)`;
     const g = o.profilMotor && J.depan <= 0.5
       ? kaki + `<g transform="${T}">${L.ats}${L.bwh}${bdn}${Rk.ats}${Rk.bwh}${barang}</g>` // samping: lengan jauh di balik badan
+      : o.belakang ? kaki + `<g transform="${T}">${L.ats}${L.bwh}${Rk.ats}${Rk.bwh}${barang}${bdn}</g>` // (27 Nov) belakang: lengan di balik badan
       : kaki + `<g transform="${T}">${bdn}${L.ats}${Rk.ats}${J.depan > 0.5 ? "" : L.bwh + Rk.bwh + barang}</g>`;
-    const depan = J.depan > 0.5 ? `<g transform="${T}">${L.bwh}${Rk.bwh}${barang}</g>` : "";
+    const depan = J.depan > 0.5 && !o.belakang ? `<g transform="${T}">${L.bwh}${Rk.bwh}${barang}</g>` : "";
     // sendi (koordinat lokal, sebelum T untuk lengan) dipakai alat uji tokoh (mesin-video/papan/uji_tokoh.py)
-    const sendi = { kaki: titik, lengan: [[L.S, L.E, L.H], [Rk.S, Rk.E, Rk.H]], turun: J.turun, badan: J.badan };
+    const sendi = { kaki: titik, lengan: [[L.S, L.E, L.H], [Rk.S, Rk.E, Rk.H]], turun: J.turun, badan: J.badan, geserY };
     return { g, depan, T, kepala: J.kepala, guling: J.guling, sendi };
   }
 
@@ -1725,7 +2002,8 @@
       Object.keys(gen).forEach((k) => { if (b[k] == null) b[k] = gen[k]; }); if (b.kulit == null) b.kulit = kulit; if (!b.gaya) b.gaya = "umum"; b._npc = 1;
     }
     const HD = (b.hidup != null ? b.hidup : C.hidup) && b.gaya !== "siluet" && b.gaya !== "dajjal";
-    const ta = HD && (b.dua != null ? b.dua : C.dua !== false) ? Math.floor(t * 15 + 0.001) / 15 : t; // akting "on twos" (15 fps): loncatan tegas; posisi & kamera tetap 30 fps
+    const poseHalus = b.pose === "lompat" || (Array.isArray(b.pose) && b.pose.some((kf) => kf && kf[1] === "lompat"));
+    const ta = HD && (b.dua != null ? b.dua : C.dua !== false) && !poseHalus ? Math.floor(t * 15 + 0.001) / 15 : t; // akting "on twos" 15 fps; loncatan memakai 30 fps agar lintasan sendi tetap halus
     const kunci = (x0) => Array.isArray(x0) && Array.isArray(x0[0]) && typeof x0[0][1] === "number";
     let x = v(b.x, t, d, 540), y = v(b.y, t, d, 1500), s = v(b.s, t, d, 1) * (b.skala_usia || 1); const naik = v(b.naik, t, d, 1);
     let arah = HD && kunci(b.arah) ? vs(b.arah, ta, 0) : v(b.arah, t, d, 0), tunduk = HD && kunci(b.tunduk) ? vs(b.tunduk, ta, 0) : v(b.tunduk, t, d, 0);
@@ -1765,6 +2043,7 @@
     const BD = P ? (P.warna || "#ece6d6") : BADAN, WC = P ? (P.bawah_warna || "#2f4a6a") : BADAN, bawahP = P ? (P.bawah || (P.jenis === "gamis" || P.jenis === "daster" || P.jenis === "jubah" ? "gamis" : "sarung")) : "";
     const GM = v(b.gemuk, t, d, 0), SH = 62 + 26 * GM, KB = b.kepala_besar || 1;
     const kaki = (dx, a, w = BADAN, tb = 44) => `<line x1="${dx}" y1="-200" x2="${dx + Math.sin((a * Math.PI) / 180) * 200}" y2="${-200 + Math.cos((a * Math.PI) / 180) * 200}" stroke="${w}" stroke-width="${tb}" stroke-linecap="round"/>`;
+    const BLK = !b.profil && !!v(b.belakang, t, d, false); // tampak belakang: pakaian tanpa detail depan
     const RIG = b.pose != null || HD || b.profil ? poseKini(b, HD ? ta : t, HD) : null; // tampak samping selalu bersendi (badan ikut menyamping)
     if (RIG && b._gabungan) { x += RIG.geser || 0; arah += (RIG.toleh || 0) * 4; tunduk += (RIG.angguk || 0) * 3; }
     // AKSI GALI: pose kerja adalah aksi berulang, bukan pose statis.
@@ -1773,8 +2052,10 @@
       const fase = ((t * 1.35 + (((b.npc != null ? b.npc : b.id) || 0) * 0.381)) % 1 + 1) % 1;
       const ayunGali = Math.sin(fase * Math.PI * 2);
       const hantam = Math.pow(Math.max(0, Math.sin(fase * Math.PI * 2 + 0.35)), 5);
-      RIG.ra = [132 + 18 * ayunGali, 212 + 28 * ayunGali - 12 * hantam];
-      RIG.la = [112 + 12 * ayunGali, 198 + 18 * ayunGali];
+      // Lengan diarahkan ke depan dan ke bawah; ujung beliung jatuh dekat titik gali,
+      // bukan terangkat ke belakang kepala.
+      RIG.ra = [8 + 8 * ayunGali, 10 + 10 * ayunGali - 8 * hantam];
+      RIG.la = [6 + 6 * ayunGali, 8 + 8 * ayunGali - 6 * hantam];
       RIG.badan = 5 + 8 * hantam - 3 * ayunGali;
       RIG.turun = 3 + 9 * hantam;
       RIG.lk = [4, 0]; RIG.rk = [-4, 0];
@@ -1797,17 +2078,33 @@
         }
       }
       if (bawahP !== "gamis") g += `<rect x="${-70 - 30 * GM}" y="${-395 + nafas}" width="${140 + 60 * GM}" height="${bawahP === "sarung" ? 190 : 215}" rx="${56 + 20 * GM}" fill="${BD}"/>`;
-      g += bajuDetail(P, BD, nafas, GM);
-      if (P.bisht) g += [-1, 1].map((sg) => `<path d="M ${sg * 30} ${-404 + nafas} L ${sg * (78 + 30 * GM)} ${-392 + nafas} L ${sg * (104 + 30 * GM)} -50 L ${sg * 40} -50 Z" fill="${P.bisht}" stroke="${INK}" stroke-width="4"/><path d="M ${sg * 30} ${-404 + nafas} L ${sg * 40} -50" stroke="#c9a24a" stroke-width="6"/>`).join(""); // bisht (tanpa rangka)
+      g += bajuDetail(P, BD, nafas, GM, BLK);
+      if (P.bisht && BLK) g += `<path d="M ${-78 - 30 * GM} ${-392 + nafas} Q 0 ${-410 + nafas} ${78 + 30 * GM} ${-392 + nafas} L ${104 + 30 * GM} -50 L ${-104 - 30 * GM} -50 Z" fill="${P.bisht}" stroke="${INK}" stroke-width="4"/><path d="M -34 ${-402 + nafas} Q 0 ${-392 + nafas} 34 ${-402 + nafas}" stroke="#c9a24a" stroke-width="6" fill="none"/>`;
+      else if (P.bisht) g += [-1, 1].map((sg) => `<path d="M ${sg * 30} ${-404 + nafas} L ${sg * (78 + 30 * GM)} ${-392 + nafas} L ${sg * (104 + 30 * GM)} -50 L ${sg * 40} -50 Z" fill="${P.bisht}" stroke="${INK}" stroke-width="4"/><path d="M ${sg * 30} ${-404 + nafas} L ${sg * 40} -50" stroke="#c9a24a" stroke-width="6"/>`).join(""); // bisht (tanpa rangka)
     }
-    const tangan = (x2, y2) => (P ? `<circle cx="${x2}" cy="${y2}" r="19" fill="${KLB}" stroke="${INK}" stroke-width="4"/>` : "");
-    const lenganKiri = `<line x1="${-SH}" y1="${-360 + nafas}" x2="${-SH - 22 - ayun * 0.3}" y2="${-200 + nafas}" stroke="${BD}" stroke-width="36" stroke-linecap="round"/>` + tangan(-SH - 22 - ayun * 0.3, -192 + nafas);
-    g += lenganKiri;
+    const tangan = (x2, y2) => (P ? (P.bisht ? `<line x1="${x2 - (x2 > 0 ? 6 : -6)}" y1="${y2 - 34}" x2="${x2}" y2="${y2}" stroke="${BD}" stroke-width="28" stroke-linecap="round"/>` : "") + `<circle cx="${x2}" cy="${y2}" r="19" fill="${KLB}" stroke="${INK}" stroke-width="4"/>` : "");
+    const LBD = P && P.bisht ? P.bisht : BD, LW = P && P.bisht ? 46 : 36;
+    const lenganKiri = `<line x1="${-SH}" y1="${-360 + nafas}" x2="${-SH - 22 - ayun * 0.3}" y2="${-200 + nafas}" stroke="${LBD}" stroke-width="${LW}" stroke-linecap="round"/>` + tangan(-SH - 22 - ayun * 0.3, -192 + nafas);
+    if (BLK) g = lenganKiri + g; else g += lenganKiri; // (27 Nov) tampak belakang: lengan dan tangan di balik badan, hanya ujungnya mengintip di sisi
     const kaitL = b._kaitDunia ? (() => { const cm = b.cermin || b.profil === "kiri" ? -1 : 1, L = (p) => [cm * (p[0] - x) / s, (p[1] - y) / s - tubuh], K = b._kaitDunia;
       return { pijak: K.pijak && K.pijak.map(L), pegang: K.pegang && K.pegang.map(L) }; })() : null;
-    let RG = null; if (RIG) { RG = rangka(RIG, { P, BD, WC, KLB, nafas, ayun, bawahP, t: HD ? ta : t, gm: GM, aksi: RIG && RIG._aksi || b.aksi, id: b.npc != null ? b.npc : b.id, offset: b._gerak_offset, profilMotor: (b.profil === "kanan" || b.profil === true || b.profil === "kiri") && !!RIG && !RIG.guling,
-      kait: kaitL }); g = RG.g; }
-    let lenganKanan = RIG ? "" : `<line x1="${SH}" y1="${-360 + nafas}" x2="${SH + 22 + ayun * 0.3}" y2="${-200 + nafas}" stroke="${BD}" stroke-width="36" stroke-linecap="round"/>` + tangan(SH + 22 + ayun * 0.3, -192 + nafas);
+    if (RIG && b._serahTarget) {
+      RIG.pegang = null;
+      RIG.tanganTarget = targetTanganLokal(b._serahTarget, x, y, s, b.cermin || b.profil === "kiri", tubuh, RIG);
+    }
+    if (RIG && Object.prototype.hasOwnProperty.call(b, "_serahPegang")) {
+      if (b._serahPegang) Object.assign(RIG, POSE["pegang_" + b._serahPegang] || {}, { pegang: b._serahPegang });
+      else { RIG.pegang = null; RIG.ra = POSE.berdiri.ra.slice(); }
+    }
+    if (RIG && (b.profil === "kanan" || b.profil === "kiri" || b.profil === true)
+        && ["surat", "kendi", "gelas", "karung_kecil", "gulungan", "roti", "koin"].includes(RIG.pegang))
+      RIG.ra = [40, 90];
+    let RG = null; if (RIG) { RG = rangka(RIG, { P, BD, WC, KLB, belakang: BLK, nafas, ayun, bawahP, t: HD ? ta : t, gm: GM, aksi: RIG && RIG._aksi || b.aksi, id: b.npc != null ? b.npc : b.id, offset: b._gerak_offset, profilMotor: (b.profil === "kanan" || b.profil === true || b.profil === "kiri") && !!RIG,
+      kait: kaitL, tanganTarget: RIG.tanganTarget }); g = RG.g;
+      if (window.__tanganBoneka) window.__tanganBoneka[b.id] = tanganDunia({ sendi: RG.sendi, x, y, s, tubuh, guling: RG.guling }, b);
+    }
+    let lenganKanan = RIG ? "" : `<line x1="${SH}" y1="${-360 + nafas}" x2="${SH + 22 + ayun * 0.3}" y2="${-200 + nafas}" stroke="${LBD}" stroke-width="${LW}" stroke-linecap="round"/>` + tangan(SH + 22 + ayun * 0.3, -192 + nafas);
+    if (BLK && lenganKanan) { g = lenganKanan + g; lenganKanan = ""; }
     // kepala
     const hx = arah * 10, hy = -492 - (KB - 1) * 96 + nafas + tunduk * 14 + (H ? H.ky : 0), ex = arah * 24, ey = tunduk * 14 + (mata === "atas" ? -8 : mata === "bawah" ? 8 : 0);
     let k = b.profil === "kanan" || b.profil === true || b.profil === "kiri"
@@ -1870,12 +2167,18 @@
         else if (rb === "belah") k += `<path d="M -76 -2 C -86 -96, 84 -104, 76 -2 C 70 -50, 30 -66, 8 -70 L 0 -40 L -8 -70 C -30 -66, -70 -50, -76 -2 Z" fill="${RB}"/>`;
         if (b.janggut) {
           const jb = b.janggut_model || "pendek";
+          if (jb === "firaun") { // janggut upacara raja Mesir kuno: sempit, panjang, berpilin
+            k += `<path d="M -16 58 L 16 58 L 13 132 Q 0 142 -13 132 Z" fill="${b.janggut === true ? "#1d2747" : b.janggut}" stroke="${INK}" stroke-width="4"/>`;
+            for (let i = 0; i < 4; i++) k += `<line x1="-14" y1="${74 + i * 16}" x2="14" y2="${74 + i * 16}" stroke="#e2b13c" stroke-width="4"/>`;
+            k += `<path d="M -16 60 Q -40 50 -54 30 M 16 60 Q 40 50 54 30" stroke="#1d2747" stroke-width="4" fill="none"/>`; // tali pengikat ke telinga
+          } else {
           const janggutD = jb === "tipis"
             ? "M -58 30 Q 0 58 58 30 Q 36 54 0 52 Q -36 54 -58 30 Z"
             : jb === "panjang"
               ? "M -58 30 C -50 92, 50 92, 58 30 L 46 92 Q 0 138 -46 92 Z"
               : "M -58 30 C -50 92, 50 92, 58 30 C 40 70, -40 70, -58 30 Z";
           k += `<path d="${janggutD}" fill="${b.janggut === true ? RB : b.janggut}"/>`;
+          }
         }
         if (b.keriput) k += `<path d="M -40 -46 q 10 -4 20 0 M 20 -46 q 10 -4 20 0 M -58 22 q 4 8 10 10 M 58 22 q -4 8 -10 10" fill="none" stroke="${INK}" stroke-width="3" opacity=".5"/>`;
       }
@@ -1911,6 +2214,15 @@
         k += `<path d="M -84 -10 Q -96 -96 -16 -114 Q 52 -122 70 -56 Q 74 -36 62 -30 Q 0 -54 -84 -10 Z" fill="${WPK}" stroke="${INK}" stroke-width="6"/><path d="M -78 -36 Q 0 -86 64 -58 M -70 -64 Q 0 -104 50 -88" fill="none" stroke="${gr}" stroke-width="6" stroke-linecap="round"/><path d="M -80 -16 Q -104 40 -90 96 L -66 92 Q -76 40 -60 0 Z" fill="${WPK}" stroke="${INK}" stroke-width="5"/>`;
       else if (b.penutup_kepala === "kain") // ghutrah: kain menutup kepala dan menjuntai ke punggung, iqal hitam melingkar
         k += `<path d="M 60 -46 Q 40 -118 -24 -112 Q -96 -100 -98 -6 Q -100 70 -80 118 L -30 118 Q -40 60 -30 20 Q -20 -20 0 -34 Q 30 -52 60 -46 Z" fill="${WPK}" stroke="${INK}" stroke-width="6"/><path d="M 62 -58 Q 0 -78 -86 -40" fill="none" stroke="#1d1a22" stroke-width="12" stroke-linecap="round"/>`;
+      else if (b.penutup_kepala === "nemes") { // kain kepala bergaris raja Mesir kuno dari samping: menutup kepala, sayap kain jatuh di belakang telinga sampai bahu, ekor kain di tengkuk
+        const WN = b.warna_penutup || "#e2b13c", GN = "#1f3f8a";
+        k += `<path d="M 58 -52 Q 44 -118 -20 -116 Q -92 -108 -96 -30 Q -100 40 -92 112 L -34 116 Q -46 50 -30 -4 Q -10 -40 58 -52 Z" fill="${WN}" stroke="${INK}" stroke-width="6" stroke-linejoin="round"/>`;
+        for (let i = 0; i < 5; i++) { const yy = -70 + i * 36; k += `<path d="M -88 ${yy} Q -66 ${yy - 8} ${-44 - (i > 1 ? 4 : 0)} ${yy + 2}" stroke="${GN}" stroke-width="8" fill="none" stroke-linecap="round"/>`; } // garis di sayap kain belakang
+        k += `<path d="M 60 -54 Q 0 -70 -84 -48" stroke="${GN}" stroke-width="10" fill="none" stroke-linecap="round"/><path d="M -96 -20 Q -112 30 -104 70" stroke="${INK}" stroke-width="12" fill="none" stroke-linecap="round"/>`;
+        if (b.ureus !== false) k += `<path d="M 50 -54 Q 66 -70 58 -86 Q 74 -92 70 -102 Q 58 -100 50 -90 Q 40 -74 42 -56 Z" fill="#e8b934" stroke="${INK}" stroke-width="4" stroke-linejoin="round"/>`; // kobra di dahi dari samping
+      }
+      else if (b.penutup_kepala === "mahkota") // mahkota emas raja dari samping
+        k += `<path d="M -70 -56 L 60 -56 L 66 -104 L 34 -82 L 4 -122 L -26 -82 L -62 -108 Z" fill="${b.warna_penutup || "#e8b934"}" stroke="${INK}" stroke-width="6" stroke-linejoin="round"/><rect x="-72" y="-66" width="136" height="16" rx="5" fill="#b8841c" stroke="${INK}" stroke-width="4"/><circle cx="-4" cy="-58" r="6" fill="#c0392b" stroke="${INK}" stroke-width="2"/>`;
       else if (b.penutup_kepala === "kopiah")
         k += `<path d="M -74 -46 Q 0 -66 62 -50 L 58 -86 Q 0 -110 -70 -90 Z" fill="${WPK}" stroke="${INK}" stroke-width="6"/><path d="M -64 -58 Q 0 -76 56 -62" stroke="${gr}" stroke-width="5" fill="none"/>`;
     } else if (!belakang && gaya !== "siluet" && b.rambut !== "kerudung" && b.penutup_kepala && b.penutup_kepala !== "tanpa" && !(P && P.peci)) {
@@ -1919,9 +2231,31 @@
         k += `<path d="M -70 -42 Q -84 -92 -48 -112 Q 0 -138 48 -112 Q 84 -92 70 -42 Q 0 -58 -70 -42 Z" fill="${WPK}" stroke="${INK}" stroke-width="6"/><path d="M -64 -72 Q 0 -96 64 -72 M -58 -54 Q 0 -76 58 -54" fill="none" stroke="${warna(WPK, "#000000", 0.16)}" stroke-width="7" stroke-linecap="round"/>`;
       } else if (b.penutup_kepala === "kain") { // ghutrah: kain menjuntai di kedua sisi wajah sampai bahu + iqal hitam
         k += `<path d="M -74 -40 Q -84 -100 -40 -118 Q 0 -134 40 -118 Q 84 -100 74 -40 L 98 112 L 58 118 Q 72 40 64 -16 Q 0 -50 -64 -16 Q -72 40 -58 118 L -98 112 Z" fill="${WPK}" stroke="${INK}" stroke-width="6" stroke-linejoin="round"/><path d="M -76 -72 Q 0 -100 76 -72" fill="none" stroke="#1d1a22" stroke-width="12" stroke-linecap="round"/>`;
+      } else if (b.penutup_kepala === "nemes") { // kain kepala bergaris raja Mesir kuno: menutup dahi, sayap kain jatuh di kedua sisi wajah sampai dada, garis emas-biru
+        const WN = b.warna_penutup || "#e2b13c", GN = "#1f3f8a";
+        k += `<path d="M -70 -40 Q -86 -108 -36 -122 Q 0 -132 36 -122 Q 86 -108 70 -40 L 110 128 L 66 132 Q 80 40 66 -8 Q 0 -46 -66 -8 Q -80 40 -66 132 L -110 128 Z" fill="${WN}" stroke="${INK}" stroke-width="6" stroke-linejoin="round"/>`;
+        [-1, 1].forEach((sg) => { for (let i = 0; i < 5; i++) { const yy = 18 + i * 24, lu = 70 + ((yy + 40) / 168) * 40 - 6, da = 72 + (i > 2 ? 2 : 0); k += `<path d="M ${sg * da} ${yy} L ${sg * lu} ${yy + 4}" stroke="${GN}" stroke-width="8" stroke-linecap="round"/>`; } }); // garis di dalam sayap kain
+        for (let i = 0; i < 4; i++) k += `<path d="M ${-60 + i * 4} ${-96 + i * 16} Q 0 ${-116 + i * 16} ${60 - i * 4} ${-96 + i * 16}" stroke="${GN}" stroke-width="8" fill="none" stroke-linecap="round"/>`;
+        k += `<path d="M -66 -44 Q 0 -64 66 -44" stroke="#b8841c" stroke-width="12" fill="none" stroke-linecap="round"/><path d="M -66 -44 Q 0 -64 66 -44" stroke="${INK}" stroke-width="3" fill="none"/>`;
+        if (b.ureus !== false) k += `<path d="M -6 -52 Q -16 -74 -4 -86 Q -14 -98 0 -108 Q 14 -98 4 -86 Q 16 -74 6 -52 Z" fill="#e8b934" stroke="${INK}" stroke-width="4" stroke-linejoin="round"/><circle cx="0" cy="-96" r="3" fill="${INK}"/>`; // kobra kecil di dahi, ciri hiasan raja Mesir kuno
+      } else if (b.penutup_kepala === "mahkota") { // mahkota emas raja: pita dan lima puncak
+        const WM = b.warna_penutup || "#e8b934";
+        k += `<path d="M -70 -58 L 70 -58 L 82 -116 L 44 -88 L 22 -130 L 0 -92 L -22 -130 L -44 -88 L -82 -116 Z" fill="${WM}" stroke="${INK}" stroke-width="6" stroke-linejoin="round"/><rect x="-74" y="-70" width="148" height="18" rx="6" fill="#b8841c" stroke="${INK}" stroke-width="4"/>`;
+        [-44, 0, 44].forEach((cx, i) => { k += `<circle cx="${cx}" cy="-61" r="${i === 1 ? 8 : 6}" fill="${i === 1 ? "#c0392b" : "#2b7bbd"}" stroke="${INK}" stroke-width="2"/>`; });
       } else if (b.penutup_kepala === "kopiah") {
         k += `<path d="M -68 -48 Q 0 -68 68 -48 L 62 -88 Q 0 -110 -62 -88 Z" fill="${WPK}" stroke="${INK}" stroke-width="6"/><path d="M -58 -58 Q 0 -76 58 -58" stroke="${warna(WPK, "#000000", 0.18)}" stroke-width="5" fill="none"/>`;
       }
+    }
+    if (belakang && !pfl && gaya !== "siluet" && b.rambut !== "kerudung" && ((b.penutup_kepala && b.penutup_kepala !== "tanpa") || (P && P.peci))) { // (27 Nov) penutup kepala dari belakang: kepala orang yang membelakangi kamera tetap terbaca bersorban/berpeci/bernemes
+      const pkB = P && P.peci ? "kopiah" : b.penutup_kepala, WPK = P && P.peci ? (P.peci === true ? "#1d1520" : P.peci === "putih" ? "#ffffff" : P.peci) : (b.warna_penutup || "#e8dcc4"), gr = warna(WPK, "#000000", 0.16);
+      if (pkB === "imamah") k += `<path d="M -80 -10 Q -92 -96 -40 -116 Q 0 -132 40 -116 Q 92 -96 80 -10 Q 0 -30 -80 -10 Z" fill="${WPK}" stroke="${INK}" stroke-width="6"/><path d="M -76 -40 Q 0 -70 76 -40 M -70 -72 Q 0 -104 70 -72" fill="none" stroke="${gr}" stroke-width="7" stroke-linecap="round"/><path d="M 22 -24 Q 16 30 30 96 L 50 90 Q 38 30 44 -28 Z" fill="${WPK}" stroke="${INK}" stroke-width="5"/>`; // ekor sorban jatuh di sisi tengkuk sampai bahu (leher tetap tampak)
+      else if (pkB === "kain") k += `<path d="M -82 -30 Q -88 -110 -30 -120 Q 0 -126 30 -120 Q 88 -110 82 -30 L 104 118 L -104 118 Z" fill="${WPK}" stroke="${INK}" stroke-width="6" stroke-linejoin="round"/><path d="M -80 -66 Q 0 -96 80 -66" fill="none" stroke="#1d1a22" stroke-width="12" stroke-linecap="round"/><path d="M -40 0 Q -46 60 -50 116 M 40 0 Q 46 60 50 116" stroke="${gr}" stroke-width="5" fill="none"/>`; // ghutrah menutup tengkuk sampai punggung + iqal
+      else if (pkB === "kopiah") k += `<path d="M -72 -36 Q 0 -54 72 -36 L 66 -88 Q 0 -110 -66 -88 Z" fill="${WPK}" stroke="${INK}" stroke-width="6"/>`;
+      else if (pkB === "mahkota") k += `<path d="M -70 -58 L 70 -58 L 82 -116 L 44 -88 L 22 -130 L 0 -92 L -22 -130 L -44 -88 L -82 -116 Z" fill="${b.warna_penutup || "#e8b934"}" stroke="${INK}" stroke-width="6" stroke-linejoin="round"/><rect x="-74" y="-70" width="148" height="18" rx="6" fill="#b8841c" stroke="${INK}" stroke-width="4"/>`;
+      else if (pkB === "nemes") { const WN = b.warna_penutup || "#e2b13c", GN = "#1f3f8a";
+        k += `<path d="M -80 -40 Q -90 -112 -36 -124 Q 0 -132 36 -124 Q 90 -112 80 -40 L 104 100 L -104 100 Z" fill="${WN}" stroke="${INK}" stroke-width="6" stroke-linejoin="round"/>`;
+        for (let i = 0; i < 6; i++) k += `<path d="M ${-82 - i * 3} ${-80 + i * 30} Q 0 ${-98 + i * 30} ${82 + i * 3} ${-80 + i * 30}" stroke="${GN}" stroke-width="8" fill="none" stroke-linecap="round"/>`;
+        k += `<path d="M -16 60 L 16 60 L 12 150 Q 0 158 -12 150 Z" fill="${WN}" stroke="${INK}" stroke-width="5"/>` + [80, 104, 128].map((yy) => `<line x1="-14" y1="${yy}" x2="14" y2="${yy}" stroke="${GN}" stroke-width="5"/>`).join(""); } // kepang kain di punggung
     }
     const muka = ANW && !belakang && !b.profil && gaya !== "dajjal";
     if (muka && gaya !== "siluet") k += `<path d="M 18 -80 A 75 82 0 0 1 18 80 A 58 82 0 0 0 18 -80 Z" fill="#3a1f2a" opacity=".13"/>`; // bayangan separuh wajah
@@ -1970,7 +2304,7 @@
     if (pc && !belakang && b.rambut !== "kerudung") k += `<path d="M -70 -44 L -64 -98 Q 0 -114 64 -98 L 70 -44 Q 0 -58 -70 -44 Z" fill="${pc === true ? "#1d1520" : pc === "putih" ? "#ffffff" : pc}" stroke="${INK}" stroke-width="6"/>` + (pc === "#ffffff" || pc === "putih" ? `<path d="M -60 -60 Q 0 -72 60 -60" stroke="#d8d2c4" stroke-width="4" fill="none"/>` : "");
     k += `</g>`;
     if (!RIG && (lengan === "doa" || lengan === "beri" || lengan === "tolak")) {
-      const lk = (sg, ex2, ey2, ex3, ey3) => `<polyline points="${sg * 62},${-360 + nafas} ${ex2},${ey2 + nafas} ${ex3},${ey3 + nafas}" fill="none" stroke="${BD}" stroke-width="36" stroke-linecap="round" stroke-linejoin="round"/>`;
+      const lk = (sg, ex2, ey2, ex3, ey3) => `<polyline points="${sg * 62},${-360 + nafas} ${ex2},${ey2 + nafas} ${ex3},${ey3 + nafas}" fill="none" stroke="${LBD}" stroke-width="${LW}" stroke-linecap="round" stroke-linejoin="round"/>`;
       if (lengan === "doa") { g = g.replace(lenganKiri, ""); lenganKanan = lk(-1, -96, -250, -56, -330) + lk(1, 96, -250, 56, -330) + `<ellipse cx="-50" cy="${-338 + nafas}" rx="26" ry="16" fill="${b.kulit || KL}" stroke="${INK}" stroke-width="5"/><ellipse cx="50" cy="${-338 + nafas}" rx="26" ry="16" fill="${b.kulit || KL}" stroke="${INK}" stroke-width="5"/>`; }
       if (lengan === "beri") lenganKanan = lk(1, 150, -300, 250, -300) + `<circle cx="262" cy="${-300 + nafas}" r="20" fill="${b.kulit || KL}" stroke="${INK}" stroke-width="5"/>`;
       if (lengan === "tolak") lenganKanan = lk(1, 160, -330, 170, -450) + `<ellipse cx="172" cy="${-470 + nafas}" rx="22" ry="32" fill="${b.kulit || KL}" stroke="${INK}" stroke-width="5"/>`;
@@ -1978,7 +2312,7 @@
     }
     const am = v(b.air_mata, t, d, 0);
     if (am > 0 && muka) { k = k.replace(/<\/g>$/, ""); [-1, 1].forEach((sg) => { const cx = ex + sg * 30, cy = 14 + ey, L = 70 * am; k += `<path d="M ${cx} ${cy} q ${sg * 4} ${L / 2} 0 ${L}" stroke="#9fdcff" stroke-width="9" fill="none" stroke-linecap="round" opacity=".9"/>`; const q = (t * 0.8 + (sg > 0 ? 0.5 : 0)) % 1; k += `<path transform="translate(${cx} ${cy + L + q * 60})" d="M 0 -10 Q 8 2 0 8 Q -8 2 0 -10 Z" fill="#9fdcff" opacity="${1 - q}"/>`; }); k += `</g>`; }
-    if (!RIG && lengan === "lindungi") lenganKanan = `<polyline points="62,${-360 + nafas} 128,${-470 + nafas} ${hx + 30},${hy - 66}" fill="none" stroke="${BD}" stroke-width="36" stroke-linecap="round" stroke-linejoin="round"/><ellipse cx="${hx + 22}" cy="${hy - 66}" rx="42" ry="20" fill="${BD}"/>`;
+    if (!RIG && lengan === "lindungi") lenganKanan = `<polyline points="62,${-360 + nafas} 128,${-470 + nafas} ${hx + 30},${hy - 66}" fill="none" stroke="${LBD}" stroke-width="${LW}" stroke-linecap="round" stroke-linejoin="round"/><ellipse cx="${hx + 22}" cy="${hy - 66}" rx="42" ry="20" fill="${BD}"/>`;
     const fid = b.utama ? "rimU" : "rim";
     if (!P && b.gaya !== "siluet" && C.badan !== "siluet") { const R = rng(b.id * 7 + 3); for (let i = 0; i < 14; i++) g += `<circle cx="${-55 + R() * 110}" cy="${-380 + R() * 360 + nafas}" r="${2 + R() * 4}" fill="#e9d2b8" opacity=".35"/>`; } // debu tanah di badan
     if (!RIG && lengan === "lindungi") { k += lenganKanan; lenganKanan = ""; }
@@ -1992,7 +2326,7 @@
     if (H) { x += H.dx; y += H.dy; s *= H.sc; isi = `<g transform="scale(${1 - H.sq * 0.7} ${1 + H.sq})">${isi}</g>`; }
     const byg = (C.bayangan === false || b.bayangan === false || gaya === "siluet" || naik < 0.98 || potong > 0 || gen > 0 || (RG && RG.guling)) ? "" : `<ellipse cx="0" cy="6" rx="${b.bayangan > 0 ? b.bayangan : 92}" ry="15" fill="#000" opacity=".2"/>`; // standar visual butir 5: bayangan lembut di pijakan (matikan: bayangan:false di boneka atau cerita)
     if (window.__catatBoneka) { // hanya aktif saat alat uji tokoh menyiapkannya; tidak memengaruhi render biasa
-      const pm = (b.profil === "kanan" || b.profil === true || b.profil === "kiri") && !!RIG && !RIG.guling;
+      const pm = (b.profil === "kanan" || b.profil === true || b.profil === "kiri") && !!RIG;
       window.__catatBoneka.push({ id: b.id, t, x, y, s, tubuh, arah, tunduk, profil: b.profil || null, belakang: !!belakang,
         badan_samping: pm, rig: !!RIG, aksi: RIG && RIG._aksi || b.aksi || null, sendi: RG ? RG.sendi : null, guling: RG ? RG.guling || 0 : 0,
         telinga: (k.match(/data-telinga="1"/g) || []).length, kepala: [hx, hy],
@@ -2155,6 +2489,25 @@
     if (S.resap) isi += resap(S.resap, tl, d, h);
     if (S.kerumunan) isi += kerumunan(S.kerumunan, h, tl);
     (S.benda || []).filter((o) => !(o.jenis === "bintang" || o.jenis === "bulan" || o.belakang) && !o.depan).forEach((o) => { isi += o.hias ? `<g data-hias="1">${benda(o, tl, d)}</g>` : benda(o, tl, d); });
+    const serahList = S.serah_terima ? (Array.isArray(S.serah_terima) ? S.serah_terima : [S.serah_terima]) : [];
+    window.__tanganBoneka = {};
+    window.__catatSerahTerima = window.__catatSerahTerima || [];
+    const lintasanSerah = serahList.map((r) => {
+      const asal = (S.boneka || [])[r.dari], tujuan = (S.boneka || [])[r.ke];
+      if (!asal || !tujuan) return { r, galat: "tokoh pemberi/penerima tidak ditemukan" };
+      const awal = posisiTanganBawaan(asal, tl, d);
+      const tujuanDenganBenda = Object.assign({}, tujuan, { pose: "pegang_" + r.benda });
+      const akhir = posisiTanganBawaan(tujuanDenganBenda, tl, d);
+      const tengah = [(awal[0] + akhir[0]) / 2, (awal[1] + akhir[1]) / 2];
+      const lama = Math.max(0.1, Number(r.durasi) || 1.2), q0 = clamp((tl - (Number(r.at) || 0)) / lama);
+      const halusSerah = (u) => { u = clamp(u); return u * u * (3 - 2 * u); };
+      let posisi;
+      if (q0 < 0.25) { const q = halusSerah(q0 / 0.25); posisi = [mix(awal[0], tengah[0], q), mix(awal[1], tengah[1], q)]; }
+      else if (q0 <= 0.75) posisi = tengah;
+      else { const q = halusSerah((q0 - 0.75) / 0.25); posisi = [mix(tengah[0], akhir[0], q), mix(tengah[1], akhir[1], q)]; }
+      return { r, awal, tengah, akhir, posisi, fase: q0,
+        aktif: tl >= (Number(r.at) || 0) && tl <= (Number(r.at) || 0) + lama };
+    });
     (S.boneka || []).forEach((b, i) => {
       // Ikatan kendaraan membuat pengendara mengikuti posisi motor setiap frame.
       // Setelah lepas_kendaraan_at, lintasan tubuh mengambil alih untuk adegan jatuh.
@@ -2167,12 +2520,39 @@
         if (K.sudut === "samping") Object.assign(tokoh, { profil: true, cermin: K.arah < 0, pose: b.pose || "duduk_samping", _kaitDunia: K });
         else tokoh.pose = b.pose || "duduk";
       }
+      tokoh = Object.assign({}, tokoh);
       tokoh.id = i;
+      for (const lintas of lintasanSerah) {
+        const r = lintas.r, mulai = Number(r.at) || 0, akhir = mulai + Math.max(0.1, Number(r.durasi) || 1.2);
+        if (i === r.dari) {
+          if (tl >= mulai) tokoh._serahPegang = null;
+          if (lintas.aktif && lintas.fase <= 0.75) tokoh._serahTarget = lintas.posisi;
+        }
+        if (i === r.ke) {
+          if (lintas.aktif && lintas.fase >= 0.25) tokoh._serahTarget = lintas.posisi;
+          else if (tl > akhir) tokoh._serahPegang = r.benda;
+        }
+      }
       const bd = BADAN, by = BAYANG;
       if (CERAH && tokoh.gaya === "siluet") { BADAN = ["#b98262", "#a7806e", "#c79a74", "#9c7a68"][i % 4]; BAYANG = "#d9b08a"; }
       if (tokoh.gaya === "dajjal") BADAN = tokoh.baju || "#201a26"; else if (PAL && (tokoh.baju || C.baju)) BADAN = tokoh.baju || C.baju;
       isi += boneka(tokoh, tl, d); BADAN = bd; BAYANG = by;
     });
+    for (const lintas of lintasanSerah) {
+      if (lintas.galat) continue;
+      const r = lintas.r, mulai = Number(r.at) || 0, akhir = mulai + Math.max(0.1, Number(r.durasi) || 1.2);
+      const tanganPemberi = window.__tanganBoneka[r.dari] || null;
+      const tanganPenerima = window.__tanganBoneka[r.ke] || null;
+      if (lintas.aktif) {
+        const gambarSerah = gambarBendaSerah(r.benda, lintas.posisi[0], lintas.posisi[1], Number(r.skala) || 0.48);
+        isi += gambarSerah;
+        window.__catatSerahTerima.push({ t: tl, status: "berlangsung", fase: lintas.fase, benda: r.benda, posisi: lintas.posisi, titik_temu: lintas.tengah, grafis: !!gambarSerah, tangan_pemberi: tanganPemberi, tangan_penerima: tanganPenerima });
+      } else if (tl < mulai) {
+        window.__catatSerahTerima.push({ t: tl, status: "belum_mulai", benda: r.benda, posisi: lintas.awal, pemilik: "pemberi", tangan_pemberi: tanganPemberi, tangan_penerima: tanganPenerima });
+      } else if (tl > akhir) {
+        window.__catatSerahTerima.push({ t: tl, status: "selesai", benda: r.benda, posisi: lintas.akhir, pemilik: "penerima", tangan_pemberi: tanganPemberi, tangan_penerima: tanganPenerima });
+      }
+    }
     (S.benda || []).filter((o) => o.depan).forEach((o) => { isi += o.hias ? `<g data-hias="1">${benda(o, tl, d)}</g>` : benda(o, tl, d); });
     const nDebu = S.debu == null ? 40 : S.debu === false ? 0 : Math.round(v(S.debu, tl, d, 40)); if (nDebu > 0) isi += debu(t, nDebu);
     const hj = v(S.hujan, tl, d, 0); if (hj > 0) { // hujan: tirai gelap tipis + garis air jatuh + percikan

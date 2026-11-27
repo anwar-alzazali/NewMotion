@@ -55,6 +55,9 @@ jobs:
           for f in papan_final.json audio/narasi.mp3 audio/narasi.waktu.json audio/waktu_adegan.json audio/mentah.mp3 audio/mentah.waktu.json; do
             if [[ -f "antrean/$ID/$f" ]]; then git add "antrean/$ID/$f"; fi
           done
+          if [[ -d newmotion/application/data/contoh_naskah ]]; then
+            git add newmotion/application/data/contoh_naskah
+          fi
           if git diff --cached --quiet; then exit 0; fi
           git commit -m "Antrean $ID: simpan narasi dan papan final"
           for i in 1 2 3; do

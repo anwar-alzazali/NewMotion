@@ -20,13 +20,16 @@ SUKU = ("umum", "arab")
 def _baca(jalur: str) -> dict:
     s = Path(jalur).read_text(encoding="utf-8")
     a = s.index("const POSE = {")
-    pose = list(dict.fromkeys(re.findall(r"^\s{4}(\w+): \{", s[a:s.index("\n  };", a)], re.MULTILINE)))
+    blok_pose = s[a:s.index("\n  };", a)]
+    pose = list(dict.fromkeys(re.findall(r"^\s{4}(\w+): \{", blok_pose, re.MULTILINE)))
+    pegang = sorted(set(re.findall(r'pegang:\s*"([a-z_]+)"', blok_pose)))
     a = s.index("function poseGerak")
     aksi = sorted(set(re.findall(r'nama === "(\w+)"', s[a:s.index("\n  }\n", a)])))
     a = s.index("const KAIT = {")
     blok = s[a:s.index("\n  };", a)]
     kait = {m.group(1): m.group(2) for m in re.finditer(r'^\s{4}(\w+): \{ sudut: "(\w+)"', blok, re.MULTILINE)}
-    return {"pose": pose, "aksi": aksi, "kait": kait}
+    penutup = sorted(set(re.findall(r'b\.penutup_kepala === "([a-z_]+)"', s)))
+    return {"pose": pose, "aksi": aksi, "kait": kait, "pegang": pegang, "penutup_kepala": penutup}
 
 
 def kemampuan(jalur: Path = CERITA_JS) -> dict:
@@ -45,7 +48,11 @@ def teks_kemampuan_tokoh(jalur: Path = CERITA_JS) -> str:
         f"- pose diam: {', '.join(k['pose'])}",
         f"- aksi berulang: {', '.join(k['aksi'])}",
         f"- hadap: {', '.join(HADAP)} (kanan/kiri = tampak samping utuh, badan dan kaki ikut menyamping)",
+        f"- benda yang dapat dipegang: {', '.join(k['pegang'])}",
         f"- bisa dinaiki/diduduki (kait): {kait}. Tokoh menempel otomatis: duduk di jok, tangan di setang, kaki di pijakan",
+        (f"- penutup_kepala tokoh: {', '.join(k['penutup_kepala'])} (warna_penutup opsional). "
+         "nemes = kain kepala bergaris raja Mesir kuno (+ kobra kecil di dahi; ureus: false untuk membuang); mahkota = mahkota emas raja. "
+         'Raja Mesir kuno/Firaun: penutup_kepala "nemes" + janggut true + janggut_model "firaun" + pakaian {"jenis": "jubah", "bisht": true, "kalung": "usekh"}. Jasad/tak bernyawa: pose rebahan + mata "tutup", tanpa luka'),
         (f"- suku figuran: {', '.join(SUKU)}. arab = laki-laki berjubah dengan imamah/ghutrah/peci (sebagian berbisht), "
          "perempuan berkerudung dan abaya gelap"),
     ])

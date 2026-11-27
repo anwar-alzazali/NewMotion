@@ -2,9 +2,9 @@
 
 Bot NewMotion (bot/worker.js) menyimpan masukan ke `antrean/<id>/` lalu memicu workflow `naskah` (workflow_dispatch).
 Pekerjaan berat ada di sini (Python, teruji):
-- `ide`    : topik -> naskah oleh Claude (aturan Kisah Islami; dalil HANYA rujukan, teksnya diambil verifikasi);
+- `ide`    : topik -> naskah melalui LLM bersama (aturan Kisah Islami; dalil HANYA rujukan);
 - `tempel` : naskah jadi dari pemilik -> dirapikan ke format (narasi TIDAK diubah; dicek otomatis);
-- `revisi` : naskah + catatan pemilik -> naskah baru;
+- `revisi` : naskah + catatan pemilik -> naskah baru melalui LLM bersama;
 lalu: validasi format, tolak huruf Arab di narasi, verifikasi dalil (Quran Foundation + dataset hadis),
 tulis `naskah.json` + `status.json`, perbarui kartu status di Telegram, kirim naskah untuk ditinjau.
 
@@ -20,12 +20,12 @@ Status: antrean/<id>/status.json -> kartu status (sama persis dengan bot/worker.
 """
 from __future__ import annotations
 
+import copy
 import datetime as _dt
 import json
 import os
 import re
 import sys
-import time
 import unicodedata
 import urllib.error
 import urllib.request
@@ -40,8 +40,6 @@ TAHAP = [("diterima", "Naskah diterima"), ("dalil", "Dalil diverifikasi"), ("tin
          ("narasi", "TTS/Narasi"), ("render", "Render final"), ("periksa", "Pemeriksaan"),
          ("kirim", "Dikirim untuk persetujuan")]
 IKON = {"selesai": "✅", "jalan": "⏳", "gagal": "❌", "tunggu": "⏸", "belum": "▫️"}
-MODEL_IDE = "claude-sonnet-4-5"
-MODEL_RAPIKAN = "claude-haiku-4-5-20251001"
 _ARAB = re.compile(r"[؀-ۿݐ-ݿࢠ-ࣿﭐ-﷿ﹰ-﻿]")
 
 
@@ -117,6 +115,10 @@ def kartu(st: dict) -> str:
         keadaan = st["tahap"].get(k, "belum")
         ket = (st.get("ket") or {}).get(k)
         baris.append(f"{IKON[keadaan]} {label}" + (f" — {ket}" if ket else ""))
+    if st.get("uji_cerita_ringkas"):
+        baris.append("🧪 Uji cerita: " + st["uji_cerita_ringkas"])
+    if st.get("pemeriksaan_naskah_ringkas"):
+        baris.append("🔎 Pemeriksa naskah: " + st["pemeriksaan_naskah_ringkas"])
     return "\n".join(baris)
 
 
@@ -186,6 +188,10 @@ def normalisasi(n: dict) -> dict:
     return n
 
 
+def _sakral(x: object) -> bool:
+    return isinstance(x, str) and _polos(x) in {"allah", "tuhan", "allah swt"}
+
+
 def _rapikan_dialog(b: dict, n: dict) -> None:
     """Dialog dipakai untuk menata tokoh di layar. Firman Allah tidak dijadikan dialog bertokoh:
     kalimatnya tetap ada di narasi (dibacakan narator), giliran dialognya dibuang. Nama pembicara
@@ -200,11 +206,10 @@ def _rapikan_dialog(b: dict, n: dict) -> None:
         if not isinstance(g, dict):
             sisa.append(g)
             continue
-        sakral = lambda x: isinstance(x, str) and _polos(x) in {"allah", "tuhan", "allah swt"}
-        if sakral(g.get("penjawab")) and not sakral(g.get("pembicara")):
+        if _sakral(g.get("penjawab")) and not _sakral(g.get("pembicara")):
             g["penjawab"] = None  # ucapan manusia kepada Allah tetap dialog, tanpa lawan bicara bersosok
         nama = [g.get(k) for k in ("pembicara", "penjawab") if isinstance(g.get(k), str) and g.get(k).strip()]
-        if any(sakral(x) for x in nama):
+        if any(_sakral(x) for x in nama):
             n.setdefault("peringatan", []).append(
                 f"dialog yang melibatkan Allah dijadikan narasi saja: \"{str(g.get('ucapan', ''))[:60]}\"")
             continue
@@ -324,202 +329,218 @@ def narasi_utuh(n: dict, sumber: str) -> list[str]:
             for i, b in enumerate(n["beat"], 1) if _polos(b["narasi"]) not in asal]
 
 
-# ---------------- AI (Claude) ----------------
-ATURAN = f"""Aturan WAJIB (akun TikTok/FB "Alzazali | Kisah Islami"):
-- Hanya dalil sahih/hasan. Untuk setiap dalil tulis RUJUKAN saja (QS nomor surah + ayat, atau hadis dari kitab {', '.join(KITAB)} + nomor sunnah.com). JANGAN menulis teks Arab atau terjemah dalil; teksnya diambil mesin dari sumber resmi. Ragu nomornya = jangan dicantumkan.
-- Setiap beat yang menceritakan peristiwa/fakta kisah WAJIB punya dalil yang memuat fakta itu. Beat tanpa dalil hanya untuk pembuka, renungan, atau ajakan. Fakta yang tidak ada di Al-Qur'an/hadis sahih (cerita populer, israiliyat, tafsir, detail tambahan seperti bendungan, kekeringan, jumlah tahun) JANGAN ditulis.
-- Tidak mengarang klaim; detail yang tidak ada di dalil tidak boleh disebut sebagai fakta. Bukan fatwa. Topik berat tidak dijadikan sensasi; selalu ada jalan keluar/hikmah.
-- Narasi bahasa Indonesia, sapa penonton "kamu". Tidak ada huruf Arab di narasi.
-- Mutu cerita: fakta terkuat yang menyangkut nasib penonton di kalimat pertama; satu video = cerita utuh (janji hook dijawab di video ini); setiap kalimat menambah informasi atau ketegangan, buang yang mengulang; durasi mengikuti cerita.
-- Setiap beat berisi narasi, kata_kunci, dalil (id rujukan saja), suasana, dan peran (nama tokoh/pihak yang hadir atau dibahas; [] bila tidak ada).
-- Cantumkan nabi sebagai `Nabi <nama>` atau `Rasulullah`, sahabat sebagai `Sahabat <nama>`; Allah/Tuhan tidak boleh dicantumkan sebagai peran visual.
-- Bila ada ucapan langsung, tambahkan `dialog`: daftar `{{"pembicara": "nama peran", "ucapan": "...", "penjawab": "nama peran"}}`. Jangan membuat dialog baru yang tidak didukung sumber.
-- Setiap beat yang menyatakan fakta/peristiwa wajib merujuk dalil yang benar-benar mendukungnya. Tanpa dalil hanya untuk pembuka nonfaktual, renungan, atau ajakan; jangan mengubah dugaan menjadi fakta.
-- Jangan menebak nomor dalil. Jika ragu, jangan mencantumkannya dan beri catatan bahwa rujukan perlu diperiksa pemilik.
-Keluarkan HANYA JSON valid berbentuk:
-{{"judul": "...", "inti": "satu kalimat inti", "dalil": [{{"id": "hud50", "jenis": "quran", "label": "QS HUD 50", "surah": 11, "ayat": "50"}}, {{"id": "b3343", "jenis": "hadis", "label": "HR. BUKHARI 3343", "kitab": "bukhari", "nomor": "3343"}}], "beat": [{{"narasi": "...", "kata_kunci": ["..."], "dalil": ["hud50"], "suasana": "senja|dhuha|malam|malam_merah|fajar", "peran": ["Nabi Hud", "kaum 'Ad"], "dialog": [{{"pembicara": "Nabi Hud", "ucapan": "...", "penjawab": "kaum 'Ad"}}]}}]}}"""
-
-SISTEM = {
-    "ide": "Kamu penulis naskah video pendek Kisah Islami yang jujur dan kuat bercerita. Tulis naskah utuh dari topik pemilik.\n" + ATURAN,
-    "tempel": """Kamu memetakan naskah yang SUDAH JADI dari pemilik. Paragrafnya sudah bernomor; kamu TIDAK menulis ulang narasi.
-Kelompokkan paragraf berurutan menjadi beat (biasanya 1 paragraf = 1 beat), lalu isi dalil yang DISEBUT di naskah (jangan menambah dalil sendiri), suasana, dan kata kunci.
-Rujukan dalil ditulis seperti aturan di bawah (QS = nomor surah + ayat; hadis = kitab + nomor).
-suasana HANYA salah satu: senja, dhuha, malam, malam_merah, fajar (waktu/cahaya adegan, bukan emosi).
-Keluarkan HANYA JSON:
-{"judul": "...", "inti": "...",
- "dalil": [{"id": "hud38", "jenis": "quran", "label": "QS HUD 38", "surah": 11, "ayat": "38"},
-           {"id": "b3343", "jenis": "hadis", "label": "HR. BUKHARI 3343", "kitab": "bukhari", "nomor": "3343"}],
- "beat": [{"paragraf": [1], "dalil": ["hud38"], "suasana": "senja", "kata_kunci": ["..."], "peran": ["Nabi Nuh", "kaum pengejek"]}]}
-Dalil yang sama (surah+ayat sama) cukup SATU id, dipakai di beberapa beat.
-""" + ATURAN.split("Keluarkan HANYA JSON")[0],
-    "revisi": "Kamu merevisi naskah sesuai catatan pemilik. Ubah HANYA yang diminta catatan; bagian lain tetap kata per kata.\n" + ATURAN,
-}
-
-
-def tanya_claude(sistem: str, isi: str, *, model: str, maks: int = 4000) -> tuple[str, int]:
-    kunci = os.environ.get("ANTHROPIC_API_KEY")
-    if not kunci:
-        raise RuntimeError("ANTHROPIC_API_KEY belum diisi di GitHub Secrets repo ini")
-    badan = {"model": model, "max_tokens": maks, "system": sistem, "messages": [{"role": "user", "content": isi}]}
-    req = urllib.request.Request("https://api.anthropic.com/v1/messages", data=json.dumps(badan).encode(), method="POST",
-                                 headers={"x-api-key": kunci, "anthropic-version": "2023-06-01", "content-type": "application/json"})
-    try:
-        j = json.load(urllib.request.urlopen(req, timeout=240))
-    except urllib.error.HTTPError as e:
-        raise RuntimeError(f"Claude galat {e.code}") from None
-    u = j.get("usage") or {}
-    return "".join(c.get("text", "") for c in j.get("content", [])), u.get("input_tokens", 0) + u.get("output_tokens", 0)
-
-
-# ---------------- Gemini (gratis) dengan cadangan Claude ----------------
-GEMINI = "https://generativelanguage.googleapis.com/v1beta"
-_GEMINI_TERPILIH: dict = {}
-
-
-def urutan_model_gemini(nama: list[str]) -> list[str]:
-    """Model Gemini stabil (bukan preview/exp/image/tts/live), urut: Flash versi tertinggi dulu, lalu Flash-Lite.
-    Model kedua dipakai bila yang pertama sedang penuh (503) atau kena batas (429)."""
-    flash, lite = [], []
-    for n in nama:
-        n = n.split("/")[-1]
-        m = re.fullmatch(r"gemini-(\d+(?:\.\d+)?)-flash(-lite)?", n)
-        if m:
-            (lite if m.group(2) else flash).append((float(m.group(1)), n))
-    return [n for _, n in sorted(flash, reverse=True)[:2]] + [n for _, n in sorted(lite, reverse=True)[:1]]
-
-
-def pilih_model_gemini(nama: list[str]) -> str | None:
-    u = [n for n in urutan_model_gemini(nama) if not n.endswith("-lite")]
-    return u[0] if u else None
-
-
-def _gemini_req(path: str, kunci: str, badan: dict | None = None) -> dict:
-    req = urllib.request.Request(f"{GEMINI}/{path}", data=json.dumps(badan).encode() if badan else None,
-                                 method="POST" if badan else "GET",
-                                 headers={"x-goog-api-key": kunci, "content-type": "application/json"})
-    try:
-        return json.load(urllib.request.urlopen(req, timeout=150))
-    except urllib.error.HTTPError as e:
-        raise RuntimeError(f"Gemini galat {e.code}") from None
-    except (TimeoutError, urllib.error.URLError) as e:  # waktu habis/putus: model ini lambat -> coba model berikutnya
-        raise RuntimeError(f"Gemini galat 504 ({str(e)[:60]})") from None
-
-
-def tanya_gemini(sistem: str, isi: str, *, model: str | None = None, maks: int = 8000) -> tuple[str, int]:
-    kunci = (os.environ.get("GEMINI_API_KEY") or "").strip()
-    if not kunci:
-        raise RuntimeError("GEMINI_API_KEY belum diisi")
-    if os.environ.get("GEMINI_MODEL"):
-        urutan = [os.environ["GEMINI_MODEL"]]
-    else:
-        if "urutan" not in _GEMINI_TERPILIH:
-            daftar = _gemini_req("models?pageSize=200", kunci).get("models", [])
-            _GEMINI_TERPILIH["urutan"] = urutan_model_gemini(
-                [x["name"] for x in daftar if "generateContent" in x.get("supportedGenerationMethods", [])])
-        urutan = _GEMINI_TERPILIH["urutan"]
-    if not urutan:
-        raise RuntimeError("tidak ada model Gemini Flash yang tersedia untuk kunci ini")
-    badan = {"systemInstruction": {"parts": [{"text": sistem}]}, "contents": [{"role": "user", "parts": [{"text": isi}]}],
-             "generationConfig": {"responseMimeType": "application/json", "maxOutputTokens": maks, "temperature": 0.7}}
-    galat, j = None, None
-    for m in urutan:  # model penuh/kena batas -> tunggu sebentar & coba lagi; lambat -> langsung model berikutnya
-        for jeda in (0, 8, 20):
-            time.sleep(jeda)
-            try:
-                j = _gemini_req(f"models/{m}:generateContent", kunci, badan)
-                break
-            except RuntimeError as e:
-                galat = e
-                if not re.search(r"galat (429|500|503|504)", str(e)):
-                    raise
-                if "504" in str(e):
-                    break
-        if j is not None:
-            _GEMINI_TERPILIH["m"] = m
-            break
-    if j is None:
-        raise galat or RuntimeError("Gemini tidak menjawab")
-    teks = "".join(p.get("text", "") for c in j.get("candidates", [])[:1] for p in c.get("content", {}).get("parts", []))
-    if not teks.strip():
-        raise RuntimeError(f"Gemini tidak memberi jawaban ({(j.get('candidates') or [{}])[0].get('finishReason', '?')})")
-    return teks, (j.get("usageMetadata") or {}).get("totalTokenCount", 0)
-
-
-def tanya_otomatis(sistem: str, isi: str, *, model: str, maks: int = 4000) -> tuple[str, int]:
-    """Gemini gratis dulu; bila tidak ada kunci, kena batas, atau gagal -> Claude (berbayar). Penyedia dicatat.
-    NASKAH_CADANGAN=0 mematikan cadangan berbayar (untuk uji Gemini tanpa biaya)."""
-    try:
-        teks, token = tanya_gemini(sistem, isi)
-        PENYEDIA["terakhir"] = f"Gemini {_GEMINI_TERPILIH.get('m') or os.environ.get('GEMINI_MODEL', '')} (gratis)"
-        return teks, token
-    except Exception as e:  # noqa: BLE001
-        PENYEDIA["catatan"] = f"Gemini gagal ({str(e)[:80]}), pindah ke Claude"
-        if os.environ.get("NASKAH_CADANGAN", "1") == "0":
-            raise RuntimeError(f"Gemini gagal: {str(e)[:120]} (cadangan Claude dimatikan)") from None
-    teks, token = tanya_claude(sistem, isi, model=model, maks=maks)
-    PENYEDIA["terakhir"] = f"Claude {model}"
-    return teks, token
-
-
-PENYEDIA: dict = {}
-
-
-def baca_json(teks: str) -> dict:
-    t = re.sub(r"^```(?:json)?\s*|\s*```$", "", teks.strip())
-    return json.loads(t[t.index("{"): t.rindex("}") + 1])
-
-
 _RUJUKAN = re.compile(r"\s*[\(\[]\s*(?:QS|Q\.S\.|HR|H\.R\.|Hadis|Hadits)[^\)\]]*[\)\]]", re.I)
 
 
 def paragraf(teks: str) -> tuple[str | None, list[str]]:
-    """Naskah tempelan -> (judul bila ada baris 'Judul:', paragraf narasi tanpa catatan rujukan dalam kurung)."""
+    """Naskah tempelan -> judul dan paragraf narasi tanpa catatan rujukan dalam kurung."""
     judul, isi = None, []
     for p in re.split(r"\n\s*\n", teks.strip()):
         p = " ".join(p.split())
         m = re.match(r"(?i)^judul\s*:\s*(.+)$", p)
         if m and judul is None and not isi:
-            judul = m.group(1).strip(); continue
+            judul = m.group(1).strip()
+            continue
         p = _RUJUKAN.sub("", p).strip()
         if p:
             isi.append(p)
     return judul, isi
 
 
-def buat_naskah(mode: str, masukan: str, naskah_lama: dict | None = None, *, tanya=None) -> tuple[dict, int]:
-    tanya = tanya or tanya_otomatis
-    if mode == "tempel":  # narasi diambil APA ADANYA dari teks pemilik; AI hanya memetakan beat & dalil
-        judul, par = paragraf(masukan)
-        isi = "Naskah dari pemilik (paragraf bernomor):\n" + "\n".join(f"[{i}] {p}" for i, p in enumerate(par, 1))
-        isi += "\n\nCatatan rujukan dalil asli dari pemilik:\n" + "\n".join(m.group(0).strip() for m in _RUJUKAN.finditer(masukan))
-        teks, token = tanya(SISTEM["tempel"], isi, model=os.environ.get("MODEL_RAPIKAN", MODEL_RAPIKAN))
-        peta = baca_json(teks)
-        dipakai, beat_berurut = set(), []
-        for b in peta.get("beat", []):
-            nomor = [int(x) for x in b.get("paragraf", []) if str(x).isdigit() and 1 <= int(x) <= len(par) and int(x) not in dipakai]
-            if not nomor:
-                continue
-            dipakai.update(nomor)
-            beat_berurut.append((min(nomor), {"narasi": " ".join(par[i - 1] for i in nomor), "dalil": b.get("dalil", []),
-                                               "suasana": b.get("suasana"), "kata_kunci": b.get("kata_kunci", []),
-                                               "peran": b.get("peran", []), "dialog": b.get("dialog", [])}))
-        for i in range(1, len(par) + 1):  # paragraf yang terlewat AI tidak boleh hilang
-            if i not in dipakai:
-                beat_berurut.append((i, {"narasi": par[i - 1], "dalil": [], "kata_kunci": [], "peran": [], "dialog": []}))
-                dipakai.add(i)
-        beat = [b for _, b in sorted(beat_berurut, key=lambda pasangan: pasangan[0])]
-        for b in beat:
-            if not b.get("suasana"):
-                b.pop("suasana", None)
-        return {"judul": judul or peta.get("judul") or par[0][:60], "inti": peta.get("inti", ""),
-                "dalil": peta.get("dalil", []), "beat": beat}, token
-    if mode == "revisi":
-        isi = f"NASKAH SAAT INI:\n{json.dumps(naskah_lama, ensure_ascii=False)}\n\nCATATAN PEMILIK:\n{masukan}"
-    else:
-        isi = f"Topik/ide dari pemilik:\n{masukan}"
-    teks, token = tanya(SISTEM[mode], isi, model=os.environ.get("MODEL_IDE", MODEL_IDE))
-    return baca_json(teks), token
+# ---------------- Jalur LLM bersama untuk penulisan naskah ----------------
+_PATH_SKILL = AKAR / "newmotion" / "paket_genre" / "kisah_islami" / "skill" / "naskah.md"
 
+
+def validasi_uji_cerita(data):
+    uji = data.get("uji_cerita")
+    if not isinstance(uji, dict):
+        return ["uji_cerita harus berupa objek"]
+    wajib = ("kalimat_inti", "fakta_terkuat_detik_0", "jawaban_hook",
+             "momen_emosi_kejutan", "alasan_interaksi", "kalimat_dibuang")
+    galat = []
+    for k in wajib:
+        v = uji.get(k)
+        if k == "kalimat_dibuang":
+            if not isinstance(v, list) or any(not isinstance(x, str) for x in v):
+                galat.append("uji_cerita.kalimat_dibuang harus berupa daftar teks")
+        elif not isinstance(v, str) or not v.strip():
+            galat.append(f"uji_cerita.{k} wajib diisi")
+    return galat
+
+
+def validasi_peta_tempel(data, jumlah_paragraf=None, rujukan_asli=()):
+    """Pastikan pemetaan mencakup naskah asli tanpa paragraf hilang/terduplikasi."""
+    if not isinstance(data, dict):
+        return ["pemetaan tempel harus berupa objek JSON"]
+    galat = []
+    for k in ("judul", "inti"):
+        if not isinstance(data.get(k), str) or not data[k].strip():
+            galat.append(f"{k} pemetaan tempel wajib diisi")
+    daftar_dalil = data.get("dalil", [])
+    if not isinstance(daftar_dalil, list):
+        galat.append("dalil pemetaan tempel harus berupa daftar")
+        daftar_dalil = []
+    else:
+        label_ai = {
+            _polos(d.get("label", "")) for d in daftar_dalil if isinstance(d, dict)
+        }
+        label_asli = {
+            _polos(str(r).strip("()[] ")) for r in rujukan_asli
+        }
+        if label_ai != label_asli:
+            galat.append(
+                "dalil tempel harus sama persis dengan rujukan yang ditulis pemilik; "
+                "AI tidak boleh menambah, mengubah, atau menghilangkan rujukan"
+            )
+    if not isinstance(data.get("beat"), list) or not data["beat"]:
+        return galat + ["pemetaan tempel harus memiliki daftar beat"]
+
+    sudah = set()
+    for i, b in enumerate(data["beat"], 1):
+        if not isinstance(b, dict):
+            galat.append(f"beat {i} harus berupa objek")
+            continue
+        p = b.get("paragraf")
+        if not isinstance(p, list) or not p or any(
+            not isinstance(x, int) or isinstance(x, bool) or x < 1 for x in p
+        ):
+            galat.append(f"beat {i}: paragraf harus berupa daftar nomor positif")
+            continue
+        if p != sorted(p):
+            galat.append(f"beat {i}: urutan paragraf harus menaik agar narasi tidak terbalik")
+        for nomor in p:
+            if nomor in sudah:
+                galat.append(f"paragraf {nomor} dipetakan lebih dari sekali")
+            sudah.add(nomor)
+            if jumlah_paragraf is not None and nomor > jumlah_paragraf:
+                galat.append(f"paragraf {nomor} tidak ada dalam naskah asli")
+    if jumlah_paragraf is not None:
+        hilang = sorted(set(range(1, jumlah_paragraf + 1)) - sudah)
+        if hilang:
+            galat.append("paragraf belum dipetakan: " + ", ".join(map(str, hilang)))
+    return galat
+
+
+def ringkasan_uji_cerita(u):
+    kunci = ("kalimat_inti", "fakta_terkuat_detik_0", "jawaban_hook",
+             "momen_emosi_kejutan", "alasan_interaksi")
+    return " | ".join(str(u.get(k, "")) for k in kunci)[:900]
+
+
+def buat_naskah(mode, masukan, naskah_lama=None, *, tanya=None):
+    """Jalur produksi memakai llm.panggil; tanya hanya seam injeksi unit test."""
+    from newmotion.infrastructure import llm
+
+    if not _PATH_SKILL.is_file():
+        raise RuntimeError("Skill penulisan naskah tidak ditemukan")
+    skill = _PATH_SKILL.read_text(encoding="utf-8").strip()
+    from newmotion.application import pelajaran_naskah
+    pedoman = pelajaran_naskah.pedoman_disetujui()
+    if pedoman:
+        skill += "\n\n## Pertimbangan tambahan yang disetujui pemilik (bukan aturan wajib)\n" + pedoman
+    if mode == "ide":
+        contoh = pelajaran_naskah.pilih_contoh(masukan)
+        if contoh:
+            skill += "\n\n## Contoh naskah final yang disetujui dan mirip topik\n"
+            skill += json.dumps([{"judul": x.get("judul"), "inti": x.get("inti"), "naskah": x.get("naskah")} for x in contoh], ensure_ascii=False)
+    if mode == "tempel":
+        judul, par = paragraf(masukan)
+        isi = "Naskah bernomor:\n" + "\n".join(f"[{i}] {p}" for i, p in enumerate(par, 1))
+        isi += "\nRujukan asli pemilik:\n" + "\n".join(m.group(0) for m in _RUJUKAN.finditer(masukan))
+        sistem = skill + "\nMODE TEMPEL: petakan paragraf; jangan mengubah satu kata pun narasi. Jangan menambah dalil. JSON: {judul, inti, dalil, beat:[{paragraf:[1], dalil:[], suasana, kata_kunci:[], peran:[], dialog:[]}]}"
+        tahap = "rapikan"
+
+        def pemeriksa(data):
+            galat = validasi_peta_tempel(data, len(par), [m.group(0) for m in _RUJUKAN.finditer(masukan)])
+            if galat:
+                return galat
+            beat_uji = []
+            for b in data["beat"]:
+                narasi = " ".join(par[i - 1] for i in b["paragraf"] if i <= len(par))
+                beat_uji.append({
+                    "narasi": narasi, "dalil": b.get("dalil", []),
+                    "kata_kunci": b.get("kata_kunci", []), "peran": b.get("peran", []),
+                    "dialog": b.get("dialog", []), "suasana": b.get("suasana"),
+                })
+            sementara = {"judul": data["judul"], "inti": data["inti"],
+                         "dalil": data.get("dalil", []), "beat": beat_uji}
+            return validasi(sementara)
+    elif mode == "ide":
+        isi = "Ide pemilik:\n" + masukan
+        sistem = skill + "\nMODE IDE: tulis cerita utuh. Sertakan uji_cerita dengan kalimat_inti, fakta_terkuat_detik_0, jawaban_hook, momen_emosi_kejutan, alasan_interaksi, kalimat_dibuang (daftar). Keluarkan JSON naskah."
+        tahap = "naskah"
+        def pemeriksa(d):
+            return validasi(d) + validasi_uji_cerita(d)
+    elif mode == "revisi":
+        isi = f"NASKAH SAAT INI:\n{json.dumps(naskah_lama, ensure_ascii=False)}\nCATATAN PEMILIK:\n{masukan}"
+        sistem = skill + "\nMODE REVISI: ubah hanya bagian yang diminta pemilik; bagian lain kata demi kata. Sertakan uji_cerita lengkap. Keluarkan JSON naskah."
+        tahap = "naskah"
+        def pemeriksa(d):
+            return validasi(d) + validasi_uji_cerita(d)
+    else:
+        raise ValueError(f"mode tidak dikenal: {mode}")
+
+    if tanya is None:
+        hasil_ai = llm.panggil(tahap, sistem, isi, json=True, validasi=pemeriksa,
+                               maks_token=8000, ulang_validasi=1)
+        data = hasil_ai.data
+    else:
+        teks, token = tanya(sistem, isi)
+        data = llm.baca_json(teks)
+        galat = pemeriksa(data)
+        if galat:
+            raise ValueError("keluaran ditolak validator: " + "; ".join(galat[:8]))
+        hasil_ai = llm.Jawaban(teks, "uji", "palsu", token_masuk=token)
+
+    if mode != "tempel":
+        return data, hasil_ai
+
+    dipakai, terurut = set(), []
+    for b in data["beat"]:
+        nomor = [x for x in b.get("paragraf", []) if isinstance(x, int) and not isinstance(x, bool)
+                 and 1 <= x <= len(par) and x not in dipakai]
+        if not nomor:
+            continue
+        dipakai.update(nomor)
+        terurut.append((min(nomor), {"narasi": " ".join(par[x - 1] for x in nomor),
+            "dalil": b.get("dalil", []), "suasana": b.get("suasana"),
+            "kata_kunci": b.get("kata_kunci", []), "peran": b.get("peran", []),
+            "dialog": b.get("dialog", [])}))
+    for i, p in enumerate(par, 1):
+        if i not in dipakai:
+            terurut.append((i, {"narasi": p, "dalil": [], "kata_kunci": [], "peran": [], "dialog": []}))
+    beat = [b for _, b in sorted(terurut, key=lambda x: x[0])]
+    for b in beat:
+        if not b.get("suasana"):
+            b.pop("suasana", None)
+    return {"judul": judul or data.get("judul") or (par[0][:60] if par else "Naskah"),
+            "inti": data.get("inti", ""), "dalil": data.get("dalil", []), "beat": beat}, hasil_ai
+
+
+# ---------------- pembelajaran dari revisi dan naskah disetujui ----------------
+def simpan_revisi(d: Path, catatan: str, sebelum: dict, sesudah: dict) -> dict:
+    """Arsipkan satu revisi lengkap dan tambahkan satu baris data pelajaran."""
+    folder = d / "revisi"
+    folder.mkdir(parents=True, exist_ok=True)
+    nomor = max((int(p.stem) for p in folder.glob("[0-9][0-9][0-9][0-9].json")), default=0) + 1
+    data = {"nomor": nomor, "waktu": _sekarang(), "catatan_pemilik": catatan, "sebelum": sebelum, "sesudah": sesudah}
+    (folder / f"{nomor:04d}.json").write_text(json.dumps(data, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    baris = {"id": d.name, "nomor": nomor, "catatan_pemilik": catatan, "sebelum": sebelum, "sesudah": sesudah}
+    data_dir = AKAR / "newmotion" / "application" / "data"
+    data_dir.mkdir(parents=True, exist_ok=True)
+    with (data_dir / "pelajaran_naskah.jsonl").open("a", encoding="utf-8") as f:
+        f.write(json.dumps(baris, ensure_ascii=False) + "\n")
+    return data
+
+def simpan_contoh_disetujui(d: Path, naskah: dict, status: dict) -> None:
+    """Simpan contoh sekali setelah produksi final benar-benar selesai."""
+    data_dir = AKAR / "newmotion" / "application" / "data" / "contoh_naskah"
+    data_dir.mkdir(parents=True, exist_ok=True)
+    tujuan = data_dir / f"{d.name}.json"
+    if tujuan.exists():
+        return
+    isi = {"id": d.name, "judul": naskah.get("judul"), "inti": naskah.get("inti"), "genre": status.get("genre"), "naskah": naskah, "disetujui": _sekarang()}
+    tujuan.write_text(json.dumps(isi, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 
 # ---------------- Telegram ----------------
 def tg(metode: str, badan: dict) -> dict:
@@ -596,7 +617,8 @@ def teks_tinjauan(n: dict) -> list[str]:
     potong, buf = [], ""
     for bagian in out:  # batas pesan Telegram 4096
         if len(buf) + len(bagian) > 3800:
-            potong.append(buf); buf = ""
+            potong.append(buf)
+            buf = ""
         buf += bagian + "\n"
     return potong + [buf]
 
@@ -612,17 +634,20 @@ def proses(id_: str, mode: str, *, folder: Path = ANTREAN, tanya=None, quran=Non
     else:
         masukan = (d / ("catatan.txt" if mode == "revisi" else "masukan.txt")).read_text(encoding="utf-8")
     lama = json.loads((d / "naskah.json").read_text(encoding="utf-8")) if mode == "revisi" else None
+    sebelum_revisi = copy.deepcopy(lama) if mode == "revisi" else None
     atur(st, "diterima", "jalan", "naskah sedang disusun AI" if mode != "tempel" else "naskah sedang dirapikan")
     for k in ("dalil", "tinjau"):
         atur(st, k, "belum")
     _tulis(d, st, None, kirim_tg)
     try:
         metadata = kebijakan_naskah(st, lama)
-        n, token = buat_naskah(mode, masukan, lama, tanya=tanya)
+        n, hasil_ai = buat_naskah(mode, masukan, lama, tanya=tanya)
         n = normalisasi(n)
         n["genre"] = metadata["genre"]
         n["konteks_konten"] = metadata["konteks_konten"]
         galat = validasi(n)
+        if mode in ("ide", "revisi"):
+            galat += validasi_uji_cerita(n)
         if mode == "tempel" and not galat:
             galat = narasi_utuh(n, masukan)
     except Exception as e:  # noqa: BLE001 - pesan untuk pemilik
@@ -630,19 +655,140 @@ def proses(id_: str, mode: str, *, folder: Path = ANTREAN, tanya=None, quran=Non
         _tulis(d, st, None, kirim_tg)
         return st
     st["judul"] = n.get("judul") or st.get("judul")
+    token = hasil_ai.token_masuk + hasil_ai.token_keluar
     st["token_ai"] = st.get("token_ai", 0) + token
-    if PENYEDIA.get("terakhir"):
-        st["penyedia_ai"] = PENYEDIA["terakhir"] + (f" — {PENYEDIA['catatan']}" if PENYEDIA.get("catatan") else "")
+    st["biaya_ai_usd"] = round(st.get("biaya_ai_usd", 0.0) + hasil_ai.biaya_usd, 6)
+    # Harga Gemini belum dipatok di config; jangan menyajikan nol sebagai biaya aktual.
+    biaya_status = (
+        "belum_terverifikasi"
+        if hasil_ai.penyedia == "google" and hasil_ai.biaya_usd == 0
+        else "tercatat"
+    )
+    st["biaya_ai_status"] = biaya_status
+    st["naskah_ai"] = {"tahap": "rapikan" if mode == "tempel" else "naskah",
+        "model": hasil_ai.model, "penyedia": hasil_ai.penyedia,
+        "token_masuk": hasil_ai.token_masuk, "token_keluar": hasil_ai.token_keluar,
+        "biaya_usd": hasil_ai.biaya_usd, "biaya_status": biaya_status,
+        "percobaan": hasil_ai.percobaan}
+    if isinstance(n.get("uji_cerita"), dict):
+        st["uji_cerita_ringkas"] = ringkasan_uji_cerita(n["uji_cerita"])
     if galat:
         atur(st, "diterima", "gagal", "; ".join(galat)[:300])
         _tulis(d, st, n, kirim_tg)
         return st
-    atur(st, "diterima", "selesai", f"{len(n['beat'])} beat, {len(n.get('dalil', []))} dalil"
-         + (f" · {PENYEDIA['terakhir'].split(' (')[0].split(' ')[0]}" if PENYEDIA.get("terakhir") else ""))
+    atur(st, "diterima", "selesai", f"{len(n['beat'])} beat, {len(n.get('dalil', []))} dalil · {hasil_ai.model}")
     atur(st, "dalil", "jalan")
     _tulis(d, st, n, kirim_tg)
     from newmotion.paket_genre.kisah_islami.dalil.verifikasi import verifikasi
     n, laporan = verifikasi(n, quran=quran)
+    if mode == "revisi" and sebelum_revisi is not None:
+        simpan_revisi(d, masukan, sebelum_revisi, n)
+        st["jumlah_revisi_terarsip"] = st.get("jumlah_revisi_terarsip", 0) + 1
+
+    # Pemeriksa independen hanya dijalankan pada jalur produksi; seam tanya dipakai tes tanpa biaya.
+    if tanya is None:
+        from newmotion.application import pemeriksa_naskah
+        temuan, meta_periksa = pemeriksa_naskah.periksa(n)
+        token_periksa = meta_periksa.token_masuk + meta_periksa.token_keluar
+        st["token_ai"] = st.get("token_ai", 0) + token_periksa
+        st["biaya_ai_usd"] = round(st.get("biaya_ai_usd", 0.0) + meta_periksa.biaya_usd, 6)
+        st["pemeriksaan_naskah_ai"] = {
+            "tahap": "periksa_naskah", "model": meta_periksa.model, "penyedia": meta_periksa.penyedia,
+            "token_masuk": meta_periksa.token_masuk, "token_keluar": meta_periksa.token_keluar,
+            "biaya_usd": meta_periksa.biaya_usd, "percobaan": meta_periksa.percobaan,
+        }
+        usulan_terverifikasi = []
+        usulan = temuan.get("usulan_dalil", [])
+        if usulan:
+            calon, _ = verifikasi({"dalil": usulan}, quran=quran)
+            usulan_terverifikasi = [
+                d for d in calon.get("dalil", [])
+                if d.get("status") == "terverifikasi"
+                and d.get("diverifikasi_oleh")
+                and (d.get("derajat", "sahih") in ("sahih", "hasan"))
+            ]
+        temuan_awal = copy.deepcopy(temuan.get("temuan", []))
+        berat = [x for x in temuan_awal if x.get("tingkat") == "berat"]
+        perbaikan_dilakukan = False
+        perbaikan_gagal = False
+        if berat and mode != "tempel":
+            arahan = {
+                "temuan_pemeriksa": temuan.get("temuan", []),
+                "dalil_baru_terverifikasi": usulan_terverifikasi,
+                "aturan": [
+                    "Perbaiki temuan berat tanpa menambah fakta di luar teks dalil.",
+                    "Gunakan dalil baru hanya jika ada di daftar dalil_baru_terverifikasi.",
+                    "Jangan membuat nomor/teks/terjemah dalil baru.",
+                    "Pertahankan genre, adab, dan struktur beat.",
+                    "Sertakan uji_cerita lengkap.",
+                ],
+            }
+            revisi, meta_penulis = buat_naskah(
+                "revisi", "PERBAIKAN WAJIB BERDASARKAN PEMERIKSA INDEPENDEN:\n"
+                + json.dumps(arahan, ensure_ascii=False), n
+            )
+            token_penulis = meta_penulis.token_masuk + meta_penulis.token_keluar
+            st["token_ai"] += token_penulis
+            st["biaya_ai_usd"] = round(st["biaya_ai_usd"] + meta_penulis.biaya_usd, 6)
+            st["pemeriksaan_naskah_ai"]["percobaan_perbaikan"] = {
+                "model": meta_penulis.model,
+                "token_masuk": meta_penulis.token_masuk,
+                "token_keluar": meta_penulis.token_keluar,
+                "biaya_usd": meta_penulis.biaya_usd,
+            }
+            daftar_diizinkan = {d["id"]: d for d in n.get("dalil", []) if isinstance(d, dict)}
+            daftar_diizinkan.update({d["id"]: d for d in usulan_terverifikasi if d.get("id")})
+            revisi["dalil"] = [
+                copy.deepcopy(daftar_diizinkan[d["id"]])
+                for d in revisi.get("dalil", [])
+                if isinstance(d, dict) and d.get("id") in daftar_diizinkan
+            ]
+            galat_revisi = validasi(revisi) + validasi_uji_cerita(revisi)
+            if not galat_revisi:
+                berubah = json.dumps(revisi, ensure_ascii=False, sort_keys=True) != json.dumps(n, ensure_ascii=False, sort_keys=True)
+                if berubah:
+                    perbaikan_dilakukan = True
+                    n = normalisasi(revisi)
+                    n, laporan = verifikasi(n, quran=quran)
+                    # Verifikasi ulang setelah perbaikan memastikan dalil yang berubah tidak lolos dari cache lama.
+                    temuan, meta_periksa_ulang = pemeriksa_naskah.periksa(n)
+                    token_periksa_ulang = meta_periksa_ulang.token_masuk + meta_periksa_ulang.token_keluar
+                    st["token_ai"] += token_periksa_ulang
+                    st["biaya_ai_usd"] = round(st["biaya_ai_usd"] + meta_periksa_ulang.biaya_usd, 6)
+                    st["pemeriksaan_naskah_ai"]["perbaikan"] = {
+                        "pemeriksaan_ulang": {
+                        "model": meta_periksa_ulang.model,
+                        "token_masuk": meta_periksa_ulang.token_masuk,
+                        "token_keluar": meta_periksa_ulang.token_keluar,
+                        "biaya_usd": meta_periksa_ulang.biaya_usd,
+                        },
+                    }
+            else:
+                perbaikan_gagal = True
+        temuan_akhir = temuan.get("temuan", [])
+        st["pemeriksaan_naskah"] = {
+            "temuan_awal": temuan_awal,
+            "temuan_akhir": temuan_akhir,
+            "perbaikan_otomatis_dicoba": bool(berat and mode != "tempel"),
+            "perbaikan_otomatis_dilakukan": perbaikan_dilakukan,
+            "perbaikan_otomatis_gagal": perbaikan_gagal,
+        }
+        kategori = ", ".join(dict.fromkeys(x.get("kategori", "") for x in temuan_awal if x.get("kategori")))
+        if temuan_awal and berat and mode != "tempel":
+            status_perbaikan = (
+                "gagal divalidasi" if perbaikan_gagal else
+                "dilakukan" if perbaikan_dilakukan else "tidak menghasilkan perubahan"
+            )
+            st["pemeriksaan_naskah_ringkas"] = (
+                f"{len(temuan_awal)} temuan awal ({kategori}); perbaikan {status_perbaikan}; "
+                f"sisa {len(temuan_akhir)}"
+            )[:300]
+        elif temuan_akhir:
+            st["pemeriksaan_naskah_ringkas"] = (
+                f"{len(temuan_akhir)} temuan ({kategori}); perlu tinjauan pemilik"
+            )[:300]
+        else:
+            st["pemeriksaan_naskah_ringkas"] = "tidak ada temuan"
     lolos = [x for x in n.get("dalil", []) if x.get("status") == "terverifikasi" and x.get("derajat", "sahih") in ("sahih", "hasan")]
     total = len(n.get("dalil", []))
     if total and len(lolos) < total:
@@ -675,5 +821,6 @@ if __name__ == "__main__":  # python -m newmotion.application.antrean_naskah <id
     from newmotion.paket_genre.kisah_islami.dalil.quran import QuranBertingkat, QuranComPublik, QuranFoundation
     q = QuranBertingkat(QuranFoundation() if os.environ.get("QURAN_FOUNDATION_CLIENT_ID") else None, QuranComPublik())
     hasil = proses(sys.argv[1], sys.argv[2], quran=q)
-    print(kartu(hasil)); print("penyedia AI:", hasil.get("penyedia_ai", "-"))
+    print(kartu(hasil))
+    print("penyedia AI:", (hasil.get("naskah_ai") or {}).get("penyedia", "-"))
     sys.exit(1 if "gagal" in hasil["tahap"]["diterima"] else 0)

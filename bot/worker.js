@@ -52,6 +52,8 @@ export function kartuStatus(st) {
     const ket = (st.ket || {})[k];
     b.push(`${IKON[st.tahap[k] || "belum"]} ${label}${ket ? " — " + ket : ""}`);
   }
+  if (st.uji_cerita_ringkas) b.push("🧪 Uji cerita: " + st.uji_cerita_ringkas);
+  if (st.pemeriksaan_naskah_ringkas) b.push("🔎 Pemeriksa naskah: " + st.pemeriksaan_naskah_ringkas);
   return b.join("\n");
 }
 export function tombolKartu(st) {

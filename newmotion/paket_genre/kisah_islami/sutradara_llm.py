@@ -94,6 +94,9 @@ def main(argv=None) -> int:
         rencana = j.data
         info.update(model=j.model, penyedia=j.penyedia, token_masuk=j.token_masuk,
                     token_keluar=j.token_keluar, biaya_usd=j.biaya_usd, percobaan=j.percobaan)
+    from newmotion.application.kebutuhan_renderer import catat, dari_rencana
+
+    catat(dari_rencana(rencana), sumber="sutradara", kisah=naskah.get("judul", args.naskah))
     if args.periksa > 0:
         import shutil
 
