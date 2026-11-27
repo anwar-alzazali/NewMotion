@@ -3,8 +3,9 @@ from __future__ import annotations
 
 import copy
 import json
+from pathlib import Path
 
-KATEGORI = {
+AKAR = Path(__file__).resolve().parents[2]\n_PATH_SKILL = AKAR / "newmotion" / "paket_genre" / "kisah_islami" / "skill" / "periksa_naskah.md"\n\nKATEGORI = {
     "detail_tanpa_dalil",
     "hook_lemah",
     "fakta_kuat_terlewat",
@@ -69,8 +70,7 @@ def periksa(naskah: dict, *, panggil=None):
     isi = json.dumps({"judul": data_naskah.get("judul"), "inti": data_naskah.get("inti"),
                       "beat": data_naskah.get("beat"), "dalil_terverifikasi": dalil},
                      ensure_ascii=False, indent=2)
-    sistem = (
-        "Periksa naskah Kisah Islami secara independen terhadap teks dalil resmi yang disertakan. "
+    if not _PATH_SKILL.is_file():\n        raise RuntimeError("Skill pemeriksa naskah tidak ditemukan")\n    sistem = _PATH_SKILL.read_text(encoding="utf-8").strip() + "\\n\\n" + (\n        "Periksa naskah Kisah Islami secara independen terhadap teks dalil resmi yang disertakan. "
         "Jangan menganggap fakta benar hanya karena narasi menyebutnya. Setiap temuan harus menunjuk "
         "nomor beat dan bukti frasa. Kategori wajib: detail_tanpa_dalil, hook_lemah, fakta_kuat_terlewat, "
         "janji_tidak_dijawab, kalimat_mengulang. Tingkat: berat, sedang, ringan. "
