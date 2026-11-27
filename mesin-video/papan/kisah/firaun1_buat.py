@@ -72,16 +72,16 @@ def kartu_quran(id_):
 
 
 shot = []
-# 1. Hook: detik terakhir (badai, gelap) -- digambar di awal, diulang di beat 8
+# 1. Hook: detik terakhir, pagi yang sama (tanpa badai: dalil tidak menyebut badai) -- diulang di beat 8
 shot.append({
     "narasi": "Firaun sempat menyatakan beriman. Tapi imannya ditolak, karena diucapkan saat air sudah menenggelamkannya.",
     "intonasi": "berat", "jeda": 0.5,
-    "palet": "pantai_badai", "malam": 0.3, "langit": 0.2, "horizon": 1150, "hujan": 0.7,
-    "kamera": {"z": [1.3, 1.45], "x": 540, "y": [1260, 1300]},
-    "benda": [{"jenis": "awan_badai", "x": 540, "y": 420, "gelap": 1, "hujan": 0.6},
-              {"jenis": "ombak", "x": 540, "y": 1150, "tinggi": 180, "lapis": 2, "seed": 3},
+    "palet": "pantai_pagi", "malam": [[0, 0.12], ["@menenggelamkannya", 0.3]], "langit": 0.5, "horizon": 1150,
+    "kamera": {"z": [1.3, 1.45], "x": 540, "y": [1260, 1300], "guncang": [["@ditolak", 14]]},
+    "benda": [dict(SURYA, y=1110),
+              {"jenis": "ombak", "x": 540, "y": 1150, "tinggi": 180, "lapis": 2, "seed": 3, "warna": LT["warna"]},
               {"jenis": "ombak", "x": 540, "y": [[0, 1640], ["@ditolak", 1500], ["@menenggelamkannya", 1340]],
-               "tinggi": 110, "lapis": 3, "seed": 9, "jarak": 90, "depan": True}],
+               "tinggi": 110, "lapis": 3, "seed": 9, "jarak": 90, "depan": True, "warna": LT["warna"]}],
     "boneka": [dict(FIRAUN, x=540, y=1600, s=1.0, utama=True, pose="dua_naik", wajah="takut", mata="atas")],
     "teks": [teks("TERLAMBAT\nBEBERAPA DETIK", "QS YUNUS 90-91", warna="#ffd27a")],
 })
@@ -142,17 +142,17 @@ shot.append({
                     profil="kiri", pose="jalan", wajah="marah")],
     "teks": [teks("IA TIDAK BERHENTI", at="@berhenti")],
 })
-# 8. Laut menutup (langit menggelap) -- kembali ke detik pembuka
+# 8. Laut menutup: tetap pagi, meredup saat bayangan dinding air menutup -- kembali ke detik pembuka
 tutup = [[0, 1], ["@menutup", 0.92], ["@berkata", 0.3], ["@Israil#2", 0.05]]
 shot.append({
     "narasi": "Lalu laut menutup. Saat air menenggelamkannya, Firaun berkata: aku percaya tidak ada tuhan selain yang dipercayai Bani Israil.",
     "intonasi": "berat", "jeda": 0.8,
-    "palet": "pantai_badai", "malam": 0.2, "langit": 0.25, "horizon": H, "tanah": "pasir", "hujan": 0.5,
+    **PAGI, "malam": [[0, 0], ["@menutup", 0.35], ["@Israil#2", 0.3]],
     "kamera": {"z": [1.15, 1.5], "x": 560, "y": [1150, 1300], "guncang": [["@menutup", 26]]},
-    "benda": [{"jenis": "awan_gelap", "x": 540, "y": 380, "kilat": 0.8}, laut(belah=tutup, warna=None),
+    "benda": [SURYA, laut(belah=tutup),
               {"jenis": "arus", "mode": "lorong", "x": 540, "y": 1450, "s": 1, "n": 24, "rim": 0.6, "rimwarna": MERAH,
                "tombak": True, "maju": 0.4, "seed": 23},
-              laut(belah=tutup, warna=None, lapis="tutup", depan=True)],
+              laut(belah=tutup, lapis="tutup", depan=True)],
     "boneka": [dict(FIRAUN, x=560, y=1490, s=0.85, pose="dua_naik", wajah="takut", mata="atas")],
     "teks": [teks("SUDAH TERLAMBAT", "QS YUNUS 90", at="@berkata", warna="#ffd27a")],
 })
@@ -160,9 +160,9 @@ shot.append({
 shot.append({
     "narasi": "Jawabannya: apakah baru sekarang? Padahal sebelumnya engkau durhaka.",
     "intonasi": "bisik", "jeda": 1.2,
-    "palet": "pantai_badai", "malam": 0.1, "langit": 0.35, "horizon": H, "tanah": "pasir",
+    **PAGI, "malam": [[0, 0.25], ["@durhaka", 0.1]],
     "kamera": {"z": [1.0, 0.96], "x": 540, "y": 1000},
-    "benda": [laut(belah=0, warna=["#4a7fa8", "#2c5a82", "#163a5c"])],
+    "benda": [SURYA, laut(belah=0)],
     "teks": [teks("APAKAH BARU\nSEKARANG?", "QS YUNUS 91", at="@sekarang")],
 })
 # 10. Pengetahuan: batas tobat (kartu hadis), langit cerah kembali
@@ -206,16 +206,12 @@ shot.append({
     "teks": [teks("PINTU TOBAT\nMASIH TERBUKA", at="@terbuka", warna="#ffd27a")],
 })
 
-for s in shot:  # warna=None = pakai warna gelap bawaan (badai)
-    for b in s.get("benda", []):
-        if b.get("warna", 1) is None:
-            b.pop("warna")
-
 spek = {
     "latar": "gelap", "stempel": True, "musik": False, "dekor": False, "volume_efek": 0,
     "cerita": {"suku": "arab", "kilat": False, "label": "KISAH FIRAUN", "shot": shot},
     "rekaman": [
-        {"berkas": "../../aset/suara/guntur_hujan.mp3", "at": 0, "sampai": "@Pagi", "vol": 0.45, "ulang": True},
+        {"berkas": "../../aset/suara/laut_malam.mp3", "at": 0, "sampai": "@Pagi", "vol": 0.6, "ulang": True},
+        {"berkas": "../../aset/suara/bawah_laut.mp3", "at": "@menenggelamkannya", "sampai": "@Pagi", "vol": 0.5},
         {"berkas": "../../aset/suara/braam.mp3", "at": "@ditolak", "vol": 0.5},
         {"berkas": "../../aset/suara/whoosh.mp3", "at": "@Pagi-0.4", "vol": 0.5},
         {"berkas": "../../aset/suara/angin_gurun.mp3", "at": "@Pagi", "sampai": "@menutup", "vol": 0.25, "ulang": True},
@@ -227,7 +223,10 @@ spek = {
         {"berkas": "../../aset/suara/air_mengalir.mp3", "at": "@kering", "sampai": "@menutup", "vol": 0.3, "ulang": True},
         {"berkas": "../../aset/suara/langkah_pelan.mp3", "at": "@menyeberang", "sampai": "@selamat", "vol": 0.3, "ulang": True},
         {"berkas": "../../aset/suara/drone_gelap.mp3", "at": "@berhenti", "sampai": "@Jawabannya", "vol": 0.35, "ulang": True},
-        {"berkas": "../../aset/suara/guntur_hujan.mp3", "at": "@menutup", "sampai": "@Jawabannya", "vol": 0.5, "ulang": True},
+        {"berkas": "../../aset/suara/laut_malam.mp3", "at": "@menutup", "sampai": "@Jawabannya", "vol": 0.65, "ulang": True},
+        {"berkas": "../../aset/suara/bawah_laut.mp3", "at": "@menenggelamkannya#2", "sampai": "@Jawabannya", "vol": 0.45},
+        {"berkas": "../../aset/suara/napas_berat.mp3", "at": "@berkata", "vol": 0.4},
+        {"berkas": "../../aset/suara/laut_malam.mp3", "at": "@Jawabannya", "sampai": "@Rasulullah", "vol": 0.25, "ulang": True},
         {"berkas": "../../aset/suara/tanah_retak.mp3", "at": "@menutup", "vol": 0.6},
         {"berkas": "../../aset/suara/braam.mp3", "at": "@berkata", "vol": 0.45},
         {"berkas": "../../aset/suara/senandung_haru.mp3", "at": "@bersabda", "vol": 0.25, "ulang": True},
