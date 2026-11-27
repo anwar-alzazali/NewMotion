@@ -1655,6 +1655,37 @@
     const a = -(J.badan || 0) * Math.PI / 180, x0 = p[0], y0 = p[1] - J.turun + 200;
     return [x0 * Math.cos(a) - y0 * Math.sin(a), x0 * Math.sin(a) + y0 * Math.cos(a) - 200];
   }
+  function putarTitik(p, derajat) {
+    const a = derajat * Math.PI / 180, x = p[0], y = p[1] + 200;
+    return [x * Math.cos(a) - y * Math.sin(a), x * Math.sin(a) + y * Math.cos(a) - 200];
+  }
+  function tanganDunia(catatan, b) {
+    const H = catatan && catatan.sendi && catatan.sendi.lengan && catatan.sendi.lengan[1] && catatan.sendi.lengan[1][2];
+    if (!H) return null;
+    let p = putarTitik(H, catatan.sendi.badan || 0);
+    p[1] += (catatan.sendi.turun || 0) + (catatan.sendi.geserY || 0) + (catatan.tubuh || 0);
+    p = putarTitik(p, catatan.guling || 0);
+    const cermin = b.cermin || b.profil === "kiri";
+    const sk = catatan.s;
+    return [catatan.x + p[0] * sk * (cermin ? -1 : 1), catatan.y + p[1] * sk];
+  }
+  function targetTanganLokal(tujuan, x, y, sk, cermin, tubuh, J) {
+    let p = [(tujuan[0] - x) / (sk * (cermin ? -1 : 1)), (tujuan[1] - y) / sk];
+    p[1] -= tubuh + (J.turun || 0);
+    return putarTitik(p, -(J.badan || 0));
+  }
+  function gambarBendaSerah(jenis, x, y, sk = 1) {
+    let isi = "";
+    if (jenis === "surat") isi = `<rect x="-34" y="-42" width="68" height="84" rx="4" fill="#f5e7c4" stroke="#8b6b42" stroke-width="5"/><path d="M -22 -20 L 22 -20 M -22 -4 L 22 -4 M -22 12 L 12 12" stroke="#9c8059" stroke-width="4"/>`;
+    else if (jenis === "kendi") isi = `<path d="M -10 -62 L 10 -62 L 12 -40 Q 44 -20 34 24 Q 28 60 -28 60 Q -44 28 -34 -6 Q -28 -32 -12 -40 Z" fill="#b97845" stroke="#503526" stroke-width="6"/><ellipse cx="0" cy="-62" rx="14" ry="7" fill="#d69b63" stroke="#503526" stroke-width="5"/>`;
+    else if (jenis === "gelas") isi = `<path d="M -20 -30 L 20 -30 L 16 30 L -16 30 Z" fill="#dff3ff" stroke="#34333a" stroke-width="5" opacity=".95"/>`;
+    else if (jenis === "karung_kecil") isi = `<path d="M -28 -38 Q 0 -54 28 -38 L 36 34 Q 0 56 -36 34 Z" fill="#b69a68" stroke="#6f5736" stroke-width="5"/><path d="M -24 -38 Q 0 -20 24 -38" fill="none" stroke="#6f5736" stroke-width="5"/>`;
+    else if (jenis === "gulungan") isi = `<rect x="-38" y="-42" width="76" height="84" rx="8" fill="#ead6a7" stroke="#9a7748" stroke-width="5"/><path d="M -28 -42 Q -40 -56 -42 -42 L -42 42 Q -40 56 -28 42 M 28 -42 Q 40 -56 42 -42 L 42 42 Q 40 56 28 42" fill="#d7bd87" stroke="#9a7748" stroke-width="5"/>`;
+    else if (jenis === "roti") isi = `<path d="M -42 18 Q -52 -20 -24 -34 Q -8 -54 14 -34 Q 48 -32 44 10 Q 40 34 0 32 Q -32 34 -42 18 Z" fill="#d89b52" stroke="#704522" stroke-width="5"/><path d="M -18 -20 Q -4 -4 0 8 M 12 -22 Q 24 -4 24 8" stroke="#f4d39b" stroke-width="5" fill="none"/>`;
+    else if (jenis === "koin") isi = `<circle r="30" fill="#e9bd4e" stroke="#805b1e" stroke-width="6"/><circle r="19" fill="none" stroke="#fff0a0" stroke-width="4"/>`;
+    else return "";
+    return `<g transform="translate(${x} ${y}) scale(${sk})">${isi}</g>`;
+  }
   function rangka(J, o) {
     const { P, BD, WC, KLB, nafas, ayun, bawahP, t, aksi, id, offset } = o, GM = o.gm || 0, R = Math.PI / 180, hy0 = -200 + J.turun;
     const pakaiP = !!P, wKaki = !P ? 44 : bawahP === "celana" ? 46 : bawahP === "gamis" ? 72 : 64, wnK = !P ? BADAN : bawahP === "gamis" ? BD : WC;
