@@ -25,7 +25,6 @@ import json
 import os
 import re
 import sys
-import time
 import unicodedata
 import urllib.error
 import urllib.request
@@ -332,9 +331,16 @@ def validasi_uji_cerita(data):
 
 
 def validasi_peta_tempel(data):
-    if not isinstance(data, dict) or not isinstance(data.get("beat"), list) or not data["beat"]:
-        return ["pemetaan tempel harus berupa objek dengan daftar beat"]
+    if not isinstance(data, dict):
+        return ["pemetaan tempel harus berupa objek JSON"]
     galat = []
+    for k in ("judul", "inti"):
+        if not isinstance(data.get(k), str) or not data[k].strip():
+            galat.append(f"{k} pemetaan tempel wajib diisi")
+    if not isinstance(data.get("dalil", []), list):
+        galat.append("dalil pemetaan tempel harus berupa daftar")
+    if not isinstance(data.get("beat"), list) or not data["beat"]:
+        return galat + ["pemetaan tempel harus memiliki daftar beat"]
     for i, b in enumerate(data["beat"], 1):
         if not isinstance(b, dict):
             galat.append(f"beat {i} harus berupa objek")
@@ -370,7 +376,8 @@ def buat_naskah(mode, masukan, naskah_lama=None, *, tanya=None):
         isi = "Ide pemilik:\n" + masukan
         sistem = skill + "\nMODE IDE: tulis cerita utuh. Sertakan uji_cerita dengan kalimat_inti, fakta_terkuat_detik_0, jawaban_hook, momen_emosi_kejutan, alasan_interaksi, kalimat_dibuang (daftar). Keluarkan JSON naskah."
         tahap = "naskah"
-        pemeriksa = lambda d: validasi(d) + validasi_uji_cerita(d)
+        def pemeriksa(d):
+            return validasi(d) + validasi_uji_cerita(d)
     elif mode == "revisi":
         isi = f"NASKAH SAAT INI:\n{json.dumps(naskah_lama, ensure_ascii=False)}\nCATATAN PEMILIK:\n{masukan}"
         sistem = skill + "\nMODE REVISI: ubah hanya bagian yang diminta pemilik; bagian lain kata demi kata. Sertakan uji_cerita lengkap. Keluarkan JSON naskah."
