@@ -1346,8 +1346,8 @@
       const tegang=v(o.tegang,t,d,0.3), n=Math.max(3,Math.min(20,o.n||8));
       for(let i=0;i<n;i++){const xx=-260+i*520/(n-1), yy=-110-Math.sin(i*1.7)*45;g += '<ellipse cx="'+xx+'" cy="'+yy+'" rx="38" ry="'+(22+tegang*7)+'" fill="none" stroke="#66636a" stroke-width="14" transform="rotate('+(i%2?55:-55)+' '+xx+' '+yy+')"/>';}
     } else if (j === "pedang_tersarung") { // pedang selalu tersarung; tidak menyediakan adegan kekerasan
-      const hias=v(o.hias,t,d,0.5);
-      g += '<path d="M -15 -180 L 0 -680 L 15 -180 Z" fill="#776d62" stroke="'+INK+'" stroke-width="9"/><path d="M -90 -180 L 90 -180 L 90 -140 L -90 -140 Z" fill="#8a6846" stroke="'+INK+'" stroke-width="9"/><rect x="-25" y="-140" width="50" height="140" rx="18" fill="#5d4030" stroke="'+INK+'" stroke-width="8"/><circle cy="-660" r="'+(18+12*hias)+'" fill="#c7a46b"/>';
+      const ornamen=v(o.ornamen,t,d,0.5);
+      g += '<path d="M -15 -180 L 0 -680 L 15 -180 Z" fill="#776d62" stroke="'+INK+'" stroke-width="9"/><path d="M -90 -180 L 90 -180 L 90 -140 L -90 -140 Z" fill="#8a6846" stroke="'+INK+'" stroke-width="9"/><rect x="-25" y="-140" width="50" height="140" rx="18" fill="#5d4030" stroke="'+INK+'" stroke-width="8"/><circle cy="-660" r="'+(18+12*ornamen)+'" fill="#c7a46b"/>';
     } else if (j === "awan_badai") { // awan badai; hujan 0-1 mengatur hujan dan gelap 0-1 warna awan
       const hujan=v(o.hujan,t,d,0.2), gelap=v(o.gelap,t,d,0.8), warna=campur("#9aa3a8","#303a48",gelap);
       g += '<g fill="'+warna+'" stroke="'+INK+'" stroke-width="10"><circle cx="-180" cy="-130" r="145"/><circle cy="-220" r="190"/><circle cx="190" cy="-130" r="150"/><rect x="-300" y="-180" width="600" height="170" rx="80"/></g>';
