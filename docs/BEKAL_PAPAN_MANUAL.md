@@ -124,7 +124,7 @@ Lembar kontak + video + hasil `periksa.py`. GAGAL = kerusakan teknis atau batas 
 - lahar: (16 Nov) dataran batu hitam berurat lava dalam perspektif: (0,0) = tengah cakrawala, sampai y = H. seed, cahaya warna, kuat 0-1 [keadaan: cahaya, kuat*]
 - lapak: lapak pasar: meja + terpal + dagangan; {terpal, isi: buah|sayur|ikan} [keadaan: isi, terpal]
 - laut: permukaan laut malam: o.y = garis permukaan; o.pantul = x pantulan bulan (relatif) [keadaan: pantul]
-- laut_terbelah: laut terbelah dua (QS 26:63), gaya air sama dengan ombak kisah Nuh: lorong dasar laut kering di antara dua dinding air "laksana gunung", dilihat dari pangkal lorong; (0,0) = tengah pangkal lorong. belah 0-1 (0 = laut ber [keadaan: belah*, buih, jauh, lebar, tinggi]
+- laut_terbelah: laut terbelah dua (QS 26:63), gaya air sama dengan ombak kisah Nuh: lorong dasar laut kering di antara dua dinding air "laksana gunung", dilihat dari pangkal lorong; (0,0) = tengah pangkal lorong. belah 0-1 (0 = laut ber [keadaan: belah*, buih, jauh, lapis, lebar, tinggi]
 - lemari: lemari pakaian dua pintu; {w, warna, buka 0-1} [keadaan: buka*, w]
 - lentera: lentera minyak; nyala 0-1 mengatur cahaya [keadaan: nyala*]
 - makam: gundukan tanah + nisan; o.n = jumlah makam berjejer, o.baru = gundukan segar [keadaan: baru, jarak, n]

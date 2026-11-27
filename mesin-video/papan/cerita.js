@@ -491,13 +491,14 @@
       const ca = o.warna || ["#2b4a78", "#0b1832"], bu = o.buih || "#ffe9b8", id = "lt" + Math.round(x) + "_" + Math.round(y), R = rng(o.seed || 5);
       const gel = (xx, ph, a, L, sp) => a * (0.62 * Math.sin(xx / L + t * sp + ph) + 0.28 * Math.sin(xx / (L * 0.41) - t * sp * 1.6 + ph * 2) + 0.1 * Math.sin(xx / (L * 0.17) + t * 2.3)); // rumus gelombang ombak Nuh
       g = `<defs><linearGradient id="${id}a" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${ca[0]}"/><stop offset=".35" stop-color="${ca[1]}"/><stop offset="1" stop-color="#03060f"/></linearGradient><linearGradient id="${id}d" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="${ca[1]}"/><stop offset=".7" stop-color="${ca[0]}"/><stop offset="1" stop-color="${warna(ca[0], "#ffffff", 0.18)}"/></linearGradient><linearGradient id="${id}p" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#6d5c43"/><stop offset="1" stop-color="#4a3c2a"/></linearGradient></defs>`;
-      let jauh = `M -1500 ${(-D - 20 + gel(-1500, 1, 8, 260, 0.8)).toFixed(1)}`; for (let xx = -1460; xx <= 1500; xx += 40) jauh += ` L ${xx} ${(-D - 20 + gel(xx, 1, 8, 260, 0.8)).toFixed(1)}`;
+      const defsLT = g; let jauh = `M -1500 ${(-D - 20 + gel(-1500, 1, 8, 260, 0.8)).toFixed(1)}`; for (let xx = -1460; xx <= 1500; xx += 40) jauh += ` L ${xx} ${(-D - 20 + gel(xx, 1, 8, 260, 0.8)).toFixed(1)}`;
       g += `<path d="${jauh} L 1500 ${-D + 30} L -1500 ${-D + 30} Z" fill="url(#${id}a)"/>`; // laut di ujung lorong
       g += `<path d="M ${-W2} 0 L ${-w2} ${-D} L ${w2} ${-D} L ${W2} 0 Z" fill="url(#${id}p)" stroke="${INK}" stroke-width="5" stroke-linejoin="round"/>`; // dasar laut yang kering
       for (let i = 0; i < 10; i++) { const f = R(), ww = W2 + (w2 - W2) * f; g += `<ellipse cx="${((R() - 0.5) * 1.4 * ww).toFixed(1)}" cy="${(-D * f).toFixed(1)}" rx="${((14 + R() * 18) * (1 - f * 0.7)).toFixed(1)}" ry="${((5 + R() * 6) * (1 - f * 0.7)).toFixed(1)}" fill="#2f2619" opacity=".5"/>`; } // batu dan genangan
+      if (o.lapis === "tutup") { g = defsLT; } // (27 Nov) lapis depan: hanya air yang menutup, digambar di depan tokoh di lorong
       if (e < 0.98) { const tk = 1 - e; for (let i = 0; i < 3; i++) { const yy = -D + 30 + i * (D / 3), a = (40 + 30 * i) * tk; let dd = `M -1500 ${(yy - gel(-1500, i * 1.9, a, 260, 0.9 + i * 0.25)).toFixed(1)}`; for (let xx = -1460; xx <= 1500; xx += 40) dd += ` L ${xx} ${(yy - gel(xx, i * 1.9, a, 260, 0.9 + i * 0.25)).toFixed(1)}`;
           g += `<path d="${dd} L 1500 60 L -1500 60 Z" fill="url(#${id}a)" opacity="${Math.min(1, tk * 1.6).toFixed(3)}"/><path d="${dd}" stroke="${bu}" stroke-width="${5 + i * 1.5}" fill="none" opacity="${((0.55 - i * 0.08) * tk).toFixed(3)}" stroke-linecap="round" stroke-dasharray="${90 + i * 30} ${70 + i * 25}" stroke-dashoffset="${(t * 40).toFixed(1)}"/>`; } } // laut berombak yang menutup lorong (sama dengan ombak Nuh)
-      [-1, 1].forEach((sg) => { if (Ht < 4) return;
+      if (o.lapis !== "tutup") [-1, 1].forEach((sg) => { if (Ht < 4) return;
         let tepi = ""; for (let k2 = 0; k2 <= 12; k2++) { const yy = -Ht * k2 / 12; tepi += ` L ${(sg * (W2 + (14 + 12 * k2 / 12) * Math.sin(k2 * 1.7 + t * 1.8 + sg))).toFixed(1)} ${yy.toFixed(1)}`; } // tepi depan dinding bergolak
         let atas = ""; for (let k2 = 1; k2 <= 16; k2++) { const xx = sg * (W2 + k2 * 70); atas += ` L ${xx.toFixed(1)} ${(-Ht * (1 - k2 / 22) - gel(xx, sg * 2, 26, 200, 1.1)).toFixed(1)}`; }
         g += `<path d="M ${sg * W2} 60${tepi}${atas} L ${sg * 1500} 60 Z" fill="url(#${id}a)" stroke="${INK}" stroke-width="6" stroke-linejoin="round"/>`; // tubuh air di sisi luar, punggungnya berombak
@@ -1986,7 +1987,7 @@
   function boneka(b, t, d) {
     if (b.npc != null && !b._npc) { // figuran berwarna acak tetap (seed = b.npc); kunci yang diisi manual menimpa
       const R = rng(b.npc * 97 + 13), pk = (arr) => arr[Math.floor(R() * arr.length)], BJ = ["#5a7a9a", "#d9534f", "#6aa6a0", "#f2c14e", "#9a7ac9", "#e9e4d8", "#3f8a4a", "#c96a4a", "#4a6a8a"];
-      const pr = R() < 0.45, tua = R() < 0.2; let kulit = pk(["#f2dcc2", "#e9c6a2", "#d9b48c", "#c99a72", "#a87a56"]);
+      const prAcak = R() < 0.45, tua = R() < 0.2, pr = b.jenis_kelamin ? /^(wanita|perempuan)$/.test(b.jenis_kelamin) : prAcak; /* jenis_kelamin mengunci (mis. pasukan = pria) */ let kulit = pk(["#f2dcc2", "#e9c6a2", "#d9b48c", "#c99a72", "#a87a56"]);
       const gen = pr ? { rambut: "kerudung", kerudung: pk(["#6aa6a0", "#d98a9a", "#f2c14e", "#5a7a9a", "#e9e4d8", "#9a7ac9", "#3a3a4a"]), pakaian: { jenis: "gamis", warna: pk(BJ) } }
         : { rambut: tua ? "tipis" : pk(["pendek", "belah", "keriting", "pendek"]), warna_rambut: tua ? "#cfcac2" : pk(["#1d1520", "#3a2a20", "#1d1520"]), janggut: tua || R() < 0.2 ? (tua ? "#d8d2c8" : true) : false,
             pakaian: { jenis: pk(["kaus", "koko", "kaus"]), warna: pk(BJ), bawah: pk(["celana", "celana", "sarung"]), bawah_warna: pk(["#2f3a4a", "#3b3f4a", "#6a4a3a", "#4a5a3a"]), peci: R() < 0.25 ? pk([true, "putih"]) : false } };

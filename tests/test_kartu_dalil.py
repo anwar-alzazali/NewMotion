@@ -99,3 +99,32 @@ def test_figuran_rencana_membawa_tampilan():
                                            "pakaian": {"jenis": "jubah", "bisht": True, "kalung": "usekh"}}]}, [], 1)[0]
     assert o["penutup_kepala"] == "nemes" and o["janggut_model"] == "firaun" and o["mata"] == "tutup"
     assert o["pakaian"]["bisht"] == "#3a2a1e"
+
+
+def test_tokoh_di_lorong_tertelan_laut_yang_menutup():
+    from newmotion.paket_genre.kisah_islami.rencana_sutradara import (
+        figuran_dari_rencana,
+        subjek_dari_rencana,
+    )
+    rb = {"subjek": [{"jenis": "laut_terbelah", "tempat": "tengah", "keadaan": {"belah": [1, 0.1]}}],
+          "figuran": [{"jumlah": 3, "tempat": "di_lorong:laut_terbelah", "gerak": "kaget", "jenis_kelamin": "pria"}]}
+    benda = subjek_dari_rencana(rb, "tenggelam", 6.0, 1)["benda"]
+    orang = figuran_dari_rencana(rb, benda, 1, 6.0)
+    assert len(orang) == 3 and all(o["jenis_kelamin"] == "pria" for o in orang)
+    depan = [b for b in benda if b.get("lapis") == "tutup"]
+    assert len(depan) == 1 and depan[0]["depan"] is True
+
+
+def test_beat_dipecah_melanjutkan_perubahan():
+    from newmotion.paket_genre.kisah_islami.rencana_sutradara import _nilai
+    a, b = _nilai([1, 0], 3.0, 0.0, 0.5), _nilai([1, 0], 3.0, 0.5, 1.0)
+    assert a[-1][1] == b[0][1] and b[-1][1] == 0
+
+
+def test_sutradara_wajib_menampilkan_tokoh_manusia():
+    naskah = {"judul": "U", "adegan": [{"nama": "adegan_1", "teks": "Firaun dan tentaranya mengejar.",
+                                        "peran": ["Nabi Musa", "Firaun", "tentara Firaun"]}]}
+    assert "[tokoh: Firaun, tentara Firaun]" in pesan_sutradara(naskah)
+    beat = [{"beat": 1, "bukti": "Firaun dan tentaranya mengejar", "subjek": [], "kamu": "tidak",
+             "kamera": {"bidikan": "lebar", "aksen": None}, "teks_layar": None, "klimaks": False}]
+    assert any("tidak tampil" in g for g in validasi_lengkap({"objek_inti": None, "beat": beat}, naskah))
