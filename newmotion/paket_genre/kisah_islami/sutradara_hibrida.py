@@ -50,6 +50,10 @@ def arahkan_hibrida(naskah: Mapping, folder: str | Path, *, genre: str = "kisah_
         try:
             j = buat_rencana(naskah, http=http)
             rencana = j.data
+            from newmotion.application.kebutuhan_renderer import catat, dari_rencana
+
+            if http is None:  # pemanggilan HTTP palsu pada uji tidak boleh menulis antrean produksi
+                catat(dari_rencana(rencana), sumber="sutradara", kisah=naskah.get("judul", "tanpa judul"))
             info.update(mode="llm", model=j.model, biaya_usd=j.biaya_usd)
             if int(k["periksa_putaran"]) > 0:
                 rencana, _, log = berputar(naskah, rencana, folder / "periksa", putaran=int(k["periksa_putaran"]), http=http)

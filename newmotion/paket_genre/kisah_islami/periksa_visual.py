@@ -93,6 +93,10 @@ def berputar(naskah: Mapping, rencana: Mapping, folder: str | Path, *, putaran: 
         except GalatLLM as e:
             log.append({"putaran": k, "periksa": "gagal", "galat": str(e)[:300]})
             break
+        from newmotion.application.kebutuhan_renderer import catat, dari_temuan
+
+        if http is None:  # uji vision memakai HTTP palsu dan tidak menyentuh data produksi
+            catat(dari_temuan(j.data), sumber="pemeriksa", kisah=naskah.get("judul", "tanpa judul"))
         entri = {"putaran": k, "model_periksa": j.model, "biaya_usd": j.biaya_usd, "temuan": j.data,
                  "lembar": [str(p) for p in lembar]}
         log.append(entri)
