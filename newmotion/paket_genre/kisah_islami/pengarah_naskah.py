@@ -449,31 +449,45 @@ def _angka_awal(v, bawaan: float) -> float:
 
 SUASANA_PALET = {"subuh": "subuh", "fajar": "pagi", "pagi": "pagi", "dhuha": "pagi", "siang": "siang", "zuhur": "siang",
                  "ashar": "sore", "sore": "sore", "senja": "senja", "maghrib": "senja", "malam": "malam", "isya": "malam"}
+SUASANA_AKHIRAT = {"mahsyar", "neraka", "surga", "kubur"}
+TEMA_AKHIRAT = {"mahsyar", "neraka", "surga", "kubur"}
 BENDA_AIR = ("laut", "laut_terbelah", "ombak", "pantai")
+# Satu palet air untuk semua benda laut (27 Nov, keputusan pemilik): acuan siang = biru toska `pantai`.
+# Malam/badai memakai warna gelap bawaan (gaya kisah Nuh) sehingga video lama tidak berubah.
+WARNA_AIR = {
+    "pagi": {"dalam": ["#5bb4dc", "#3f8ac9", "#245f9a"], "pantai": ["#3f8ac9", "#6ac9d9"]},
+    "siang": {"dalam": ["#5bb4dc", "#3f8ac9", "#245f9a"], "pantai": ["#3f8ac9", "#6ac9d9"]},
+    "sore": {"dalam": ["#5a9ac4", "#36709e", "#1f4a74"], "pantai": ["#36709e", "#5aa6b8"]},
+    "senja": {"dalam": ["#4a5a8a", "#2b3d68", "#141f3a"], "pantai": ["#3a4a78", "#6a7aa0"]},
+}
 
 
-def _waktu_dan_air(shot: dict, benda: list[dict], suasana: str | None, teks: str) -> None:
-    """(27 Nov, audit pemilik) Langit mengikuti waktu kisah, bukan tema: suasana beat naskah (dhuha = pagi),
-    dan bila matahari tampak langit pasti siang/pagi/sore. Di adegan laut: cakrawala = garis laut terjauh
-    (tidak ada daratan di belakang laut) dan tanah depan berupa pasir."""
+def _waktu_dan_air(shot: dict, benda: list[dict], suasana: str | None, teks: str, tema: str = "") -> None:
+    """(27 Nov, keputusan pemilik) Langit mengikuti waktu kisah, bukan tema: suasana beat naskah; tanpa
+    keterangan = siang. Alam akhirat (Mahsyar, neraka, surga, kubur) memakai langit khasnya. Bila matahari
+    tampak, langit pasti siang/pagi/sore. Di adegan laut: cakrawala = garis laut terjauh (tanpa daratan di
+    belakang laut), tanah pasir, dan warna air mengikuti waktu (satu palet untuk semua benda air)."""
     if "ruang" in shot or "palet" not in shot:
         return
-    palet = SUASANA_PALET.get(str(suasana or "").strip().lower())
+    su = str(suasana or "").strip().lower()
+    if su in SUASANA_AKHIRAT or (not su and tema in TEMA_AKHIRAT):
+        return
+    palet = SUASANA_PALET.get(su) or "siang"
     ada_surya = any(o.get("jenis") == "surya" for o in benda)
-    if ada_surya and palet in (None, "malam", "subuh"):
+    if ada_surya and palet in ("malam", "subuh"):
         palet = "pagi" if re.search(r"\b(terbit|fajar|pagi)\b", teks, re.IGNORECASE) else \
             "sore" if re.search(r"\b(terbenam|senja|sore)\b", teks, re.IGNORECASE) else "siang"
     air = [o for o in benda if o.get("jenis") in BENDA_AIR]
-    if palet:
-        if air and palet in ("pagi", "siang", "sore"):
-            palet = "pantai_" + palet
-        shot["palet"], shot["malam"] = palet, (1 if palet == "malam" else 0)
-        if palet.startswith("pantai_"):  # air siang lebih terang dari laut malam bawaan (gaya ombak Nuh)
-            for o in air:
-                if o.get("jenis") in ("laut_terbelah", "ombak") and "warna" not in o:
-                    o["warna"] = ["#3f86c4", "#123f6e"]
-        if shot["malam"] == 0:
-            shot["benda"] = [o for o in shot.get("benda", []) if o.get("jenis") != "bintang"]
+    waktu_air = palet
+    if air and palet in ("pagi", "siang", "sore"):
+        palet = "pantai_" + palet
+    shot["palet"], shot["malam"] = palet, (1 if palet == "malam" else 0.25 if palet == "senja" else 0)
+    if shot["malam"] == 0:
+        shot["benda"] = [o for o in shot.get("benda", []) if o.get("jenis") != "bintang"]
+    w = WARNA_AIR.get(waktu_air)
+    for o in air:
+        if w and "warna" not in o:
+            o["warna"] = list(w["pantai"] if o.get("jenis") == "pantai" else w["dalam"])
     if air and any(o.get("jenis") in ("laut_terbelah", "laut", "ombak") for o in air):
         shot["horizon"] = round(_cakrawala_air(benda, float(shot.get("horizon") or 1100)))
 
@@ -808,7 +822,7 @@ def arahkan(naskah: dict, waktu_adegan: list[float] | None = None,
             s["kamera"] = kamera
             s["benda"] = benda
             if rb:
-                _waktu_dan_air(s, subjek["benda"], a.get("suasana"), tx)
+                _waktu_dan_air(s, subjek["benda"], a.get("suasana"), tx, tema)
             if subjek["teks"]:
                 s["teks"] = (s.get("teks") or []) + subjek["teks"]
             if subjek["klimaks"] and not (rb and subjek.get("aksen")):
