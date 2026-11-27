@@ -1,0 +1,1283 @@
+{
+ "latar": "gelap",
+ "stempel": true,
+ "musik": false,
+ "dekor": false,
+ "volume_efek": 0,
+ "cerita": {
+  "suku": "arab",
+  "kilat": false,
+  "label": "KISAH FIRAUN",
+  "shot": [
+   {
+    "narasi": "Firaun sempat menyatakan beriman. Tapi imannya ditolak, karena diucapkan saat air sudah menenggelamkannya.",
+    "intonasi": "berat",
+    "jeda": 0.5,
+    "palet": "pantai_badai",
+    "malam": 0.3,
+    "langit": 0.2,
+    "horizon": 1150,
+    "hujan": 0.7,
+    "kamera": {
+     "z": [
+      1.3,
+      1.45
+     ],
+     "x": 540,
+     "y": [
+      1260,
+      1300
+     ]
+    },
+    "benda": [
+     {
+      "jenis": "awan_badai",
+      "x": 540,
+      "y": 420,
+      "gelap": 1,
+      "hujan": 0.6
+     },
+     {
+      "jenis": "ombak",
+      "x": 540,
+      "y": 1150,
+      "tinggi": 180,
+      "lapis": 2,
+      "seed": 3
+     },
+     {
+      "jenis": "ombak",
+      "x": 540,
+      "y": [
+       [
+        0,
+        1640
+       ],
+       [
+        "@ditolak",
+        1500
+       ],
+       [
+        "@menenggelamkannya",
+        1340
+       ]
+      ],
+      "tinggi": 110,
+      "lapis": 3,
+      "seed": 9,
+      "jarak": 90,
+      "depan": true
+     }
+    ],
+    "boneka": [
+     {
+      "penutup_kepala": "nemes",
+      "janggut": true,
+      "janggut_model": "firaun",
+      "jenis_kelamin": "pria",
+      "pakaian": {
+       "jenis": "jubah",
+       "warna": "#f4ecd8",
+       "bisht": "#3a2a1e",
+       "kalung": "usekh"
+      },
+      "x": 540,
+      "y": 1600,
+      "s": 1.0,
+      "utama": true,
+      "pose": "dua_naik",
+      "wajah": "takut",
+      "mata": "atas"
+     }
+    ],
+    "teks": [
+     {
+      "at": 0.3,
+      "teks": "TERLAMBAT\nBEBERAPA DETIK",
+      "y": 330,
+      "ukuran": 92,
+      "sub": "QS YUNUS 90-91",
+      "warna": "#ffd27a"
+     }
+    ]
+   },
+   {
+    "narasi": "Pagi itu, saat matahari terbit, Firaun dan bala tentaranya menyusul Nabi Musa sampai ke tepi laut.",
+    "intonasi": "tegang",
+    "palet": "pantai_pagi",
+    "malam": 0,
+    "langit": 0.5,
+    "horizon": 880,
+    "tanah": "pasir",
+    "debu": 30,
+    "kamera": {
+     "z": [
+      1.25,
+      1.0
+     ],
+     "x": 540,
+     "y": [
+      1250,
+      1060
+     ]
+    },
+    "benda": [
+     {
+      "jenis": "surya",
+      "x": 790,
+      "y": 840,
+      "r": 115,
+      "terang": 1,
+      "belakang": true
+     },
+     {
+      "jenis": "cahaya",
+      "x": 790,
+      "y": 200,
+      "s": 1.1,
+      "belakang": true
+     },
+     {
+      "jenis": "laut_terbelah",
+      "x": 540,
+      "y": 1450,
+      "s": 1,
+      "warna": [
+       "#5bb4dc",
+       "#3f8ac9",
+       "#245f9a"
+      ],
+      "belah": 0
+     },
+     {
+      "jenis": "kerumunan",
+      "x": 860,
+      "y": 1640,
+      "n": 16,
+      "w": 360,
+      "k": 0.55,
+      "baris": 3,
+      "rim": 0.9,
+      "rimwarna": "#ffe6b0",
+      "sisi": 1,
+      "seed": 11
+     },
+     {
+      "jenis": "nur",
+      "x": 720,
+      "y": 1660,
+      "s": 0.55,
+      "nama": "Nabi Musa a.s.",
+      "nama_letak": "atas"
+     },
+     {
+      "jenis": "kerumunan",
+      "y": 1590,
+      "n": 22,
+      "w": 420,
+      "k": 0.45,
+      "baris": 3,
+      "rim": 0.8,
+      "rimwarna": "#ff5a3a",
+      "sisi": 1,
+      "tombak": true,
+      "seed": 23,
+      "x": [
+       [
+        0,
+        -330
+       ],
+       [
+        "@tepi",
+        -170
+       ]
+      ]
+     }
+    ],
+    "teks": [
+     {
+      "at": "@terbit",
+      "teks": "MENYUSUL SAAT\nMATAHARI TERBIT",
+      "y": 330,
+      "ukuran": 72,
+      "sub": "QS ASY-SYU'ARA 60"
+     }
+    ]
+   },
+   {
+    "narasi": "Di depan, laut. Di belakang, pasukan. Pengikut Musa berseru: kita pasti tersusul!",
+    "intonasi": "tegang",
+    "palet": "pantai_pagi",
+    "malam": 0,
+    "langit": 0.5,
+    "horizon": 880,
+    "tanah": "pasir",
+    "debu": 45,
+    "kamera": {
+     "z": [
+      1.0,
+      1.1
+     ],
+     "x": [
+      470,
+      650
+     ],
+     "y": 1060
+    },
+    "benda": [
+     {
+      "jenis": "surya",
+      "x": 790,
+      "y": 840,
+      "r": 115,
+      "terang": 1,
+      "belakang": true
+     },
+     {
+      "jenis": "laut_terbelah",
+      "x": 540,
+      "y": 1450,
+      "s": 1,
+      "warna": [
+       "#5bb4dc",
+       "#3f8ac9",
+       "#245f9a"
+      ],
+      "belah": 0
+     },
+     {
+      "jenis": "kerumunan",
+      "x": 860,
+      "y": 1640,
+      "n": 16,
+      "w": 360,
+      "k": 0.55,
+      "baris": 3,
+      "rim": 0.9,
+      "rimwarna": "#ffe6b0",
+      "sisi": 1,
+      "seed": 11,
+      "pose": "angkat"
+     },
+     {
+      "jenis": "nur",
+      "x": 720,
+      "y": 1660,
+      "s": 0.55,
+      "nama": "Nabi Musa a.s.",
+      "nama_letak": "atas"
+     },
+     {
+      "jenis": "kerumunan",
+      "y": 1590,
+      "n": 22,
+      "w": 420,
+      "k": 0.45,
+      "baris": 3,
+      "rim": 0.8,
+      "rimwarna": "#ff5a3a",
+      "sisi": 1,
+      "tombak": true,
+      "seed": 23,
+      "x": [
+       [
+        0,
+        -170
+       ],
+       [
+        "@tersusul",
+        -40
+       ]
+      ]
+     }
+    ],
+    "teks": [
+     {
+      "at": "@berseru",
+      "teks": "TERKEPUNG",
+      "y": 330,
+      "ukuran": 92,
+      "sub": "QS ASY-SYU'ARA 61"
+     }
+    ]
+   },
+   {
+    "narasi": "Nabi Musa menjawab: sekali-kali tidak. Tuhanku bersamaku, Dia akan memberiku petunjuk.",
+    "intonasi": "tegas",
+    "palet": "pantai_pagi",
+    "malam": 0,
+    "langit": 0.5,
+    "horizon": 880,
+    "tanah": "pasir",
+    "debu": 20,
+    "jeda": 1.2,
+    "kamera": {
+     "z": 1.2,
+     "x": 700,
+     "y": 1250
+    },
+    "benda": [
+     {
+      "jenis": "surya",
+      "x": 790,
+      "y": 840,
+      "r": 115,
+      "terang": 1,
+      "belakang": true
+     },
+     {
+      "jenis": "laut_terbelah",
+      "x": 540,
+      "y": 1450,
+      "s": 1,
+      "warna": [
+       "#5bb4dc",
+       "#3f8ac9",
+       "#245f9a"
+      ],
+      "belah": 0
+     },
+     {
+      "jenis": "kerumunan",
+      "x": 860,
+      "y": 1640,
+      "n": 16,
+      "w": 360,
+      "k": 0.55,
+      "baris": 3,
+      "rim": 0.9,
+      "rimwarna": "#ffe6b0",
+      "sisi": 1,
+      "seed": 11
+     },
+     {
+      "jenis": "nur",
+      "x": 720,
+      "y": 1660,
+      "s": 0.55,
+      "nama": "",
+      "nama_letak": "atas"
+     },
+     {
+      "jenis": "kerumunan",
+      "y": 1590,
+      "n": 22,
+      "w": 420,
+      "k": 0.45,
+      "baris": 3,
+      "rim": 0.8,
+      "rimwarna": "#ff5a3a",
+      "sisi": 1,
+      "tombak": true,
+      "seed": 23,
+      "x": -40
+     },
+     {
+      "jenis": "kartu_dalil",
+      "x": 700,
+      "y": 1000.0,
+      "s": 0.792,
+      "at": "@menjawab",
+      "kitab": "QS 26:62",
+      "label": "QUR'AN",
+      "teks": "Dia (Musa) menjawab, \"Sekali-kali tidak akan (tersusul); sesungguhnya Tuhanku bersamaku, Dia akan memberi petunjuk kepadaku.\"",
+      "ukuran": 46,
+      "tulis_at": 0.4,
+      "latar": 0.4,
+      "arab": "قَالَ كَلَّآ ۖ إِنَّ مَعِىَ رَبِّى سَيَهْدِينِ",
+      "arab_ukuran": 56.0,
+      "arab_baris": [
+       "قَالَ كَلَّآ ۖ إِنَّ مَعِىَ رَبِّى سَيَهْدِينِ"
+      ],
+      "arab_at": 0.15,
+      "tulis": 2.6,
+      "sorot": "Tuhanku bersamaku"
+     }
+    ]
+   },
+   {
+    "narasi": "Musa diperintahkan memukul laut dengan tongkatnya. Laut terbelah, setiap belahannya seperti gunung yang besar.",
+    "intonasi": "tegas",
+    "jeda": 0.6,
+    "palet": "pantai_pagi",
+    "malam": 0,
+    "langit": 0.5,
+    "horizon": 880,
+    "tanah": "pasir",
+    "debu": 20,
+    "kamera": {
+     "z": [
+      1.2,
+      0.92
+     ],
+     "x": [
+      700,
+      540
+     ],
+     "y": [
+      1250,
+      1000
+     ],
+     "guncang": [
+      [
+       "@terbelah",
+       30
+      ]
+     ]
+    },
+    "benda": [
+     {
+      "jenis": "surya",
+      "x": 790,
+      "y": 840,
+      "r": 115,
+      "terang": 1,
+      "belakang": true
+     },
+     {
+      "jenis": "laut_terbelah",
+      "x": 540,
+      "y": 1450,
+      "s": 1,
+      "warna": [
+       "#5bb4dc",
+       "#3f8ac9",
+       "#245f9a"
+      ],
+      "belah": [
+       [
+        "@memukul",
+        0
+       ],
+       [
+        "@gunung",
+        1
+       ]
+      ]
+     },
+     {
+      "jenis": "kerumunan",
+      "x": 860,
+      "y": 1640,
+      "n": 16,
+      "w": 360,
+      "k": 0.55,
+      "baris": 3,
+      "rim": 0.9,
+      "rimwarna": "#ffe6b0",
+      "sisi": 1,
+      "seed": 11
+     },
+     {
+      "jenis": "nur",
+      "x": [
+       [
+        0,
+        720
+       ],
+       [
+        "@gunung",
+        560
+       ]
+      ],
+      "y": 1660,
+      "s": 0.55,
+      "nama": "Nabi Musa a.s.",
+      "nama_letak": "atas"
+     },
+     {
+      "jenis": "kerumunan",
+      "y": 1590,
+      "n": 22,
+      "w": 420,
+      "k": 0.45,
+      "baris": 3,
+      "rim": 0.8,
+      "rimwarna": "#ff5a3a",
+      "sisi": 1,
+      "tombak": true,
+      "seed": 23,
+      "x": -40
+     }
+    ],
+    "teks": [
+     {
+      "at": "@gunung",
+      "teks": "LAUT TERBELAH",
+      "y": 330,
+      "ukuran": 92,
+      "sub": "QS ASY-SYU'ARA 63"
+     }
+    ]
+   },
+   {
+    "narasi": "Di antara dua dinding air terbentang jalan yang kering. Bani Israil menyeberang, semuanya selamat.",
+    "intonasi": "tenang",
+    "palet": "pantai_pagi",
+    "malam": 0,
+    "langit": 0.5,
+    "horizon": 880,
+    "tanah": "pasir",
+    "debu": 15,
+    "kamera": {
+     "z": [
+      0.92,
+      1.0
+     ],
+     "x": 540,
+     "y": 1000
+    },
+    "benda": [
+     {
+      "jenis": "surya",
+      "x": 790,
+      "y": 840,
+      "r": 115,
+      "terang": 1,
+      "belakang": true
+     },
+     {
+      "jenis": "laut_terbelah",
+      "x": 540,
+      "y": 1450,
+      "s": 1,
+      "warna": [
+       "#5bb4dc",
+       "#3f8ac9",
+       "#245f9a"
+      ],
+      "belah": 1
+     },
+     {
+      "jenis": "arus",
+      "mode": "lorong",
+      "x": 540,
+      "y": 1450,
+      "s": 1,
+      "n": 26,
+      "rim": 0.8,
+      "rimwarna": "#ffe6b0",
+      "maju": [
+       [
+        0,
+        0.05
+       ],
+       [
+        "@selamat",
+        0.95
+       ]
+      ],
+      "seed": 11
+     },
+     {
+      "jenis": "nur",
+      "x": 560,
+      "y": [
+       [
+        0,
+        1600
+       ],
+       [
+        "@selamat",
+        1180
+       ]
+      ],
+      "s": [
+       [
+        0,
+        0.55
+       ],
+       [
+        "@selamat",
+        0.28
+       ]
+      ],
+      "nama": "Nabi Musa a.s.",
+      "nama_letak": "atas"
+     },
+     {
+      "jenis": "kerumunan",
+      "y": 1590,
+      "n": 22,
+      "w": 420,
+      "k": 0.45,
+      "baris": 3,
+      "rim": 0.8,
+      "rimwarna": "#ff5a3a",
+      "sisi": 1,
+      "tombak": true,
+      "seed": 23,
+      "x": -20
+     }
+    ],
+    "teks": [
+     {
+      "at": "@kering",
+      "teks": "JALAN YANG KERING",
+      "y": 330,
+      "ukuran": 72,
+      "sub": "QS THAHA 77"
+     }
+    ]
+   },
+   {
+    "narasi": "Firaun tidak berhenti. Ia dan pasukannya masuk ke jalan yang sama.",
+    "intonasi": "tegang",
+    "palet": "pantai_pagi",
+    "malam": 0,
+    "langit": 0.5,
+    "horizon": 880,
+    "tanah": "pasir",
+    "debu": 25,
+    "kamera": {
+     "z": [
+      1.0,
+      1.12
+     ],
+     "x": [
+      560,
+      600
+     ],
+     "y": [
+      1000,
+      1080
+     ]
+    },
+    "benda": [
+     {
+      "jenis": "surya",
+      "x": 790,
+      "y": 840,
+      "r": 115,
+      "terang": 1,
+      "belakang": true
+     },
+     {
+      "jenis": "laut_terbelah",
+      "x": 540,
+      "y": 1450,
+      "s": 1,
+      "warna": [
+       "#5bb4dc",
+       "#3f8ac9",
+       "#245f9a"
+      ],
+      "belah": 1
+     },
+     {
+      "jenis": "arus",
+      "mode": "lorong",
+      "x": 540,
+      "y": 1450,
+      "s": 1,
+      "n": 24,
+      "rim": 0.8,
+      "rimwarna": "#ff5a3a",
+      "tombak": true,
+      "maju": [
+       [
+        "@masuk",
+        0.0
+       ],
+       [
+        "@sama",
+        0.55
+       ]
+      ],
+      "seed": 23
+     }
+    ],
+    "boneka": [
+     {
+      "penutup_kepala": "nemes",
+      "janggut": true,
+      "janggut_model": "firaun",
+      "jenis_kelamin": "pria",
+      "pakaian": {
+       "jenis": "jubah",
+       "warna": "#f4ecd8",
+       "bisht": "#3a2a1e",
+       "kalung": "usekh"
+      },
+      "x": [
+       [
+        0,
+        700
+       ],
+       [
+        "@sama",
+        590
+       ]
+      ],
+      "y": [
+       [
+        0,
+        1700
+       ],
+       [
+        "@sama",
+        1560
+       ]
+      ],
+      "s": [
+       [
+        0,
+        0.85
+       ],
+       [
+        "@sama",
+        0.7
+       ]
+      ],
+      "profil": "kiri",
+      "pose": "jalan",
+      "wajah": "marah"
+     }
+    ],
+    "teks": [
+     {
+      "at": "@berhenti",
+      "teks": "IA TIDAK BERHENTI",
+      "y": 330,
+      "ukuran": 72
+     }
+    ]
+   },
+   {
+    "narasi": "Lalu laut menutup. Saat air menenggelamkannya, Firaun berkata: aku percaya tidak ada tuhan selain yang dipercayai Bani Israil.",
+    "intonasi": "berat",
+    "jeda": 0.8,
+    "palet": "pantai_badai",
+    "malam": 0.2,
+    "langit": 0.25,
+    "horizon": 880,
+    "tanah": "pasir",
+    "hujan": 0.5,
+    "kamera": {
+     "z": [
+      1.15,
+      1.5
+     ],
+     "x": 560,
+     "y": [
+      1150,
+      1300
+     ],
+     "guncang": [
+      [
+       "@menutup",
+       26
+      ]
+     ]
+    },
+    "benda": [
+     {
+      "jenis": "awan_gelap",
+      "x": 540,
+      "y": 380,
+      "kilat": 0.8
+     },
+     {
+      "jenis": "laut_terbelah",
+      "x": 540,
+      "y": 1450,
+      "s": 1,
+      "belah": [
+       [
+        0,
+        1
+       ],
+       [
+        "@menutup",
+        0.92
+       ],
+       [
+        "@berkata",
+        0.3
+       ],
+       [
+        "@Israil#2",
+        0.05
+       ]
+      ]
+     },
+     {
+      "jenis": "arus",
+      "mode": "lorong",
+      "x": 540,
+      "y": 1450,
+      "s": 1,
+      "n": 24,
+      "rim": 0.6,
+      "rimwarna": "#ff5a3a",
+      "tombak": true,
+      "maju": 0.4,
+      "seed": 23
+     },
+     {
+      "jenis": "laut_terbelah",
+      "x": 540,
+      "y": 1450,
+      "s": 1,
+      "belah": [
+       [
+        0,
+        1
+       ],
+       [
+        "@menutup",
+        0.92
+       ],
+       [
+        "@berkata",
+        0.3
+       ],
+       [
+        "@Israil#2",
+        0.05
+       ]
+      ],
+      "lapis": "tutup",
+      "depan": true
+     }
+    ],
+    "boneka": [
+     {
+      "penutup_kepala": "nemes",
+      "janggut": true,
+      "janggut_model": "firaun",
+      "jenis_kelamin": "pria",
+      "pakaian": {
+       "jenis": "jubah",
+       "warna": "#f4ecd8",
+       "bisht": "#3a2a1e",
+       "kalung": "usekh"
+      },
+      "x": 560,
+      "y": 1490,
+      "s": 0.85,
+      "pose": "dua_naik",
+      "wajah": "takut",
+      "mata": "atas"
+     }
+    ],
+    "teks": [
+     {
+      "at": "@berkata",
+      "teks": "SUDAH TERLAMBAT",
+      "y": 330,
+      "ukuran": 72,
+      "sub": "QS YUNUS 90",
+      "warna": "#ffd27a"
+     }
+    ]
+   },
+   {
+    "narasi": "Jawabannya: apakah baru sekarang? Padahal sebelumnya engkau durhaka.",
+    "intonasi": "bisik",
+    "jeda": 1.2,
+    "palet": "pantai_badai",
+    "malam": 0.1,
+    "langit": 0.35,
+    "horizon": 880,
+    "tanah": "pasir",
+    "kamera": {
+     "z": [
+      1.0,
+      0.96
+     ],
+     "x": 540,
+     "y": 1000
+    },
+    "benda": [
+     {
+      "jenis": "laut_terbelah",
+      "x": 540,
+      "y": 1450,
+      "s": 1,
+      "warna": [
+       "#4a7fa8",
+       "#2c5a82",
+       "#163a5c"
+      ],
+      "belah": 0
+     }
+    ],
+    "teks": [
+     {
+      "at": "@sekarang",
+      "teks": "APAKAH BARU\nSEKARANG?",
+      "y": 330,
+      "ukuran": 92,
+      "sub": "QS YUNUS 91"
+     }
+    ]
+   },
+   {
+    "narasi": "Rasulullah shallallahu 'alaihi wa sallam bersabda: Allah menerima tobat seorang hamba selama nyawanya belum sampai di kerongkongan.",
+    "intonasi": "tenang",
+    "palet": "pantai_pagi",
+    "malam": 0,
+    "langit": 0.5,
+    "horizon": 880,
+    "tanah": "pasir",
+    "jeda": 1.0,
+    "kamera": {
+     "z": 1.0,
+     "x": 540,
+     "y": 1000
+    },
+    "benda": [
+     {
+      "jenis": "surya",
+      "x": 790,
+      "y": 840,
+      "r": 115,
+      "terang": 1,
+      "belakang": true
+     },
+     {
+      "jenis": "laut_terbelah",
+      "x": 540,
+      "y": 1450,
+      "s": 1,
+      "warna": [
+       "#5bb4dc",
+       "#3f8ac9",
+       "#245f9a"
+      ],
+      "belah": 0
+     },
+     {
+      "jenis": "cahaya",
+      "x": 790,
+      "y": 300,
+      "s": 1.2,
+      "belakang": true
+     },
+     {
+      "jenis": "kartu_dalil",
+      "x": 540,
+      "y": 740.0,
+      "s": 0.95,
+      "at": "@bersabda",
+      "kitab": "HR. Tirmidzi",
+      "label": "HADIS",
+      "teks": "Sesungguhnya Allah menerima tobat seorang hamba selama nyawanya belum sampai di kerongkongan.",
+      "ukuran": 54,
+      "tulis_at": 0.4,
+      "latar": 0.4,
+      "no": "3537",
+      "arab": "إِنَّ اللَّهَ يَقْبَلُ تَوْبَةَ الْعَبْدِ مَا لَمْ يُغَرْغِرْ",
+      "arab_ukuran": 45.0,
+      "arab_baris": [
+       "إِنَّ اللَّهَ يَقْبَلُ تَوْبَةَ الْعَبْدِ مَا لَمْ يُغَرْغِرْ"
+      ],
+      "arab_at": 0.15,
+      "tulis": 3.0,
+      "sorot": "belum sampai di kerongkongan"
+     }
+    ]
+   },
+   {
+    "narasi": "Dan badan Firaun diselamatkan, agar menjadi tanda bagi orang-orang sesudahnya.",
+    "intonasi": "haru",
+    "palet": "pantai_siang",
+    "malam": 0,
+    "langit": 0.6,
+    "horizon": 880,
+    "tanah": "pasir",
+    "kamera": {
+     "z": [
+      1.05,
+      1.15
+     ],
+     "x": 540,
+     "y": [
+      1150,
+      1250
+     ]
+    },
+    "benda": [
+     {
+      "jenis": "surya",
+      "x": 790,
+      "y": 560,
+      "r": 95,
+      "terang": 1,
+      "belakang": true
+     },
+     {
+      "jenis": "pantai",
+      "x": 540,
+      "y": 1380,
+      "tinggi": 500,
+      "warna": [
+       "#3f8ac9",
+       "#6ac9d9"
+      ]
+     }
+    ],
+    "boneka": [
+     {
+      "penutup_kepala": "nemes",
+      "janggut": true,
+      "janggut_model": "firaun",
+      "jenis_kelamin": "pria",
+      "pakaian": {
+       "jenis": "jubah",
+       "warna": "#f4ecd8",
+       "bisht": "#3a2a1e",
+       "kalung": "usekh"
+      },
+      "x": 540,
+      "y": 1560,
+      "s": 0.9,
+      "pose": "rebahan",
+      "mata": "tutup"
+     }
+    ],
+    "teks": [
+     {
+      "at": "@tanda",
+      "teks": "MENJADI TANDA",
+      "y": 330,
+      "ukuran": 92,
+      "sub": "QS YUNUS 92"
+     }
+    ]
+   },
+   {
+    "narasi": "Hari itu Allah menyelamatkan Musa dan menenggelamkan Firaun. Karena itu Rasulullah shallallahu 'alaihi wa sallam berpuasa di hari Asyura, dan menyuruh umatnya berpuasa.",
+    "intonasi": "tenang",
+    "palet": "pantai_siang",
+    "malam": 0,
+    "langit": 0.6,
+    "horizon": 880,
+    "tanah": "pasir",
+    "kamera": {
+     "z": [
+      1.15,
+      1.0
+     ],
+     "x": 540,
+     "y": [
+      1250,
+      1000
+     ]
+    },
+    "benda": [
+     {
+      "jenis": "surya",
+      "x": 790,
+      "y": 560,
+      "r": 95,
+      "terang": 1,
+      "belakang": true
+     },
+     {
+      "jenis": "pantai",
+      "x": 540,
+      "y": 1380,
+      "tinggi": 500,
+      "warna": [
+       "#3f8ac9",
+       "#6ac9d9"
+      ]
+     },
+     {
+      "jenis": "kalender",
+      "x": 540,
+      "y": 1120,
+      "s": 0.85,
+      "at": "@Asyura",
+      "bulan": "MUHARRAM",
+      "tgl": 10,
+      "mulai": 2,
+      "lingkar": [
+       [
+        "@Asyura",
+        0
+       ],
+       [
+        "@menyuruh",
+        1
+       ]
+      ],
+      "teks": "ASYURA"
+     }
+    ],
+    "teks": [
+     {
+      "at": "@Asyura",
+      "teks": "PUASA ASYURA",
+      "y": 330,
+      "ukuran": 92,
+      "sub": "HR BUKHARI 3397"
+     }
+    ]
+   },
+   {
+    "narasi": "Kamu masih bernapas. Pintu tobatmu masih terbuka. Jangan tunggu air sampai ke leher.",
+    "intonasi": "lega",
+    "palet": "pantai_pagi",
+    "malam": 0,
+    "langit": 0.5,
+    "horizon": 880,
+    "tanah": "pasir",
+    "kamera": {
+     "z": [
+      1.0,
+      1.08
+     ],
+     "x": 540,
+     "y": 1000
+    },
+    "benda": [
+     {
+      "jenis": "surya",
+      "x": 790,
+      "y": 840,
+      "r": 115,
+      "terang": 1,
+      "belakang": true
+     },
+     {
+      "jenis": "laut_terbelah",
+      "x": 540,
+      "y": 1450,
+      "s": 1,
+      "warna": [
+       "#5bb4dc",
+       "#3f8ac9",
+       "#245f9a"
+      ],
+      "belah": 0
+     },
+     {
+      "jenis": "cahaya",
+      "x": 790,
+      "y": 300,
+      "s": 1.3,
+      "belakang": true
+     }
+    ],
+    "teks": [
+     {
+      "at": "@terbuka",
+      "teks": "PINTU TOBAT\nMASIH TERBUKA",
+      "y": 330,
+      "ukuran": 92,
+      "warna": "#ffd27a"
+     }
+    ]
+   }
+  ]
+ },
+ "rekaman": [
+  {
+   "berkas": "../../aset/suara/guntur_hujan.mp3",
+   "at": 0,
+   "sampai": "@Pagi",
+   "vol": 0.45,
+   "ulang": true
+  },
+  {
+   "berkas": "../../aset/suara/braam.mp3",
+   "at": "@ditolak",
+   "vol": 0.5
+  },
+  {
+   "berkas": "../../aset/suara/whoosh.mp3",
+   "at": "@Pagi-0.4",
+   "vol": 0.5
+  },
+  {
+   "berkas": "../../aset/suara/angin_gurun.mp3",
+   "at": "@Pagi",
+   "sampai": "@menutup",
+   "vol": 0.25,
+   "ulang": true
+  },
+  {
+   "berkas": "../../aset/suara/langkah_lari.mp3",
+   "at": "@bala",
+   "sampai": "@Musa#2",
+   "vol": 0.35,
+   "ulang": true
+  },
+  {
+   "berkas": "../../aset/suara/kerumunan_cemas.mp3",
+   "at": "@depan",
+   "sampai": "@Tuhanku",
+   "vol": 0.35,
+   "ulang": true
+  },
+  {
+   "berkas": "../../aset/suara/detak_jantung.mp3",
+   "at": "@belakang",
+   "sampai": "@Tuhanku",
+   "vol": 0.45,
+   "ulang": true
+  },
+  {
+   "berkas": "../../aset/suara/whoosh.mp3",
+   "at": "@memukul",
+   "vol": 0.6
+  },
+  {
+   "berkas": "../../aset/suara/dentum_jauh.mp3",
+   "at": "@terbelah",
+   "vol": 0.7
+  },
+  {
+   "berkas": "../../aset/suara/air_mengalir.mp3",
+   "at": "@kering",
+   "sampai": "@menutup",
+   "vol": 0.3,
+   "ulang": true
+  },
+  {
+   "berkas": "../../aset/suara/langkah_pelan.mp3",
+   "at": "@menyeberang",
+   "sampai": "@selamat",
+   "vol": 0.3,
+   "ulang": true
+  },
+  {
+   "berkas": "../../aset/suara/drone_gelap.mp3",
+   "at": "@berhenti",
+   "sampai": "@Jawabannya",
+   "vol": 0.35,
+   "ulang": true
+  },
+  {
+   "berkas": "../../aset/suara/guntur_hujan.mp3",
+   "at": "@menutup",
+   "sampai": "@Jawabannya",
+   "vol": 0.5,
+   "ulang": true
+  },
+  {
+   "berkas": "../../aset/suara/tanah_retak.mp3",
+   "at": "@menutup",
+   "vol": 0.6
+  },
+  {
+   "berkas": "../../aset/suara/braam.mp3",
+   "at": "@berkata",
+   "vol": 0.45
+  },
+  {
+   "berkas": "../../aset/suara/senandung_haru.mp3",
+   "at": "@bersabda",
+   "vol": 0.25,
+   "ulang": true
+  },
+  {
+   "berkas": "../../aset/suara/kilau_cahaya.mp3",
+   "at": "@terbuka",
+   "vol": 0.4
+  }
+ ]
+}

@@ -53,6 +53,7 @@
     pantai_pagi: { langit: ["#8fd0f5", "#ffe9c4"], tanah: ["#f0d49a", "#c9a46a"] },
     pantai_siang: { langit: ["#4f9fe0", "#d6efff"], tanah: ["#f0d49a", "#c9a46a"] },
     pantai_sore: { langit: ["#f39a4a", "#ffe2a8"], tanah: ["#e0b97a", "#a8824a"] },
+    pantai_badai: { langit: ["#2a3240", "#6a7684"], tanah: ["#8a7a62", "#4e4436"] },
   };
   const campur = (a, b, p) => { const A = a.match(/\d+/g).map(Number), B = hex(b); return `rgb(${A.map((x, i) => Math.round(mix(x, B[i], p))).join(",")})`; };
   function langit(p) {
@@ -404,7 +405,9 @@
     let s = `<g transform="translate(${x} ${y}) scale(${k}) rotate(${o.rot || 0})">`;
     s += `<line x1="-16" y1="-70" x2="${-16 - lg * 26}" y2="0" stroke="${c}" stroke-width="26" stroke-linecap="round"/><line x1="16" y1="-70" x2="${16 + lg * 26}" y2="0" stroke="${c}" stroke-width="26" stroke-linecap="round"/>`;
     s += `<line x1="-30" y1="-196" x2="${-36 - lg * 12}" y2="-108" stroke="${c}" stroke-width="24" stroke-linecap="round"/><rect x="-40" y="-220" width="80" height="160" rx="36" fill="${c}"/><circle cx="0" cy="-258" r="36" fill="${c}"/>`;
-    if (rim) s += `<path d="M -4 -294 A 36 36 0 0 1 34 -270" stroke="#ffb05a" stroke-width="6" fill="none" opacity="${rim}" stroke-linecap="round"/><path d="M 40 -196 L 40 -96" stroke="#ffb05a" stroke-width="5" opacity="${rim * 0.7}" stroke-linecap="round"/>`;
+    const rw = o.rimwarna || "#ffb05a"; // (27 Nov) warna tepi cahaya bisa diatur: membedakan dua kelompok siluet
+    if (rim) s += `<path d="M -4 -294 A 36 36 0 0 1 34 -270" stroke="${rw}" stroke-width="6" fill="none" opacity="${rim}" stroke-linecap="round"/><path d="M 40 -196 L 40 -96" stroke="${rw}" stroke-width="5" opacity="${rim * 0.7}" stroke-linecap="round"/>`;
+    if (o.tombak) s += `<line x1="52" y1="-330" x2="40" y2="10" stroke="${c}" stroke-width="9" stroke-linecap="round"/><path d="M 52 -330 l -12 -40 l 22 0 Z" fill="${c}"/>`; // tombak: penanda pasukan
     s += `<g transform="translate(30 -196) rotate(${a})"><line x1="0" y1="0" x2="0" y2="92" stroke="${c}" stroke-width="24" stroke-linecap="round"/>` + (o.beliung ? `<g transform="translate(0 92)"><line x1="0" y1="-14" x2="0" y2="118" stroke="#3a2c22" stroke-width="11" stroke-linecap="round"/><path d="M -50 100 Q 0 126 50 100 L 42 118 Q 0 140 -42 118 Z" fill="#9aa0ad" stroke="#14151c" stroke-width="3"/></g>` : "") + `</g>`;
     return s + "</g>";
   }
@@ -434,6 +437,7 @@
     if (o.api) { const fl = ["#ff4a12", "#ff8a2a", "#ffc061"]; for (let i = 0; i < 8; i++) { const sdx = i % 2 ? 1 : -1, ax = sdx * (38 + (i % 3) * 8), ay = -20 - Math.floor(i / 2) * 64; s += lidah(ax, ay, 46, 80 + 30 * Math.sin(t * 7 + i * 1.9), t * 8 + i, fl[i % 3], 0.9 * o.api); }
       s += lidah(0, -290, 60, 110 + 30 * Math.sin(t * 6), t * 7, "#ff6a1a", 0.9 * o.api) + lidah(0, -296, 34, 70 + 20 * Math.sin(t * 9), t * 9, "#ffd27a", o.api); }
     if (o.bara) for (let i = 0; i < 3; i++) { const fz = (t * 0.5 + i / 3) % 1; s += `<path d="M ${hx - 14 + i * 14} ${hy - 40} q ${Math.sin(t * 3 + i) * 14} -30 0 ${-60 * fz - 20}" stroke="#e8e0d8" stroke-width="${10 * (1 - fz)}" fill="none" opacity="${0.4 * o.bara * (1 - fz)}" stroke-linecap="round"/>`; }
+    if (o.tombak) s += `<line x1="${52 * sd}" y1="-330" x2="${40 * sd}" y2="10" stroke="${c}" stroke-width="9" stroke-linecap="round"/><path d="M ${52 * sd} -330 l ${-12 * sd} -40 l ${22 * sd} 0 Z" fill="${c}"/>`; // (27 Nov) tombak: penanda pasukan
     return s + "</g>";
   }
   function benda(o, t, d) {
@@ -473,7 +477,7 @@
         for (let i = 0; i < 14; i++) { const a = R2() * 6.283, sp = 70 + R2() * 260; g += `<circle cx="${Math.cos(a) * sp * q}" cy="${Math.sin(a) * sp * q + 170 * q * q}" r="${6 * (1 - q) + 1.5}" fill="${i % 3 ? "#ffd27a" : "#fff"}" opacity="${1 - q}"/>`; } }
     } else if (j === "pemimpin") { // siluet pemimpin di atas batu; angkat 0-1 = lengan terangkat
       g = `<path d="M -170 0 Q -130 -76 -40 -90 L 70 -86 Q 140 -64 175 0 Z" fill="#0b0912"/><g transform="translate(0 -84)">` + sosok(0, 0, 1.3, { ang: mix(14, -150, v(o.angkat, t, d, 0)), rim: v(o.rim, t, d, 0.8) }) + `</g>`;
-    } else if (j === "arus") { // kerumunan siluet bergerak. mode lereng (turun dari dua punggung bukit ke (0,0)), cahaya (berlari masuk ke cahaya di (0,0)), lari (mendatar ke kanan), lorong (masuk menjauh ke ujung lorong laut_terbelah; otomatis menempel ke laut_terbelah di beat yang sama); maju = kemajuan, rebah 0-1
+    } else if (j === "arus") { // kerumunan siluet bergerak. mode lereng (turun dari dua punggung bukit ke (0,0)), cahaya (berlari masuk ke cahaya di (0,0)), lari (mendatar ke kanan), lorong (masuk menjauh ke ujung lorong laut_terbelah; otomatis menempel ke laut_terbelah di beat yang sama); rimwarna, tombak (pasukan); maju = kemajuan, rebah 0-1
       const n = o.n || 40, R = rng(o.seed || 21), mj = v(o.maju, t, d, t * 0.2), rb = v(o.rebah, t, d, 0), md = o.mode || "lereng", L = [];
       for (let i = 0; i < n; i++) { const r1 = R(), r2 = R(), r3 = R(), sg = i % 2 ? 1 : -1, p = md === "cahaya" ? clamp(mj * (0.7 + r2 * 0.6) - r1 * 0.5) : (mj + r1) % 1; let px, py, k;
         if (md === "lereng") { px = sg * mix(640, 50 + r2 * 330, p) + (r3 - 0.5) * 120; py = mix(-860, 240, Math.pow(p, 1.25)) + (r2 - 0.5) * 60; k = mix(0.14, 1.0, p); }
@@ -483,7 +487,7 @@
         L.push({ px, py, k, ph: r1 * 6, sg, p }); }
       L.sort((a, b) => a.k - b.k);
       L.forEach((f) => { if (md === "cahaya" && (f.p >= 1 || f.p <= 0)) return; const fx = md === "lari" ? 1 : md === "cahaya" ? (f.px > 0 ? -1 : 1) : -f.sg;
-        g += `<g transform="translate(${f.px} ${f.py}) scale(${fx} 1)" opacity="${md === "lereng" ? clamp(f.p * 6) * clamp((1 - f.p) * 8) : md === "lari" || md === "lorong" ? clamp(f.p * 8) * clamp((1 - f.p) * 8) : 1}">` + sosok(0, 0, f.k, { ang: rb > 0 ? 10 : 20 + Math.sin(t * 10 + f.ph) * 40, langkah: rb > 0 ? 0 : Math.sin(t * 10 + f.ph), rot: rb * 86 * (f.ph > 3 ? 1 : -1), rim: o.rim || 0, warna: o.warna }) + `</g>`; });
+        g += `<g transform="translate(${f.px} ${f.py}) scale(${fx} 1)" opacity="${md === "lereng" ? clamp(f.p * 6) * clamp((1 - f.p) * 8) : md === "lari" || md === "lorong" ? clamp(f.p * 8) * clamp((1 - f.p) * 8) : 1}">` + sosok(0, 0, f.k, { ang: rb > 0 ? 10 : 20 + Math.sin(t * 10 + f.ph) * 40, langkah: rb > 0 ? 0 : Math.sin(t * 10 + f.ph), rot: rb * 86 * (f.ph > 3 ? 1 : -1), rim: o.rim || 0, warna: o.warna, rimwarna: o.rimwarna, tombak: o.tombak }) + `</g>`; });
     } else if (j === "ombak") { // banjir / laut badai berlapis (15 Nov): y = permukaan air; tinggi = amplitudo px (300 = "laksana gunung"); lapis, jarak, panjang, cepat, warna [atas, bawah], buih
       const A = v(o.tinggi, t, d, 40), n = o.lapis || 3, L = o.panjang || 260, sd = o.seed || 0, id = "om" + sd + "_" + Math.round(y), ca = o.warna || ["#2b4a78", "#0b1832"], kc = o.cepat || 1;
       g = `<defs><linearGradient id="${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${ca[0]}"/><stop offset=".35" stop-color="${ca[1]}"/><stop offset="1" stop-color="${ca[2] || "#03060f"}"/></linearGradient></defs>`;
@@ -1245,11 +1249,11 @@
       g += `<path d="M ${pts.map((p) => p.join(",")).join(" L ")} Z" fill="#0b0a10" opacity=".96"/>`;
       g += `<path d="M ${pts.map((p) => p.join(",")).join(" L ")} Z" fill="none" stroke="${cw}" stroke-width="3" opacity="${0.4 + 0.3 * Math.sin(t * 2.2)}"/>`;
       g += `</g>`;
-    } else if (j === "kerumunan") { // (16 Nov) kerumunan siluet DIAM menghadap cahaya. n, w sebar, baris, k skala, seed, rim 0-1 (+rimwarna), sisi 1 = cahaya dari kanan / -1 kiri (bawaan: ke arah tengah), pose berdiri|telinga|wajah|angkat|tunduk|tolak, bara 0-1 (bara di telapak + uap kepala), api 0-1 (jubah api), hangus 0-1 (retak bara di badan)
+    } else if (j === "kerumunan") { // (16 Nov) kerumunan siluet DIAM menghadap cahaya. tombak true = pasukan. n, w sebar, baris, k skala, seed, rim 0-1 (+rimwarna), sisi 1 = cahaya dari kanan / -1 kiri (bawaan: ke arah tengah), pose berdiri|telinga|wajah|angkat|tunduk|tolak, bara 0-1 (bara di telapak + uap kepala), api 0-1 (jubah api), hangus 0-1 (retak bara di badan)
       const n = o.n || 12, w = o.w == null ? 900 : o.w, R = rng(o.seed || 5), dk = o.baris || 3, L = [];
       for (let i = 0; i < n; i++) { const r1 = R(), r2 = R(), r3 = R(), row = n === 1 ? 0 : Math.floor(r2 * dk); L.push({ px: n === 1 ? 0 : (r1 - 0.5) * w * (1 - row * 0.12), py: -row * 40 + (r3 - 0.5) * 18, k: (o.k || 1) * (1 - row * 0.15) * (n === 1 ? 1 : 0.86 + r3 * 0.28), ph: r1 * 6, row }); }
       L.sort((a, b) => b.row - a.row || a.k - b.k);
-      L.forEach((f) => { g += figur(f.px, f.py, f.k, { pose: o.pose || "berdiri", rim: v(o.rim, t, d, 0.6), rimwarna: o.rimwarna, sisi: o.sisi == null ? (f.px < 0 ? 1 : -1) : o.sisi, t: t + f.ph, bara: v(o.bara, t, d, 0), api: v(o.api, t, d, 0), hangus: v(o.hangus, t, d, 0), warna: o.warna, gelap: f.row * 0.12 }); });
+      L.forEach((f) => { g += figur(f.px, f.py, f.k, { pose: o.pose || "berdiri", rim: v(o.rim, t, d, 0.6), rimwarna: o.rimwarna, sisi: o.sisi == null ? (f.px < 0 ? 1 : -1) : o.sisi, t: t + f.ph, bara: v(o.bara, t, d, 0), api: v(o.api, t, d, 0), hangus: v(o.hangus, t, d, 0), warna: o.warna, gelap: f.row * 0.12, tombak: o.tombak }); });
     } else if (j === "belah") { // (16 Nov) bumi terbelah dalam PERSPEKTIF (tampak samping): (0,0) = ujung celah di cakrawala; celah melebar ke arah kamera sampai y = H. buka 0-1, lebar px di bawah, cahaya warna, goyang px, seed
       const bk = v(o.buka, t, d, 1), H = o.H || 900, Wb = (o.lebar || 820) * bk, cw = o.cahaya || "#ff7a2a", R = rng(o.seed || 7), gy = o.goyang ? Math.sin(t * 41) * o.goyang * Math.min(1, bk * 2) : 0, id = "bl" + Math.round(x * 3 + y);
       g = `<defs><radialGradient id="${id}g" cx="0" cy="${H * 0.8}" r="${900 * (0.4 + bk)}" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="${cw}" stop-opacity="${0.55 * Math.min(1, bk * 1.6)}"/><stop offset=".45" stop-color="${cw}" stop-opacity="${0.18 * Math.min(1, bk * 1.6)}"/><stop offset="1" stop-color="${cw}" stop-opacity="0"/></radialGradient>

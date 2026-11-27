@@ -65,7 +65,7 @@ Lembar kontak + video + hasil `periksa.py`. GAGAL = kerusakan teknis atau batas 
 - amplop: amplop uang [keadaan: uang]
 - api: (16 Nov, diperhalus) api unggun: lidah api bergradasi berkedip + kayu + pendar lembut
 - api_unggun: api unggun dan kayu; nyala 0-1 mengatur besar api [keadaan: nyala*]
-- arus: kerumunan siluet bergerak. mode lereng (turun dari dua punggung bukit ke (0,0)), cahaya (berlari masuk ke cahaya di (0,0)), lari (mendatar ke kanan), lorong (masuk menjauh ke ujung lorong laut_terbelah; otomatis menempel [keadaan: jauh, maju*, mode, n, rebah*, rim]
+- arus: kerumunan siluet bergerak. mode lereng (turun dari dua punggung bukit ke (0,0)), cahaya (berlari masuk ke cahaya di (0,0)), lari (mendatar ke kanan), lorong (masuk menjauh ke ujung lorong laut_terbelah; otomatis menempel [keadaan: jauh, maju*, mode, n, rebah*, rim, rimwarna, tombak]
 - awan: -
 - awan_badai: awan badai; hujan 0-1 mengatur hujan dan gelap 0-1 warna awan [keadaan: gelap*, hujan*]
 - awan_gelap: awan gelap; kilat 0-1 mengatur kilatan [keadaan: kilat*]
@@ -111,7 +111,7 @@ Lembar kontak + video + hasil `periksa.py`. GAGAL = kerusakan teknis atau batas 
 - kebun_kurma: kebun kurma berbaris; buah 0-1 menampakkan tandan [keadaan: buah*, n]
 - kelapa: pohon kelapa melengkung [keadaan: lengkung]
 - keranjang: keranjang anyaman; penuh 0-1 mengatur isi [keadaan: isi, penuh*]
-- kerumunan: (16 Nov) kerumunan siluet DIAM menghadap cahaya. n, w sebar, baris, k skala, seed, rim 0-1 (+rimwarna), sisi 1 = cahaya dari kanan / -1 kiri (bawaan: ke arah tengah), pose berdiri|telinga|wajah|angkat|tunduk|tolak, bara  [keadaan: api*, bara*, baris, hangus*, k, n, pose, rim*]
+- kerumunan: (16 Nov) kerumunan siluet DIAM menghadap cahaya. tombak true = pasukan. n, w sebar, baris, k skala, seed, rim 0-1 (+rimwarna), sisi 1 = cahaya dari kanan / -1 kiri (bawaan: ke arah tengah), pose berdiri|telinga|wajah|ang [keadaan: api*, bara*, baris, hangus*, k, n, pose, rim*]
 - kios_pasar: kios pasar beratap kain; dagangan 0-1 mengatur isi meja [keadaan: dagangan*]
 - kipas: kipas angin berdiri, baling-baling berputar; {putar 0-1} [keadaan: putar*]
 - koin: koin emas (dinar): {n, jatuh 0-1} [keadaan: jatuh*, n]
