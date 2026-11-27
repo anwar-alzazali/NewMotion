@@ -274,8 +274,8 @@ def figuran_dari_rencana(rb: Mapping, benda: list[dict], kunci: int, ds: float =
             penerima = next((q for q in daftar if q.get("nama") == pemberi["serahkan_ke"]), None)
             if penerima is not None:
                 kiri_kanan = pemberi.get("tempat") == "kiri"
-                posisi_serah[pemberi["nama"]] = 440 if kiri_kanan else 570
-                posisi_serah[penerima["nama"]] = 570 if kiri_kanan else 440
+                posisi_serah[pemberi["nama"]] = 400 if kiri_kanan else 580
+                posisi_serah[penerima["nama"]] = 580 if kiri_kanan else 400
     for i, f in enumerate(daftar):
         x0, y0, sk, blk = LETAK_FIGURAN[f.get("tempat", "tengah")]
         n = int(f.get("jumlah", 1))
