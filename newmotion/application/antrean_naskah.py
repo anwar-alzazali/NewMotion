@@ -116,6 +116,8 @@ def kartu(st: dict) -> str:
         baris.append(f"{IKON[keadaan]} {label}" + (f" — {ket}" if ket else ""))
     if st.get("uji_cerita_ringkas"):
         baris.append("🧪 Uji cerita: " + st["uji_cerita_ringkas"])
+    if st.get("pemeriksaan_naskah_ringkas"):
+        baris.append("🔎 Pemeriksa naskah: " + st["pemeriksaan_naskah_ringkas"])
     return "\n".join(baris)
 
 
@@ -599,6 +601,83 @@ def proses(id_: str, mode: str, *, folder: Path = ANTREAN, tanya=None, quran=Non
     _tulis(d, st, n, kirim_tg)
     from newmotion.paket_genre.kisah_islami.dalil.verifikasi import verifikasi
     n, laporan = verifikasi(n, quran=quran)
+
+    # Pemeriksa independen hanya dijalankan pada jalur produksi; seam tanya dipakai tes tanpa biaya.
+    if tanya is None:
+        from newmotion.application import pemeriksa_naskah
+        temuan, meta_periksa = pemeriksa_naskah.periksa(n)
+        token_periksa = meta_periksa.token_masuk + meta_periksa.token_keluar
+        st["token_ai"] = st.get("token_ai", 0) + token_periksa
+        st["biaya_ai_usd"] = round(st.get("biaya_ai_usd", 0.0) + meta_periksa.biaya_usd, 6)
+        st["pemeriksaan_naskah_ai"] = {
+            "tahap": "periksa_naskah", "model": meta_periksa.model, "penyedia": meta_periksa.penyedia,
+            "token_masuk": meta_periksa.token_masuk, "token_keluar": meta_periksa.token_keluar,
+            "biaya_usd": meta_periksa.biaya_usd, "percobaan": meta_periksa.percobaan,
+        }
+        usulan_terverifikasi = []
+        usulan = temuan.get("usulan_dalil", [])
+        if usulan:
+            calon, _ = verifikasi({"dalil": usulan}, quran=quran)
+            usulan_terverifikasi = [
+                d for d in calon.get("dalil", [])
+                if d.get("status") == "terverifikasi"
+                and d.get("diverifikasi_oleh")
+                and (d.get("derajat", "sahih") in ("sahih", "hasan"))
+            ]
+        berat = [x for x in temuan.get("temuan", []) if x.get("tingkat") == "berat"]
+        if berat and mode != "tempel":
+            arahan = {
+                "temuan_pemeriksa": temuan.get("temuan", []),
+                "dalil_baru_terverifikasi": usulan_terverifikasi,
+                "aturan": [
+                    "Perbaiki temuan berat tanpa menambah fakta di luar teks dalil.",
+                    "Gunakan dalil baru hanya jika ada di daftar dalil_baru_terverifikasi.",
+                    "Jangan membuat nomor/teks/terjemah dalil baru.",
+                    "Pertahankan genre, adab, dan struktur beat.",
+                    "Sertakan uji_cerita lengkap.",
+                ],
+            }
+            lama_naskah = json.dumps(n, ensure_ascii=False)
+            revisi, meta_penulis = buat_naskah(
+                "revisi", "PERBAIKAN WAJIB BERDASARKAN PEMERIKSA INDEPENDEN:\\n"
+                + json.dumps(arahan, ensure_ascii=False), n
+            )
+            daftar_diizinkan = {d["id"]: d for d in n.get("dalil", []) if isinstance(d, dict)}
+            daftar_diizinkan.update({d["id"]: d for d in usulan_terverifikasi if d.get("id")})
+            revisi["dalil"] = [
+                copy.deepcopy(daftar_diizinkan[d["id"]])
+                for d in revisi.get("dalil", [])
+                if isinstance(d, dict) and d.get("id") in daftar_diizinkan
+            ]
+            galat_revisi = validasi(revisi) + validasi_uji_cerita(revisi)
+            if not galat_revisi:
+                berubah = json.dumps(revisi, ensure_ascii=False, sort_keys=True) != json.dumps(n, ensure_ascii=False, sort_keys=True)
+                if berubah:
+                    n = normalisasi(revisi)
+                    n, laporan = verifikasi(n, quran=quran)
+                    # Verifikasi ulang setelah perbaikan memastikan dalil yang berubah tidak lolos dari cache lama.
+                    temuan, meta_periksa_ulang = pemeriksa_naskah.periksa(n)
+                    st["token_ai"] += meta_penulis.token_masuk + meta_penulis.token_keluar + meta_periksa_ulang.token_masuk + meta_periksa_ulang.token_keluar
+                    st["biaya_ai_usd"] = round(st["biaya_ai_usd"] + meta_penulis.biaya_usd + meta_periksa_ulang.biaya_usd, 6)
+                    st["pemeriksaan_naskah_ai"]["perbaikan"] = {
+                        "model_penulis": meta_penulis.model,
+                        "model_verifikasi_ulang": meta_periksa_ulang.model,
+                        "token": meta_penulis.token_masuk + meta_penulis.token_keluar + meta_periksa_ulang.token_masuk + meta_periksa_ulang.token_keluar,
+                        "biaya_usd": round(meta_penulis.biaya_usd + meta_periksa_ulang.biaya_usd, 6),
+                    }
+            else:
+                temuan.setdefault("temuan", []).append({
+                    "beat": 1, "kategori": "detail_tanpa_dalil", "tingkat": "berat",
+                    "bukti": "Keluaran perbaikan penulis tidak lolos validator.",
+                    "alasan": "; ".join(galat_revisi[:4]), "saran": "Perlu revisi manual pemilik.",
+                })
+        st["pemeriksaan_naskah"] = temuan
+        jumlah_t = len(temuan.get("temuan", []))
+        jumlah_perbaikan = len(berat) if berat and mode != "tempel" else 0
+        st["pemeriksaan_naskah_ringkas"] = (
+            f"{jumlah_t} temuan; {jumlah_perbaikan} putaran perbaikan otomatis"
+            if jumlah_t else "tidak ada temuan"
+        )
     lolos = [x for x in n.get("dalil", []) if x.get("status") == "terverifikasi" and x.get("derajat", "sahih") in ("sahih", "hasan")]
     total = len(n.get("dalil", []))
     if total and len(lolos) < total:
