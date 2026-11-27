@@ -33,8 +33,9 @@ def main() -> int:
             shot.append({
                 "at": (i * 2 + j) * 3.0, "horizon": 1990, "debu": 0,
                 "kamera": {"z": 1, "x": 540, "y": 960},
-                "benda": [{"jenis": nama, "x": 540, "y": 1050 if nama == "naungan_kelompok" else 1450,
-                           "s": 0.78, **keadaan}],
+                "benda": [{"jenis": nama, "x": 540,
+                           "y": 1050 if nama in {"naungan_kelompok", "resapan_tanah"} else 1450,
+                           "s": 0.78 if nama == "naungan_kelompok" else 0.95, **keadaan}],
             })
     spek = {"latar": "gelap", "musik": False, "stempel": False, "dekor": False,
             "durasi": len(shot) * 3.0, "cerita": {"shot": shot}}
