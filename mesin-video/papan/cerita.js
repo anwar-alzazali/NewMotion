@@ -133,7 +133,55 @@
         for (let c = -10; c < 10; c++) if ((r + c) % 2 === 0) { const sx = (y) => (y - L) / 1400 * 2.6 + 1, xa = 540 + c * u * 0.5 * sx(y0), xb = 540 + (c + 1) * u * 0.5 * sx(y0), xc = 540 + (c + 1) * u * 0.5 * sx(y1), xd = 540 + c * u * 0.5 * sx(y1);
           g += `<path d="M ${xa} ${y0} L ${xb} ${y0} L ${xc} ${y1} L ${xd} ${y1} Z" fill="${c2}"/>`; } }
       return g; };
-    if (j === "tamu") {
+    if (j === "pasar") { // pasar tradisional 2D: lorong perspektif, kios berkanopi, meja dagangan, keranjang, dan aktivitas kain
+      const siang = w !== "malam", awan = siang ? "#f6d7a4" : "#26334b";
+      s += `<defs>
+        <linearGradient id="psl" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${siang ? "#83c4e8" : "#202b46"}"/><stop offset="1" stop-color="${awan}"/></linearGradient>
+        <linearGradient id="psj" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#c99a62"/><stop offset="1" stop-color="#8a5b3b"/></linearGradient>
+        <linearGradient id="pst" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#d8b77f"/><stop offset="1" stop-color="#9a7048"/></linearGradient>
+      </defs><rect x="-600" y="-600" width="2280" height="1980" fill="url(#psl)"/>`;
+      // Siluet rumah dan toko di belakang lorong pasar.
+      for (let i = 0; i < 7; i++) {
+        const x = -420 + i * 330, h = 250 + (i % 3) * 70, col = ["#c78c61","#d7b17a","#a96f50"][i % 3];
+        s += `<rect x="${x}" y="${780-h}" width="280" height="${h}" fill="${col}" stroke="${INK}" stroke-width="7"/><path d="M ${x-18} ${780-h} L ${x+140} ${650-h} L ${x+298} ${780-h} Z" fill="#80533b" stroke="${INK}" stroke-width="7"/>`;
+        for(let k=0;k<3;k++) s += `<rect x="${x+28+k*78}" y="${690-h/2}" width="48" height="74" rx="8" fill="#8fc0cf" stroke="${INK}" stroke-width="5"/>`;
+      }
+      // Jalan lorong menyempit ke titik hilang agar lingkungan terasa punya kedalaman.
+      s += `<path d="M -600 1380 L 1680 1380 L 790 850 L 290 850 Z" fill="url(#psj)" stroke="${INK}" stroke-width="8"/>
+        <path d="M 290 850 L -600 1380 M 790 850 L 1680 1380" stroke="#6d4935" stroke-width="12" fill="none"/>
+        <path d="M 540 880 L 540 1380" stroke="#e7c998" stroke-width="5" stroke-dasharray="24 28" opacity=".5"/>`;
+      // Kios kiri dan kanan dengan tiang, papan nama, kain kanopi bergelombang.
+      [[-90,"#c84d42","ROTI"],[1170,"#3d806b","BUAH"]].forEach(([x,col,nama],idx)=>{
+        const sc=idx===0?1:0.92, y=0;
+        s += `<g transform="translate(${x} 0) scale(${sc})">
+          <rect x="-300" y="620" width="600" height="570" fill="#d6b17b" stroke="${INK}" stroke-width="9"/>
+          <rect x="-330" y="590" width="660" height="46" fill="#795039" stroke="${INK}" stroke-width="8"/>
+          <path d="M -350 590 L 350 590 L 285 380 L -285 380 Z" fill="${col}" stroke="${INK}" stroke-width="10"/>
+          ${[-2,-1,0,1,2].map(k=>`<path d="M ${k*140-70} 385 Q ${k*140} 430 ${k*140+70} 385 L ${k*140+70} 590 L ${k*140-70} 590 Z" fill="${k%2?"#fff0d5":col}" stroke="${INK}" stroke-width="5"/>`).join("")}
+          <rect x="-190" y="690" width="380" height="92" rx="12" fill="#fff0d5" stroke="${INK}" stroke-width="6"/>
+          <text x="0" y="752" font-family="DejaVu Sans, sans-serif" font-size="48" font-weight="900" text-anchor="middle" fill="#39251c">${nama}</text>
+          <rect x="-250" y="1000" width="500" height="150" fill="#9a6b42" stroke="${INK}" stroke-width="8"/>
+          <path d="M -250 1000 L -250 1150 M 250 1000 L 250 1150" stroke="#5a3a28" stroke-width="18"/>
+        </g>`;
+      });
+      // Lapak tengah dan tumpukan barang dagangan.
+      s += `<ellipse cx="540" cy="1330" rx="390" ry="45" fill="#4b3427" opacity=".25"/>
+        <path d="M 170 1110 L 910 1110 L 850 1280 L 230 1280 Z" fill="#8b5a36" stroke="${INK}" stroke-width="9"/>
+        <path d="M 230 1280 L 230 1380 M 850 1280 L 850 1380" stroke="#5c3b29" stroke-width="24"/>`;
+      const buah=["#d84a38","#e6ad35","#6d9b48","#d77a32","#b74c47","#e7c35d"];
+      for(let i=0;i<13;i++){const x=260+(i%7)*86,y=1080-Math.floor(i/7)*48,rr=34+(i%3)*4;s += `<circle cx="${x}" cy="${y}" r="${rr}" fill="${buah[i%buah.length]}" stroke="#6d402a" stroke-width="5"/><path d="M ${x} ${y-rr} q 8 -18 20 -12" stroke="#426b38" stroke-width="7" fill="none"/>`;}
+      // Karung dan keranjang di sisi lapak.
+      s += `<path d="M -80 1370 Q -120 1180 -40 1150 L 65 1150 Q 140 1190 105 1370 Q 10 1410 -80 1370 Z" fill="#b18a58" stroke="${INK}" stroke-width="8"/>
+        <path d="M -62 1200 Q 10 1230 90 1200 M -70 1260 Q 10 1290 100 1260" stroke="#785537" stroke-width="8" fill="none"/>
+        <path d="M 950 1370 L 980 1160 Q 1080 1080 1180 1160 L 1210 1370 Z" fill="#b98248" stroke="${INK}" stroke-width="9"/>`;
+      for(let i=0;i<8;i++) s += `<path d="M ${970+i*30} 1165 L ${990+i*26} 1360" stroke="#e0b878" stroke-width="8"/>`;
+      // Lampu gantung dan tali kain yang bergerak pelan.
+      s += `<path d="M -600 300 Q 540 390 1680 300" stroke="#5b3c2c" stroke-width="16" fill="none"/>`;
+      for(let i=0;i<7;i++){const x=-360+i*300, ay=Math.sin(t*1.4+i)*8;s += `<path d="M ${x} 310 Q ${x+130} ${390+ay} ${x+260} 310 L ${x+240} 420 Q ${x+130} ${475+ay} ${x+20} 420 Z" fill="${i%2?"#e9c46a":"#c95b4d"}" stroke="${INK}" stroke-width="5"/>`;}
+      s += `<rect x="-600" y="1380" width="2280" height="1400" fill="url(#pst)"/>`;
+      for(let i=-10;i<=10;i++) s += garis(540+i*70,1380,540+i*260,2780,"#75563c",4,.35);
+      for(let i=1;i<7;i++) s += garis(-600,1380+i*i*34,1680,1380+i*i*34,"#75563c",3,.28);
+    } else if (j === "tamu") {
       const sofa = R.sofa || "#c66f4f", dind = R.dinding || ["#f6ead8", "#ead6bc"];
       s += `<defs><linearGradient id="rdw" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${dind[0]}"/><stop offset="1" stop-color="${dind[1]}"/></linearGradient></defs><rect x="-600" y="-600" width="2280" height="${L + 600}" fill="url(#rdw)"/>`;
       s += `<rect x="-600" y="1150" width="2280" height="${L - 1150}" fill="${R.lis || "#a9b89a"}"/>` + garis(-600, 1150, 1680, 1150, INK, 6) + garis(-600, L, 1680, L, INK, 8);
@@ -1578,6 +1626,12 @@
     sinis: { a: [3, 3], ay: 4, kl: 0.5, mu: "garis" }, kesal: { a: [11, -6], ay: 3, kl: 0.22, mu: "cemberut", sen: -1 },
     marah: { a: [14, -9], ay: 5, pu: 0.85, mu: "geram", sen: -1 }, sedih: { a: [-9, 7], ay: -2, kl: 0.25, lirik: [0, 4], mu: "cemberut", sen: -1 },
     lelah: { a: [-8, 8], kl: 0.55, mu: "o_lelah" }, malu: { a: [-6, 5], ay: -2, lirik: [-6, 6], mu: "senyum_kecil", sen: 1 },
+    // Ekspresi tambahan untuk interaksi pasar: fokus, curiga, kecewa, bangga, dan terharu.
+    fokus: { a: [7, -4], ay: 2, kl: 0.12, lirik: [0, 1], mu: "garis" },
+    curiga: { a: [8, -2], L: { ay: -10 }, R: { ay: 2, kl: 0.38 }, lirik: [7, 0], mu: "senyum_miring" },
+    kecewa: { a: [-8, 8], ay: 4, kl: 0.35, lirik: [0, 5], mu: "cemberut", sen: -1 },
+    bangga: { a: [-4, 1], ay: -8, mu: "senyum", sen: 1 },
+    terharu: { a: [-10, 8], ay: -4, kl: 0.18, lirik: [0, 3], mu: "senyum_kecil", sen: 1 },
   };
   function mulutH(nm, mx, my, amp, sen, t) {
     const L = (d, w = 5) => `<path d="${d}" fill="none" stroke="${INK}" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round"/>`, cs = -3 * sen;
