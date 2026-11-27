@@ -180,6 +180,32 @@ def _env() -> dict:
     return env
 
 
+def siapkan_pratinjau_visual(p: Path, durasi_per_shot: float = 4.0) -> Path:
+    """Buat salinan papan untuk pratinjau visual tanpa TTS, narasi, musik, atau efek audio."""
+    if durasi_per_shot <= 0:
+        raise ValueError("durasi pratinjau tiap shot harus lebih dari 0 detik")
+    spek = baca_spek(p)
+    cerita = spek.get("cerita")
+    if not isinstance(cerita, dict) or not isinstance(cerita.get("shot"), list):
+        raise ValueError("Pratinjau visual saat ini memerlukan cerita.shot.")
+    shot = cerita["shot"]
+    if not shot:
+        raise ValueError("Tidak ada shot untuk dipratinjau.")
+    for i, sh in enumerate(shot):
+        if not isinstance(sh, dict):
+            raise ValueError(f"shot {i + 1} harus berupa objek.")
+        sh["at"] = round(i * durasi_per_shot, 2)
+        for k in ("narasi", "intonasi", "jeda", "_narasi", "durasi"):
+            sh.pop(k, None)
+    spek["durasi"] = round(len(shot) * durasi_per_shot, 2)
+    for k in ("suara", "waktu", "subtitle", "rekaman", "musik", "musik_seed"):
+        spek.pop(k, None)
+    spek["musik"] = False
+    tujuan = p.parent / f".pratinjau-{p.stem}.json"
+    tujuan.write_text(json.dumps(spek, ensure_ascii=False, indent=2) + "\\n", encoding="utf-8")
+    return tujuan
+
+
 def jalankan(p: Path, video: Path, *, tts_fn=None) -> dict:
     """Render + periksa. Mengembalikan ringkasan; 'lulus' False bila ada GAGAL teknis/batas wajib."""
     kerja = video.parent / (video.stem + "_periksa")
@@ -265,6 +291,7 @@ def main() -> None:
     ap.add_argument("--bekal", action="store_true", help="cetak format + katalog terbaru untuk sesi chat penulis JSON")
     ap.add_argument("-o", help="berkas MP4 keluaran")
     ap.add_argument("--kirim", action="store_true", help="kirim hasil ke Telegram")
+    ap.add_argument("--pratinjau-visual", action="store_true", help="render visual tanpa TTS, narasi, musik, atau efek audio")
     a = ap.parse_args()
     if a.bekal:
         print(bekal())
@@ -275,7 +302,9 @@ def main() -> None:
     try:
         p = jalur_spek(a.spek)
         video = Path(a.o or Path(os.environ.get("RUNNER_TEMP", "/tmp")) / f"manual-{nama}.mp4")
-        hasil = jalankan(p, video)
+        if a.pratinjau_visual and a.kirim:
+            raise ValueError("Mode pratinjau visual tidak boleh dikirim; setujui visual dahulu.")
+        hasil = jalankan(p, video, pratinjau_visual=a.pratinjau_visual)
     except Exception as e:  # noqa: BLE001 - semua kegagalan dilaporkan ke pemilik lewat Telegram
         if a.kirim:
             kirim_pesan(f"❌ Jalur manual {nama}: {e}")
