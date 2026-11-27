@@ -1,0 +1,65 @@
+name: Efek suara — buat lewat API ElevenLabs
+
+on:
+  workflow_dispatch:
+    inputs:
+      nama:
+        description: "Nama berkas (huruf kecil/angka/garis bawah), disimpan ke mesin-video/aset/suara/<nama>.mp3"
+        required: true
+        type: string
+      deskripsi:
+        description: "Deskripsi suara (bahasa Inggris lebih akurat)"
+        required: true
+        type: string
+      durasi:
+        description: "Durasi detik (0,5-30); kosong = ditentukan model"
+        required: false
+        default: ""
+        type: string
+      timpa:
+        description: "Timpa berkas yang sudah ada"
+        required: false
+        default: "false"
+        type: string
+
+permissions:
+  contents: write
+
+concurrency:
+  group: efek-${{ inputs.nama }}
+  cancel-in-progress: false
+
+jobs:
+  buat:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Buat efek
+        env:
+          ELEVENLABS_API_KEY: ${{ secrets.ELEVENLABS_API_KEY }}
+          NAMA: ${{ inputs.nama }}
+          DESKRIPSI: ${{ inputs.deskripsi }}
+          DURASI: ${{ inputs.durasi }}
+          TIMPA: ${{ inputs.timpa }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          arg=()
+          [[ -n "$DURASI" ]] && arg+=(--durasi "$DURASI")
+          [[ "$TIMPA" == "true" ]] && arg+=(--timpa)
+          python mesin-video/efek_api.py "$NAMA" "$DESKRIPSI" "${arg[@]}"
+      - name: Simpan ke repo
+        env:
+          NAMA: ${{ inputs.nama }}
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "mesin-video/aset/suara/$NAMA.mp3" "mesin-video/aset/suara/$NAMA.txt"
+          git commit -m "Efek suara: $NAMA"
+          git pull --rebase origin "$GITHUB_REF_NAME"
+          git push origin "HEAD:$GITHUB_REF_NAME"
