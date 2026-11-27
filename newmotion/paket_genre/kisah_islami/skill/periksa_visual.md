@@ -30,7 +30,7 @@ Jika objek yang disebut narasi tidak tampak karena renderer memang tidak memilik
 ## Format keluaran (JSON saja)
 {"lulus": true|false,
  "temuan": [{"beat": 3, "berat": "berat"|"ringan", "masalah": "apa yang terlihat",
-             "saran": "perubahan pada rencana beat itu (subjek, tempat, keadaan, kamu, kamera, teks_layar)"}],
+             "saran": "perubahan pada rencana beat itu (subjek, tempat, keadaan, kamu, kamera, teks_layar)",\n             "kebutuhan": {"nama": "objek konkret", "alasan": "mengapa dibutuhkan", "bukti": "potongan narasi"}}],
  "catatan": "satu kalimat kesan keseluruhan"}
 
 "lulus" = true bila tidak ada temuan berat. Saran harus bisa dikerjakan lewat rencana sutradara,
