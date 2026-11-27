@@ -30,6 +30,7 @@ POLA_SPEK = re.compile(r"(mesin-video/papan/[A-Za-z0-9_/-]+|antrean/[a-z0-9_-]{1
 
 def jalur_spek(teks: str) -> Path:
     """Terima hanya jalur di repo yang memang tempat papan; tolak '..' dan jalur mutlak."""
+    teks = teks.strip()  # input workflow_dispatch kadang membawa spasi di awal/akhir
     if not POLA_SPEK.fullmatch(teks) or ".." in teks:
         raise ValueError(f"Jalur papan tidak sah: {teks!r}")
     p = AKAR / teks
