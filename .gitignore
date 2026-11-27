@@ -35,3 +35,4 @@ coverage/
 # Dataset dan cache dalil dibangun di GitHub Actions/lokal, bukan disimpan di Git
 /data/hadis/
 /data/cache/quran/
+mesin-video/papan/kisah/.manual-*.json
