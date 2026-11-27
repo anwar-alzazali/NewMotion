@@ -45,7 +45,6 @@ def teks_kemampuan_tokoh(jalur: Path = CERITA_JS) -> str:
     kait = ", ".join(f"{j} ({s})" for j, s in k["kait"].items())
     return "\n".join([
         f"- pose diam: {', '.join(k['pose'])}",
-        f"- benda yang dapat dipegang (tangan kanan): {', '.join(k['pegang'])}",
         f"- aksi berulang: {', '.join(k['aksi'])}",
         f"- hadap: {', '.join(HADAP)} (kanan/kiri = tampak samping utuh, badan dan kaki ikut menyamping)",
         f"- benda yang dapat dipegang: {', '.join(k['pegang'])}",
