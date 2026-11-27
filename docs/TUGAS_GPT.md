@@ -58,7 +58,7 @@ daftar tugas dari posisi terakhir.
 - [x] Tugas 5c — Pemeriksa naskah sebelum sampai ke pemilik (prioritas tinggi)
 - [x] Tugas 5d — Belajar dari revisi pemilik dan naskah yang disetujui
 - [x] Tugas 6 — Visual konsep abstrak
-- [ ] Tugas 7 — Lembar uji renderer otomatis
+- [x] Tugas 7 — Lembar uji renderer otomatis
 - [ ] Tugas 8 — Pembuat komponen renderer (bersyarat, lihat syaratnya)
 - [ ] Tugas 9 — Statistik video dan usulan pedoman dari data
 

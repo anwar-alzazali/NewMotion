@@ -117,6 +117,9 @@ jobs:
               f.write(f"### Uji tokoh lapis A\n{ringkas}\n")
           assert not r["temuan"], f"uji tokoh lapis A: {ringkas}"
           PY
+      - name: Bukti render komponen-draf (hanya PR berlabel cabang komponen-draf)
+        if: startsWith(github.head_ref, 'komponen-draf-') || startsWith(github.ref_name, 'komponen-draf-')
+        run: python mesin-video/papan/lembar_komponen_draf.py hasil/komponen-draf/komponen_draf.json
       - name: Unggah bukti visual
         if: always()
         uses: actions/upload-artifact@v4
@@ -127,6 +130,8 @@ jobs:
             hasil/uji_tokoh/laporan.json
             hasil/pustaka-benda-baru.png
             hasil/konsep-abstrak.png
+            hasil/komponen-draf/*.png
+            hasil/komponen-draf/*-laporan.json
           if-no-files-found: ignore
           retention-days: 14
       - name: CLI
