@@ -80,7 +80,7 @@ def uji(keluaran: Path, chrome: str | None = None) -> dict:
     laporan = {"lulus": not temuan, "batas_tangan_px": BATAS_TANGAN, "jumlah_sampel": len(WAKTU),
                "perpindahan_px": round(perpindahan, 2), "bukti": bukti, "temuan": temuan}
     (keluaran / "laporan_serah_terima.json").write_text(
-        json.dumps(laporan, ensure_ascii=False, indent=2) + "\\n", encoding="utf-8")
+        json.dumps(laporan, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print(json.dumps(laporan, ensure_ascii=False))
     return laporan
 
