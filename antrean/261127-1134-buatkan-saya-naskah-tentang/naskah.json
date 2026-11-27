@@ -3,6 +3,158 @@
  "inti": "Ketika jalan buntu menghadang dan musuh mengepung di belakang, keyakinan Nabi Musa kepada pertolongan Allah membelah samudra dan menenggelamkan kesombongan Firaun.",
  "dalil": [
   {
+   "id": "yunus90_91",
+   "jenis": "quran",
+   "label": "QS YUNUS 90-91",
+   "surah": 10,
+   "ayat": "90-91",
+   "status": "terverifikasi",
+   "teks_ar": "۞ وَجَـٰوَزْنَا بِبَنِىٓ إِسْرَٰٓءِيلَ ٱلْبَحْرَ فَأَتْبَعَهُمْ فِرْعَوْنُ وَجُنُودُهُۥ بَغْيًا وَعَدْوًا ۖ حَتَّىٰٓ إِذَآ أَدْرَكَهُ ٱلْغَرَقُ قَالَ ءَامَنتُ أَنَّهُۥ لَآ إِلَـٰهَ إِلَّا ٱلَّذِىٓ ءَامَنَتْ بِهِۦ بَنُوٓا۟ إِسْرَٰٓءِيلَ وَأَنَا۠ مِنَ ٱلْمُسْلِمِينَ ءَآلْـَٔـٰنَ وَقَدْ عَصَيْتَ قَبْلُ وَكُنتَ مِنَ ٱلْمُفْسِدِينَ",
+   "terjemah": "Dan Kami selamatkan Bani Israil melintasi laut, kemudian Fir'aun dan bala tentaranya mengikuti mereka, untuk menzalimi dan menindas (mereka). Sehingga ketika Fir'aun hampir tenggelam dia berkata, \"Aku percaya bahwa tidak ada tuhan melainkan Tuhan yang dipercayai oleh Bani Israil, dan aku termasuk orang-orang muslim (berserah diri).\" Mengapa baru sekarang (kamu beriman), padahal sesungguhnya engkau telah durhaka sejak dahulu, dan engkau termasuk orang yang berbuat kerusakan.",
+   "sumber_teks": "Quran Foundation · Indonesian Islamic Affairs Ministry",
+   "rujukan": "https://quran.com/10/90",
+   "pasangan_kata": [
+    {
+     "ar": "۞ وَجَـٰوَزْنَا",
+     "id": "dan Kami seberangkan"
+    },
+    {
+     "ar": "بِبَنِىٓ",
+     "id": "Bani"
+    },
+    {
+     "ar": "إِسْرَٰٓءِيلَ",
+     "id": "Israil"
+    },
+    {
+     "ar": "ٱلْبَحْرَ",
+     "id": "laut"
+    },
+    {
+     "ar": "فَأَتْبَعَهُمْ",
+     "id": "maka/lalu mereka diikuti"
+    },
+    {
+     "ar": "فِرْعَوْنُ",
+     "id": "Fir'aun"
+    },
+    {
+     "ar": "وَجُنُودُهُۥ",
+     "id": "dan bala tentaranya"
+    },
+    {
+     "ar": "بَغْيًۭا",
+     "id": "menganiaya"
+    },
+    {
+     "ar": "وَعَدْوًا ۖ",
+     "id": "dan memusuhinya"
+    },
+    {
+     "ar": "حَتَّىٰٓ",
+     "id": "sehingga"
+    },
+    {
+     "ar": "إِذَآ",
+     "id": "apabila"
+    },
+    {
+     "ar": "أَدْرَكَهُ",
+     "id": "telah hampir dia (fir'aun)"
+    },
+    {
+     "ar": "ٱلْغَرَقُ",
+     "id": "tenggelam"
+    },
+    {
+     "ar": "قَالَ",
+     "id": "dia berkata"
+    },
+    {
+     "ar": "ءَامَنتُ",
+     "id": "saya percaya"
+    },
+    {
+     "ar": "أَنَّهُۥ",
+     "id": "bahwasanya"
+    },
+    {
+     "ar": "لَآ",
+     "id": "tidak ada"
+    },
+    {
+     "ar": "إِلَـٰهَ",
+     "id": "Tuhan"
+    },
+    {
+     "ar": "إِلَّا",
+     "id": "melainkan"
+    },
+    {
+     "ar": "ٱلَّذِىٓ",
+     "id": "(Tuhan) yang"
+    },
+    {
+     "ar": "ءَامَنَتْ",
+     "id": "mempercaya"
+    },
+    {
+     "ar": "بِهِۦ",
+     "id": "dengannya"
+    },
+    {
+     "ar": "بَنُوٓا۟",
+     "id": "Bani"
+    },
+    {
+     "ar": "إِسْرَٰٓءِيلَ",
+     "id": "Israil"
+    },
+    {
+     "ar": "وَأَنَا۠",
+     "id": "dan saya"
+    },
+    {
+     "ar": "مِنَ",
+     "id": "dari"
+    },
+    {
+     "ar": "ٱلْمُسْلِمِينَ",
+     "id": "orang-orang yang berserah diri"
+    },
+    {
+     "ar": "ءَآلْـَٔـٰنَ",
+     "id": "apakah sekarang"
+    },
+    {
+     "ar": "وَقَدْ",
+     "id": "dan/padahal sesungguhnya"
+    },
+    {
+     "ar": "عَصَيْتَ",
+     "id": "kamu telah durhaka"
+    },
+    {
+     "ar": "قَبْلُ",
+     "id": "sejak dahulu"
+    },
+    {
+     "ar": "وَكُنتَ",
+     "id": "dan kamu adalah"
+    },
+    {
+     "ar": "مِنَ",
+     "id": "dari"
+    },
+    {
+     "ar": "ٱلْمُفْسِدِينَ",
+     "id": "orang-orang yang membuat kerusakan"
+    }
+   ],
+   "diverifikasi_oleh": "sutradara.dalil 2026-11-27",
+   "makna": "perlu_tinjauan_pemilik"
+  },
+  {
    "id": "syuara60",
    "jenis": "quran",
    "label": "QS ASY-SYU'ARA 60",
@@ -236,152 +388,184 @@
    "label_saran": "QS ASH-SHU'ARA 65-66"
   },
   {
-   "id": "yunus90_91",
+   "id": "nisa18",
    "jenis": "quran",
-   "label": "QS YUNUS 90-91",
-   "surah": 10,
-   "ayat": "90-91",
+   "label": "QS AN-NISA 18",
+   "surah": 4,
+   "ayat": "18",
    "status": "terverifikasi",
-   "teks_ar": "۞ وَجَـٰوَزْنَا بِبَنِىٓ إِسْرَٰٓءِيلَ ٱلْبَحْرَ فَأَتْبَعَهُمْ فِرْعَوْنُ وَجُنُودُهُۥ بَغْيًا وَعَدْوًا ۖ حَتَّىٰٓ إِذَآ أَدْرَكَهُ ٱلْغَرَقُ قَالَ ءَامَنتُ أَنَّهُۥ لَآ إِلَـٰهَ إِلَّا ٱلَّذِىٓ ءَامَنَتْ بِهِۦ بَنُوٓا۟ إِسْرَٰٓءِيلَ وَأَنَا۠ مِنَ ٱلْمُسْلِمِينَ ءَآلْـَٔـٰنَ وَقَدْ عَصَيْتَ قَبْلُ وَكُنتَ مِنَ ٱلْمُفْسِدِينَ",
-   "terjemah": "Dan Kami selamatkan Bani Israil melintasi laut, kemudian Fir'aun dan bala tentaranya mengikuti mereka, untuk menzalimi dan menindas (mereka). Sehingga ketika Fir'aun hampir tenggelam dia berkata, \"Aku percaya bahwa tidak ada tuhan melainkan Tuhan yang dipercayai oleh Bani Israil, dan aku termasuk orang-orang muslim (berserah diri).\" Mengapa baru sekarang (kamu beriman), padahal sesungguhnya engkau telah durhaka sejak dahulu, dan engkau termasuk orang yang berbuat kerusakan.",
+   "teks_ar": "وَلَيْسَتِ ٱلتَّوْبَةُ لِلَّذِينَ يَعْمَلُونَ ٱلسَّيِّـَٔاتِ حَتَّىٰٓ إِذَا حَضَرَ أَحَدَهُمُ ٱلْمَوْتُ قَالَ إِنِّى تُبْتُ ٱلْـَٔـٰنَ وَلَا ٱلَّذِينَ يَمُوتُونَ وَهُمْ كُفَّارٌ ۚ أُو۟لَـٰٓئِكَ أَعْتَدْنَا لَهُمْ عَذَابًا أَلِيمًا",
+   "terjemah": "Dan tobat itu tidaklah (diterima Allah) dari mereka yang melakukan kejahatan hingga apabila datang ajal kepada seseorang di antara mereka, (barulah) dia mengatakan, \"Saya benar-benar bertobat sekarang.\" Dan tidak (pula diterima tobat) dari orang-orang yang meninggal sedang mereka di dalam kekafiran. Bagi orang-orang itu telah Kami sediakan azab yang pedih.",
    "sumber_teks": "Quran Foundation · Indonesian Islamic Affairs Ministry",
-   "rujukan": "https://quran.com/10/90",
+   "rujukan": "https://quran.com/4/18",
    "pasangan_kata": [
     {
-     "ar": "۞ وَجَـٰوَزْنَا",
-     "id": "dan Kami seberangkan"
+     "ar": "وَلَيْسَتِ",
+     "id": "dan tidaklah"
     },
     {
-     "ar": "بِبَنِىٓ",
-     "id": "Bani"
+     "ar": "ٱلتَّوْبَةُ",
+     "id": "taubat itu"
     },
     {
-     "ar": "إِسْرَٰٓءِيلَ",
-     "id": "Israil"
+     "ar": "لِلَّذِينَ",
+     "id": "bagi orang-orang yang"
     },
     {
-     "ar": "ٱلْبَحْرَ",
-     "id": "laut"
+     "ar": "يَعْمَلُونَ",
+     "id": "(mereka) melakukan"
     },
     {
-     "ar": "فَأَتْبَعَهُمْ",
-     "id": "maka/lalu mereka diikuti"
-    },
-    {
-     "ar": "فِرْعَوْنُ",
-     "id": "Fir'aun"
-    },
-    {
-     "ar": "وَجُنُودُهُۥ",
-     "id": "dan bala tentaranya"
-    },
-    {
-     "ar": "بَغْيًۭا",
-     "id": "menganiaya"
-    },
-    {
-     "ar": "وَعَدْوًا ۖ",
-     "id": "dan memusuhinya"
+     "ar": "ٱلسَّيِّـَٔاتِ",
+     "id": "kejahatan"
     },
     {
      "ar": "حَتَّىٰٓ",
      "id": "sehingga"
     },
     {
-     "ar": "إِذَآ",
+     "ar": "إِذَا",
      "id": "apabila"
     },
     {
-     "ar": "أَدْرَكَهُ",
-     "id": "telah hampir dia (fir'aun)"
+     "ar": "حَضَرَ",
+     "id": "datang"
     },
     {
-     "ar": "ٱلْغَرَقُ",
-     "id": "tenggelam"
+     "ar": "أَحَدَهُمُ",
+     "id": "salah seorang diantara mereka"
+    },
+    {
+     "ar": "ٱلْمَوْتُ",
+     "id": "kematian"
     },
     {
      "ar": "قَالَ",
-     "id": "dia berkata"
+     "id": "ia mengatakan"
     },
     {
-     "ar": "ءَامَنتُ",
-     "id": "saya percaya"
+     "ar": "إِنِّى",
+     "id": "sesungguhnya saya"
     },
     {
-     "ar": "أَنَّهُۥ",
-     "id": "bahwasanya"
+     "ar": "تُبْتُ",
+     "id": "saya bertaubat"
     },
     {
-     "ar": "لَآ",
-     "id": "tidak ada"
+     "ar": "ٱلْـَٔـٰنَ",
+     "id": "sekarang"
     },
     {
-     "ar": "إِلَـٰهَ",
-     "id": "Tuhan"
+     "ar": "وَلَا",
+     "id": "dan tidaklah"
     },
     {
-     "ar": "إِلَّا",
-     "id": "melainkan"
+     "ar": "ٱلَّذِينَ",
+     "id": "orang-orang yang"
     },
     {
-     "ar": "ٱلَّذِىٓ",
-     "id": "(Tuhan) yang"
+     "ar": "يَمُوتُونَ",
+     "id": "(mereka) mati"
     },
     {
-     "ar": "ءَامَنَتْ",
-     "id": "mempercaya"
+     "ar": "وَهُمْ",
+     "id": "dan/sedang mereka"
     },
     {
-     "ar": "بِهِۦ",
-     "id": "dengannya"
+     "ar": "كُفَّارٌ ۚ",
+     "id": "kekafiran"
     },
     {
-     "ar": "بَنُوٓا۟",
-     "id": "Bani"
+     "ar": "أُو۟لَـٰٓئِكَ",
+     "id": "mereka itulah"
     },
     {
-     "ar": "إِسْرَٰٓءِيلَ",
-     "id": "Israil"
+     "ar": "أَعْتَدْنَا",
+     "id": "Kami sediakan"
     },
     {
-     "ar": "وَأَنَا۠",
-     "id": "dan saya"
+     "ar": "لَهُمْ",
+     "id": "bagi mereka"
     },
     {
-     "ar": "مِنَ",
+     "ar": "عَذَابًا",
+     "id": "siksa"
+    },
+    {
+     "ar": "أَلِيمًۭا",
+     "id": "yang pedih"
+    }
+   ],
+   "diverifikasi_oleh": "sutradara.dalil 2026-11-27",
+   "makna": "perlu_tinjauan_pemilik"
+  },
+  {
+   "id": "yunus92",
+   "jenis": "quran",
+   "label": "QS YUNUS 92",
+   "surah": 10,
+   "ayat": "92",
+   "status": "terverifikasi",
+   "teks_ar": "فَٱلْيَوْمَ نُنَجِّيكَ بِبَدَنِكَ لِتَكُونَ لِمَنْ خَلْفَكَ ءَايَةً ۚ وَإِنَّ كَثِيرًا مِّنَ ٱلنَّاسِ عَنْ ءَايَـٰتِنَا لَغَـٰفِلُونَ",
+   "terjemah": "Maka pada hari ini Kami selamatkan jasadmu agar engkau dapat menjadi pelajaran bagi orang-orang yang datang setelahmu, tetapi kebanyakan manusia tidak mengindahkan tanda-tanda (kekuasaan) Kami.",
+   "sumber_teks": "Quran Foundation · Indonesian Islamic Affairs Ministry",
+   "rujukan": "https://quran.com/10/92",
+   "pasangan_kata": [
+    {
+     "ar": "فَٱلْيَوْمَ",
+     "id": "maka pada hari ini"
+    },
+    {
+     "ar": "نُنَجِّيكَ",
+     "id": "Kami selamatkan kamu"
+    },
+    {
+     "ar": "بِبَدَنِكَ",
+     "id": "dengan badanmu"
+    },
+    {
+     "ar": "لِتَكُونَ",
+     "id": "supaya kamu adalah/jadi"
+    },
+    {
+     "ar": "لِمَنْ",
+     "id": "bagi orang"
+    },
+    {
+     "ar": "خَلْفَكَ",
+     "id": "dibelakangmu"
+    },
+    {
+     "ar": "ءَايَةًۭ ۚ",
+     "id": "ayat-ayat/pelajaran"
+    },
+    {
+     "ar": "وَإِنَّ",
+     "id": "dan sesungguhnya"
+    },
+    {
+     "ar": "كَثِيرًۭا",
+     "id": "kebanyakan"
+    },
+    {
+     "ar": "مِّنَ",
      "id": "dari"
     },
     {
-     "ar": "ٱلْمُسْلِمِينَ",
-     "id": "orang-orang yang berserah diri"
+     "ar": "ٱلنَّاسِ",
+     "id": "manusia"
     },
     {
-     "ar": "ءَآلْـَٔـٰنَ",
-     "id": "apakah sekarang"
-    },
-    {
-     "ar": "وَقَدْ",
-     "id": "dan/padahal sesungguhnya"
-    },
-    {
-     "ar": "عَصَيْتَ",
-     "id": "kamu telah durhaka"
-    },
-    {
-     "ar": "قَبْلُ",
-     "id": "sejak dahulu"
-    },
-    {
-     "ar": "وَكُنتَ",
-     "id": "dan kamu adalah"
-    },
-    {
-     "ar": "مِنَ",
+     "ar": "عَنْ",
      "id": "dari"
     },
     {
-     "ar": "ٱلْمُفْسِدِينَ",
-     "id": "orang-orang yang membuat kerusakan"
+     "ar": "ءَايَـٰتِنَا",
+     "id": "ayat-ayat Kami"
+    },
+    {
+     "ar": "لَغَـٰفِلُونَ",
+     "id": "sungguh mereka lalai"
     }
    ],
    "diverifikasi_oleh": "sutradara.dalil 2026-11-27",
@@ -390,18 +574,22 @@
  ],
  "beat": [
   {
-   "narasi": "Pernahkah kamu merasa benar-benar terjebak tanpa ada satu pun jalan keluar yang tersisa? Perasaan itulah yang mencekam Bani Israil di tepi Laut Merah.",
+   "narasi": "Saat hampir tenggelam ditelan laut, Firaun berseru menyatakan beriman, namun Allah menolak tobatnya yang terlambat itu agar menjadi peringatan bagi kamu.",
    "kata_kunci": [
-    "putus asa",
-    "jalan buntu",
-    "tepi laut"
+    "firaun tenggelam",
+    "tobat ditolak",
+    "peringatan"
    ],
-   "dalil": [],
+   "dalil": [
+    "yunus90_91"
+   ],
    "suasana": "fajar",
-   "peran": []
+   "peran": [
+    "Firaun"
+   ]
   },
   {
-   "narasi": "Saat matahari terbit, Firaun bersama bala tentaranya yang bersenjata lengkap berhasil menyusul rombongan Nabi Musa tepat di tepi laut.",
+   "narasi": "Saat matahari terbit, Firaun bersama bala tentaranya berhasil menyusul rombongan Nabi Musa tepat di tepi laut.",
    "kata_kunci": [
     "firaun mengejar",
     "pasukan firaun",
@@ -419,11 +607,11 @@
    ]
   },
   {
-   "narasi": "Ketika kedua belah pihak sudah saling melihat, kaum Nabi Musa panik dan berteriak ketakutan karena merasa pasti akan tertangkap dan binasa.",
+   "narasi": "Ketika kedua belah pihak sudah saling melihat, kaum Nabi Musa panik karena merasa mereka benar-benar akan tersusul.",
    "kata_kunci": [
     "kedua pasukan berhadapan",
     "ketakutan",
-    "pasti tertangkap"
+    "pasti tersusul"
    ],
    "dalil": [
     "syuara61"
@@ -506,7 +694,8 @@
    ],
    "dalil": [
     "yunus90_91",
-    "syuara65_66"
+    "syuara65_66",
+    "nisa18"
    ],
    "suasana": "dhuha",
    "peran": [
@@ -519,6 +708,21 @@
      "ucapan": "Aku percaya bahwa tidak ada tuhan melainkan Tuhan yang dipercayai oleh Bani Israil, dan aku termasuk orang-orang yang berserah diri.",
      "penjawab": ""
     }
+   ]
+  },
+  {
+   "narasi": "Allah kemudian menyelamatkan jasad Firaun agar tetap utuh keluar dari laut, untuk menjadi bukti dan pelajaran berharga bagi orang-orang sesudahnya, termasuk kamu.",
+   "kata_kunci": [
+    "jasad firaun",
+    "pelajaran",
+    "bukti kekuasaan"
+   ],
+   "dalil": [
+    "yunus92"
+   ],
+   "suasana": "dhuha",
+   "peran": [
+    "Firaun"
    ]
   },
   {

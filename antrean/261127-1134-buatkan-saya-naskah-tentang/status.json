@@ -6,7 +6,7 @@
  "genre": "kisah_islami",
  "konteks_konten": "islami",
  "tahap": {
-  "diterima": "jalan",
+  "diterima": "selesai",
   "dalil": "selesai",
   "tinjau": "jalan",
   "sutradara": "belum",
@@ -17,21 +17,23 @@
   "kirim": "belum"
  },
  "ket": {
-  "diterima": "revisi mengantre…",
-  "dalil": "6/6",
+  "diterima": "9 beat, 8 dalil · Gemini",
+  "dalil": "8/8",
   "tinjau": "menunggu Anda membaca naskah"
  },
  "dibuat": "2026-11-27T04:34:37.402Z",
- "diperbarui": "2026-11-27T04:35:11+00:00",
- "token_ai": 2892,
+ "diperbarui": "2026-11-27T04:40:23+00:00",
+ "token_ai": 12233,
  "penyedia_ai": "Gemini gemini-3.8-flash (gratis)",
  "laporan_dalil": [
+  "✓ QS YUNUS 90-91",
   "✓ QS ASY-SYU'ARA 60 (label disarankan: QS ASH-SHU'ARA 60)",
   "✓ QS ASY-SYU'ARA 61 (label disarankan: QS ASH-SHU'ARA 61)",
   "✓ QS ASY-SYU'ARA 62 (label disarankan: QS ASH-SHU'ARA 62)",
   "✓ QS ASY-SYU'ARA 63 (label disarankan: QS ASH-SHU'ARA 63)",
   "✓ QS ASY-SYU'ARA 65-66 (label disarankan: QS ASH-SHU'ARA 65-66)",
-  "✓ QS YUNUS 90-91"
+  "✓ QS AN-NISA 18",
+  "✓ QS YUNUS 92"
  ],
- "pesan_kartu": 436
+ "pesan_kartu": 440
 }
