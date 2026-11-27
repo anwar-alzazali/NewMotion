@@ -319,7 +319,7 @@ def test_tempel_melalui_http_palsu_mempertahankan_narasi_pemilik(monkeypatch):
     hasil, metadata = A.buat_naskah("tempel", asal)
     assert hasil["beat"][0]["narasi"] == asal
     assert metadata.model == "claude-haiku-5-5"
-    assert "rapikan" in panggilan[0][0]
+    assert panggilan[0][1]["model"] == "claude-haiku-5-5"
 
 
 def test_revisi_melalui_http_palsu_membawa_naskah_lama_dan_catatan(monkeypatch):
