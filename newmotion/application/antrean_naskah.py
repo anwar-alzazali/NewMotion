@@ -402,11 +402,11 @@ def buat_naskah(mode, masukan, naskah_lama=None, *, tanya=None):
     from newmotion.application import pelajaran_naskah
     pedoman = pelajaran_naskah.pedoman_disetujui()
     if pedoman:
-        skill += "\\n\\n## Pertimbangan tambahan yang disetujui pemilik (bukan aturan wajib)\\n" + pedoman
+        skill += "\n\n## Pertimbangan tambahan yang disetujui pemilik (bukan aturan wajib)\n" + pedoman
     if mode == "ide":
         contoh = pelajaran_naskah.pilih_contoh(masukan)
         if contoh:
-            skill += "\\n\\n## Contoh naskah final yang disetujui dan mirip topik\\n"
+            skill += "\n\n## Contoh naskah final yang disetujui dan mirip topik\n"
             skill += json.dumps([{"judul": x.get("judul"), "inti": x.get("inti"), "naskah": x.get("naskah")} for x in contoh], ensure_ascii=False)
     if mode == "tempel":
         judul, par = paragraf(masukan)
@@ -489,12 +489,12 @@ def simpan_revisi(d: Path, catatan: str, sebelum: dict, sesudah: dict) -> dict:
     folder.mkdir(parents=True, exist_ok=True)
     nomor = max((int(p.stem) for p in folder.glob("[0-9][0-9][0-9][0-9].json")), default=0) + 1
     data = {"nomor": nomor, "waktu": _sekarang(), "catatan_pemilik": catatan, "sebelum": sebelum, "sesudah": sesudah}
-    (folder / f"{nomor:04d}.json").write_text(json.dumps(data, ensure_ascii=False, indent=2) + "\\n", encoding="utf-8")
+    (folder / f"{nomor:04d}.json").write_text(json.dumps(data, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     baris = {"id": d.name, "nomor": nomor, "catatan_pemilik": catatan, "sebelum": sebelum, "sesudah": sesudah}
     data_dir = AKAR / "newmotion" / "application" / "data"
     data_dir.mkdir(parents=True, exist_ok=True)
     with (data_dir / "pelajaran_naskah.jsonl").open("a", encoding="utf-8") as f:
-        f.write(json.dumps(baris, ensure_ascii=False) + "\\n")
+        f.write(json.dumps(baris, ensure_ascii=False) + "\n")
     return data
 
 def simpan_contoh_disetujui(d: Path, naskah: dict, status: dict) -> None:
@@ -505,7 +505,7 @@ def simpan_contoh_disetujui(d: Path, naskah: dict, status: dict) -> None:
     if tujuan.exists():
         return
     isi = {"id": d.name, "judul": naskah.get("judul"), "inti": naskah.get("inti"), "genre": status.get("genre"), "naskah": naskah, "disetujui": _sekarang()}
-    tujuan.write_text(json.dumps(isi, ensure_ascii=False, indent=2) + "\\n", encoding="utf-8")
+    tujuan.write_text(json.dumps(isi, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 
 # ---------------- Telegram ----------------
 def tg(metode: str, badan: dict) -> dict:
@@ -680,7 +680,7 @@ def proses(id_: str, mode: str, *, folder: Path = ANTREAN, tanya=None, quran=Non
                 ],
             }
             revisi, meta_penulis = buat_naskah(
-                "revisi", "PERBAIKAN WAJIB BERDASARKAN PEMERIKSA INDEPENDEN:\\n"
+                "revisi", "PERBAIKAN WAJIB BERDASARKAN PEMERIKSA INDEPENDEN:\n"
                 + json.dumps(arahan, ensure_ascii=False), n
             )
             token_penulis = meta_penulis.token_masuk + meta_penulis.token_keluar
