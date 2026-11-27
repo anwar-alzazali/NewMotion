@@ -250,3 +250,13 @@ def test_validasi_interaksi_menolak_tipe_data_tidak_sah_tanpa_crash():
     assert any("nama" in e for e in galat)
     assert any("hadap_ke" in e for e in galat)
     assert any("pegang" in e for e in galat)
+
+
+def test_katalog_benda_genggam_dibaca_dari_renderer():
+    from newmotion.application.kemampuan_tokoh import kemampuan, teks_kemampuan_tokoh
+
+    k = kemampuan()
+    assert {"tongkat", "kendi", "lentera", "keranjang", "tasbih", "surat", "gulungan", "karung_kecil"} <= set(k["pegang"])
+    teks = teks_kemampuan_tokoh()
+    assert "- benda yang dapat dipegang: " in teks
+    assert "karung_kecil" in teks
