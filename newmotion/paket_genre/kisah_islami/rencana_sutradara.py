@@ -72,6 +72,11 @@ def validasi_rencana(rencana: Any, narasi_beat: list[str]) -> list[str]:
     from newmotion.application.kebutuhan_renderer import validasi_kebutuhan
 
     g.extend(validasi_kebutuhan(rencana.get("belum_ada"), label="belum_ada"))
+    for kebutuhan in rencana.get("belum_ada", []) if isinstance(rencana.get("belum_ada"), list) else []:
+        if isinstance(kebutuhan, Mapping) and isinstance(kebutuhan.get("bukti"), str):
+            bukti_kebutuhan = _polos(kebutuhan["bukti"])
+            if not any(bukti_kebutuhan and bukti_kebutuhan in _polos(teks) for teks in narasi_beat):
+                g.append("belum_ada: bukti harus potongan dari salah satu narasi")
     inti = rencana.get("objek_inti")
     if inti is not None and (not isinstance(inti, Mapping) or inti.get("jenis") not in kat):
         g.append(f"objek_inti.jenis {(inti or {}).get('jenis')!r} tidak ada di katalog")
