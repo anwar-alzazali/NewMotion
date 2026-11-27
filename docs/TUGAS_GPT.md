@@ -37,6 +37,7 @@ Pemilik: Anwar Alzazali. Bahasa kerja: Indonesia. Ditulis 27 Nov 2026 oleh Claud
 - [x] Tugas 3 — Pustaka benda renderer untuk banyak jenis cerita
 - [x] Tugas 4 — Lapis A uji tokoh menuju nol temuan
 - [ ] Tugas 5 — Interaksi antartokoh dan benda yang dipegang
+- [ ] Tugas 5b — Perbaikan benda lemah dari Tugas 3 (temuan audit Claude, kerjakan setelah Tugas 5)
 - [ ] Tugas 6 — Visual konsep abstrak
 - [ ] Tugas 7 — Lembar uji renderer otomatis
 - [ ] Tugas 8 — Pembuat komponen renderer (bersyarat, lihat syaratnya)
@@ -186,6 +187,21 @@ Jangan membuat lolos dengan melonggarkan ambang tanpa alasan anatomi.
 **Selesai bila:** ada uji otomatis yang mengukur jarak tangan ke benda saat memberi/menerima (seperti A6,
 batas 14 px) dan lembar PNG bukti di PR.
 
+## Tugas 5b — Perbaikan benda lemah dari Tugas 3 (temuan audit Claude, 27 Nov)
+
+Audit lembar `hasil/pustaka-benda-baru.png`: 20 benda sudah layak pakai, empat belum terbaca di layar ponsel.
+
+| Benda | Masalah yang terlihat | Yang harus terbaca |
+|---|---|---|
+| `ladang_gandum` | hanya coretan hitam kecil berserakan; tidak terbaca sebagai tanaman | hamparan batang gandum berbulir, warna gandum (hijau saat muda, keemasan saat `matang`), bergoyang tertiup angin; rapat di belakang, lebih besar di depan |
+| `kambing` | kaki seperti kawat tipis, kepala/telinga janggal, lebih mirip rusa | kambing kampung yang jelas: badan berisi, kaki proporsional, tanduk pendek melengkung, janggut kecil, telinga menggantung; gaya sama dengan `domba` |
+| `rantai_belenggu` | hanya deretan lingkaran kecil; tidak terbaca sebagai belenggu | rantai mata besar yang tebal dengan kilau logam, borgol/gelang di ujung; `tegang` membuat rantai lurus vs kendur melengkung |
+| `sungai` | keadaan awal dan akhir hampir sama; `arus` tidak terasa | arus terlihat bergerak (garis arus/riak mengalir sepanjang waktu, makin deras saat `arus` 1), tepi sungai jelas |
+
+**Selesai bila:** lembar dua keadaan baru untuk keempatnya terbaca tanpa label pada ukuran seperempat
+layar, gaya sama dengan benda lain (garis `INK`, warna datar + bayangan lembut), `ukur_benda.py` dijalankan
+ulang, semua uji lulus. Benda lain dari Tugas 3 tidak perlu diubah.
+
 ## Tugas 6 — Visual konsep abstrak yang sering muncul di Kisah Islami
 
 **Tujuan:** pemeriksa visual berulang menemukan bahwa konsep abstrak tidak tergambar (contoh Mahsyar:
@@ -271,3 +287,8 @@ Format: `- YYYY-MM-DD | Tugas N | status (selesai/sebagian/MACET) | PR #.. | cat
 - 2026-11-27 | Tugas 3 | selesai | PR #57 | Menambahkan 24 benda vektor baru di `mesin-video/papan/cerita.js`, seluruhnya terdaftar di katalog dan memiliki parameter keadaan yang dapat dianimasikan; benda lama tidak dihapus/diubah. Perahu kecil ditambahkan ke `KAIT` dengan adegan uji A6 (kedua kaki menapak pada dek; tidak memaksakan titik pegangan tangan yang tidak ada). Uji kontrak katalog, skrip lembar PNG dua keadaan, dan ukuran bbox telah ditambahkan; `ukuran_benda.json` hasil ukur sudah tersimpan di branch. GitHub Actions run #45924118040 sukses pada seluruh 17 langkah: `node --check`, pengukuran, lembar visual, A6 perahu kecil, Ruff, pytest (404 passed), uji bot, alat ukur PR, CLI, dan doctor. Artifact `bukti-pustaka-benda-baru` tersedia (PNG + JSON). Catatan: laporan umum `uji_tokoh.py` masih menampilkan temuan A1–A5 yang memang menjadi ruang lingkup Tugas 4; pemeriksaan A6 khusus perahu baru lulus. PR digabung ke `gpt/integrasi` setelah verifikasi CI. Berikutnya: Tugas 4 — Lapis A uji tokoh menuju nol temuan.
 
 - 2026-11-27 | Tugas 4 | selesai | PR #58 | Memperbaiki pijakan kaki aksi `gali`/`menolong` dengan IK, menjaga badan samping pada pose `rebahan`/`rebahan_hp`, mengarahkan ayunan beliung ke depan-bawah, dan menyatukan panjang tulang kaki dengan acuan 100 px. Siklus `lompat` dijadikan lintasan periodik halus tanpa patahan pada batas modulo. `uji_tokoh.py` terbaru menguji 29 pose, lima sudut, dan sepuluh aksi; hasil eksplisit: **Lapis A: tidak ada temuan**. A6 perahu kecil juga lulus. Pada commit akhir `aa8f4ae`, GitHub Actions runtime dan uji pembuat karakter sukses; pytest **404 passed**, Ruff bersih, uji bot/CLI/doctor sukses. Perbaikan pencatatan `badan_samping` mencegah false positive pada pose rebah. PR #58 digabung ke `gpt/integrasi`. Berikutnya: Tugas 5 — interaksi antartokoh dan benda yang dipegang.
+
+- 2026-11-27 | Audit bertahap Tugas 1–4 | Claude | — | 404 uji lulus di gpt/integrasi; uji tokoh lapis A memang 0
+  temuan tanpa melonggarkan ambang. Tugas 3: 20 dari 24 benda layak; empat benda lemah dijadikan Tugas 5b
+  (kerjakan setelah Tugas 5 selesai, sebelum Tugas 6). Catatan untuk audit akhir: test-runtime.yml kini
+  terpicu push `tugas-*` dan meng-commit balik ukuran_benda.json — dirapikan saat merge ke main.
