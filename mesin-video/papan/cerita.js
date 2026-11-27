@@ -74,10 +74,27 @@
     lap.forEach(([w, tinggi, fr, sd]) => { const R = rng(sd); let d = `M -400 ${h + 2}`; for (let x = -400; x <= 1500; x += 120) d += ` Q ${x + 60} ${h - tinggi * (0.4 + R())} ${x + 120} ${h - tinggi * 0.3 * R()}`; s += `<path d="${d} L 1500 ${h + 4} Z" fill="${campur(warna(w, w, 0), "#2a3352", MALAM)}" opacity=".9"/>`; });
     return s;
   }
-  function tanah(h, p) {
+  // (27 Nov) variasi per video: cerita.variasi (mis. judul) -> bilangan acak tetap; tanpa itu bentuk lama dipakai
+  const VAR = C.variasi == null ? null : String(C.variasi).split("").reduce((a, ch) => (a * 31 + ch.charCodeAt(0)) % 100003, 7);
+  function tanah(h, p, jenis) {
     let s = `<rect x="-2000" y="${h}" width="5080" height="4000" fill="url(#tg)"/>`;
-    const r = rng(11);
-    for (let i = 0; i < 26; i++) { const y = h + 30 + Math.pow(r(), 1.6) * 900, x = r() * 1080, w = 40 + (y - h) * 0.25 * r(); s += `<path d="M${x - w} ${y} q ${w * 0.5} ${-6} ${w} 0 t ${w} 0" fill="none" stroke="${INK}" stroke-width="${2 + (y - h) / 300}" opacity=".18"/>`; }
+    const r = rng(VAR == null ? 11 : 11 + VAR), j = jenis || "garis", y_ = () => h + 30 + Math.pow(r(), 1.6) * 900;
+    if (j === "pasir") { // gundukan pasir landai + butir
+      for (let i = 0; i < 9; i++) { const y = y_(), x = r() * 1080, w = 160 + (y - h) * 0.6; s += `<path d="M${x - w} ${y} Q ${x} ${y - 18 - (y - h) * 0.03} ${x + w} ${y}" fill="none" stroke="#fff" stroke-width="${3 + (y - h) / 200}" opacity=".26"/>`; }
+      for (let i = 0; i < 90; i++) { const y = y_(), x = r() * 1080; s += `<circle cx="${x}" cy="${y}" r="${1 + (y - h) / 260}" fill="${INK}" opacity=".16"/>`; }
+    } else if (j === "rumput") { // rumpun rumput, makin dekat makin besar
+      for (let i = 0; i < 40; i++) { const y = y_(), x = r() * 1080, k = 0.4 + (y - h) / 500;
+        s += `<path d="M${x} ${y} l ${-8 * k} ${-22 * k} M${x} ${y} l ${2 * k} ${-28 * k} M${x} ${y} l ${10 * k} ${-20 * k}" stroke="#2f5a2a" stroke-width="${2 + k}" stroke-linecap="round" opacity=".4"/>`; }
+    } else if (j === "retak") { // tanah kering retak
+      for (let i = 0; i < 14; i++) { let x = r() * 1080, y = y_(); let d = `M${x} ${y}`; const n = 3 + Math.floor(r() * 3);
+        for (let k = 0; k < n; k++) { x += (r() - 0.5) * 120 * (1 + (y - h) / 600); y += (r() - 0.3) * 40; d += ` L${x.toFixed(0)} ${y.toFixed(0)}`; }
+        s += `<path d="${d}" fill="none" stroke="${INK}" stroke-width="${2 + (y - h) / 300}" opacity=".42" stroke-linejoin="round"/>`; }
+    } else if (j === "kerikil") { // batu kerikil kecil
+      for (let i = 0; i < 46; i++) { const y = y_(), x = r() * 1080, k = 0.5 + (y - h) / 350;
+        s += `<ellipse cx="${x}" cy="${y}" rx="${7 * k}" ry="${4 * k}" fill="${INK}" opacity=".26"/><ellipse cx="${x - 2 * k}" cy="${y - 1.5 * k}" rx="${3 * k}" ry="${1.5 * k}" fill="#fff" opacity=".12"/>`; }
+    } else {
+      for (let i = 0; i < 26; i++) { const y = y_(), x = r() * 1080, w = 40 + (y - h) * 0.25 * r(); s += `<path d="M${x - w} ${y} q ${w * 0.5} ${-6} ${w} 0 t ${w} 0" fill="none" stroke="${INK}" stroke-width="${2 + (y - h) / 300}" opacity=".18"/>`; }
+    }
     return s;
   }
 
@@ -597,7 +614,17 @@
       for (let i = 0; i < 14; i++) { const a2 = (i / 14) * Math.PI * 2 + t * 0.03; g += `<path d="M ${Math.cos(a2) * r * 1.08} ${Math.sin(a2) * r * 1.08} L ${Math.cos(a2 + 0.05) * r * 2.6} ${Math.sin(a2 + 0.05) * r * 2.6} L ${Math.cos(a2 - 0.05) * r * 2.6} ${Math.sin(a2 - 0.05) * r * 2.6} Z" fill="#ffd98a" opacity="${0.1 * tr}"/>`; }
       g += `<circle r="${r}" fill="url(#${id})" opacity="${0.55 + 0.45 * tr}"/>`;
     } else if (j === "gunung") { const w = o.warna || "#8a6a5a";
-      g = `<path d="M -700 0 L -260 -520 L 60 -140 L 330 -420 L 760 0 Z" fill="${w}" opacity=".9"/><path d="M -260 -520 L -170 -410 L -260 -430 L -330 -400 Z M 330 -420 L 400 -330 L 330 -350 L 270 -330 Z" fill="#fff" opacity=".35"/>`;
+      const sg0 = o.bentuk != null ? o.bentuk : VAR != null && !o.kilau ? VAR + Math.round(x) : null;
+      if (sg0 == null) {
+        g = `<path d="M -700 0 L -260 -520 L 60 -140 L 330 -420 L 760 0 Z" fill="${w}" opacity=".9"/><path d="M -260 -520 L -170 -410 L -260 -430 L -330 -400 Z M 330 -420 L 400 -330 L 330 -350 L 270 -330 Z" fill="#fff" opacity=".35"/>`;
+      } else { // (27 Nov) bentuk dari seed: 1-3 puncak, tinggi & kemiringan beragam, salju di puncak tertinggi
+        const R5 = rng(sg0), n = 1 + Math.floor(R5() * 3), pts = [[-700, 0]], salju = [];
+        for (let i = 0; i < n; i++) { const px = -520 + (i + 0.5) * (1240 / n) + (R5() - 0.5) * 160, ph = -(320 + R5() * 280);
+          pts.push([px, ph]); if (i < n - 1) pts.push([px + 1240 / n / 2, ph * (0.25 + R5() * 0.3)]);
+          salju.push(`M ${px} ${ph} L ${px + 70} ${ph + 95} L ${px + 20} ${ph + 75} L ${px - 30} ${ph + 100} L ${px - 70} ${ph + 90} Z`); }
+        pts.push([760, 0]);
+        g = `<path d="M ${pts.map((q) => q.join(" ")).join(" L ")} Z" fill="${w}" opacity=".9" stroke-linejoin="round"/><path d="${salju.join(" ")}" fill="#fff" opacity=".35"/>`;
+      }
       if (o.kilau) { // gunung amal bercahaya: garis tepi, sisi bayangan keemasan, kilau berkedip
         g = `<circle cx="-100" cy="-300" r="700" fill="#fff6c8" opacity=".35"/><path d="M -700 0 L -260 -520 L 60 -140 L 330 -420 L 760 0 Z" fill="${w}" stroke="${INK}" stroke-width="7" stroke-linejoin="round"/>
           <path d="M -260 -520 L -120 0 L -700 0 Z" fill="#f2c96a" opacity=".55"/><path d="M 330 -420 L 470 0 L 120 0 L 60 -140 Z" fill="#f2c96a" opacity=".5"/><path d="M -260 -520 L -200 -440 L -260 -455 L -320 -430 Z M 330 -420 L 380 -350 L 330 -365 L 280 -345 Z" fill="#fff"/>`;
@@ -2121,7 +2148,7 @@
       if (S.redup) isi += `<rect width="1080" height="1920" fill="#000" opacity="${v(S.redup, tl, d, 0)}"/>`;
     } else if (S.ruang) isi += ruang(S.ruang, t);
     else { if (S.matahari) isi += matahari(S.matahari, tl, d);
-    if (CERAH && !PAL) isi += cakrawala(h, tl); isi += tanah(h, p); }
+    if (CERAH && !PAL) isi += cakrawala(h, tl); isi += tanah(h, p, S.tanah || C.tanah); }
     if (S.panas) isi += panas(tl, h, v(S.panas, tl, d, 1));
     if (S.naungan) isi += naungan(S.naungan, tl, d);
     if (S.retak) isi += retak(S.retak, tl, d);

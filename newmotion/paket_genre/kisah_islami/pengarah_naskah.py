@@ -283,6 +283,10 @@ def _lapisan_dasar(tema: str, palet: str | None, komposisi: list[dict], idx: int
 
 
 INDEKS_POSISI = {"hook": 0, "isi": 1, "klimaks": 2, "penutup": 3}
+# Tekstur tanah per tema (27 Nov): bukan lagi garis yang sama di semua kisah.
+TANAH_TEMA = {"gurun": "pasir", "mahsyar": "retak", "bumi_terbelah": "retak", "neraka": "retak",
+              "kampung": "rumput", "langit_terbuka": "rumput", "surga": "rumput", "gunung": "kerikil",
+              "kubur": "kerikil", "gua": "kerikil"}
 DEBU_TEMA = {"kota": 0, "kampung": 0, "surga": 0, "laut": 10, "ibadah": 12, "gua": 20}
 
 
@@ -553,6 +557,8 @@ def arahkan(naskah: dict, waktu_adegan: list[float] | None = None,
                     s["panas"] = 1
             if tema in DEBU_TEMA:
                 s["debu"] = DEBU_TEMA[tema]
+            if tema in TANAH_TEMA:
+                s["tanah"] = TANAH_TEMA[tema]
             return s
 
         dalil = _ambil_dalil_untuk_adegan(nama, dalil_dipakai)
@@ -693,7 +699,7 @@ def arahkan(naskah: dict, waktu_adegan: list[float] | None = None,
             if rb and rb.get("figuran"):  # figuran orang biasa dari rencana sutradara (validator menjaga adab)
                 from .rencana_sutradara import figuran_dari_rencana
 
-                s["boneka"] = s["boneka"] + figuran_dari_rencana(rb, s["benda"], idx * 10 + j)
+                s["boneka"] = s["boneka"] + figuran_dari_rencana(rb, s["benda"], idx * 10 + j, ds)
             # Kerumunan latar hanya di tema "padang terbuka" (di kota/kampung/ruang dalam
             # kerumunan siluet di cakrawala terlihat janggal).
             if (tema in AV.TEMA_BOLEH_KERUMUNAN and not ruang
@@ -721,6 +727,8 @@ def arahkan(naskah: dict, waktu_adegan: list[float] | None = None,
             "cerita": {"shot": shots}}
     if naskah.get("suku") == "arab":
         spek["cerita"]["suku"] = "arab"
+    # Bentuk gunung & tekstur tanah bervariasi per video (benih = judul), tetap sama dalam satu video.
+    spek["cerita"]["variasi"] = str(naskah.get("judul") or "kisah")
     if waktu_adegan is None and jadwal:
         # Tanpa narasi rekaman, papan.js tidak menghitung cerita.shot saat menebak durasi
         # (hasilnya hanya ~4 dtk = shot pertama). Durasi perkiraan ditulis eksplisit agar
