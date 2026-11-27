@@ -14,7 +14,7 @@ on:
         type: string
 
 permissions:
-  contents: read
+  contents: write
 
 concurrency:
   group: manual-${{ inputs.spek }}
@@ -41,6 +41,7 @@ jobs:
           KIRIM: ${{ inputs.kirim }}
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          ELEVENLABS_API_KEY: ${{ secrets.ELEVENLABS_API_KEY }}
         shell: bash
         run: |
           set -euo pipefail
@@ -48,6 +49,22 @@ jobs:
           tambahan=()
           [[ "$KIRIM" == "true" ]] && tambahan+=(--kirim)
           python -m newmotion.application.jalur_manual "$SPEK" -o hasil/video.mp4 "${tambahan[@]}"
+      - name: Simpan narasi buatan (supaya kredit ElevenLabs tidak terpakai lagi)
+        if: always()
+        env:
+          SPEK: ${{ inputs.spek }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ "$SPEK" == antrean/* ]]; then a="$(dirname "$SPEK")/audio"; else a="mesin-video/audio_manual/$(basename "$SPEK" .json)_auto"; fi
+          [[ -d "$a" ]] || exit 0
+          git config user.name "github-actions[bot]"
+          git config user.email "41898333+github-actions[bot]@users.noreply.github.com"
+          git add "$a"
+          git diff --cached --quiet && exit 0
+          git commit -m "Jalur manual: narasi $SPEK"
+          for i in 1 2 3; do git pull --rebase -q origin main && git push -q origin HEAD:main && exit 0; sleep 5; done
+          exit 1
       - name: Simpan artefak
         if: always()
         uses: actions/upload-artifact@v4

@@ -307,7 +307,7 @@ async function papanManual(env, nama, isi) {
   const spek = `antrean/${id}/papan_manual.json`;
   await simpanTeks(env, spek, isi, `Antrean ${id}: papan manual`);
   await dispatch(env, "manual.yml", { spek, kirim: "true" });
-  return kirim(env, `🧾 Papan manual diterima (${id}). Dirender tanpa LLM: render → periksa → video dikirim ke sini (±5–10 menit).\nRujukan relatif di JSON dibaca dari mesin-video/papan/kisah/, sama seperti mahsyar1.json.`);
+  return kirim(env, `🧾 Papan manual diterima (${id}). Tanpa LLM: narasi ElevenLabs dari "narasi" tiap shot (bila ada) → render → periksa → video dikirim ke sini (±5–10 menit).\nRujukan relatif di JSON dibaca dari mesin-video/papan/kisah/, sama seperti mahsyar1.json.`);
 }
 
 async function renderPapanRepo(env, nama) {
@@ -502,7 +502,7 @@ const BANTUAN = `Mesin KONTEN (pribadi)
 • 💡 Ide: tulis topik, AI menyusun naskah (Gemini gratis; bila gagal, Claude ±Rp500), dalil diverifikasi, Anda cek.
 • Setelah naskah disetujui, bot membuat pratinjau visual MP4 tanpa TTS. Tinjau blocking, aksi, tokoh, latar, dan kamera; pilih Setujui visual atau Revisi visual. TTS belum dimulai sebelum visual disetujui.
 • Video baru datang dengan tombol ✅ Setujui / ❌ Tolak. Tolak → pilih alasan (atau "Lainnya" lalu ketik). Berubah pikiran? Ketuk ↩️ Ubah. Keputusan tersimpan di repo (keputusan lama ikut tercatat) dan jadi bahan belajar mesin.
-• 🧾 Jalur manual (tanpa LLM): kirim berkas .json papan tulisan tangan (format seperti mahsyar1.json), atau /papan <nama> untuk papan yang sudah ada di repo. Langsung render → periksa → video dikirim. Narasi dipakai bila JSON merujuk berkas suaranya.
+• 🧾 Jalur manual (tanpa LLM): kirim berkas .json papan tulisan tangan (format seperti mahsyar1.json), atau /papan <nama> untuk papan yang sudah ada di repo. Bila shot berisi "narasi", suara ElevenLabs dibuat sekali dan waktu shot mengikuti rekaman; lalu render → periksa → video dikirim. Format: docs/FORMAT_PAPAN_MANUAL.md.
 • Balas komentar: kirim tangkapan layar komentar (tanpa keterangan, atau keterangan "k" + catatan, mis. "k jawab singkat").
 • Tanya apa saja: ketik pesan biasa. /reset = hapus riwayat obrolan.`;
 
