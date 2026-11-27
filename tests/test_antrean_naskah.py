@@ -249,6 +249,97 @@ def test_peta_tempel_tidak_boleh_menambah_atau_menghilangkan_rujukan():
 
 
 
+def _pasang_http_llm_palsu(monkeypatch, jawaban):
+    from newmotion.infrastructure import llm
+
+    daftar = list(jawaban)
+    panggilan = []
+    konfigurasi = {
+        "tahap": {
+            "naskah": {"model": ["claude-sonnet-5-5"]},
+            "rapikan": {"model": ["claude-haiku-5-5"]},
+        },
+        "harga": {
+            "claude-sonnet-5-5": [2.0, 10.0],
+            "claude-haiku-5-5": [0.1, 0.5],
+        },
+    }
+
+    def http(url, badan, kepala, batas):
+        panggilan.append((url, badan))
+        teks = daftar.pop(0)
+        return {
+            "content": [{"type": "text", "text": teks}],
+            "usage": {"input_tokens": 10, "output_tokens": 5},
+        }
+
+    monkeypatch.setenv("ANTHROPIC_API_KEY", "token-uji-bukan-token-nyata")
+    asli = llm.panggil
+
+    def panggil(tahap, sistem, isi, **kwargs):
+        kwargs["http"] = http
+        kwargs["konfigurasi"] = konfigurasi
+        return asli(tahap, sistem, isi, **kwargs)
+
+    monkeypatch.setattr(llm, "panggil", panggil)
+    return panggilan
+
+
+def test_ide_berhasil_melalui_llm_bersama_dengan_http_palsu(monkeypatch):
+    panggilan = _pasang_http_llm_palsu(monkeypatch, [json.dumps(NASKAH)])
+    hasil, metadata = A.buat_naskah("ide", "Ide cerita uji")
+    assert hasil["judul"] == NASKAH["judul"]
+    assert hasil["uji_cerita"]["jawaban_hook"] == NASKAH["uji_cerita"]["jawaban_hook"]
+    assert metadata.model == "claude-sonnet-5-5"
+    assert len(panggilan) == 1
+    assert "Ide pemilik:" in panggilan[0][1]["messages"][0]["content"][-1]["text"]
+
+
+def test_ide_ditolak_validator_lalu_berhasil_diulang_dengan_http_palsu(monkeypatch):
+    rusak = json.loads(json.dumps(NASKAH))
+    del rusak["uji_cerita"]
+    panggilan = _pasang_http_llm_palsu(monkeypatch, [json.dumps(rusak), json.dumps(NASKAH)])
+    hasil, metadata = A.buat_naskah("ide", "Ide cerita uji")
+    assert hasil["judul"] == NASKAH["judul"]
+    assert len(panggilan) == 2
+    isi_ulang = panggilan[1][1]["messages"][0]["content"][-1]["text"]
+    assert "uji_cerita harus berupa objek" in isi_ulang
+    assert len(metadata.percobaan) == 2
+
+
+def test_tempel_melalui_http_palsu_mempertahankan_narasi_pemilik(monkeypatch):
+    data = {
+        "judul": "Tempel",
+        "inti": "Naskah asli",
+        "dalil": [],
+        "beat": [{"paragraf": [1], "dalil": [], "kata_kunci": [], "peran": [], "dialog": []}],
+    }
+    panggilan = _pasang_http_llm_palsu(monkeypatch, [json.dumps(data)])
+    asal = "Kalimat pemilik harus utuh."
+    hasil, metadata = A.buat_naskah("tempel", asal)
+    assert hasil["beat"][0]["narasi"] == asal
+    assert metadata.model == "claude-haiku-5-5"
+    assert "rapikan" in panggilan[0][0]
+
+
+def test_revisi_melalui_http_palsu_membawa_naskah_lama_dan_catatan(monkeypatch):
+    lama = json.loads(json.dumps(NASKAH))
+    lama["beat"].append({
+        "narasi": "Beat kedua tetap dipertahankan.",
+        "dalil": [], "kata_kunci": ["tetap"], "peran": [],
+    })
+    revisi = json.loads(json.dumps(lama))
+    revisi["beat"][0]["narasi"] = "Kalimat pembuka yang diperbarui."
+    panggilan = _pasang_http_llm_palsu(monkeypatch, [json.dumps(revisi)])
+    hasil, _ = A.buat_naskah("revisi", "Ubah kalimat pembuka saja", lama)
+    isi = panggilan[0][1]["messages"][0]["content"][-1]["text"]
+    assert "NASKAH SAAT INI:" in isi
+    assert "CATATAN PEMILIK:" in isi
+    assert "Ubah kalimat pembuka saja" in isi
+    assert hasil["beat"][0]["narasi"] == "Kalimat pembuka yang diperbarui."
+    assert hasil["beat"][1] == lama["beat"][1]
+
+
 def test_jalur_ide_revisi_dan_tempel_memakai_tahap_llm_yang_tepat(monkeypatch):
     from newmotion.infrastructure import llm
 
