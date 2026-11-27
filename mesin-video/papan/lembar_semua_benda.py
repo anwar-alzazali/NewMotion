@@ -72,7 +72,9 @@ def rentang(nama: str, parameter: str) -> tuple[float, float]:
     if parameter == "r":
         return (120, 620)
     if parameter == "putar":
-        return (-30, 30)
+        return (0.0, 1.0) if nama == "kipas" else (-30, 30)
+    if parameter == "rot":
+        return (-45, 45)
     if parameter == "tarik":
         return (0, 420)
     if parameter == "besar":
@@ -109,11 +111,12 @@ def main() -> int:
     from newmotion.application.katalog_renderer import katalog
 
     ukuran = json.loads(UKURAN.read_text(encoding="utf-8")) if UKURAN.is_file() else {}
-    daftar = sorted(katalog())
+    kat = katalog()
+    daftar = sorted(kat)
     shot = []
     manifest = []
     for i, nama in enumerate(daftar):
-        info = katalog()[nama]
+        info = kat[nama]
         tambahan, parameter, nilai = keadaan(nama, info)
         tambahan.update(PROPERTI_UJI.get(nama, {}))
         x, y, skala = penempatan(ukuran.get(nama))
