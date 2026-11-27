@@ -33,7 +33,7 @@ Pemilik: Anwar Alzazali. Bahasa kerja: Indonesia. Ditulis 27 Nov 2026 oleh Claud
 ## Daftar tugas (centang bila selesai dan sudah di-merge ke `gpt/integrasi`)
 
 - [x] Tugas 1 — Penulisan naskah pindah ke jalur LLM bersama
-- [ ] Tugas 2 — Pencatat kekurangan renderer (antrean kebutuhan)
+- [x] Tugas 2 — Pencatat kekurangan renderer (antrean kebutuhan)
 - [ ] Tugas 3 — Pustaka benda renderer untuk banyak jenis cerita
 - [ ] Tugas 4 — Lapis A uji tokoh menuju nol temuan
 - [ ] Tugas 5 — Interaksi antartokoh dan benda yang dipegang
@@ -265,3 +265,5 @@ Format: `- YYYY-MM-DD | Tugas N | status (selesai/sebagian/MACET) | PR #.. | cat
   putaran periksa + uji lulus sudah cukup. Workflow tambahan per-branch tidak perlu lagi; jalankan uji lokal.
   Berikutnya: Tugas 2.
 
+
+- 2026-11-27 | Tugas 2 | selesai | PR #56 | Menambahkan `belum_ada` di tingkat rencana/per beat dengan validasi katalog dan bukti narasi; skill sutradara tidak boleh mengganti objek yang belum tersedia dengan benda terdekat; pemeriksa visual dapat melaporkan kebutuhan objek; kebutuhan dari sutradara CLI, produksi hibrida, dan pemeriksa dikumpulkan ke JSON dengan normalisasi nama, jumlah kemunculan, contoh kisah/beat, sumber, serta status. Ditambahkan perintah daftar kebutuhan dan workflow pratinjau menyimpan antrean. CI GitHub pada kode terbaru: runtime 401 passed, 1 skipped (Chromium opsional); uji bot sukses; uji adab tokoh sukses. Ruff ditambahkan ke test-runtime untuk berkas yang berubah dan pemicu push generik `tugas-*` agar tugas berikutnya diuji di GitHub. Berikutnya: Tugas 3 — pustaka benda renderer untuk banyak jenis cerita; gunakan daftar contoh di spesifikasi sebagai titik awal, minimal 20 jenis benda baru, jaga kunci bawaan agar video lama tidak berubah.
