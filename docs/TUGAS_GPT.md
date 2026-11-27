@@ -48,9 +48,12 @@ daftar tugas dari posisi terakhir.
 - [x] Tugas 4 — Lapis A uji tokoh menuju nol temuan
 - [ ] Tugas 5 — Interaksi antartokoh dan benda yang dipegang
 - [ ] Tugas 5b — Perbaikan benda lemah dari Tugas 3 (temuan audit Claude, kerjakan setelah Tugas 5)
+- [ ] Tugas 5c — Pemeriksa naskah sebelum sampai ke pemilik (prioritas tinggi)
+- [ ] Tugas 5d — Belajar dari revisi pemilik dan naskah yang disetujui
 - [ ] Tugas 6 — Visual konsep abstrak
 - [ ] Tugas 7 — Lembar uji renderer otomatis
 - [ ] Tugas 8 — Pembuat komponen renderer (bersyarat, lihat syaratnya)
+- [ ] Tugas 9 — Statistik video dan usulan pedoman dari data
 
 ## Batas wajib (berlaku untuk semua tugas)
 
@@ -212,6 +215,48 @@ Audit lembar `hasil/pustaka-benda-baru.png`: 20 benda sudah layak pakai, empat b
 layar, gaya sama dengan benda lain (garis `INK`, warna datar + bayangan lembut), `ukur_benda.py` dijalankan
 ulang, semua uji lulus. Benda lain dari Tugas 3 tidak perlu diubah.
 
+## Tugas 5c — Pemeriksa naskah sebelum sampai ke pemilik (prioritas tinggi)
+
+**Latar (uji nyata 27 Nov, naskah "Detik Terakhir Firaun di Dasar Laut"):** penulis naskah melanggar aturan
+yang sudah tertulis di skill-nya — hook berupa pertanyaan umum padahal judul menjanjikan detik terakhir
+Firaun; detail yang tidak ada di dalil ("Laut Merah", "bersenjata lengkap", "berteriak", "binasa"); dan
+fakta paling kuat dari ayat di sekitarnya terlewat (QS Yunus 92: jasad Firaun diselamatkan sebagai
+pelajaran). Menambah aturan ke penulis tidak cukup; dibutuhkan pemeriksa terpisah.
+
+**Tujuan:** setelah naskah ditulis dan dalil diverifikasi (teks ayat/hadis resmi sudah ada), satu tahap LLM
+terpisah memeriksa naskah terhadap teks dalilnya dan memperbaikinya sebelum kartu dikirim ke pemilik.
+
+**Selesai bila:**
+- Tahap baru (mis. `periksa_naskah` di `config/model.toml`, lewat `llm.panggil`) dengan skill sendiri,
+  menghasilkan temuan per beat berkategori, minimal: `detail_tanpa_dalil` (frasa yang tidak didukung teks
+  dalil beat itu), `hook_lemah` (pembuka tidak memakai fakta terkuat / tidak terkait janji judul),
+  `fakta_kuat_terlewat` (fakta dari dalil atau ayat yang berdekatan yang lebih kuat untuk hook/penutup),
+  `janji_tidak_dijawab`, `kalimat_mengulang`.
+- Temuan berat diperbaiki otomatis oleh penulis (satu putaran, maksimal dua), lalu dalil diverifikasi ulang
+  bila berubah. Naskah yang sampai ke pemilik adalah hasil perbaikan; ringkasan temuan & apa yang sudah
+  diperbaiki tampil singkat di kartu Telegram (agar pemilik tahu apa yang dicek).
+- Pemeriksa tidak boleh menambah dalil yang tidak terverifikasi; usulan ayat baru (seperti Yunus 92) ikut
+  diverifikasi mesin seperti dalil lain sebelum dipakai.
+- Uji dengan LLM palsu memakai naskah Firaun di atas sebagai kasus: detail tanpa dalil terdeteksi dan
+  diperbaiki, hook lemah terdeteksi. Simpan naskah itu sebagai data uji.
+- Biaya tahap ini tercatat di status antrean.
+
+## Tugas 5d — Belajar dari revisi pemilik dan naskah yang disetujui
+
+**Tujuan:** LLM tidak belajar sendiri; mesin yang menyimpan pelajaran dan memberikannya kembali saat menulis.
+
+**Selesai bila:**
+- Setiap revisi pemilik tersimpan: catatan pemilik, naskah sebelum, naskah sesudah (mis. `antrean/<id>/revisi/NN.json`)
+  dan dikumpulkan ke satu berkas pelajaran (mis. `newmotion/application/data/pelajaran_naskah.jsonl`).
+- Alat ringkas (manual, mis. `python -m newmotion.application.pelajaran_naskah --ringkas`) memakai LLM murah
+  untuk merangkum pola berulang dari kumpulan revisi menjadi **usulan pedoman** beserta bukti (berapa revisi,
+  contoh kalimat). Usulan ditulis ke berkas usulan dan **hanya dipakai penulis setelah pemilik menyetujuinya**
+  (dipindah ke berkas pedoman yang dibaca skill naskah). Pedoman adalah pertimbangan, bukan aturan wajib
+  yang mengekang (sesuai prinsip CLAUDE.md "temuan bukan aturan baku").
+- Naskah yang disetujui pemilik sampai video final disimpan sebagai **contoh**; saat menulis naskah baru,
+  penulis diberi 1–2 contoh paling mirip topiknya (cara memilih mirip boleh sederhana: kata kunci/peran).
+- Uji dengan LLM palsu untuk penyimpanan revisi, pemilihan contoh, dan alur usulan -> disetujui -> dipakai.
+
 ## Tugas 6 — Visual konsep abstrak yang sering muncul di Kisah Islami
 
 **Tujuan:** pemeriksa visual berulang menemukan bahwa konsep abstrak tidak tergambar (contoh Mahsyar:
@@ -255,6 +300,24 @@ komponen menjadi proses berulang yang terukur, bukan pekerjaan manual dari nol.
 - Alat boleh memakai LLM sungguhan hanya bila dijalankan manual dengan kunci di lingkungan; ujinya tetap
   memakai LLM palsu.
 - Contoh nyata: minimal 3 komponen draf dibuat dengan alat ini, lembarnya dilampirkan di PR masing-masing.
+
+## Tugas 9 — Statistik video dan usulan pedoman dari data
+
+**Tujuan:** hasil tayang tiap video tercatat sejak video pertama, sehingga kelak (setelah ±20–30 video)
+pola yang benar-benar bekerja bisa dilihat dengan bukti, bukan dugaan.
+
+**Selesai bila:**
+- Kartu video final di Telegram punya tombol "📊 Catat hasil": pemilik mengisi tayangan, suka, komentar,
+  bagikan, dan (bila ada) persen ditonton sampai habis, untuk hari ke-1 dan ke-7, per platform
+  (TikTok/FB). Tersimpan di antrean video itu.
+- Ciri naskah tiap video dicatat otomatis (jenis hook, jumlah beat, durasi, topik/tokoh, ada kejutan/klimaks,
+  suku/latar, pemakaian suara) agar bisa dibandingkan dengan statistik.
+- Alat analisis manual mencetak perbandingan ciri vs hasil dan **usulan pedoman dengan kekuatan bukti**
+  (jumlah video, selisih rata-rata). Di bawah 20 video, alat menyatakan terang-terangan bahwa pola belum
+  bisa dipercaya. Usulan tidak dipakai otomatis; jalurnya sama dengan Tugas 5d (disetujui pemilik dulu).
+- Struktur penyimpanan disiapkan agar kelak bisa diisi otomatis dari API Facebook Page (tidak wajib dibuat
+  sekarang; cukup satu fungsi pengisi yang bisa diganti).
+- Uji untuk penyimpanan, perhitungan, dan peringatan data kurang.
 
 ---
 
@@ -306,3 +369,5 @@ Format: `- YYYY-MM-DD | Tugas N | status (selesai/sebagian/MACET) | PR #.. | cat
 - 2026-11-27 | Protokol | Claude | — | Pengerja tidak bisa pytest lokal: butir 4 kini resmi memakai CI
   `test-runtime.yml` (dirapikan: push `tugas-*`, ruff otomatis untuk berkas berubah, ukur benda + commit balik,
   pytest, bot, uji tokoh 0 temuan, artefak bukti). Workflow lama lint-naskah.yml dihapus (sudah tercakup).
+- 2026-11-27 | Tambahan tugas | Claude | — | Dari uji naskah nyata (Firaun): ditambah Tugas 5c (pemeriksa
+  naskah, prioritas tinggi), 5d (belajar dari revisi & contoh), 9 (statistik video). Urutan: 5 -> 5b -> 5c -> 5d -> 6 ...
