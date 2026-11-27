@@ -48,7 +48,15 @@ Jangan gunakan identitas tokoh nabi, rasul, malaikat, atau sahabat; pagar adab f
 - Malaikat tidak digambar sebagai sosok.
 - Benda bersosok manusia (`pemimpin`, `penggali`, `kerumunan`, `arus`, dll.) tidak boleh menjadi wujud nabi, rasul, malaikat, atau sahabat. Bila beat menyebut tokoh mulia, jangan pasang sosok manusia yang bisa dikira dirinya.
 - Jangan memilih wujud makhluk gaib yang tidak dijelaskan dalil (mis. rupa Dabbah, Dajjal secara rinci) kecuali katalog menyediakannya sebagai simbol yang disepakati.
-- Kartu dalil, ayat, dan hadis diatur mesin; jangan menulisnya di teks layar.
+- Ayat dan hadis tidak ditulis di teks layar; mesin menampilkannya dari sumber resmi.
+
+## Kartu dalil (pilih dengan hemat)
+Beat yang merujuk dalil terverifikasi bertanda `[dalil: ...]` di naskah. Untuk beat seperti itu mesin selalu
+menampilkan sumbernya (mis. "QS YUNUS 92") kecil di bawah teks layar, dan adeganmu tetap terlihat.
+Tulis `"kartu_dalil": true` hanya pada beat yang narasinya MENGUTIP isi dalil dan kutipannya adalah puncak
+makna video (mis. jawaban Allah kepada Firaun, janji yang menjadi hikmah). Paling banyak 2 per video; jangan
+di beat klimaks visual (kartu menutupi adegan) kecuali kutipan itulah klimaksnya. Kartu muncul di atas adegan
+sesudah adegan terbangun; dalil yang terlalu panjang untuk terbaca di HP otomatis tetap menjadi label sumber.
 
 ## Bahasa panggung
 Setiap subjek: `{"jenis": <dari katalog>, "tempat": <tempat>, "keadaan": {<parameter katalog>: nilai}}`.
@@ -76,7 +84,7 @@ sapuan lembut di awal beat. `intonasi` memberi arah pembaca narasi (dipakai taha
   "objek_inti": {"jenis": "<jenis>", "perkembangan": "<satu kalimat>"},
   "beat": [
     {"beat": 1, "bukti": "...", "subjek": [...], "kamu": "utama|saksi|tidak",
-     "kamera": {"bidikan": "lebar|sedang|dekat", "aksen": null}, "teks_layar": "..." , "klimaks": false,
+     "kamera": {"bidikan": "lebar|sedang|dekat", "aksen": null}, "teks_layar": "..." , "klimaks": false, "kartu_dalil": false,
      "suara": {"suasana": "<nama>|null", "efek": [{"nama": "<nama>", "pada": "<kata>|null", "keras": "lemah|sedang|kuat", "ulang": 1}],
                "transisi": false, "intonasi": "<intonasi>"},
      "figuran": [{"jumlah": 2, "suku": "arab|umum", "tempat": "<tempat>", "gerak": "<pose atau aksi>", "hadap": "depan|kanan|kiri",

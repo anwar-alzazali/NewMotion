@@ -9,8 +9,8 @@
   "diterima": "selesai",
   "dalil": "selesai",
   "tinjau": "selesai",
-  "sutradara": "selesai",
-  "tinjau_visual": "jalan",
+  "sutradara": "jalan",
+  "tinjau_visual": "belum",
   "narasi": "belum",
   "render": "belum",
   "periksa": "belum",
@@ -20,7 +20,7 @@
   "diterima": "9 beat, 8 dalil · Gemini",
   "dalil": "8/8",
   "tinjau": "disetujui",
-  "sutradara": "9 shot disusun oleh kisah_islami; sutradara LLM claude-sonnet-5-5, biaya $0.29",
+  "sutradara": "mengulang pratinjau: kartu dalil tidak lagi menutup adegan (rencana lama dipakai, tanpa biaya LLM)",
   "tinjau_visual": "menunggu tinjauan visual pemilik; TTS belum dibuat"
  },
  "dibuat": "2026-11-27T04:34:37.402Z",
@@ -37,7 +37,6 @@
   "✓ QS AN-NISA 18",
   "✓ QS YUNUS 92"
  ],
- "pesan_kartu": 445,
  "sutradara": {
   "mode": "llm",
   "biaya_usd": 0.2944,

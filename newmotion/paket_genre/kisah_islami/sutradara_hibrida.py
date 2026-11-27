@@ -48,6 +48,12 @@ def arahkan_hibrida(naskah: Mapping, folder: str | Path, *, genre: str = "kisah_
         from .sutradara_llm import buat_rencana
 
         try:
+            simpanan = rencana_tersimpan(naskah, folder)
+            if simpanan is not None:  # ulangi pratinjau tanpa naskah berubah: tanpa biaya LLM lagi
+                spek, _, _ = arahkan_naskah(terapkan_rencana(dict(naskah), simpanan), genre_pilihan=genre)
+                info.update(mode="llm", model="rencana tersimpan", biaya_usd=0.0,
+                            catatan="memakai rencana sutradara yang sudah ada (naskah tidak berubah)")
+                return spek, info
             j = buat_rencana(naskah, http=http)
             rencana = j.data
             from newmotion.application.kebutuhan_renderer import catat, dari_rencana
@@ -64,6 +70,7 @@ def arahkan_hibrida(naskah: Mapping, folder: str | Path, *, genre: str = "kisah_
                 (folder / "periksa.json").write_text(json.dumps(log, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
             folder.mkdir(parents=True, exist_ok=True)
             (folder / "rencana.json").write_text(json.dumps(rencana, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
+            (folder / "rencana.kunci").write_text(kunci_naskah(naskah) + "\n", encoding="utf-8")
             spek, _, _ = arahkan_naskah(terapkan_rencana(dict(naskah), rencana), genre_pilihan=genre)
             info["biaya_usd"] = round(info["biaya_usd"], 4)
             return spek, info
@@ -73,6 +80,22 @@ def arahkan_hibrida(naskah: Mapping, folder: str | Path, *, genre: str = "kisah_
         info["catatan"] = "kunci LLM tidak tersedia; memakai sutradara aturan"
     spek, _, _ = arahkan_naskah(naskah, genre_pilihan=genre)
     return spek, info
+
+
+def kunci_naskah(naskah: Mapping) -> str:
+    """Sidik narasi: rencana tersimpan hanya dipakai ulang bila narasi persis sama."""
+    import hashlib
+
+    teks = "\n".join(str(a.get("teks", "")) for a in naskah.get("adegan") or [])
+    return hashlib.sha256(teks.encode("utf-8")).hexdigest()[:16]
+
+
+def rencana_tersimpan(naskah: Mapping, folder: str | Path) -> dict | None:
+    folder = Path(folder)
+    k, r = folder / "rencana.kunci", folder / "rencana.json"
+    if k.is_file() and r.is_file() and k.read_text(encoding="utf-8").strip() == kunci_naskah(naskah):
+        return json.loads(r.read_text(encoding="utf-8"))
+    return None
 
 
 def baca_rencana(folder: str | Path) -> dict | None:

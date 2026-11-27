@@ -163,6 +163,7 @@ def naskah_untuk_pengarah(
             if d:
                 dalil_dipakai.append({
                     "surah": d["surah"], "ayat": str(d["ayat"]).replace(" ", ""), "di_adegan": nama,
+                    **({"label": d["label"]} if d.get("label") else {}),
                 })
     from newmotion.application.pengklasifikasi_konten import klasifikasikan_konten
 
