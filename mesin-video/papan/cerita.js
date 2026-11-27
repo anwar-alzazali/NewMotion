@@ -1420,6 +1420,8 @@
     pegang_surat: { ra: [20, -54], pegang: "surat" },
     pegang_gulungan: { ra: [20, -48], pegang: "gulungan" },
     pegang_karung_kecil: { ra: [30, -20], pegang: "karung_kecil" },
+    pegang_roti: { ra: [28, -34], pegang: "roti" },
+    pegang_koin: { ra: [24, -58], pegang: "koin" },
     // Penolong merendahkan pusat tubuh dan menjulurkan kedua lengan ke arah korban.
     menolong: { turun: 70, badan: 22, kepala: 8, la: [15, 20], ra: [88, 35], depan: 1 },
     peluk_lutut: { turun: 70, pp: 0.3, lk: [8, 2], rk: [8, 2], la: [-4, -22], ra: [-4, -22], badan: 0 },
@@ -1823,6 +1825,8 @@
     else if (J.pegang === "surat") barang = `<g transform="translate(${Rk.H[0] - 12} ${Rk.H[1] - 18}) rotate(-8)"><rect x="-34" y="-42" width="68" height="84" rx="4" fill="#f5e7c4" stroke="#8b6b42" stroke-width="5"/><path d="M -22 -20 L 22 -20 M -22 -4 L 22 -4 M -22 12 L 12 12" stroke="#9c8059" stroke-width="4"/></g>`;
     else if (J.pegang === "gulungan") barang = `<g transform="translate(${Rk.H[0]} ${Rk.H[1] - 12}) rotate(-8)"><rect x="-38" y="-42" width="76" height="84" rx="8" fill="#ead6a7" stroke="#9a7748" stroke-width="5"/><path d="M -28 -42 Q -40 -56 -42 -42 L -42 42 Q -40 56 -28 42 M 28 -42 Q 40 -56 42 -42 L 42 42 Q 40 56 28 42" fill="#d7bd87" stroke="#9a7748" stroke-width="5"/></g>`;
     else if (J.pegang === "karung_kecil") barang = `<g transform="translate(${Rk.H[0]} ${Rk.H[1] - 12})"><path d="M -28 -38 Q 0 -54 28 -38 L 36 34 Q 0 56 -36 34 Z" fill="#b69a68" stroke="#6f5736" stroke-width="5"/><path d="M -24 -38 Q 0 -20 24 -38" fill="none" stroke="#6f5736" stroke-width="5"/></g>`;
+    else if (J.pegang === "roti") barang = `<g transform="translate(${Rk.H[0]} ${Rk.H[1] - 8})"><path d="M -42 18 Q -52 -20 -24 -34 Q -8 -54 14 -34 Q 48 -32 44 10 Q 40 34 0 32 Q -32 34 -42 18 Z" fill="#d89b52" stroke="#704522" stroke-width="5"/><path d="M -18 -20 Q -4 -4 0 8 M 12 -22 Q 24 -4 24 8" stroke="#f4d39b" stroke-width="5" fill="none"/></g>`;
+    else if (J.pegang === "koin") barang = `<g transform="translate(${Rk.H[0]} ${Rk.H[1]})"><circle r="30" fill="#e9bd4e" stroke="#805b1e" stroke-width="6"/><circle r="19" fill="none" stroke="#fff0a0" stroke-width="4"/></g>`;
     else if (J.pegang === "beliung") {
       // Satu gagang mengikuti kedua titik genggam, bukan menempel pada satu tangan.
       const dx = Rk.H[0] - L.H[0], dy = Rk.H[1] - L.H[1];
