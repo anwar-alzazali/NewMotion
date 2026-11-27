@@ -21,15 +21,15 @@ def jarak(a, b):
     return math.dist(a, b)
 
 
-def buat_spek():
-    pemberi = {**TOKOH, "id": 0, "x": 400, "y": 1700, "s": 0.8, "pose": "pegang_surat", "profil": "kanan"}
+def buat_spek(benda: str = 'surat'):
+    pemberi = {**TOKOH, "id": 0, "x": 400, "y": 1700, "s": 0.8, "pose": f"pegang_{benda}", "profil": "kanan"}
     penerima = {**TOKOH, "id": 1, "x": 580, "y": 1700, "s": 0.8, "pose": "berdiri", "profil": "kiri"}
     return {
         "latar": "gelap", "musik": False, "stempel": False, "dekor": False, "durasi": 2.4,
         "cerita": {"shot": [{
             "at": 0, "horizon": 1900, "palet": "siang", "debu": 0,
             "boneka": [pemberi, penerima],
-            "serah_terima": {"dari": 0, "ke": 1, "benda": "surat", "at": 0.5,
+            "serah_terima": {"dari": 0, "ke": 1, "benda": benda, "at": 0.5,
                              "durasi": 1.6, "skala": 0.48},
         }]},
     }
@@ -37,7 +37,7 @@ def buat_spek():
 
 def uji(keluaran: Path, chrome: str | None = None) -> dict:
     keluaran.mkdir(parents=True, exist_ok=True)
-    gambar = render(buat_spek(), WAKTU, keluaran, "serah_terima", chrome, ambil_serah=True)
+    gambar = render(buat_spek("surat"), WAKTU, keluaran, "serah_terima", chrome, ambil_serah=True)
     temuan = []
     bukti = []
     for png, _, catatan in gambar:
@@ -45,6 +45,8 @@ def uji(keluaran: Path, chrome: str | None = None) -> dict:
             temuan.append({"kode": "SERAH_DATA_HILANG", "pesan": "catatan lintasan tidak tersedia"})
             continue
         c = catatan[0]
+        if not c.get("grafis"):
+            temuan.append({"kode": "BENDA_TIDAK_TERGAMBAR", "t": c["t"], "benda": c.get("benda")})
         fase = float(c.get("fase", 0))
         peran_aktif = (("tangan_pemberi",) if fase < 0.25 else
                        ("tangan_pemberi", "tangan_penerima") if fase <= 0.75 else
@@ -72,6 +74,26 @@ def uji(keluaran: Path, chrome: str | None = None) -> dict:
     from io import BytesIO
     from PIL import Image, ImageDraw, ImageFont
 
+    variasi = []
+    gambar_variasi = []
+    for jenis in ("surat", "kendi", "gelas", "karung_kecil", "gulungan", "roti", "koin"):
+        if jenis == "surat":
+            png, _, catatan = gambar[3]
+        else:
+            [hasil_variasi] = render(buat_spek(jenis), [1.3], keluaran, f"serah_{jenis}", chrome, ambil_serah=True)
+            png, _, catatan = hasil_variasi
+        c = catatan[0] if catatan else {}
+        jarak_variasi = [jarak(c.get(k) or [0, 0], c.get("posisi") or [0, 0])
+                         for k in ("tangan_pemberi", "tangan_penerima")]
+        maks = max(jarak_variasi, default=float("inf"))
+        lulus_variasi = bool(c.get("grafis")) and maks <= BATAS_TANGAN
+        variasi.append({"benda": jenis, "grafis": bool(c.get("grafis")), "jarak_tangan_maks_px": round(maks, 3),
+                        "lulus": lulus_variasi})
+        if not lulus_variasi:
+            temuan.append({"kode": "VARIASI_BENDA_GAGAL", "benda": jenis,
+                           "jarak_tangan_maks_px": round(maks, 3), "grafis": bool(c.get("grafis"))})
+        gambar_variasi.append(png)
+
     w, h = LEBAR // 3, TINGGI // 3
     kanvas = Image.new("RGB", (w * len(gambar), h + 42), "white")
     d = ImageDraw.Draw(kanvas)
@@ -83,8 +105,15 @@ def uji(keluaran: Path, chrome: str | None = None) -> dict:
         kanvas.paste(Image.open(BytesIO(png)).convert("RGB").resize((w, h)), (w * i, 42))
         d.text((w * i + 8, 10), f"t={WAKTU[i]:.1f}s", font=font, fill="black")
     kanvas.save(keluaran / "lembar_serah_terima.png")
+    lembar_variasi = Image.new("RGB", (w * len(gambar_variasi), h + 42), "white")
+    d_variasi = ImageDraw.Draw(lembar_variasi)
+    for i, (png, variasi_item) in enumerate(zip(gambar_variasi, variasi)):
+        lembar_variasi.paste(Image.open(BytesIO(png)).convert("RGB").resize((w, h)), (w * i, 42))
+        d_variasi.text((w * i + 8, 10), variasi_item["benda"], font=font, fill="black")
+    lembar_variasi.save(keluaran / "lembar_variasi_benda.png")
     laporan = {"lulus": not temuan, "batas_tangan_px": BATAS_TANGAN, "jumlah_sampel": len(WAKTU),
-               "perpindahan_px": round(perpindahan, 2), "bukti": bukti, "temuan": temuan}
+               "perpindahan_px": round(perpindahan, 2), "variasi_benda": variasi,
+               "bukti": bukti, "temuan": temuan}
     (keluaran / "laporan_serah_terima.json").write_text(
         json.dumps(laporan, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print(json.dumps(laporan, ensure_ascii=False))
