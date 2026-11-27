@@ -20,6 +20,7 @@ Status: antrean/<id>/status.json -> kartu status (sama persis dengan bot/worker.
 """
 from __future__ import annotations
 
+import copy
 import datetime as _dt
 import json
 import os
@@ -116,6 +117,8 @@ def kartu(st: dict) -> str:
         baris.append(f"{IKON[keadaan]} {label}" + (f" — {ket}" if ket else ""))
     if st.get("uji_cerita_ringkas"):
         baris.append("🧪 Uji cerita: " + st["uji_cerita_ringkas"])
+    if st.get("pemeriksaan_naskah_ringkas"):
+        baris.append("🔎 Pemeriksa naskah: " + st["pemeriksaan_naskah_ringkas"])
     return "\n".join(baris)
 
 
@@ -599,6 +602,111 @@ def proses(id_: str, mode: str, *, folder: Path = ANTREAN, tanya=None, quran=Non
     _tulis(d, st, n, kirim_tg)
     from newmotion.paket_genre.kisah_islami.dalil.verifikasi import verifikasi
     n, laporan = verifikasi(n, quran=quran)
+
+    # Pemeriksa independen hanya dijalankan pada jalur produksi; seam tanya dipakai tes tanpa biaya.
+    if tanya is None:
+        from newmotion.application import pemeriksa_naskah
+        temuan, meta_periksa = pemeriksa_naskah.periksa(n)
+        token_periksa = meta_periksa.token_masuk + meta_periksa.token_keluar
+        st["token_ai"] = st.get("token_ai", 0) + token_periksa
+        st["biaya_ai_usd"] = round(st.get("biaya_ai_usd", 0.0) + meta_periksa.biaya_usd, 6)
+        st["pemeriksaan_naskah_ai"] = {
+            "tahap": "periksa_naskah", "model": meta_periksa.model, "penyedia": meta_periksa.penyedia,
+            "token_masuk": meta_periksa.token_masuk, "token_keluar": meta_periksa.token_keluar,
+            "biaya_usd": meta_periksa.biaya_usd, "percobaan": meta_periksa.percobaan,
+        }
+        usulan_terverifikasi = []
+        usulan = temuan.get("usulan_dalil", [])
+        if usulan:
+            calon, _ = verifikasi({"dalil": usulan}, quran=quran)
+            usulan_terverifikasi = [
+                d for d in calon.get("dalil", [])
+                if d.get("status") == "terverifikasi"
+                and d.get("diverifikasi_oleh")
+                and (d.get("derajat", "sahih") in ("sahih", "hasan"))
+            ]
+        temuan_awal = copy.deepcopy(temuan.get("temuan", []))
+        berat = [x for x in temuan_awal if x.get("tingkat") == "berat"]
+        perbaikan_dilakukan = False
+        perbaikan_gagal = False
+        if berat and mode != "tempel":
+            arahan = {
+                "temuan_pemeriksa": temuan.get("temuan", []),
+                "dalil_baru_terverifikasi": usulan_terverifikasi,
+                "aturan": [
+                    "Perbaiki temuan berat tanpa menambah fakta di luar teks dalil.",
+                    "Gunakan dalil baru hanya jika ada di daftar dalil_baru_terverifikasi.",
+                    "Jangan membuat nomor/teks/terjemah dalil baru.",
+                    "Pertahankan genre, adab, dan struktur beat.",
+                    "Sertakan uji_cerita lengkap.",
+                ],
+            }
+            revisi, meta_penulis = buat_naskah(
+                "revisi", "PERBAIKAN WAJIB BERDASARKAN PEMERIKSA INDEPENDEN:\\n"
+                + json.dumps(arahan, ensure_ascii=False), n
+            )
+            token_penulis = meta_penulis.token_masuk + meta_penulis.token_keluar
+            st["token_ai"] += token_penulis
+            st["biaya_ai_usd"] = round(st["biaya_ai_usd"] + meta_penulis.biaya_usd, 6)
+            st["pemeriksaan_naskah_ai"]["percobaan_perbaikan"] = {
+                "model": meta_penulis.model,
+                "token_masuk": meta_penulis.token_masuk,
+                "token_keluar": meta_penulis.token_keluar,
+                "biaya_usd": meta_penulis.biaya_usd,
+            }
+            daftar_diizinkan = {d["id"]: d for d in n.get("dalil", []) if isinstance(d, dict)}
+            daftar_diizinkan.update({d["id"]: d for d in usulan_terverifikasi if d.get("id")})
+            revisi["dalil"] = [
+                copy.deepcopy(daftar_diizinkan[d["id"]])
+                for d in revisi.get("dalil", [])
+                if isinstance(d, dict) and d.get("id") in daftar_diizinkan
+            ]
+            galat_revisi = validasi(revisi) + validasi_uji_cerita(revisi)
+            if not galat_revisi:
+                berubah = json.dumps(revisi, ensure_ascii=False, sort_keys=True) != json.dumps(n, ensure_ascii=False, sort_keys=True)
+                if berubah:
+                    perbaikan_dilakukan = True
+                    n = normalisasi(revisi)
+                    n, laporan = verifikasi(n, quran=quran)
+                    # Verifikasi ulang setelah perbaikan memastikan dalil yang berubah tidak lolos dari cache lama.
+                    temuan, meta_periksa_ulang = pemeriksa_naskah.periksa(n)
+                    token_periksa_ulang = meta_periksa_ulang.token_masuk + meta_periksa_ulang.token_keluar
+                    st["token_ai"] += token_periksa_ulang
+                    st["biaya_ai_usd"] = round(st["biaya_ai_usd"] + meta_periksa_ulang.biaya_usd, 6)
+                    st["pemeriksaan_naskah_ai"]["perbaikan"] = {
+                        "pemeriksaan_ulang": {
+                        "model": meta_periksa_ulang.model,
+                        "token_masuk": meta_periksa_ulang.token_masuk,
+                        "token_keluar": meta_periksa_ulang.token_keluar,
+                        "biaya_usd": meta_periksa_ulang.biaya_usd,
+                        },
+                    }
+            else:
+                perbaikan_gagal = True
+        temuan_akhir = temuan.get("temuan", [])
+        st["pemeriksaan_naskah"] = {
+            "temuan_awal": temuan_awal,
+            "temuan_akhir": temuan_akhir,
+            "perbaikan_otomatis_dicoba": bool(berat and mode != "tempel"),
+            "perbaikan_otomatis_dilakukan": perbaikan_dilakukan,
+            "perbaikan_otomatis_gagal": perbaikan_gagal,
+        }
+        kategori = ", ".join(dict.fromkeys(x.get("kategori", "") for x in temuan_awal if x.get("kategori")))
+        if temuan_awal and berat and mode != "tempel":
+            status_perbaikan = (
+                "gagal divalidasi" if perbaikan_gagal else
+                "dilakukan" if perbaikan_dilakukan else "tidak menghasilkan perubahan"
+            )
+            st["pemeriksaan_naskah_ringkas"] = (
+                f"{len(temuan_awal)} temuan awal ({kategori}); perbaikan {status_perbaikan}; "
+                f"sisa {len(temuan_akhir)}"
+            )[:300]
+        elif temuan_akhir:
+            st["pemeriksaan_naskah_ringkas"] = (
+                f"{len(temuan_akhir)} temuan ({kategori}); perlu tinjauan pemilik"
+            )[:300]
+        else:
+            st["pemeriksaan_naskah_ringkas"] = "tidak ada temuan"
     lolos = [x for x in n.get("dalil", []) if x.get("status") == "terverifikasi" and x.get("derajat", "sahih") in ("sahih", "hasan")]
     total = len(n.get("dalil", []))
     if total and len(lolos) < total:

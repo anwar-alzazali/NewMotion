@@ -12,6 +12,9 @@ model = ["claude-sonnet-5-5", "gemini"]
 [tahap.sutradara]        # naskah -> rencana sutradara: keputusan makna dan adab
 model = ["claude-sonnet-5-5", "gemini"]
 
+[tahap.periksa_naskah]  # pemeriksaan independen naskah terhadap teks dalil
+model = ["claude-sonnet-5-5", "gemini"]
+
 [tahap.periksa_visual]   # lembar frame -> temuan: kesalahan halus termasuk adab
 model = ["claude-sonnet-5-5", "gemini"]
 

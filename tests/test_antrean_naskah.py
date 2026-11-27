@@ -133,6 +133,12 @@ def test_status_menandai_biaya_gemini_belum_terverifikasi(tmp_path, monkeypatch)
     monkeypatch.setattr("newmotion.paket_genre.kisah_islami.dalil.verifikasi.verifikasi", verifikasi)
     jawaban = Jawaban("{}", "gemini-3-flash", "google", biaya_usd=0, data=NASKAH)
     monkeypatch.setattr(A, "buat_naskah", lambda *args, **kwargs: (NASKAH, jawaban))
+    hasil_periksa = {"temuan": [], "usulan_dalil": []}
+    metadata_periksa = Jawaban("{}", "pemeriksa-uji", "anthropic", data=hasil_periksa)
+    monkeypatch.setattr(
+        "newmotion.application.pemeriksa_naskah.periksa",
+        lambda naskah: (hasil_periksa, metadata_periksa),
+    )
 
     hasil = A.proses("uji-biaya-gemini", "ide", folder=folder, kirim_tg=False)
     assert hasil["biaya_ai_status"] == "belum_terverifikasi"

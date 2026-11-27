@@ -1,25 +1,26 @@
 {
- "status": {
-  "id": "2611-nabi-hud",
-  "judul": "Nabi Hud dan Kaum 'Ad",
-  "sumber": "ide",
-  "tahap": {
-   "diterima": "selesai",
-   "dalil": "gagal",
-   "tinjau": "jalan",
-   "narasi": "belum",
-   "sutradara": "belum",
-   "tinjau_visual": "belum",
-   "render": "belum",
-   "periksa": "belum",
-   "kirim": "belum"
+  "status": {
+    "id": "2611-nabi-hud",
+    "judul": "Nabi Hud dan Kaum 'Ad",
+    "sumber": "ide",
+    "tahap": {
+      "diterima": "selesai",
+      "dalil": "gagal",
+      "tinjau": "jalan",
+      "narasi": "belum",
+      "sutradara": "belum",
+      "tinjau_visual": "belum",
+      "render": "belum",
+      "periksa": "belum",
+      "kirim": "belum"
+    },
+    "ket": {
+      "diterima": "7 beat, 3 dalil",
+      "dalil": "2/3 lolos"
+    },
+    "dibuat": "2026-11-21T09:07:30+00:00",
+    "diperbarui": "2026-11-21T09:07:30+00:00",
+    "pemeriksaan_naskah_ringkas": "2 temuan; 1 putaran perbaikan otomatis"
   },
-  "ket": {
-   "diterima": "7 beat, 3 dalil",
-   "dalil": "2/3 lolos"
-  },
-  "dibuat": "2026-11-21T09:07:30+00:00",
-  "diperbarui": "2026-11-21T09:07:30+00:00"
- },
- "teks": "🎬 Nabi Hud dan Kaum 'Ad\n✅ Naskah diterima — 7 beat, 3 dalil\n❌ Dalil diverifikasi — 2/3 lolos\n⏳ Tinjauan naskah\n▫️ Pratinjau visual\n▫️ Tinjauan visual\n▫️ TTS/Narasi\n▫️ Render final\n▫️ Pemeriksaan\n▫️ Dikirim untuk persetujuan"
+  "teks": "🎬 Nabi Hud dan Kaum 'Ad\n✅ Naskah diterima — 7 beat, 3 dalil\n❌ Dalil diverifikasi — 2/3 lolos\n⏳ Tinjauan naskah\n▫️ Pratinjau visual\n▫️ Tinjauan visual\n▫️ TTS/Narasi\n▫️ Render final\n▫️ Pemeriksaan\n▫️ Dikirim untuk persetujuan\n🔎 Pemeriksa naskah: 2 temuan; 1 putaran perbaikan otomatis"
 }
