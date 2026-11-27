@@ -422,6 +422,8 @@ def subjek_dari_rencana(rb: Mapping, teks: str, ds: float, seed: int) -> dict:
                 o.pop("belakang", None)
         for k, v in (s.get("keadaan") or {}).items():
             o[k] = _nilai(v, ds)
+        if s["jenis"] == "nur":
+            o.setdefault("nama_letak", "atas")  # (27 Nov) nama nabi di atas cahaya, tidak tertutup tanah/ombak
         if isinstance(tempat, str) and tempat.startswith("di_lubang:"):
             o["_di_lubang"] = True  # diikat ke lubang oleh _ikat_posisi_subjek
         benda.append(o)
