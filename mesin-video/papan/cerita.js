@@ -1681,8 +1681,10 @@
   }
   function posisiTanganBawaan(b, t, d) {
     const J = poseKini(b, t, false), x = v(b.x, t, d, 540), y = v(b.y, t, d, 1500);
-    const sk = v(b.s, t, d, 1), a1 = (J.ra || [8, 4])[0] * Math.PI / 180, a2 = (J.ra || [8, 4])[1] * Math.PI / 180;
-    const S = [62, -360], E = [S[0] + Math.sin(a1) * 85, S[1] + Math.cos(a1) * 85];
+    const sk = v(b.s, t, d, 1), samping = b.profil === "kanan" || b.profil === "kiri" || b.profil === true;
+    const a1 = (samping ? Math.abs((J.ra || [8, 4])[0]) : (J.ra || [8, 4])[0]) * Math.PI / 180;
+    const a2 = (samping ? Math.abs((J.ra || [8, 4])[1]) : (J.ra || [8, 4])[1]) * Math.PI / 180;
+    const S = [samping ? 42 : 62, -360], E = [S[0] + Math.sin(a1) * 85, S[1] + Math.cos(a1) * 85];
     let H = [E[0] + Math.sin(a2) * 80, E[1] + Math.cos(a2) * 80];
     H = putarTitik(H, J.badan || 0); H[1] += (J.turun || 0);
     const cermin = b.cermin || b.profil === "kiri";
