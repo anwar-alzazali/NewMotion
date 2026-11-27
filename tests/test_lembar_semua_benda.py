@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import importlib.util
+import json
 from pathlib import Path
 
 from newmotion.application.katalog_renderer import katalog
@@ -36,9 +37,8 @@ def test_rentang_konsep_abstrak_mewakili_keadaan_awal_dan_akhir():
 
 
 def test_penempatan_menggunakan_bbox_agar_benda_muat_di_panel():
-    for nama, kotak in __import__(
-        "json"
-    ).loads((AKAR / "newmotion" / "application" / "data" / "ukuran_benda.json").read_text(encoding="utf-8")).items():
+    ukuran = json.loads((AKAR / "newmotion" / "application" / "data" / "ukuran_benda.json").read_text(encoding="utf-8"))
+    for nama, kotak in ukuran.items():
         x, y, skala = LEMBAR.penempatan(kotak)
         assert skala > 0, nama
         assert max(kotak[2] - kotak[0], kotak[3] - kotak[1]) * skala <= 620.01, nama
