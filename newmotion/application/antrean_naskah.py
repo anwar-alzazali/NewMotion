@@ -610,5 +610,5 @@ if __name__ == "__main__":  # python -m newmotion.application.antrean_naskah <id
     q = QuranBertingkat(QuranFoundation() if os.environ.get("QURAN_FOUNDATION_CLIENT_ID") else None, QuranComPublik())
     hasil = proses(sys.argv[1], sys.argv[2], quran=q)
     print(kartu(hasil))
-    print("penyedia AI:", hasil.get("penyedia_ai", "-"))
+    print("penyedia AI:", (hasil.get("naskah_ai") or {}).get("penyedia", "-"))
     sys.exit(1 if "gagal" in hasil["tahap"]["diterima"] else 0)
