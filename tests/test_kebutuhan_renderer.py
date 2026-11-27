@@ -20,7 +20,7 @@ def test_validator_menerima_kebutuhan_baru_dengan_bukti_narasi():
         "beat": [{
             "beat": 1, "bukti": "menimbang gandum",
             "subjek": [{"jenis": "kerumunan", "tempat": "tengah"}],
-            "belum_ada": [{"nama": "timbangan gandum", "alasan": "alat timbang tidak tersedia",
+            "belum_ada": [{"nama": "ulat", "alasan": "alat timbang tidak tersedia",
                            "bukti": "menimbang gandum"}],
             "kamu": "tidak", "kamera": {"bidikan": "lebar", "aksen": None},
             "teks_layar": None, "klimaks": False,
@@ -100,9 +100,9 @@ def test_rencana_belum_ada_lolos_dengan_http_palsu(monkeypatch):
     rencana = json.loads((data / "rencana" / "yajuj1.json").read_text(encoding="utf-8"))
     rencana = copy.deepcopy(rencana)
     rencana["belum_ada"] = [{
-        "nama": "timbangan gandum",
-        "alasan": "alat timbang tidak tersedia di katalog",
-        "bukti": "Ada satu dinding yang harus ditembus",
+        "nama": "ulat",
+        "alasan": "bentuk ulat tidak tersedia di katalog",
+        "bukti": "ulat ke tengkuk mereka",
     }]
     monkeypatch.setenv("ANTHROPIC_API_KEY", "uji")
     monkeypatch.setenv("NEWMOTION_MODEL_SUTRADARA", "claude-sonnet-5-5")
@@ -112,5 +112,5 @@ def test_rencana_belum_ada_lolos_dengan_http_palsu(monkeypatch):
                 "usage": {"input_tokens": 100, "output_tokens": 50}}
 
     jawaban = S.buat_rencana(naskah, http=http)
-    assert jawaban.data["belum_ada"][0]["nama"] == "timbangan gandum"
+    assert jawaban.data["belum_ada"][0]["nama"] == "ulat"
     assert S.validasi_lengkap(jawaban.data, naskah) == []
