@@ -77,6 +77,7 @@ def test_proses_antrean_menggunakan_verifikasi_paket_kisah_islami(tmp_path, monk
     assert st["naskah_ai"]["model"] == "uji"
     assert st["naskah_ai"]["penyedia"] == "palsu"
     assert st["naskah_ai"]["token_masuk"] == 12
+    assert st["naskah_ai"]["biaya_status"] == "tercatat"
     assert st["token_ai"] == 12
 
 
@@ -233,16 +234,30 @@ def test_jalur_ide_revisi_dan_tempel_memakai_tahap_llm_yang_tepat(monkeypatch):
     panggilan = []
 
     def palsu(tahap, sistem, isi, **kwargs):
-        panggilan.append((tahap, kwargs.get("validasi")))
+        panggilan.append((tahap, sistem, isi, kwargs.get("validasi")))
         return jawaban
 
     monkeypatch.setattr(llm, "panggil", palsu)
     monkeypatch.setattr(A, "_PATH_SKILL", Path(__file__).parents[1] / "newmotion/paket_genre/kisah_islami/skill/naskah.md")
 
     A.buat_naskah("ide", "Ide uji")
-    A.buat_naskah("revisi", "Ubah satu kalimat", NASKAH)
+    lama = json.loads(json.dumps(NASKAH))
+    lama["beat"].append({
+        "narasi": "Bagian yang tidak diminta berubah.",
+        "dalil": [], "kata_kunci": ["tetap"], "peran": [],
+    })
+    revisi = json.loads(json.dumps(lama))
+    revisi["beat"][0]["narasi"] = "Kalimat yang memang diminta diubah."
+    jawaban.data = revisi
+    hasil_revisi, _ = A.buat_naskah("revisi", "Ubah kalimat pembuka saja", lama)
     assert [x[0] for x in panggilan] == ["naskah", "naskah"]
-    assert all(callable(x[1]) for x in panggilan)
+    assert all(callable(x[3]) for x in panggilan)
+    assert "NASKAH SAAT INI" in panggilan[1][2]
+    assert "CATATAN PEMILIK" in panggilan[1][2]
+    assert "Ubah kalimat pembuka saja" in panggilan[1][2]
+    assert "ubah hanya bagian yang diminta pemilik" in panggilan[1][1]
+    assert hasil_revisi["beat"][0]["narasi"] == "Kalimat yang memang diminta diubah."
+    assert hasil_revisi["beat"][1] == lama["beat"][1]
 
     hasil_tempel = {
         "judul": "Tempel",
