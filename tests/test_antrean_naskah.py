@@ -9,6 +9,7 @@ from newmotion.application import antrean_naskah as A
 NASKAH = {
     "judul": "Uji antrean",
     "inti": "Cerita uji.",
+    "uji_cerita": {"kalimat_inti":"Cerita uji.","fakta_terkuat_detik_0":"Fakta pembuka.","jawaban_hook":"Jawaban video.","momen_emosi_kejutan":"Momen beat satu.","alasan_interaksi":"Pertanyaan relevan.","kalimat_dibuang":[]},
     "dalil": [],
     "beat": [{
         "narasi": "Tokoh memulai perjalanan.",
@@ -151,3 +152,20 @@ def test_metadata_kosong_tidak_ditutup_dengan_nilai_cadangan():
         assert "konteks_konten kosong" in str(galat)
     else:
         raise AssertionError("Konteks kosong tidak boleh diam-diam memakai metadata cadangan")
+
+
+def test_uji_cerita_memvalidasi_enam_unsur():
+    assert A.validasi_uji_cerita(NASKAH) == []
+    rusak = json.loads(json.dumps(NASKAH))
+    del rusak["uji_cerita"]["jawaban_hook"]
+    assert any("jawaban_hook" in x for x in A.validasi_uji_cerita(rusak))
+
+
+def test_kartu_telegram_memuat_ringkasan_uji_cerita():
+    st = A.status_baru("uji", "Uji", "ide")
+    st["uji_cerita_ringkas"] = "Inti | fakta detik nol | jawaban hook"
+    assert "Uji cerita" in A.kartu(st)
+
+
+def test_peta_tempel_menolak_nomor_paragraf_nol():
+    assert A.validasi_peta_tempel({"beat": [{"paragraf": [0]}]})
