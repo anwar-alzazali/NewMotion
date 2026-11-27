@@ -1,0 +1,28 @@
+name: Lint Python — Tugas Naskah
+
+on:
+  pull_request:
+    paths:
+      - "newmotion/application/antrean_naskah.py"
+      - "tests/test_antrean_naskah.py"
+      - ".github/workflows/lint-naskah.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  ruff:
+    name: Ruff check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ambil kode
+        uses: actions/checkout@v4
+      - name: Siapkan Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Pasang Ruff
+        run: python -m pip install ruff==0.14.10
+      - name: Periksa lint
+        run: ruff check newmotion/application/antrean_naskah.py tests/test_antrean_naskah.py
