@@ -16,7 +16,7 @@ from pathlib import Path
 
 AKAR = Path(__file__).resolve().parents[3]
 sys.path.insert(0, str(AKAR))
-from newmotion.paket_genre.kisah_islami.kartu_dalil import buat_kartu
+from newmotion.paket_genre.kisah_islami.kartu_dalil import buat_kartu  # noqa: E402
 
 H = 880                      # garis laut terjauh = cakrawala (tidak ada daratan di belakang laut)
 LT = {"jenis": "laut_terbelah", "x": 540, "y": 1450, "s": 1, "warna": ["#5bb4dc", "#3f8ac9", "#245f9a"]}
