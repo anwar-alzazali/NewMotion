@@ -5,18 +5,41 @@ Pemilik: Anwar Alzazali. Bahasa kerja: Indonesia. Ditulis 27 Nov 2026 oleh Claud
 ## Protokol setiap sesi (WAJIB dibaca dulu; ingatan sesi pendek)
 
 1. Baca berkas ini sampai habis, lalu `CLAUDE.md` di akar dan `mesin-video/CLAUDE.md` bila ada.
-2. Lihat **Log kerja** di paling bawah. Ambil tugas **pertama yang belum `[x]`** dan belum ada PR terbukanya
-   (`gh pr list`). Jangan mengulang tugas yang sudah selesai, jangan mendesain ulang keputusan yang sudah
-   tercatat di log, kecuali log itu sendiri menyatakan ada masalah.
-3. Satu tugas = satu branch dari `main` terbaru = satu PR. Jangan menggabungkan dua tugas dalam satu PR.
-4. Sebelum PR: `python -m pytest -q` lulus semua (saat ini 384), `ruff check` bersih untuk berkas yang
+2. Lihat **Log kerja** di paling bawah. Ambil tugas **pertama yang belum `[x]`**. Jangan mengulang tugas
+   yang sudah selesai, jangan mendesain ulang keputusan yang sudah tercatat di log, kecuali log itu
+   sendiri menyatakan ada masalah.
+3. **Cabang kerja = `gpt/integrasi`** (bukan `main`). Satu tugas = satu branch dari `gpt/integrasi` terbaru
+   = satu PR **ke `gpt/integrasi`**. Jangan menggabungkan dua tugas dalam satu PR. Jangan membuat PR ke `main`.
+4. Sebelum merge: `python -m pytest -q` lulus semua (saat ini 384), `ruff check` bersih untuk berkas yang
    kamu ubah, dan `node --test bot/` lulus bila menyentuh bot.
-5. Di akhir sesi (selesai atau belum), **tambahkan satu entri di Log kerja**: tanggal, tugas, apa yang
+5. **Jangan menunggu audit.** Bila semua pemeriksaan butir 4 lulus, merge sendiri PR-mu ke `gpt/integrasi`,
+   centang tugasnya `[x]` di daftar di bawah, lalu langsung lanjut ke tugas berikutnya. Pemilik/Claude
+   mengaudit seluruh `gpt/integrasi` sekaligus setelah semua tugas selesai, lalu menggabungkannya ke `main`.
+   (Cabang terpisah ini menjaga bot produksi, yang otomatis ter-deploy dari `main`, tetap aman.)
+6. Di akhir sesi (selesai atau belum), **tambahkan satu entri di Log kerja**: tanggal, tugas, apa yang
    selesai, nomor PR, keputusan penting, dan langkah berikut yang persis. Sesi berikutnya hanya
-   mengandalkan catatan ini.
-6. **Batas macet:** bila satu masalah gagal dua kali dengan cara berbeda, berhenti mencoba. Tulis di log
+   mengandalkan catatan ini. Bila sebuah tugas belum selesai, tulis bagian mana yang sudah ada di
+   `gpt/integrasi` dan bagian mana yang belum.
+7. **Batas macet:** bila satu masalah gagal dua kali dengan cara berbeda, berhenti mencoba. Tulis di log
    sebagai `MACET:` beserta apa yang sudah dicoba, lalu lanjut ke bagian lain tugas atau tugas berikutnya.
-7. Jangan merge PR sendiri. Pemilik/Claude mengaudit dan merge.
+   Tugas yang macet tidak menghalangi tugas berikutnya.
+8. Bila sebuah tugas ternyata sudah dikerjakan sebagian oleh sesi lain (lihat log dan `git log gpt/integrasi`),
+   lanjutkan dari situ; jangan menulis ulang dari nol.
+
+9. **Jangan audit diri berulang-ulang.** Satu putaran pemeriksaan sendiri + semua uji lulus = cukup, lalu
+   merge dan lanjut. Hal yang belum pasti dicatat di log sebagai "catatan untuk audit", bukan alasan berhenti.
+   Uji dijalankan lokal (`pytest`, `ruff`, `node --test bot/`); jangan menambah workflow per-branch.
+
+## Daftar tugas (centang bila selesai dan sudah di-merge ke `gpt/integrasi`)
+
+- [x] Tugas 1 — Penulisan naskah pindah ke jalur LLM bersama
+- [ ] Tugas 2 — Pencatat kekurangan renderer (antrean kebutuhan)
+- [ ] Tugas 3 — Pustaka benda renderer untuk banyak jenis cerita
+- [ ] Tugas 4 — Lapis A uji tokoh menuju nol temuan
+- [ ] Tugas 5 — Interaksi antartokoh dan benda yang dipegang
+- [ ] Tugas 6 — Visual konsep abstrak
+- [ ] Tugas 7 — Lembar uji renderer otomatis
+- [ ] Tugas 8 — Pembuat komponen renderer (bersyarat, lihat syaratnya)
 
 ## Batas wajib (berlaku untuk semua tugas)
 
@@ -77,7 +100,33 @@ yang ditulis di kode.
 - Uji baru dengan http palsu: ide berhasil, ide ditolak validator lalu berhasil di percobaan ulang,
   tempel tidak mengubah narasi, revisi hanya mengubah bagian yang diminta (cukup cek alurnya).
 
-## Tugas 2 — Pustaka benda renderer untuk banyak jenis cerita
+## Tugas 2 — Pencatat kekurangan renderer (antrean kebutuhan)
+
+**Tujuan:** setiap kali sebuah kisah membutuhkan visual yang belum bisa digambar renderer, kebutuhan itu
+tercatat, sehingga daftar komponen yang harus dibuat berasal dari kisah nyata, bukan tebakan. Saat ini
+sutradara diam-diam mengganti dengan benda terdekat dan kekurangan itu hilang.
+
+**Selesai bila:**
+- Rencana sutradara boleh berisi bidang `belum_ada` (tingkat rencana atau per beat): daftar
+  `{nama, alasan, bukti}` — visual yang ingin digambar tetapi tidak ada di katalog; `bukti` = potongan
+  narasi. Skill sutradara menjelaskan kapan memakainya; validator memeriksa bentuknya dan menolak nama yang
+  sebenarnya sudah ada di katalog (supaya tidak dipakai sebagai jalan pintas).
+- Skill pemeriksa visual (`skill/periksa_visual.md`) punya kategori temuan "objek yang disebut narasi tidak
+  tergambar karena renderer tidak punya bentuknya", dengan nama objek yang dibutuhkan.
+- Keduanya dikumpulkan ke satu berkas antrean kebutuhan (mis. `newmotion/application/data/kebutuhan_renderer.json`):
+  per nama kebutuhan — jumlah kemunculan, contoh kisah/beat, sumber (sutradara/pemeriksa), status
+  (`menunggu`/`dibuat`). Nama yang mirip digabung (normalisasi sederhana sudah cukup).
+- Pengumpulan terjadi otomatis di `sutradara_llm.py` (CLI uji) dan `sutradara_hibrida.py` (produksi);
+  hasil produksi dari antrean ikut tersimpan (workflow `visual.yml` sudah meng-commit berkas antrean).
+- Perintah ringkas, mis. `python -m newmotion.application.kebutuhan_renderer`, mencetak daftar teratas.
+- Uji dengan http palsu: rencana dengan `belum_ada` lolos, nama yang sudah ada di katalog ditolak, antrean
+  menghitung kemunculan dengan benar.
+
+**Hubungan dengan Tugas 3:** Tugas 3 boleh langsung dikerjakan tanpa menunggu antrean terisi (belum ada uji
+LLM sungguhan); daftar contoh di Tugas 3 dipakai sebagai titik awal. Setelah antrean terisi dari produksi,
+kebutuhan teratas menjadi prioritas pembuatan komponen berikutnya (Tugas 8).
+
+## Tugas 3 — Pustaka benda renderer untuk banyak jenis cerita
 
 **Tujuan:** sutradara punya cukup "bahasa visual" untuk kisah apa pun (kisah nabi, kisah umat, kehidupan
 sehari-hari, akhirat), bukan hanya kisah yang sudah pernah dibuat. Benda yang ada saat ini: lihat
@@ -104,7 +153,7 @@ kitab, jam pasir, rantai belenggu, pedang tersarung (tanpa adegan kekerasan), aw
 `papan_buat.py --pratinjau`), masing-masing dalam dua keadaan (awal/akhir parameter). Tidak ada galat
 JavaScript saat render.
 
-## Tugas 3 — Lapis A uji tokoh menuju nol temuan
+## Tugas 4 — Lapis A uji tokoh menuju nol temuan
 
 **Tujuan:** tokoh bersendi benar secara anatomi di semua pose dan sudut.
 Jalankan `python mesin-video/papan/uji_tokoh.py -o /tmp/uji_tokoh`; saat ini tersisa temuan:
@@ -119,7 +168,7 @@ secara anatomi (mis. fase melayang lompat) dan dicatat di `TIDAK_MENAPAK`/dokume
 Lampirkan `lembar_gerak_samping_*.png` dan lembar pose yang berubah sebelum/sesudah di PR.
 Jangan membuat lolos dengan melonggarkan ambang tanpa alasan anatomi.
 
-## Tugas 4 — Interaksi antartokoh dan benda yang dipegang
+## Tugas 5 — Interaksi antartokoh dan benda yang dipegang
 
 **Tujuan:** adegan dua tokoh atau lebih terbaca sebagai interaksi, bukan tokoh berdiri berjajar.
 
@@ -137,7 +186,7 @@ Jangan membuat lolos dengan melonggarkan ambang tanpa alasan anatomi.
 **Selesai bila:** ada uji otomatis yang mengukur jarak tangan ke benda saat memberi/menerima (seperti A6,
 batas 14 px) dan lembar PNG bukti di PR.
 
-## Tugas 5 — Visual konsep abstrak yang sering muncul di Kisah Islami
+## Tugas 6 — Visual konsep abstrak yang sering muncul di Kisah Islami
 
 **Tujuan:** pemeriksa visual berulang menemukan bahwa konsep abstrak tidak tergambar (contoh Mahsyar:
 "keringat setinggi mata kaki, lutut, pinggang, mulut"; "meresap ke tanah 70 hasta"; "naungan bagi tujuh
@@ -152,12 +201,33 @@ dianimasikan dan tercatat di katalog.
 **Selesai bila:** lembar PNG bukti di PR menunjukkan tiap konsep terbaca tanpa teks penjelas, pada ukuran
 seperempat layar (simulasi ponsel).
 
-## Tugas 6 (cadangan bila 1–5 selesai/macet) — Lembar uji renderer otomatis
+## Tugas 7 — Lembar uji renderer otomatis
 
-Satu workflow manual `uji-renderer.yml` yang menjalankan `uji_tokoh.py`, membuat lembar semua benda
+**Tujuan:** satu workflow manual `uji-renderer.yml` yang menjalankan `uji_tokoh.py`, membuat lembar semua benda
 (dua keadaan per benda), dan menyimpan hasil ke branch `hasil/renderer-<run_id>` (contoh pola:
 `.github/workflows/uji-sutradara-llm.yml`). Ringkasan di `GITHUB_STEP_SUMMARY`: jumlah benda, benda tanpa
 ukuran, temuan lapis A. Tanpa LLM.
+
+## Tugas 8 — Pembuat komponen renderer (bersyarat)
+
+**Syarat mulai:** Tugas 2, 3, dan 7 sudah di-merge ke `gpt/integrasi`. Bila belum, lewati tugas ini.
+
+**Tujuan:** mengambil kebutuhan teratas dari antrean kebutuhan (Tugas 2) atau dari daftar contoh Tugas 3
+yang belum dibuat, lalu menghasilkan **draf** komponen benda baru beserta bukti mutunya, sehingga pembuatan
+komponen menjadi proses berulang yang terukur, bukan pekerjaan manual dari nol.
+
+**Selesai bila:**
+- Ada alat (skrip) yang untuk satu nama kebutuhan menghasilkan: cabang benda di `cerita.js` di branch
+  terpisah, lembar PNG (dua keadaan parameter, ukuran penuh dan seperempat layar), dan laporan pemeriksaan
+  otomatis: render tanpa galat JS, ukuran tercatat oleh `ukur_benda.py`, video referensi tidak berubah,
+  gaya konsisten (garis `INK`, tanpa gambar raster/teks Arab), penjaga adab lulus (benda tidak berwujud
+  tokoh mulia).
+- Komponen yang dihasilkan alat **selalu menjadi PR terpisah ke `gpt/integrasi` berlabel `komponen-draf`
+  yang TIDAK di-merge otomatis**: ini satu-satunya pengecualian dari protokol butir 5, karena mutu gambar
+  harus dilihat manusia. Status kebutuhannya di antrean berubah menjadi `draf`.
+- Alat boleh memakai LLM sungguhan hanya bila dijalankan manual dengan kunci di lingkungan; ujinya tetap
+  memakai LLM palsu.
+- Contoh nyata: minimal 3 komponen draf dibuat dengan alat ini, lembarnya dilampirkan di PR masing-masing.
 
 ---
 
@@ -167,6 +237,8 @@ Format: `- YYYY-MM-DD | Tugas N | status (selesai/sebagian/MACET) | PR #.. | cat
 
 - 2026-11-27 | — | disiapkan oleh Claude | — | Sistem hibrida utuh (PR #51), tata letak (#49), kemampuan
   figuran/variasi (#47, #52). Belum ada uji gabungan LLM/ElevenLabs sungguhan (menunggu pemilik). Mulai dari Tugas 1.
+- 2026-11-27 | — | disiapkan oleh Claude | — | Cabang `gpt/integrasi` dibuat dari main. Kerja berlanjut tanpa
+  menunggu audit (protokol butir 5); audit + merge ke main dilakukan pemilik/Claude setelah semua tugas selesai.
 
 - 2026-11-27 | Tugas 1 | sebagian | PR #54 | Jalur mandiri Claude/Gemini di antrean dihapus; ide/revisi memakai llm.panggil tahap naskah, tempel tahap rapikan; aturan dipisah ke skill; uji_cerita enam unsur tampil ringkas di kartu Telegram; metadata model/penyedia/token/biaya/percobaan dicatat. Dihapus tiga tes duplikat. Ruff awal menemukan dua E702 pada baris lama; keduanya diperbaiki. CI akhir: Ruff lulus; runtime 386 passed, 1 skipped; uji bot lulus; uji adab tokoh lulus. Workflow lint-naskah.yml ditambahkan agar pemeriksaan Ruff berulang otomatis. CLAUDE.md dan mesin-video/CLAUDE.md tidak ditemukan di main. Berikutnya: audit pemilik atas PR #54; jangan merge sebelum audit.
 
@@ -185,3 +257,11 @@ Format: `- YYYY-MM-DD | Tugas N | status (selesai/sebagian/MACET) | PR #.. | cat
 - 2026-11-27 | Audit ulang protokol & uji integrasi Tugas 1 | sebagian | PR #54 | Membaca ulang dokumen ini penuh dan memeriksa ulang berkas instruksi CLAUDE; keduanya tidak ditemukan di branch. Perbandingan dengan prompt lama di `main` menemukan beberapa aturan rinci yang belum dipindahkan ke skill (format nama peran nabi/sahabat, format dialog, daftar suasana, hikmah pada topik berat, aturan deduplikasi dalil, dan aturan pemetaan paragraf tempel); semuanya dipulihkan ke `skill/naskah.md`. Menambahkan tes integrasi dengan HTTP palsu untuk ide sukses, ide ditolak validator lalu retry pada model yang sama, tempel menjaga narasi, dan revisi membawa naskah lama/catatan. Ruff untuk tes HTTP palsu sudah lulus; runtime untuk kode/tes terbaru belum terverifikasi. Agar Actions benar-benar menjalankan seluruh pytest pada branch PR, branch `tugas-1-llm-naskah` ditambahkan ke pemicu push yang sudah dibatasi paths pada `test-runtime.yml`. Berikutnya: tunggu runtime CI terbaru, perbaiki bila ada gagal, lalu audit ulang seluruh checklist Tugas 1. Jangan merge.
 
 - 2026-11-27 | Verifikasi CI lengkap Tugas 1 | sebagian | PR #54 | CI runtime terbaru pada commit kode `c65e409` sukses: `394 passed, 1 skipped`; langkah bot `node --test`, pembandingan alat ukur, CLI ukur, dan `newmotion doctor` juga selesai tanpa gagal (workflow sukses). Ruff sukses. Uji HTTP palsu untuk ide sukses, retry setelah ditolak validator, tempel mempertahankan narasi, dan alur revisi ikut tercakup dalam 394 tes. Skill penulisan diselaraskan kembali dengan semua ketentuan lama yang ditemukan dari prompt `main`; CLAUDE.md dan mesin-video/CLAUDE.md tidak ada. Review PR masih kosong (tidak ada review, thread, atau komentar pemilik/Claude). Berikutnya secara persis: serahkan PR #54 kepada pemilik/Claude untuk audit dan keputusan merge; jangan merge sendiri dan jangan mulai Tugas 2 sebelum PR #54 diaudit serta digabung pemilik.
+
+- 2026-11-27 | Tugas 1 | selesai | PR #54 | Claude: PR #54 dibuat sebelum protokol diganti, jadi basisnya
+  dipindah ke `gpt/integrasi` dan di-merge (pytest lulus lokal). Tugas 1 dianggap selesai; catatan terbuka
+  (harga Gemini 0 = `belum_terverifikasi`) diaudit belakangan. PROTOKOL SEKARANG: jangan menunggu audit,
+  merge sendiri ke `gpt/integrasi` bila uji lulus, lalu lanjut. Jangan audit diri berulang-ulang: satu
+  putaran periksa + uji lulus sudah cukup. Workflow tambahan per-branch tidak perlu lagi; jalankan uji lokal.
+  Berikutnya: Tugas 2.
+
