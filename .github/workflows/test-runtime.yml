@@ -55,6 +55,15 @@ jobs:
         run: |
           python mesin-video/papan/ukur_benda.py
           python mesin-video/papan/lembar_benda_baru.py
+          python mesin-video/papan/uji_tokoh.py -o /tmp/uji_tokoh
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          laporan = json.loads(Path("/tmp/uji_tokoh/laporan.json").read_text(encoding="utf-8"))
+          gagal = [x for x in laporan["temuan"] if x.get("pose") == "perahu kecil" and x.get("kode", "").startswith("A6_")]
+          assert not gagal, f"A6 penumpang perahu kecil gagal: {gagal}"
+          print("A6 perahu kecil: lulus")
+          PY
       - name: Simpan hasil pengukuran bbox ke cabang tugas
         if: github.event_name == 'push'
         shell: bash
