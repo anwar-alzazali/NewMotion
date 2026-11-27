@@ -576,10 +576,18 @@ def proses(id_: str, mode: str, *, folder: Path = ANTREAN, tanya=None, quran=Non
     token = hasil_ai.token_masuk + hasil_ai.token_keluar
     st["token_ai"] = st.get("token_ai", 0) + token
     st["biaya_ai_usd"] = round(st.get("biaya_ai_usd", 0.0) + hasil_ai.biaya_usd, 6)
+    # Harga Gemini belum dipatok di config; jangan menyajikan nol sebagai biaya aktual.
+    biaya_status = (
+        "belum_terverifikasi"
+        if hasil_ai.penyedia == "google" and hasil_ai.biaya_usd == 0
+        else "tercatat"
+    )
+    st["biaya_ai_status"] = biaya_status
     st["naskah_ai"] = {"tahap": "rapikan" if mode == "tempel" else "naskah",
         "model": hasil_ai.model, "penyedia": hasil_ai.penyedia,
         "token_masuk": hasil_ai.token_masuk, "token_keluar": hasil_ai.token_keluar,
-        "biaya_usd": hasil_ai.biaya_usd, "percobaan": hasil_ai.percobaan}
+        "biaya_usd": hasil_ai.biaya_usd, "biaya_status": biaya_status,
+        "percobaan": hasil_ai.percobaan}
     if isinstance(n.get("uji_cerita"), dict):
         st["uji_cerita_ringkas"] = ringkasan_uji_cerita(n["uji_cerita"])
     if galat:
