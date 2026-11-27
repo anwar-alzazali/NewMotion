@@ -182,7 +182,39 @@ def normalisasi(n: dict) -> dict:
                     f"beat {i}: rujukan {', '.join(map(str, hilang))} tidak ditemukan di daftar dalil")
         if b.get("suasana") not in SUASANA:
             b.pop("suasana", None)
+        _rapikan_dialog(b, n)
     return n
+
+
+def _rapikan_dialog(b: dict, n: dict) -> None:
+    """Dialog dipakai untuk menata tokoh di layar. Firman Allah tidak dijadikan dialog bertokoh:
+    kalimatnya tetap ada di narasi (dibacakan narator), giliran dialognya dibuang. Nama pembicara
+    lain yang lupa dicantumkan di peran ditambahkan. Sebelumnya hal ini menggagalkan seluruh naskah
+    hasil revisi (uji 27 Nov, kisah Firaun beat 7) dan pemilik tidak punya tombol untuk melanjutkan."""
+    dialog = b.get("dialog")
+    if not isinstance(dialog, list):
+        return
+    peran = b.get("peran") if isinstance(b.get("peran"), list) else []
+    sisa = []
+    for g in dialog:
+        if not isinstance(g, dict):
+            sisa.append(g)
+            continue
+        sakral = lambda x: isinstance(x, str) and _polos(x) in {"allah", "tuhan", "allah swt"}
+        if sakral(g.get("penjawab")) and not sakral(g.get("pembicara")):
+            g["penjawab"] = None  # ucapan manusia kepada Allah tetap dialog, tanpa lawan bicara bersosok
+        nama = [g.get(k) for k in ("pembicara", "penjawab") if isinstance(g.get(k), str) and g.get(k).strip()]
+        if any(sakral(x) for x in nama):
+            n.setdefault("peringatan", []).append(
+                f"dialog yang melibatkan Allah dijadikan narasi saja: \"{str(g.get('ucapan', ''))[:60]}\"")
+            continue
+        for x in nama:
+            if x not in peran:
+                peran.append(x)
+        sisa.append(g)
+    b["dialog"] = sisa
+    if peran or "peran" in b:
+        b["peran"] = peran
 
 def validasi(n: dict) -> list[str]:
     """Validasi format naskah dan beri petunjuk berbahasa Indonesia yang bisa ditindaklanjuti."""
@@ -507,6 +539,10 @@ def tombol_kartu(st: dict) -> list:
     if st["tahap"]["tinjau"] in ("belum", "jalan") and st["tahap"]["dalil"] == "selesai":
         return [[{"text": "✅ Lanjut", "callback_data": f"nl:{i}"}, {"text": "✏️ Revisi", "callback_data": f"nr:{i}"}],
                 [{"text": "❌ Batal", "callback_data": f"nb:{i}"}, {"text": "🏠 Menu", "callback_data": "menu"}]]
+    # Naskah gagal tersusun/divalidasi: jangan buntu, beri jalan revisi (sama dengan tombolKartu di bot/worker.js).
+    if st["tahap"].get("diterima") == "gagal":
+        return [[{"text": "✏️ Revisi", "callback_data": f"nr:{i}"}, {"text": "❌ Batal", "callback_data": f"nb:{i}"}],
+                [{"text": "🏠 Menu", "callback_data": "menu"}]]
     # Dalil gagal: naskah tidak boleh lanjut ke visual (sama dengan tombolKartu di bot/worker.js).
     if st["tahap"]["tinjau"] in ("belum", "jalan") and st["tahap"]["dalil"] == "gagal":
         return [[{"text": "✏️ Revisi dalil", "callback_data": f"nr:{i}"}, {"text": "❌ Batal", "callback_data": f"nb:{i}"}],
@@ -569,7 +605,12 @@ def teks_tinjauan(n: dict) -> list[str]:
 def proses(id_: str, mode: str, *, folder: Path = ANTREAN, tanya=None, quran=None, kirim_tg: bool = True) -> dict:
     d = folder / id_
     st = json.loads((d / "status.json").read_text(encoding="utf-8"))
-    masukan = (d / ("catatan.txt" if mode == "revisi" else "masukan.txt")).read_text(encoding="utf-8")
+    if mode == "revisi" and not (d / "naskah.json").exists():
+        # Naskah pertama gagal tersusun: catatan revisi digabung ke ide awal lalu disusun ulang dari nol.
+        mode = "ide"
+        masukan = (d / "masukan.txt").read_text(encoding="utf-8") + "\nCatatan pemilik: " + (d / "catatan.txt").read_text(encoding="utf-8")
+    else:
+        masukan = (d / ("catatan.txt" if mode == "revisi" else "masukan.txt")).read_text(encoding="utf-8")
     lama = json.loads((d / "naskah.json").read_text(encoding="utf-8")) if mode == "revisi" else None
     atur(st, "diterima", "jalan", "naskah sedang disusun AI" if mode != "tempel" else "naskah sedang dirapikan")
     for k in ("dalil", "tinjau"):

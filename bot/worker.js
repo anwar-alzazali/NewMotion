@@ -68,6 +68,10 @@ export function tombolKartu(st) {
   if (["belum", "jalan"].includes(st.tahap.tinjau) && st.tahap.dalil === "selesai")
     return [[{ text: "✅ Lanjut", callback_data: `nl:${i}` }, { text: "✏️ Revisi", callback_data: `nr:${i}` }],
             [{ text: "❌ Batal", callback_data: `nb:${i}` }, { text: "🏠 Menu", callback_data: "menu" }]];
+  // Naskah gagal tersusun/divalidasi: jangan buntu, beri jalan revisi.
+  if (st.tahap.diterima === "gagal")
+    return [[{ text: "✏️ Revisi", callback_data: `nr:${i}` }, { text: "❌ Batal", callback_data: `nb:${i}` }],
+            [{ text: "🏠 Menu", callback_data: "menu" }]];
   // Dalil gagal: naskah tidak boleh lanjut ke visual. Pilihan hanya revisi atau batal.
   if (["belum", "jalan"].includes(st.tahap.tinjau) && st.tahap.dalil === "gagal")
     return [[{ text: "✏️ Revisi dalil", callback_data: `nr:${i}` }, { text: "❌ Batal", callback_data: `nb:${i}` }],

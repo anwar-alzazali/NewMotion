@@ -151,3 +151,22 @@ def test_metadata_kosong_tidak_ditutup_dengan_nilai_cadangan():
         assert "konteks_konten kosong" in str(galat)
     else:
         raise AssertionError("Konteks kosong tidak boleh diam-diam memakai metadata cadangan")
+
+
+def test_dialog_allah_dijadikan_narasi_dan_peran_dilengkapi():
+    b = {"narasi": "Firaun berseru. Allah menjawab.", "peran": ["Firaun"], "dialog": [
+        {"pembicara": "Firaun", "penjawab": "Allah", "ucapan": "Aku beriman"},
+        {"pembicara": "Allah", "ucapan": "Apakah sekarang?"},
+        {"pembicara": "Haman", "ucapan": "Tuanku"}]}
+    n = {}
+    A._rapikan_dialog(b, n)
+    assert [g["pembicara"] for g in b["dialog"]] == ["Firaun", "Haman"]
+    assert b["dialog"][0]["penjawab"] is None
+    assert b["peran"] == ["Firaun", "Haman"]
+    assert len(n["peringatan"]) == 1
+
+
+def test_kartu_naskah_gagal_punya_tombol_revisi():
+    st = {"id": "x", "tahap": {"diterima": "gagal", "dalil": "belum", "tinjau": "belum"}}
+    data = [b["callback_data"] for baris in A.tombol_kartu(st) for b in baris]
+    assert "nr:x" in data and "nb:x" in data and "nl:x" not in data
