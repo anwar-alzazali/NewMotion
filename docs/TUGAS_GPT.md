@@ -40,6 +40,9 @@ Pemilik: Anwar Alzazali. Bahasa kerja: Indonesia. Ditulis 27 Nov 2026 oleh Claud
    Jangan menambah workflow baru untuk menguji; `test-runtime.yml` sudah mencakup semuanya. Bila memang
    butuh pemeriksaan baru, tambahkan langkah di workflow itu atau tambahkan uji pytest.
 
+**Tugas antarmuka web (Studio Alur)** ada di berkas terpisah `docs/TUGAS_ANTARMUKA.md` dengan protokol yang
+sama; boleh dikerjakan sesi lain secara paralel.
+
 **Permintaan komponen dari naskah pemilik** (pemilik menempel naskah dan meminta komponen visualnya)
 diutamakan di atas daftar tugas dan mengikuti `docs/ATURAN_KOMPONEN.md`. Setelah PR-nya dibuat, lanjutkan
 daftar tugas dari posisi terakhir.
