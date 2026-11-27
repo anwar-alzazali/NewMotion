@@ -117,6 +117,8 @@ def kartu(st: dict) -> str:
         baris.append(f"{IKON[keadaan]} {label}" + (f" — {ket}" if ket else ""))
     if st.get("uji_cerita_ringkas"):
         baris.append("🧪 Uji cerita: " + st["uji_cerita_ringkas"])
+    if st.get("uji_cerita_ringkas"):
+        baris.append("🧪 Uji cerita: " + st["uji_cerita_ringkas"])
     return "\n".join(baris)
 
 
@@ -712,7 +714,6 @@ def proses(id_: str, mode: str, *, folder: Path = ANTREAN, tanya=None, quran=Non
         _tulis(d, st, n, kirim_tg)
         return st
     atur(st, "diterima", "selesai", f"{len(n['beat'])} beat, {len(n.get('dalil', []))} dalil · {hasil_ai.model}")
-         + (f" · {PENYEDIA['terakhir'].split(' (')[0].split(' ')[0]}" if PENYEDIA.get("terakhir") else ""))
     atur(st, "dalil", "jalan")
     _tulis(d, st, n, kirim_tg)
     from newmotion.paket_genre.kisah_islami.dalil.verifikasi import verifikasi
