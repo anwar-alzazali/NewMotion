@@ -371,7 +371,23 @@ def buat_naskah(mode, masukan, naskah_lama=None, *, tanya=None):
         isi = "Naskah bernomor:\n" + "\n".join(f"[{i}] {p}" for i, p in enumerate(par, 1))
         isi += "\nRujukan asli pemilik:\n" + "\n".join(m.group(0) for m in _RUJUKAN.finditer(masukan))
         sistem = skill + "\nMODE TEMPEL: petakan paragraf; jangan mengubah satu kata pun narasi. Jangan menambah dalil. JSON: {judul, inti, dalil, beat:[{paragraf:[1], dalil:[], suasana, kata_kunci:[], peran:[], dialog:[]}]}"
-        tahap, pemeriksa = "rapikan", validasi_peta_tempel
+        tahap = "rapikan"
+
+        def pemeriksa(data):
+            galat = validasi_peta_tempel(data)
+            if galat:
+                return galat
+            beat_uji = []
+            for b in data["beat"]:
+                narasi = " ".join(par[i - 1] for i in b["paragraf"] if i <= len(par))
+                beat_uji.append({
+                    "narasi": narasi, "dalil": b.get("dalil", []),
+                    "kata_kunci": b.get("kata_kunci", []), "peran": b.get("peran", []),
+                    "dialog": b.get("dialog", []), "suasana": b.get("suasana"),
+                })
+            sementara = {"judul": data["judul"], "inti": data["inti"],
+                         "dalil": data.get("dalil", []), "beat": beat_uji}
+            return validasi(sementara)
     elif mode == "ide":
         isi = "Ide pemilik:\n" + masukan
         sistem = skill + "\nMODE IDE: tulis cerita utuh. Sertakan uji_cerita dengan kalimat_inti, fakta_terkuat_detik_0, jawaban_hook, momen_emosi_kejutan, alasan_interaksi, kalimat_dibuang (daftar). Keluarkan JSON naskah."
