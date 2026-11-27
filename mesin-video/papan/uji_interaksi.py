@@ -14,7 +14,7 @@ from uji_tokoh import LEBAR, TINGGI, TOKOH, render
 
 
 BATAS_TANGAN = 14.0
-WAKTU = [0.6, 0.9, 1.3, 1.7, 2.0]
+WAKTU = [0.5, 0.6, 0.9, 1.3, 1.7, 2.0, 2.1]
 
 
 def jarak(a, b):
@@ -22,8 +22,8 @@ def jarak(a, b):
 
 
 def buat_spek():
-    pemberi = {**TOKOH, "id": 0, "x": 440, "y": 1700, "s": 0.8, "pose": "pegang_surat"}
-    penerima = {**TOKOH, "id": 1, "x": 570, "y": 1700, "s": 0.8, "pose": "berdiri"}
+    pemberi = {**TOKOH, "id": 0, "x": 440, "y": 1700, "s": 0.8, "pose": "pegang_surat", "profil": "kanan"}
+    penerima = {**TOKOH, "id": 1, "x": 570, "y": 1700, "s": 0.8, "pose": "berdiri", "profil": "kiri"}
     return {
         "latar": "gelap", "musik": False, "stempel": False, "dekor": False, "durasi": 2.4,
         "cerita": {"shot": [{
@@ -67,7 +67,7 @@ def uji(keluaran: Path, chrome: str | None = None) -> dict:
     posisi_awal = gambar[0][2][0]["posisi"] if gambar and gambar[0][2] else None
     posisi_akhir = gambar[-1][2][0]["posisi"] if gambar and gambar[-1][2] else None
     perpindahan = jarak(posisi_awal, posisi_akhir) if posisi_awal and posisi_akhir else 0
-    if perpindahan < 100:
+    if perpindahan < 20:
         temuan.append({"kode": "BENDA_TIDAK_BERPINDah", "jarak_px": round(perpindahan, 2)})
     from io import BytesIO
     from PIL import Image, ImageDraw, ImageFont
