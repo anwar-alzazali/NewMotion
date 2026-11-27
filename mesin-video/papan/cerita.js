@@ -2395,7 +2395,7 @@
       if (lintas.aktif) {
         isi += gambarBendaSerah(r.benda, lintas.posisi[0], lintas.posisi[1], Number(r.skala) || 0.48);
         const a = window.__tanganBoneka[r.dari], b = window.__tanganBoneka[r.ke];
-        window.__catatSerahTerima.push({ t: tl, fase: lintas.fase, benda: r.benda, posisi: lintas.posisi, meio: lintas.tengah, mão: null, tangan_pemberi: a || null, tangan_penerima: b || null });
+        window.__catatSerahTerima.push({ t: tl, fase: lintas.fase, benda: r.benda, posisi: lintas.posisi, titik_temu: lintas.tengah, tangan_pemberi: a || null, tangan_penerima: b || null });
       }
     }
     (S.benda || []).filter((o) => o.depan).forEach((o) => { isi += o.hias ? `<g data-hias="1">${benda(o, tl, d)}</g>` : benda(o, tl, d); });
