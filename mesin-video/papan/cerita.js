@@ -1665,15 +1665,18 @@
     const H = catatan && catatan.sendi && catatan.sendi.lengan && catatan.sendi.lengan[1] && catatan.sendi.lengan[1][2];
     if (!H) return null;
     let p = putarTitik(H, catatan.sendi.badan || 0);
-    p[1] += (catatan.sendi.turun || 0) + (catatan.sendi.geserY || 0) + (catatan.tubuh || 0);
+    p[1] += (catatan.sendi.turun || 0) + (catatan.sendi.geserY || 0);
     p = putarTitik(p, catatan.guling || 0);
+    p[1] += catatan.tubuh || 0;
     const cermin = b.cermin || b.profil === "kiri";
     const sk = catatan.s;
     return [catatan.x + p[0] * sk * (cermin ? -1 : 1), catatan.y + p[1] * sk];
   }
   function targetTanganLokal(tujuan, x, y, sk, cermin, tubuh, J) {
     let p = [(tujuan[0] - x) / (sk * (cermin ? -1 : 1)), (tujuan[1] - y) / sk];
-    p[1] -= tubuh + (J.turun || 0);
+    p[1] -= tubuh;
+    p = putarTitik(p, -(J.guling || 0));
+    p[1] -= J.turun || 0;
     return putarTitik(p, -(J.badan || 0));
   }
   function posisiTanganBawaan(b, t, d) {
