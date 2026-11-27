@@ -36,6 +36,10 @@ Pemilik: Anwar Alzazali. Bahasa kerja: Indonesia. Ditulis 27 Nov 2026 oleh Claud
    Jangan menambah workflow baru untuk menguji; `test-runtime.yml` sudah mencakup semuanya. Bila memang
    butuh pemeriksaan baru, tambahkan langkah di workflow itu atau tambahkan uji pytest.
 
+**Permintaan komponen dari naskah pemilik** (pemilik menempel naskah dan meminta komponen visualnya)
+diutamakan di atas daftar tugas dan mengikuti `docs/ATURAN_KOMPONEN.md`. Setelah PR-nya dibuat, lanjutkan
+daftar tugas dari posisi terakhir.
+
 ## Daftar tugas (centang bila selesai dan sudah di-merge ke `gpt/integrasi`)
 
 - [x] Tugas 1 — Penulisan naskah pindah ke jalur LLM bersama
@@ -233,6 +237,7 @@ ukuran, temuan lapis A. Tanpa LLM.
 ## Tugas 8 — Pembuat komponen renderer (bersyarat)
 
 **Syarat mulai:** Tugas 2, 3, dan 7 sudah di-merge ke `gpt/integrasi`. Bila belum, lewati tugas ini.
+Standar gambar, adab, dan bukti komponen mengikuti `docs/ATURAN_KOMPONEN.md`.
 
 **Tujuan:** mengambil kebutuhan teratas dari antrean kebutuhan (Tugas 2) atau dari daftar contoh Tugas 3
 yang belum dibuat, lalu menghasilkan **draf** komponen benda baru beserta bukti mutunya, sehingga pembuatan
