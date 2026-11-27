@@ -388,3 +388,20 @@ def test_jalur_ide_revisi_dan_tempel_memakai_tahap_llm_yang_tepat(monkeypatch):
     hasil, _ = A.buat_naskah("tempel", "Kalimat pemilik harus utuh.")
     assert panggilan[-1][0] == "rapikan"
     assert hasil["beat"][0]["narasi"] == "Kalimat pemilik harus utuh."
+def test_dialog_allah_dijadikan_narasi_dan_peran_dilengkapi():
+    b = {"narasi": "Firaun berseru. Allah menjawab.", "peran": ["Firaun"], "dialog": [
+        {"pembicara": "Firaun", "penjawab": "Allah", "ucapan": "Aku beriman"},
+        {"pembicara": "Allah", "ucapan": "Apakah sekarang?"},
+        {"pembicara": "Haman", "ucapan": "Tuanku"}]}
+    n = {}
+    A._rapikan_dialog(b, n)
+    assert [g["pembicara"] for g in b["dialog"]] == ["Firaun", "Haman"]
+    assert b["dialog"][0]["penjawab"] is None
+    assert b["peran"] == ["Firaun", "Haman"]
+    assert len(n["peringatan"]) == 1
+
+
+def test_kartu_naskah_gagal_punya_tombol_revisi():
+    st = {"id": "x", "tahap": {"diterima": "gagal", "dalil": "belum", "tinjau": "belum"}}
+    data = [b["callback_data"] for baris in A.tombol_kartu(st) for b in baris]
+    assert "nr:x" in data and "nb:x" in data and "nl:x" not in data
