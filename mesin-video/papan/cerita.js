@@ -1833,7 +1833,8 @@
       Object.keys(gen).forEach((k) => { if (b[k] == null) b[k] = gen[k]; }); if (b.kulit == null) b.kulit = kulit; if (!b.gaya) b.gaya = "umum"; b._npc = 1;
     }
     const HD = (b.hidup != null ? b.hidup : C.hidup) && b.gaya !== "siluet" && b.gaya !== "dajjal";
-    const ta = HD && (b.dua != null ? b.dua : C.dua !== false) ? Math.floor(t * 15 + 0.001) / 15 : t; // akting "on twos" (15 fps): loncatan tegas; posisi & kamera tetap 30 fps
+    const poseHalus = b.pose === "lompat" || (Array.isArray(b.pose) && b.pose.some((kf) => kf && kf[1] === "lompat"));
+    const ta = HD && (b.dua != null ? b.dua : C.dua !== false) && !poseHalus ? Math.floor(t * 15 + 0.001) / 15 : t; // akting "on twos" 15 fps; loncatan memakai 30 fps agar lintasan sendi tetap halus
     const kunci = (x0) => Array.isArray(x0) && Array.isArray(x0[0]) && typeof x0[0][1] === "number";
     let x = v(b.x, t, d, 540), y = v(b.y, t, d, 1500), s = v(b.s, t, d, 1) * (b.skala_usia || 1); const naik = v(b.naik, t, d, 1);
     let arah = HD && kunci(b.arah) ? vs(b.arah, ta, 0) : v(b.arah, t, d, 0), tunduk = HD && kunci(b.tunduk) ? vs(b.tunduk, ta, 0) : v(b.tunduk, t, d, 0);
