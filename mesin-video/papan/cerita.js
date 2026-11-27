@@ -2343,7 +2343,9 @@
     const lintasanSerah = serahList.map((r) => {
       const asal = (S.boneka || [])[r.dari], tujuan = (S.boneka || [])[r.ke];
       if (!asal || !tujuan) return { r, galat: "tokoh pemberi/penerima tidak ditemukan" };
-      const awal = posisiTanganBawaan(asal, tl, d), akhir = posisiTanganBawaan(tujuan, tl, d);
+      const awal = posisiTanganBawaan(asal, tl, d);
+      const tujuanDenganBenda = Object.assign({}, tujuan, { pose: "pegang_" + r.benda });
+      const akhir = posisiTanganBawaan(tujuanDenganBenda, tl, d);
       const lama = Math.max(0.1, Number(r.durasi) || 1.2), q0 = clamp((tl - (Number(r.at) || 0)) / lama);
       const q = q0 * q0 * (3 - 2 * q0), posisi = [mix(awal[0], akhir[0], q), mix(awal[1], akhir[1], q)];
       return { r, awal, akhir, posisi, aktif: tl >= (Number(r.at) || 0) && tl <= (Number(r.at) || 0) + lama };
