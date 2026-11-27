@@ -1,0 +1,24 @@
+{
+ "id": "261127-1134-buatkan-saya-naskah-tentang",
+ "judul": "Buatkan saya naskah tentang kisah nabi musa yg di kejar fira",
+ "sumber": "ide",
+ "chat": 7576750901,
+ "genre": "kisah_islami",
+ "konteks_konten": "islami",
+ "tahap": {
+  "diterima": "jalan",
+  "dalil": "belum",
+  "tinjau": "belum",
+  "sutradara": "belum",
+  "tinjau_visual": "belum",
+  "narasi": "belum",
+  "render": "belum",
+  "periksa": "belum",
+  "kirim": "belum"
+ },
+ "ket": {
+  "diterima": "mengantre di GitHub Actions…"
+ },
+ "dibuat": "2026-11-27T04:34:37.402Z",
+ "pesan_kartu": 434
+}
