@@ -2,9 +2,9 @@
 
 Bot NewMotion (bot/worker.js) menyimpan masukan ke `antrean/<id>/` lalu memicu workflow `naskah` (workflow_dispatch).
 Pekerjaan berat ada di sini (Python, teruji):
-- `ide`    : topik -> naskah oleh Claude (aturan Kisah Islami; dalil HANYA rujukan, teksnya diambil verifikasi);
+- `ide`    : topik -> naskah melalui LLM bersama (aturan Kisah Islami; dalil HANYA rujukan);
 - `tempel` : naskah jadi dari pemilik -> dirapikan ke format (narasi TIDAK diubah; dicek otomatis);
-- `revisi` : naskah + catatan pemilik -> naskah baru;
+- `revisi` : naskah + catatan pemilik -> naskah baru melalui LLM bersama;
 lalu: validasi format, tolak huruf Arab di narasi, verifikasi dalil (Quran Foundation + dataset hadis),
 tulis `naskah.json` + `status.json`, perbarui kartu status di Telegram, kirim naskah untuk ditinjau.
 
@@ -115,8 +115,6 @@ def kartu(st: dict) -> str:
         keadaan = st["tahap"].get(k, "belum")
         ket = (st.get("ket") or {}).get(k)
         baris.append(f"{IKON[keadaan]} {label}" + (f" — {ket}" if ket else ""))
-    if st.get("uji_cerita_ringkas"):
-        baris.append("🧪 Uji cerita: " + st["uji_cerita_ringkas"])
     if st.get("uji_cerita_ringkas"):
         baris.append("🧪 Uji cerita: " + st["uji_cerita_ringkas"])
     return "\n".join(baris)
@@ -294,202 +292,22 @@ def narasi_utuh(n: dict, sumber: str) -> list[str]:
             for i, b in enumerate(n["beat"], 1) if _polos(b["narasi"]) not in asal]
 
 
-# ---------------- AI (Claude) ----------------
-ATURAN = f"""Aturan WAJIB (akun TikTok/FB "Alzazali | Kisah Islami"):
-- Hanya dalil sahih/hasan. Untuk setiap dalil tulis RUJUKAN saja (QS nomor surah + ayat, atau hadis dari kitab {', '.join(KITAB)} + nomor sunnah.com). JANGAN menulis teks Arab atau terjemah dalil; teksnya diambil mesin dari sumber resmi. Ragu nomornya = jangan dicantumkan.
-- Setiap beat yang menceritakan peristiwa/fakta kisah WAJIB punya dalil yang memuat fakta itu. Beat tanpa dalil hanya untuk pembuka, renungan, atau ajakan. Fakta yang tidak ada di Al-Qur'an/hadis sahih (cerita populer, israiliyat, tafsir, detail tambahan seperti bendungan, kekeringan, jumlah tahun) JANGAN ditulis.
-- Tidak mengarang klaim; detail yang tidak ada di dalil tidak boleh disebut sebagai fakta. Bukan fatwa. Topik berat tidak dijadikan sensasi; selalu ada jalan keluar/hikmah.
-- Narasi bahasa Indonesia, sapa penonton "kamu". Tidak ada huruf Arab di narasi.
-- Mutu cerita: fakta terkuat yang menyangkut nasib penonton di kalimat pertama; satu video = cerita utuh (janji hook dijawab di video ini); setiap kalimat menambah informasi atau ketegangan, buang yang mengulang; durasi mengikuti cerita.
-- Setiap beat berisi narasi, kata_kunci, dalil (id rujukan saja), suasana, dan peran (nama tokoh/pihak yang hadir atau dibahas; [] bila tidak ada).
-- Cantumkan nabi sebagai `Nabi <nama>` atau `Rasulullah`, sahabat sebagai `Sahabat <nama>`; Allah/Tuhan tidak boleh dicantumkan sebagai peran visual.
-- Bila ada ucapan langsung, tambahkan `dialog`: daftar `{{"pembicara": "nama peran", "ucapan": "...", "penjawab": "nama peran"}}`. Jangan membuat dialog baru yang tidak didukung sumber.
-- Setiap beat yang menyatakan fakta/peristiwa wajib merujuk dalil yang benar-benar mendukungnya. Tanpa dalil hanya untuk pembuka nonfaktual, renungan, atau ajakan; jangan mengubah dugaan menjadi fakta.
-- Jangan menebak nomor dalil. Jika ragu, jangan mencantumkannya dan beri catatan bahwa rujukan perlu diperiksa pemilik.
-Keluarkan HANYA JSON valid berbentuk:
-{{"judul": "...", "inti": "satu kalimat inti", "dalil": [{{"id": "hud50", "jenis": "quran", "label": "QS HUD 50", "surah": 11, "ayat": "50"}}, {{"id": "b3343", "jenis": "hadis", "label": "HR. BUKHARI 3343", "kitab": "bukhari", "nomor": "3343"}}], "beat": [{{"narasi": "...", "kata_kunci": ["..."], "dalil": ["hud50"], "suasana": "senja|dhuha|malam|malam_merah|fajar", "peran": ["Nabi Hud", "kaum 'Ad"], "dialog": [{{"pembicara": "Nabi Hud", "ucapan": "...", "penjawab": "kaum 'Ad"}}]}}]}}"""
-
-SISTEM = {
-    "ide": "Kamu penulis naskah video pendek Kisah Islami yang jujur dan kuat bercerita. Tulis naskah utuh dari topik pemilik.\n" + ATURAN,
-    "tempel": """Kamu memetakan naskah yang SUDAH JADI dari pemilik. Paragrafnya sudah bernomor; kamu TIDAK menulis ulang narasi.
-Kelompokkan paragraf berurutan menjadi beat (biasanya 1 paragraf = 1 beat), lalu isi dalil yang DISEBUT di naskah (jangan menambah dalil sendiri), suasana, dan kata kunci.
-Rujukan dalil ditulis seperti aturan di bawah (QS = nomor surah + ayat; hadis = kitab + nomor).
-suasana HANYA salah satu: senja, dhuha, malam, malam_merah, fajar (waktu/cahaya adegan, bukan emosi).
-Keluarkan HANYA JSON:
-{"judul": "...", "inti": "...",
- "dalil": [{"id": "hud38", "jenis": "quran", "label": "QS HUD 38", "surah": 11, "ayat": "38"},
-           {"id": "b3343", "jenis": "hadis", "label": "HR. BUKHARI 3343", "kitab": "bukhari", "nomor": "3343"}],
- "beat": [{"paragraf": [1], "dalil": ["hud38"], "suasana": "senja", "kata_kunci": ["..."], "peran": ["Nabi Nuh", "kaum pengejek"]}]}
-Dalil yang sama (surah+ayat sama) cukup SATU id, dipakai di beberapa beat.
-""" + ATURAN.split("Keluarkan HANYA JSON")[0],
-    "revisi": "Kamu merevisi naskah sesuai catatan pemilik. Ubah HANYA yang diminta catatan; bagian lain tetap kata per kata.\n" + ATURAN,
-}
-
-
-def tanya_claude(sistem: str, isi: str, *, model: str, maks: int = 4000) -> tuple[str, int]:
-    kunci = os.environ.get("ANTHROPIC_API_KEY")
-    if not kunci:
-        raise RuntimeError("ANTHROPIC_API_KEY belum diisi di GitHub Secrets repo ini")
-    badan = {"model": model, "max_tokens": maks, "system": sistem, "messages": [{"role": "user", "content": isi}]}
-    req = urllib.request.Request("https://api.anthropic.com/v1/messages", data=json.dumps(badan).encode(), method="POST",
-                                 headers={"x-api-key": kunci, "anthropic-version": "2023-06-01", "content-type": "application/json"})
-    try:
-        j = json.load(urllib.request.urlopen(req, timeout=240))
-    except urllib.error.HTTPError as e:
-        raise RuntimeError(f"Claude galat {e.code}") from None
-    u = j.get("usage") or {}
-    return "".join(c.get("text", "") for c in j.get("content", [])), u.get("input_tokens", 0) + u.get("output_tokens", 0)
-
-
-# ---------------- Gemini (gratis) dengan cadangan Claude ----------------
-GEMINI = "https://generativelanguage.googleapis.com/v1beta"
-_GEMINI_TERPILIH: dict = {}
-
-
-def urutan_model_gemini(nama: list[str]) -> list[str]:
-    """Model Gemini stabil (bukan preview/exp/image/tts/live), urut: Flash versi tertinggi dulu, lalu Flash-Lite.
-    Model kedua dipakai bila yang pertama sedang penuh (503) atau kena batas (429)."""
-    flash, lite = [], []
-    for n in nama:
-        n = n.split("/")[-1]
-        m = re.fullmatch(r"gemini-(\d+(?:\.\d+)?)-flash(-lite)?", n)
-        if m:
-            (lite if m.group(2) else flash).append((float(m.group(1)), n))
-    return [n for _, n in sorted(flash, reverse=True)[:2]] + [n for _, n in sorted(lite, reverse=True)[:1]]
-
-
-def pilih_model_gemini(nama: list[str]) -> str | None:
-    u = [n for n in urutan_model_gemini(nama) if not n.endswith("-lite")]
-    return u[0] if u else None
-
-
-def _gemini_req(path: str, kunci: str, badan: dict | None = None) -> dict:
-    req = urllib.request.Request(f"{GEMINI}/{path}", data=json.dumps(badan).encode() if badan else None,
-                                 method="POST" if badan else "GET",
-                                 headers={"x-goog-api-key": kunci, "content-type": "application/json"})
-    try:
-        return json.load(urllib.request.urlopen(req, timeout=150))
-    except urllib.error.HTTPError as e:
-        raise RuntimeError(f"Gemini galat {e.code}") from None
-    except (TimeoutError, urllib.error.URLError) as e:  # waktu habis/putus: model ini lambat -> coba model berikutnya
-        raise RuntimeError(f"Gemini galat 504 ({str(e)[:60]})") from None
-
-
-def tanya_gemini(sistem: str, isi: str, *, model: str | None = None, maks: int = 8000) -> tuple[str, int]:
-    kunci = (os.environ.get("GEMINI_API_KEY") or "").strip()
-    if not kunci:
-        raise RuntimeError("GEMINI_API_KEY belum diisi")
-    if os.environ.get("GEMINI_MODEL"):
-        urutan = [os.environ["GEMINI_MODEL"]]
-    else:
-        if "urutan" not in _GEMINI_TERPILIH:
-            daftar = _gemini_req("models?pageSize=200", kunci).get("models", [])
-            _GEMINI_TERPILIH["urutan"] = urutan_model_gemini(
-                [x["name"] for x in daftar if "generateContent" in x.get("supportedGenerationMethods", [])])
-        urutan = _GEMINI_TERPILIH["urutan"]
-    if not urutan:
-        raise RuntimeError("tidak ada model Gemini Flash yang tersedia untuk kunci ini")
-    badan = {"systemInstruction": {"parts": [{"text": sistem}]}, "contents": [{"role": "user", "parts": [{"text": isi}]}],
-             "generationConfig": {"responseMimeType": "application/json", "maxOutputTokens": maks, "temperature": 0.7}}
-    galat, j = None, None
-    for m in urutan:  # model penuh/kena batas -> tunggu sebentar & coba lagi; lambat -> langsung model berikutnya
-        for jeda in (0, 8, 20):
-            time.sleep(jeda)
-            try:
-                j = _gemini_req(f"models/{m}:generateContent", kunci, badan)
-                break
-            except RuntimeError as e:
-                galat = e
-                if not re.search(r"galat (429|500|503|504)", str(e)):
-                    raise
-                if "504" in str(e):
-                    break
-        if j is not None:
-            _GEMINI_TERPILIH["m"] = m
-            break
-    if j is None:
-        raise galat or RuntimeError("Gemini tidak menjawab")
-    teks = "".join(p.get("text", "") for c in j.get("candidates", [])[:1] for p in c.get("content", {}).get("parts", []))
-    if not teks.strip():
-        raise RuntimeError(f"Gemini tidak memberi jawaban ({(j.get('candidates') or [{}])[0].get('finishReason', '?')})")
-    return teks, (j.get("usageMetadata") or {}).get("totalTokenCount", 0)
-
-
-def tanya_otomatis(sistem: str, isi: str, *, model: str, maks: int = 4000) -> tuple[str, int]:
-    """Gemini gratis dulu; bila tidak ada kunci, kena batas, atau gagal -> Claude (berbayar). Penyedia dicatat.
-    NASKAH_CADANGAN=0 mematikan cadangan berbayar (untuk uji Gemini tanpa biaya)."""
-    try:
-        teks, token = tanya_gemini(sistem, isi)
-        PENYEDIA["terakhir"] = f"Gemini {_GEMINI_TERPILIH.get('m') or os.environ.get('GEMINI_MODEL', '')} (gratis)"
-        return teks, token
-    except Exception as e:  # noqa: BLE001
-        PENYEDIA["catatan"] = f"Gemini gagal ({str(e)[:80]}), pindah ke Claude"
-        if os.environ.get("NASKAH_CADANGAN", "1") == "0":
-            raise RuntimeError(f"Gemini gagal: {str(e)[:120]} (cadangan Claude dimatikan)") from None
-    teks, token = tanya_claude(sistem, isi, model=model, maks=maks)
-    PENYEDIA["terakhir"] = f"Claude {model}"
-    return teks, token
-
-
-PENYEDIA: dict = {}
-
-
-def baca_json(teks: str) -> dict:
-    t = re.sub(r"^```(?:json)?\s*|\s*```$", "", teks.strip())
-    return json.loads(t[t.index("{"): t.rindex("}") + 1])
-
-
 _RUJUKAN = re.compile(r"\s*[\(\[]\s*(?:QS|Q\.S\.|HR|H\.R\.|Hadis|Hadits)[^\)\]]*[\)\]]", re.I)
 
 
 def paragraf(teks: str) -> tuple[str | None, list[str]]:
-    """Naskah tempelan -> (judul bila ada baris 'Judul:', paragraf narasi tanpa catatan rujukan dalam kurung)."""
+    """Naskah tempelan -> judul dan paragraf narasi tanpa catatan rujukan dalam kurung."""
     judul, isi = None, []
     for p in re.split(r"\n\s*\n", teks.strip()):
         p = " ".join(p.split())
         m = re.match(r"(?i)^judul\s*:\s*(.+)$", p)
         if m and judul is None and not isi:
-            judul = m.group(1).strip(); continue
+            judul = m.group(1).strip()
+            continue
         p = _RUJUKAN.sub("", p).strip()
         if p:
             isi.append(p)
     return judul, isi
-
-
-def buat_naskah(mode: str, masukan: str, naskah_lama: dict | None = None, *, tanya=None) -> tuple[dict, int]:
-    tanya = tanya or tanya_otomatis
-    if mode == "tempel":  # narasi diambil APA ADANYA dari teks pemilik; AI hanya memetakan beat & dalil
-        judul, par = paragraf(masukan)
-        isi = "Naskah dari pemilik (paragraf bernomor):\n" + "\n".join(f"[{i}] {p}" for i, p in enumerate(par, 1))
-        isi += "\n\nCatatan rujukan dalil asli dari pemilik:\n" + "\n".join(m.group(0).strip() for m in _RUJUKAN.finditer(masukan))
-        teks, token = tanya(SISTEM["tempel"], isi, model=os.environ.get("MODEL_RAPIKAN", MODEL_RAPIKAN))
-        peta = baca_json(teks)
-        dipakai, beat_berurut = set(), []
-        for b in peta.get("beat", []):
-            nomor = [int(x) for x in b.get("paragraf", []) if str(x).isdigit() and 1 <= int(x) <= len(par) and int(x) not in dipakai]
-            if not nomor:
-                continue
-            dipakai.update(nomor)
-            beat_berurut.append((min(nomor), {"narasi": " ".join(par[i - 1] for i in nomor), "dalil": b.get("dalil", []),
-                                               "suasana": b.get("suasana"), "kata_kunci": b.get("kata_kunci", []),
-                                               "peran": b.get("peran", []), "dialog": b.get("dialog", [])}))
-        for i in range(1, len(par) + 1):  # paragraf yang terlewat AI tidak boleh hilang
-            if i not in dipakai:
-                beat_berurut.append((i, {"narasi": par[i - 1], "dalil": [], "kata_kunci": [], "peran": [], "dialog": []}))
-                dipakai.add(i)
-        beat = [b for _, b in sorted(beat_berurut, key=lambda pasangan: pasangan[0])]
-        for b in beat:
-            if not b.get("suasana"):
-                b.pop("suasana", None)
-        return {"judul": judul or peta.get("judul") or par[0][:60], "inti": peta.get("inti", ""),
-                "dalil": peta.get("dalil", []), "beat": beat}, token
-    if mode == "revisi":
-        isi = f"NASKAH SAAT INI:\n{json.dumps(naskah_lama, ensure_ascii=False)}\n\nCATATAN PEMILIK:\n{masukan}"
-    else:
-        isi = f"Topik/ide dari pemilik:\n{masukan}"
-    teks, token = tanya(SISTEM[mode], isi, model=os.environ.get("MODEL_IDE", MODEL_IDE))
-    return baca_json(teks), token
-
 
 
 # ---------------- Jalur LLM bersama untuk penulisan naskah ----------------
