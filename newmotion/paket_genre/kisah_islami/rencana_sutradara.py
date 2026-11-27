@@ -177,9 +177,12 @@ def _validasi_figuran(fig: Any, jenis_beat: set, narasi: str, lbl: str) -> list[
         return [f"{lbl}: figuran tidak boleh di beat yang menyebut nabi, malaikat, atau sahabat (adab); pakai kerumunan siluet atau tanpa tokoh"]
     g, total, kait = [], 0, kemampuan()["kait"]
     pegang_sah = set(kemampuan()["pegang"])
-    nama_figuran = [f.get("nama") for f in fig if isinstance(f, Mapping) and f.get("nama") is not None]
+    nama_figuran = [f.get("nama") for f in fig if isinstance(f, Mapping) and isinstance(f.get("nama"), str)]
     if len(nama_figuran) != len(set(nama_figuran)):
         g.append(f"{lbl}: nama figuran harus unik dalam satu beat")
+    serah = [f for f in fig if isinstance(f, Mapping) and f.get("serahkan_ke") is not None]
+    if len(serah) > 1:
+        g.append(f"{lbl}: maksimal satu serah-terima benda per beat")
     for f in fig:
         if not isinstance(f, Mapping):
             g.append(f"{lbl}: figuran harus objek")
@@ -202,6 +205,15 @@ def _validasi_figuran(fig: Any, jenis_beat: set, narasi: str, lbl: str) -> list[
         if f.get("pegang") is not None and (
                 not isinstance(f.get("pegang"), str) or f["pegang"] not in pegang_sah):
             g.append(f"{lbl}: figuran.pegang harus salah satu {tuple(sorted(pegang_sah))}")
+        if f.get("serahkan_ke") is not None:
+            if not isinstance(f.get("nama"), str) or f["nama"] == f.get("serahkan_ke"):
+                g.append(f"{lbl}: figuran.serahkan_ke mewajibkan nama pemberi yang berbeda dari penerima")
+            if f.get("serahkan_ke") not in nama_figuran:
+                g.append(f"{lbl}: figuran.serahkan_ke harus nama figuran penerima pada beat yang sama")
+            if f.get("pegang") not in {"surat", "kendi", "gelas", "karung_kecil", "gulungan", "roti", "koin"}:
+                g.append(f"{lbl}: figuran.serahkan_ke memerlukan benda kecil yang didukung serah-terima")
+            if n != 1:
+                g.append(f"{lbl}: figuran pemberi serah-terima harus jumlah 1")
         if f.get("suku", "umum") not in SUKU:
             g.append(f"{lbl}: figuran.suku harus {SUKU}")
         if f.get("tempat", "tengah") not in TEMPAT_DASAR:
@@ -227,6 +239,13 @@ def _validasi_figuran(fig: Any, jenis_beat: set, narasi: str, lbl: str) -> list[
                     and f.get("hadap_ke") in nama_x and f.get("nama") in nama_x):
                 if nama_x[f["hadap_ke"]] == nama_x[f["nama"]]:
                     g.append(f"{lbl}: pasangan hadap_ke tidak boleh berada pada tempat horizontal yang sama")
+    for f in serah:
+        penerima = next((q for q in fig if isinstance(q, Mapping) and q.get("nama") == f.get("serahkan_ke")), None)
+        if penerima is not None:
+            if penerima.get("jumlah", 1) != 1:
+                g.append(f"{lbl}: figuran penerima serah-terima harus jumlah 1")
+            if penerima.get("tempat", "tengah") == f.get("tempat", "tengah"):
+                g.append(f"{lbl}: pemberi dan penerima serah-terima harus di tempat berbeda")
     if total > MAKS_FIGURAN:
         g.append(f"{lbl}: total figuran maksimal {MAKS_FIGURAN} per beat")
     return g
@@ -249,6 +268,8 @@ def figuran_dari_rencana(rb: Mapping, benda: list[dict], kunci: int, ds: float =
             gerak = f.get("gerak", "berdiri")
             identitas = kunci * 100 + i * 10 + k
             o = {"id": identitas, "npc": identitas, "pose": gerak, "x": x, "y": y0 + (k % 2) * 18, "s": sk}
+            if f.get("nama"):
+                o["_nama_interaksi"] = f["nama"]
             if f.get("pegang"):
                 o["pose"] = f"pegang_{f['pegang']}"
             if f.get("suku"):  # tanpa suku: ikut suku cerita
