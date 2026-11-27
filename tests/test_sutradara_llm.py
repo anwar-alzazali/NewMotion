@@ -238,3 +238,15 @@ def test_figuran_interaksi_menolak_rujukan_dan_benda_tidak_dikenal():
     assert any("nama figuran harus unik" in e for e in galat)
     assert any("hadap_ke" in e for e in galat)
     assert any("pegang" in e for e in galat)
+
+
+def test_validasi_interaksi_menolak_tipe_data_tidak_sah_tanpa_crash():
+    from newmotion.paket_genre.kisah_islami.rencana_sutradara import _validasi_figuran
+
+    galat = _validasi_figuran([
+        {"nama": ["bukan", "teks"], "hadap_ke": [], "pegang": ["surat"], "tempat": "kiri"},
+        {"nama": "penerima", "tempat": "tempat_tidak_ada"},
+    ], set(), "Dua orang bertemu.", "beat 1")
+    assert any("nama" in e for e in galat)
+    assert any("hadap_ke" in e for e in galat)
+    assert any("pegang" in e for e in galat)
