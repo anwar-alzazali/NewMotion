@@ -676,7 +676,7 @@ def proses(id_: str, mode: str, *, folder: Path = ANTREAN, tanya=None, quran=Non
         jumlah_t = len(temuan.get("temuan", []))
         jumlah_perbaikan = len(berat) if berat and mode != "tempel" else 0
         st["pemeriksaan_naskah_ringkas"] = (
-            f"{jumlah_t} temuan; {jumlah_perbaikan} putaran perbaikan otomatis"
+            f"{jumlah_t} temuan; 1 putaran perbaikan otomatis"
             if jumlah_t else "tidak ada temuan"
         )
     lolos = [x for x in n.get("dalil", []) if x.get("status") == "terverifikasi" and x.get("derajat", "sahih") in ("sahih", "hasan")]
