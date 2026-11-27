@@ -35,6 +35,13 @@ jobs:
           python -m playwright install --with-deps chromium
           sudo apt-get update -qq
           sudo apt-get install -y -qq ffmpeg fonts-noto-core fonts-dejavu-core
+      - name: Cache dataset hadis (penjaga dalil memverifikasi kartu hadis)
+        uses: actions/cache@v4
+        with:
+          path: data/hadis
+          key: hadis-${{ hashFiles('newmotion/paket_genre/kisah_islami/dalil/unduh_hadis.py') }}
+      - name: Unduh dataset hadis bila cache belum ada
+        run: test -f data/hadis/bukhari.json.gz || python -m newmotion.paket_genre.kisah_islami.dalil.unduh_hadis
       - name: Render dan periksa
         env:
           SPEK: ${{ inputs.spek }}
@@ -42,6 +49,8 @@ jobs:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
           ELEVENLABS_API_KEY: ${{ secrets.ELEVENLABS_API_KEY }}
+          QURAN_FOUNDATION_CLIENT_ID: ${{ secrets.QURAN_FOUNDATION_CLIENT_ID }}
+          QURAN_FOUNDATION_CLIENT_SECRET: ${{ secrets.QURAN_FOUNDATION_CLIENT_SECRET }}
         shell: bash
         run: |
           set -euo pipefail

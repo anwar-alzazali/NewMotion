@@ -89,6 +89,8 @@ def buat_kartu(dalil: dict, *, at: float = 0.0) -> dict:
     kartu = {"jenis": "kartu_dalil", "x": 540, "y": round(y, 1), "s": round(s, 3), "at": round(at, 2),
              "kitab": dalil.get("kitab", ""), "label": dalil.get("label") or "DALIL", "teks": teks,
              "ukuran": uk, "tulis_at": 0.4, "latar": LATAR_KARTU}
+    if dalil.get("no"):
+        kartu["no"] = str(dalil["no"])  # nomor hadis (penjaga dalil mewajibkannya)
     if ta:
         kartu.update(arab=arab, arab_ukuran=ta[0], arab_baris=ta[1], arab_at=0.15)
     return kartu

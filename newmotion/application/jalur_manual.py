@@ -158,6 +158,8 @@ def buat_narasi_spek(spek: dict, folder: Path, *, tts_fn=None) -> dict:
             mulai, terakhir = terakhir, terakhir + float(sh["durasi"])
         if not isinstance(sh.get("at"), str):  # "@kata" tetap diselesaikan oleh papan_buat
             sh["at"] = round(mulai, 2)
+        if sh.get("narasi"):
+            sh["_narasi"] = sh["narasi"]  # penjaga adab membaca narasi shot (mis. figuran berwajah di shot yang menyebut nabi)
         for k in ("narasi", "intonasi", "jeda"):
             sh.pop(k, None)
         if i not in idx:
