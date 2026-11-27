@@ -324,3 +324,18 @@ def test_papan_pratinjau_tanpa_audio_memuat_semua_shot():
     spek, _, _ = arahkan_naskah(naskah)
     akhir = max(s["at"] for s in spek["cerita"]["shot"])
     assert spek["durasi"] > akhir + 2
+
+
+def test_pratinjau_gagal_ditandai_dengan_alasan_dan_tombol_ulangi(tmp_path, monkeypatch):
+    import json as _json
+
+    from newmotion.application import antrean_naskah, pratinjau_visual
+    d = tmp_path / "uji-gagal"
+    d.mkdir()
+    (d / "status.json").write_text(_json.dumps({"id": "uji-gagal", "tahap": {"tinjau": "selesai", "sutradara": "jalan",
+                                                                              "tinjau_visual": "belum"}, "ket": {}}))
+    terkirim = []
+    monkeypatch.setattr(antrean_naskah, "perbarui_kartu", lambda st: terkirim.append(st))
+    pratinjau_visual.tandai_gagal("uji-gagal", RuntimeError("sutradara LLM gagal: x"), folder=tmp_path)
+    st = _json.loads((d / "status.json").read_text())
+    assert st["tahap"]["sutradara"] == "gagal" and "sutradara LLM gagal" in st["ket"]["sutradara"] and terkirim

@@ -73,8 +73,18 @@ def pesan_sutradara(naskah: Mapping) -> str:
 
 
 def validasi_lengkap(rencana: Any, naskah: Mapping) -> list[str]:
-    """Validator format + adab pada papan hasil terjemahan rencana."""
-    galat = validasi_rencana(rencana, _narasi(naskah))
+    """Perbaikan pasti (perbaikan_rencana) lalu validator format + adab pada papan hasil terjemahan rencana.
+    Rencana diperbaiki DI TEMPAT, jadi yang diterima llm.panggil adalah versi yang sudah dirapikan."""
+    from .perbaikan_rencana import buang_serah_terima, perbaiki_rencana
+
+    narasi = _narasi(naskah)
+    catat = perbaiki_rencana(rencana, narasi, beat_berdalil=set(dalil_per_beat(naskah)), maks_kartu=MAKS_KARTU_DALIL)
+    galat = validasi_rencana(rencana, narasi)
+    if galat and any("serah" in g for g in galat):
+        catat += buang_serah_terima(rencana)
+        galat = validasi_rencana(rencana, narasi)
+    if isinstance(rencana, dict) and catat:
+        rencana["_perbaikan_mesin"] = sorted(set(rencana.get("_perbaikan_mesin", [])) | set(catat))
     if galat:
         return galat
     dalil = dalil_per_beat(naskah)

@@ -26,7 +26,20 @@ def test_mode_llm_menyimpan_rencana_dan_memakainya(tmp_path, monkeypatch):
     assert spek["rekaman"] and spek["musik"] is False   # suara dari rencana
 
 
+def test_llm_gagal_tanpa_cadangan_menjadi_galat_jelas(tmp_path, monkeypatch):
+    import pytest
+    monkeypatch.setenv("NEWMOTION_SUTRADARA", "llm")
+    monkeypatch.setenv("NEWMOTION_PERIKSA_PUTARAN", "0")
+    monkeypatch.setenv("NEWMOTION_CADANGAN_ATURAN", "0")
+    monkeypatch.setenv("ANTHROPIC_API_KEY", "palsu")
+    monkeypatch.setenv("NEWMOTION_MODEL_SUTRADARA", "claude-sonnet-5-5")
+    with pytest.raises(RuntimeError, match="sutradara LLM gagal"):
+        H.arahkan_hibrida(NASKAH, tmp_path, http=_palsu("bukan json"))
+    assert (tmp_path / "sutradara_galat.txt").read_text().startswith("LLM tahap")
+
+
 def test_llm_gagal_jatuh_ke_aturan(tmp_path, monkeypatch):
+    monkeypatch.setenv("NEWMOTION_CADANGAN_ATURAN", "1")
     monkeypatch.setenv("NEWMOTION_SUTRADARA", "llm")
     monkeypatch.setenv("NEWMOTION_PERIKSA_PUTARAN", "0")
     monkeypatch.setenv("ANTHROPIC_API_KEY", "palsu")
@@ -37,6 +50,7 @@ def test_llm_gagal_jatuh_ke_aturan(tmp_path, monkeypatch):
 
 
 def test_tanpa_kunci_memakai_aturan(tmp_path, monkeypatch):
+    monkeypatch.setenv("NEWMOTION_CADANGAN_ATURAN", "1")
     monkeypatch.setenv("NEWMOTION_SUTRADARA", "llm")
     monkeypatch.delenv("ANTHROPIC_API_KEY", raising=False)
     monkeypatch.delenv("GEMINI_API_KEY", raising=False)

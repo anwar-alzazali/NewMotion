@@ -65,12 +65,15 @@ def test_kartu_yang_tak_terbaca_jadi_label(monkeypatch):
 
 
 def test_sutradara_tahu_beat_berdalil_dan_kartu_dibatasi():
-    naskah = {"judul": "U", "adegan": [{"nama": f"adegan_{i}", "teks": f"kalimat {i} di sini."} for i in range(1, 5)],
+    naskah = {"judul": "U", "genre": "kisah_islami", "konteks_konten": "islami",
+              "adegan": [{"nama": f"adegan_{i}", "teks": f"kalimat {i} di sini."} for i in range(1, 5)],
               "dalil_dipakai": [{"surah": 1, "ayat": "1", "di_adegan": "adegan_2", "label": "QS AL-FATIHAH 1"}]}
     assert "[dalil: QS AL-FATIHAH 1]" in pesan_sutradara(naskah)
     beat = [{"beat": i, "bukti": f"kalimat {i}", "subjek": [], "kamu": "tidak", "kamera": {"bidikan": "lebar", "aksen": None},
              "teks_layar": None, "klimaks": False, "kartu_dalil": i == 1} for i in range(1, 5)]
-    assert any("kartu_dalil hanya" in g for g in validasi_lengkap({"objek_inti": None, "beat": beat}, naskah))
+    r = {"objek_inti": None, "beat": beat}
+    assert validasi_lengkap(r, naskah) == []          # diperbaiki mesin, bukan ditolak
+    assert not r["beat"][0]["kartu_dalil"] and any("kartu_dalil" in c for c in r["_perbaikan_mesin"])
 
 
 def test_font_arab_tersedia():
