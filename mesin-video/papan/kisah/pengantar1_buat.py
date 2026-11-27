@@ -1,6 +1,6 @@
 """Papan manual "Tiga yang Mengantarmu ke Kubur" (HR Bukhari 6514, Muslim 2960), ditulis tangan tanpa LLM.
 
-Visual: keranda diusung ke pemakaman, pengantar berangsur pulang (sedih), yang tinggal hanya cahaya amal.
+Visual: keranda diusung ke pemakaman, pengantar berangsur pulang (sedih), yang tinggal hanya amal, divisualkan melalui simbol ibadah dan zikir.
 Pengusung dan pengantar laki-laki (sunnah: perempuan tidak mengiringi jenazah ke kubur). Waktu: siang (tanpa dalil
 tentang waktu; bawaan siang). Kartu dalil masuk gaya NGOPAI (jatuh + whoosh + stempel otomatis).
 Jalankan: python mesin-video/papan/kisah/pengantar1_buat.py  -> pengantar1.json
@@ -115,7 +115,7 @@ shot.append({
 shot.append({
     "narasi": "Yang tetap tinggal bersamamu, hanya satu: amalmu.", "intonasi": "berat", "jeda": 0.9, **SIANG,
     "malam": [[0, 0], ["@amalmu#2", 0.25]],
-    "kamera": {"z": [1.1, 1.45], "x": 560, "y": [1250, 1400]},
+    "kamera": {"z": 1.12, "x": 540, "y": 1340},
     "benda": MAKAM_SEPI + [{"jenis": "sajadah", "x": 220, "y": 1710, "s": 0.82, "op": [[0, 0], [0.45, 1]]}, {"jenis": "buku", "x": 540, "y": 1660, "s": 0.34, "sub": "MUSHAF", "op": [[0, 0], [1.0, 1]]}, {"jenis": "tasbih", "x": 850, "y": 1680, "s": 0.52, "op": [[0, 0], [1.7, 1]]}],
     "teks": [teks("HANYA AMAL", at="@amalmu#2", warna="#ffd27a")],
 })
@@ -128,13 +128,13 @@ kartu["y"] = round(k8["y"] + (kartu["y"] - 960) / k8["z"], 1)  # posisi layar te
 shot.append({
     "narasi": "Rasulullah shallallahu 'alaihi wa sallam bersabda: mayit diikuti tiga hal. Dua kembali, satu tetap bersamanya.",
     "intonasi": "tenang", "jeda": 1.2, **SIANG, "malam": 0.2,
-    "kamera": k8,
-    "benda": MAKAM_SEPI + [{"jenis": "lentera", "x": 690, "y": 1500, "s": 0.9, "nyala": 1}, kartu],
+    "kamera": {"z": 1.0, "x": 540, "y": 1250},
+    "benda": MAKAM_SEPI + [kartu],
 })
 # 9. Penutup untuk "kamu"
 shot.append({
     "narasi": "Hari ini, kamu sibuk mengumpulkan yang mana?", "intonasi": "tegas", "jeda": 1.0, **SIANG, "malam": 0.2,
-    "kamera": {"z": [1.2, 1.3], "x": 600, "y": 1350},
+    "kamera": {"z": 1.2, "x": 540, "y": 1350},
     "benda": MAKAM_SEPI + [{"jenis": "sajadah", "x": 220, "y": 1710, "s": 0.82}, {"jenis": "buku", "x": 540, "y": 1660, "s": 0.34, "sub": "MUSHAF"}, {"jenis": "tasbih", "x": 850, "y": 1680, "s": 0.52}],
     "teks": [teks("KAMU SIBUK\nMENGUMPULKAN\nYANG MANA?", at="@mengumpulkan", warna="#ffd27a", ukuran=76)],
 })
