@@ -251,6 +251,8 @@ def _validasi_figuran(fig: Any, jenis_beat: set, narasi: str, lbl: str) -> list[
                 g.append(f"{lbl}: serah-terima memerlukan pemberi dan penerima pada tempat kiri/kanan")
             if f.get("hadap_ke") != f.get("serahkan_ke") or penerima.get("hadap_ke") != f.get("nama"):
                 g.append(f"{lbl}: pemberi dan penerima serah-terima harus saling menghadap")
+            if f.get("pindah") or penerima.get("pindah"):
+                g.append(f"{lbl}: serah-terima otomatis hanya untuk tokoh yang tidak berpindah tempat")
     if total > MAKS_FIGURAN:
         g.append(f"{lbl}: total figuran maksimal {MAKS_FIGURAN} per beat")
     return g
