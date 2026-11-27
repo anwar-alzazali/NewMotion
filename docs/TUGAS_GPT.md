@@ -168,4 +168,4 @@ Format: `- YYYY-MM-DD | Tugas N | status (selesai/sebagian/MACET) | PR #.. | cat
 - 2026-11-27 | — | disiapkan oleh Claude | — | Sistem hibrida utuh (PR #51), tata letak (#49), kemampuan
   figuran/variasi (#47, #52). Belum ada uji gabungan LLM/ElevenLabs sungguhan (menunggu pemilik). Mulai dari Tugas 1.
 
-- 2026-11-27 | Tugas 1 | sebagian | PR belum dibuat | Jalur produksi ide/revisi/tempel memakai llm.panggil tahap naskah/rapikan; skill dipisah; uji_cerita, ringkasan kartu Telegram, dan metadata model/token/biaya ditambahkan. Uji pytest/ruff belum dijalankan. Langkah berikut: jalankan CI, perbaiki semua temuan, lalu minta audit pemilik.
+- 2026-11-27 | Tugas 1 | sebagian | PR #54 | Pemanggil Claude/Gemini mandiri di antrean dihapus; ide/revisi memakai llm.panggil tahap naskah, tempel tahap rapikan; aturan dipindah ke skill; uji_cerita dan ringkasan kartu ditambahkan; metadata model/token/biaya dicatat. PR draft menunggu verifikasi Actions. Langkah berikut: jalankan pytest -q dan ruff check melalui Actions, perbaiki temuan, lalu audit pemilik.
