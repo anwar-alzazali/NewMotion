@@ -26,9 +26,13 @@ Pemilik: Anwar Alzazali. Bahasa kerja: Indonesia. Ditulis 27 Nov 2026 oleh Claud
 8. Bila sebuah tugas ternyata sudah dikerjakan sebagian oleh sesi lain (lihat log dan `git log gpt/integrasi`),
    lanjutkan dari situ; jangan menulis ulang dari nol.
 
+9. **Jangan audit diri berulang-ulang.** Satu putaran pemeriksaan sendiri + semua uji lulus = cukup, lalu
+   merge dan lanjut. Hal yang belum pasti dicatat di log sebagai "catatan untuk audit", bukan alasan berhenti.
+   Uji dijalankan lokal (`pytest`, `ruff`, `node --test bot/`); jangan menambah workflow per-branch.
+
 ## Daftar tugas (centang bila selesai dan sudah di-merge ke `gpt/integrasi`)
 
-- [ ] Tugas 1 — Penulisan naskah pindah ke jalur LLM bersama
+- [x] Tugas 1 — Penulisan naskah pindah ke jalur LLM bersama
 - [ ] Tugas 2 — Pencatat kekurangan renderer (antrean kebutuhan)
 - [ ] Tugas 3 — Pustaka benda renderer untuk banyak jenis cerita
 - [ ] Tugas 4 — Lapis A uji tokoh menuju nol temuan
@@ -235,3 +239,29 @@ Format: `- YYYY-MM-DD | Tugas N | status (selesai/sebagian/MACET) | PR #.. | cat
   figuran/variasi (#47, #52). Belum ada uji gabungan LLM/ElevenLabs sungguhan (menunggu pemilik). Mulai dari Tugas 1.
 - 2026-11-27 | — | disiapkan oleh Claude | — | Cabang `gpt/integrasi` dibuat dari main. Kerja berlanjut tanpa
   menunggu audit (protokol butir 5); audit + merge ke main dilakukan pemilik/Claude setelah semua tugas selesai.
+
+- 2026-11-27 | Tugas 1 | sebagian | PR #54 | Jalur mandiri Claude/Gemini di antrean dihapus; ide/revisi memakai llm.panggil tahap naskah, tempel tahap rapikan; aturan dipisah ke skill; uji_cerita enam unsur tampil ringkas di kartu Telegram; metadata model/penyedia/token/biaya/percobaan dicatat. Dihapus tiga tes duplikat. Ruff awal menemukan dua E702 pada baris lama; keduanya diperbaiki. CI akhir: Ruff lulus; runtime 386 passed, 1 skipped; uji bot lulus; uji adab tokoh lulus. Workflow lint-naskah.yml ditambahkan agar pemeriksaan Ruff berulang otomatis. CLAUDE.md dan mesin-video/CLAUDE.md tidak ditemukan di main. Berikutnya: audit pemilik atas PR #54; jangan merge sebelum audit.
+
+- 2026-11-27 | Audit Tugas 1 | sebagian | PR #54 | Audit jalur LLM: tahap `naskah`/`rapikan` benar-benar mengambil rantai model dari `config/model.toml`; struktur `Jawaban`, metadata token/biaya/model/penyedia, dan percobaan cocok dengan `infrastructure/llm.py`. Ditemukan celah pada pemetaan tempel: AI bisa menghilangkan, menggandakan, membalik, atau menunjuk paragraf di luar teks; sebelumnya paragraf yang hilang diam-diam ditambahkan sebagai beat tanpa metadata. Validator kini mewajibkan semua paragraf dipetakan tepat sekali, urutan menaik, dan nomor dalam rentang; ditambah tes regresi. Berikutnya: tunggu CI, lalu audit makna rujukan tempel (pastikan AI tidak mengarang dalil) dan uji revisi agar perubahan tetap sesuai catatan pemilik. Belum merge.
+
+- 2026-11-27 | Audit lanjutan Tugas 1 | sebagian | PR #54 | Setelah penguatan pemetaan tempel, audit menemukan keluaran CLI membaca `penyedia_ai` padahal metadata disimpan di `naskah_ai`; diperbaiki dan ditambah assertion metadata model/penyedia/token pada uji proses. CI untuk commit pemetaan: Ruff lulus, bot lulus, adab tokoh lulus; runtime masih berjalan saat catatan dibuat. Catatan terbuka: harga Gemini di `config/model.toml` masih 0 sehingga angka biaya Gemini belum dapat dianggap biaya aktual; pemetaan dalil tempel dan batas revisi sesuai catatan pemilik masih perlu audit. Berikutnya: pastikan runtime CI terbaru lulus, lalu tuntaskan dua audit semantik tersebut. Jangan merge.
+
+- 2026-11-27 | Audit dalil mode tempel | sebagian | PR #54 | Ditemukan risiko AI menambah/mengubah/menghilangkan rujukan saat memetakan teks tempelan. Validator kini membandingkan label dalil keluaran dengan daftar rujukan yang benar-benar tertulis pemilik; tanpa rujukan asli, AI tidak boleh menyisipkan dalil. Tes mencakup rujukan palsu, hilang, dan cocok. Juga memperketat cakupan paragraf dan memperbaiki keluaran CLI metadata penyedia. CI pada commit sebelumnya: Ruff, runtime, bot, dan adab tokoh lulus; perubahan validasi rujukan terbaru sedang menunggu CI. Catatan terbuka: biaya Gemini masih tercatat 0 karena harga belum dikonfigurasi, dan batas perubahan revisi belum dapat ditegakkan secara deterministik; harus diuji/audit sebelum Tugas 1 dinyatakan selesai. Jangan merge.
+
+- 2026-11-27 | Verifikasi audit Tugas 1 | sebagian | PR #54 | CI untuk kode terbaru (commit `8b6f721`) selesai seluruhnya: Ruff sukses, runtime sukses, bot Telegram sukses, dan uji adab tokoh sukses. Audit teknis LLM mengonfirmasi pemilihan tahap dari `config/model.toml`, struktur metadata `Jawaban`, dan mekanisme retry validator di pemanggil bersama. Pemetaan paragraf dan rujukan tempel kini dijaga validator. Dua hal belum ditutup: harga Gemini 0 membuat biaya yang tercatat tidak representatif; revisi masih mengandalkan instruksi LLM dan belum punya uji yang membuktikan bagian di luar permintaan tetap identik. Tugas 1 tetap sebagian sampai dua hal itu diselesaikan atau diberi keputusan eksplisit. Jangan merge.
+
+- 2026-11-27 | Penutupan temuan biaya/revisi Tugas 1 | sebagian | PR #54 | Status antrean kini memberi `biaya_status=belum_terverifikasi` untuk respons Gemini dengan biaya 0, sehingga angka nol tidak disalahartikan sebagai biaya aktual; ditambah tes. Uji revisi diperkuat: memastikan prompt memuat naskah lama + catatan pemilik, hasil contoh mengubah pembuka yang diminta, dan beat lain tetap sama. CI untuk perubahan ini sedang berjalan. Sisa keputusan: harga Gemini dinamis belum dapat diisi dengan angka tetap tanpa mengetahui model aktual/tingkat harga; status ketidakpastian sudah eksplisit. Setelah CI hijau, Tugas 1 bisa diserahkan untuk audit pemilik; jangan merge sebelum persetujuan.
+
+- 2026-11-27 | Status CI audit akhir | sebagian | PR #54 | Untuk commit kode terbaru `d4770c9`: Ruff sukses, uji bot Telegram sukses, uji adab tokoh sukses; runtime masih berjalan di langkah persiapan FFmpeg (belum gagal, belum selesai). Ditambahkan penanda `biaya_status=belum_terverifikasi` untuk biaya Gemini nol dan uji revisi yang memeriksa prompt serta mempertahankan beat yang tidak diminta pada keluaran uji. Berikutnya: tunggu runtime CI selesai; jika hijau, serahkan PR #54 kepada pemilik/Claude untuk audit final. Tugas 1 tetap belum dinyatakan selesai sampai audit final; jangan merge.
+
+- 2026-11-27 | Audit ulang protokol & uji integrasi Tugas 1 | sebagian | PR #54 | Membaca ulang dokumen ini penuh dan memeriksa ulang berkas instruksi CLAUDE; keduanya tidak ditemukan di branch. Perbandingan dengan prompt lama di `main` menemukan beberapa aturan rinci yang belum dipindahkan ke skill (format nama peran nabi/sahabat, format dialog, daftar suasana, hikmah pada topik berat, aturan deduplikasi dalil, dan aturan pemetaan paragraf tempel); semuanya dipulihkan ke `skill/naskah.md`. Menambahkan tes integrasi dengan HTTP palsu untuk ide sukses, ide ditolak validator lalu retry pada model yang sama, tempel menjaga narasi, dan revisi membawa naskah lama/catatan. Ruff untuk tes HTTP palsu sudah lulus; runtime untuk kode/tes terbaru belum terverifikasi. Agar Actions benar-benar menjalankan seluruh pytest pada branch PR, branch `tugas-1-llm-naskah` ditambahkan ke pemicu push yang sudah dibatasi paths pada `test-runtime.yml`. Berikutnya: tunggu runtime CI terbaru, perbaiki bila ada gagal, lalu audit ulang seluruh checklist Tugas 1. Jangan merge.
+
+- 2026-11-27 | Verifikasi CI lengkap Tugas 1 | sebagian | PR #54 | CI runtime terbaru pada commit kode `c65e409` sukses: `394 passed, 1 skipped`; langkah bot `node --test`, pembandingan alat ukur, CLI ukur, dan `newmotion doctor` juga selesai tanpa gagal (workflow sukses). Ruff sukses. Uji HTTP palsu untuk ide sukses, retry setelah ditolak validator, tempel mempertahankan narasi, dan alur revisi ikut tercakup dalam 394 tes. Skill penulisan diselaraskan kembali dengan semua ketentuan lama yang ditemukan dari prompt `main`; CLAUDE.md dan mesin-video/CLAUDE.md tidak ada. Review PR masih kosong (tidak ada review, thread, atau komentar pemilik/Claude). Berikutnya secara persis: serahkan PR #54 kepada pemilik/Claude untuk audit dan keputusan merge; jangan merge sendiri dan jangan mulai Tugas 2 sebelum PR #54 diaudit serta digabung pemilik.
+
+- 2026-11-27 | Tugas 1 | selesai | PR #54 | Claude: PR #54 dibuat sebelum protokol diganti, jadi basisnya
+  dipindah ke `gpt/integrasi` dan di-merge (pytest lulus lokal). Tugas 1 dianggap selesai; catatan terbuka
+  (harga Gemini 0 = `belum_terverifikasi`) diaudit belakangan. PROTOKOL SEKARANG: jangan menunggu audit,
+  merge sendiri ke `gpt/integrasi` bila uji lulus, lalu lanjut. Jangan audit diri berulang-ulang: satu
+  putaran periksa + uji lulus sudah cukup. Workflow tambahan per-branch tidak perlu lagi; jalankan uji lokal.
+  Berikutnya: Tugas 2.
+
