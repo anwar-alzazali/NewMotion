@@ -113,6 +113,7 @@ def naskah_untuk_pengarah(
             "peran": list(peran),
             "tokoh_ids": peran_ids,
             "dialog": copy.deepcopy(dialog),
+            **({"suasana": b["suasana"]} if isinstance(b.get("suasana"), str) and b["suasana"].strip() else {}),
         }
         # Peristiwa eksplisit dari sumber selalu menjadi otoritas.
         # Cerita umum boleh memakai pengurai deterministik jika field peristiwa belum ada.

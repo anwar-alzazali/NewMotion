@@ -447,6 +447,37 @@ def _angka_awal(v, bawaan: float) -> float:
     return bawaan
 
 
+SUASANA_PALET = {"subuh": "subuh", "fajar": "pagi", "pagi": "pagi", "dhuha": "pagi", "siang": "siang", "zuhur": "siang",
+                 "ashar": "sore", "sore": "sore", "senja": "senja", "maghrib": "senja", "malam": "malam", "isya": "malam"}
+BENDA_AIR = ("laut", "laut_terbelah", "ombak", "pantai")
+
+
+def _waktu_dan_air(shot: dict, benda: list[dict], suasana: str | None, teks: str) -> None:
+    """(27 Nov, audit pemilik) Langit mengikuti waktu kisah, bukan tema: suasana beat naskah (dhuha = pagi),
+    dan bila matahari tampak langit pasti siang/pagi/sore. Di adegan laut: cakrawala = garis laut terjauh
+    (tidak ada daratan di belakang laut) dan tanah depan berupa pasir."""
+    if "ruang" in shot or "palet" not in shot:
+        return
+    palet = SUASANA_PALET.get(str(suasana or "").strip().lower())
+    ada_surya = any(o.get("jenis") == "surya" for o in benda)
+    if ada_surya and palet in (None, "malam", "subuh"):
+        palet = "pagi" if re.search(r"\b(terbit|fajar|pagi)\b", teks, re.IGNORECASE) else \
+            "sore" if re.search(r"\b(terbenam|senja|sore)\b", teks, re.IGNORECASE) else "siang"
+    air = [o for o in benda if o.get("jenis") in BENDA_AIR]
+    if palet:
+        if air and palet in ("pagi", "siang", "sore"):
+            palet = "pantai_" + palet
+        shot["palet"], shot["malam"] = palet, (1 if palet == "malam" else 0)
+        if palet.startswith("pantai_"):  # air siang lebih terang dari laut malam bawaan (gaya ombak Nuh)
+            for o in air:
+                if o.get("jenis") in ("laut_terbelah", "ombak") and "warna" not in o:
+                    o["warna"] = ["#3f86c4", "#123f6e"]
+        if shot["malam"] == 0:
+            shot["benda"] = [o for o in shot.get("benda", []) if o.get("jenis") != "bintang"]
+    if air and any(o.get("jenis") in ("laut_terbelah", "laut", "ombak") for o in air):
+        shot["horizon"] = round(_cakrawala_air(benda, float(shot.get("horizon") or 1100)))
+
+
 def _cakrawala_air(benda: list[dict], h: float) -> float:
     """y garis laut terjauh yang tampak (tempat matahari terbit/terbenam), dari benda air di shot."""
     for o in benda:
@@ -776,6 +807,8 @@ def arahkan(naskah: dict, waktu_adegan: list[float] | None = None,
                 kamera = _kamera_bidikan(subjek, kamera, ds)
             s["kamera"] = kamera
             s["benda"] = benda
+            if rb:
+                _waktu_dan_air(s, subjek["benda"], a.get("suasana"), tx)
             if subjek["teks"]:
                 s["teks"] = (s.get("teks") or []) + subjek["teks"]
             if subjek["klimaks"] and not (rb and subjek.get("aksen")):

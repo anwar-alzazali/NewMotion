@@ -49,6 +49,10 @@
     mendung: { langit: ["#7f8b97", "#c4cad0"], tanah: ["#7a9a6a", "#4f6a46"] },
     neraka: { langit: ["#120403", "#5a1608"], tanah: ["#2a0e08", "#0c0403"] },
     gelap_malam: { langit: ["#05060f", "#1a1530"], tanah: ["#15121c", "#08070c"] },
+    // (27 Nov) tepi laut: langit sesuai waktu, tanah pasir
+    pantai_pagi: { langit: ["#8fd0f5", "#ffe9c4"], tanah: ["#f0d49a", "#c9a46a"] },
+    pantai_siang: { langit: ["#4f9fe0", "#d6efff"], tanah: ["#f0d49a", "#c9a46a"] },
+    pantai_sore: { langit: ["#f39a4a", "#ffe2a8"], tanah: ["#e0b97a", "#a8824a"] },
   };
   const campur = (a, b, p) => { const A = a.match(/\d+/g).map(Number), B = hex(b); return `rgb(${A.map((x, i) => Math.round(mix(x, B[i], p))).join(",")})`; };
   function langit(p) {
