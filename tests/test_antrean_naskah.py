@@ -198,7 +198,7 @@ def test_peta_tempel_menolak_nomor_paragraf_nol():
 def test_jalur_ide_revisi_dan_tempel_memakai_tahap_llm_yang_tepat(monkeypatch):
     from newmotion.infrastructure import llm
 
-    jawaban = llm.Jawaban(json.dumps(NASKAH), "model-uji", "anthropic")
+    jawaban = llm.Jawaban(json.dumps(NASKAH), "model-uji", "anthropic", data=NASKAH)
     panggilan = []
 
     def palsu(tahap, sistem, isi, **kwargs):
@@ -220,6 +220,6 @@ def test_jalur_ide_revisi_dan_tempel_memakai_tahap_llm_yang_tepat(monkeypatch):
         "beat": [{"paragraf": [1], "dalil": [], "kata_kunci": [], "peran": []}],
     }
     jawaban.data = hasil_tempel
-    A.buat_naskah("tempel", "Kalimat pemilik harus utuh.")
+    hasil, _ = A.buat_naskah("tempel", "Kalimat pemilik harus utuh.")
     assert panggilan[-1][0] == "rapikan"
-    assert A.buat_naskah("tempel", "Kalimat pemilik harus utuh.")[0]["beat"][0]["narasi"] == "Kalimat pemilik harus utuh."
+    assert hasil["beat"][0]["narasi"] == "Kalimat pemilik harus utuh."
