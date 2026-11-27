@@ -1964,8 +1964,14 @@
     g += lenganKiri;
     const kaitL = b._kaitDunia ? (() => { const cm = b.cermin || b.profil === "kiri" ? -1 : 1, L = (p) => [cm * (p[0] - x) / s, (p[1] - y) / s - tubuh], K = b._kaitDunia;
       return { pijak: K.pijak && K.pijak.map(L), pegang: K.pegang && K.pegang.map(L) }; })() : null;
+    if (RIG && b._serahTarget) {
+      RIG.pegang = b._serahPegang || null;
+      RIG.tanganTarget = targetTanganLokal(b._serahTarget, x, y, s, b.cermin || b.profil === "kiri", tubuh, RIG);
+    } else if (RIG && Object.prototype.hasOwnProperty.call(b, "_serahPegang")) RIG.pegang = b._serahPegang;
     let RG = null; if (RIG) { RG = rangka(RIG, { P, BD, WC, KLB, nafas, ayun, bawahP, t: HD ? ta : t, gm: GM, aksi: RIG && RIG._aksi || b.aksi, id: b.npc != null ? b.npc : b.id, offset: b._gerak_offset, profilMotor: (b.profil === "kanan" || b.profil === true || b.profil === "kiri") && !!RIG,
-      kait: kaitL }); g = RG.g; }
+      kait: kaitL, tanganTarget: RIG.tanganTarget }); g = RG.g;
+      if (window.__tanganBoneka) window.__tanganBoneka[b.id] = tanganDunia({ sendi: RG.sendi, x, y, s, tubuh, guling: RG.guling }, b);
+    }
     let lenganKanan = RIG ? "" : `<line x1="${SH}" y1="${-360 + nafas}" x2="${SH + 22 + ayun * 0.3}" y2="${-200 + nafas}" stroke="${BD}" stroke-width="36" stroke-linecap="round"/>` + tangan(SH + 22 + ayun * 0.3, -192 + nafas);
     // kepala
     const hx = arah * 10, hy = -492 - (KB - 1) * 96 + nafas + tunduk * 14 + (H ? H.ky : 0), ex = arah * 24, ey = tunduk * 14 + (mata === "atas" ? -8 : mata === "bawah" ? 8 : 0);
