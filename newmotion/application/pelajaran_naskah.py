@@ -68,6 +68,22 @@ def ringkas(*, tanya=None) -> dict:
         "Jangan mengubah temuan menjadi aturan wajib. Keluarkan JSON {usulan:[{pola,alasan,jumlah_revisi,contoh_sebelum,contoh_sesudah}]}. "
         "Jumlah revisi harus dihitung dari bukti; contoh kalimat harus verbatim dari data."
     )
+    def kalimat_naskah(sisi):
+        hasil = set()
+        for revisi in baris:
+            naskah = revisi.get(sisi) or {}
+            beat = naskah.get("beat", []) if isinstance(naskah, dict) else []
+            if isinstance(beat, list):
+                for bagian in beat:
+                    if isinstance(bagian, dict):
+                        narasi = bagian.get("narasi")
+                        if isinstance(narasi, str) and narasi.strip():
+                            hasil.add(narasi.strip())
+        return hasil
+
+    sebelum_tersedia = kalimat_naskah("sebelum")
+    sesudah_tersedia = kalimat_naskah("sesudah")
+
     def validasi(data):
         if not isinstance(data, dict) or not isinstance(data.get("usulan"), list):
             return ["usulan harus berupa daftar"]
@@ -76,8 +92,14 @@ def ringkas(*, tanya=None) -> dict:
             if not isinstance(u, dict) or not all(isinstance(u.get(k), str) and u[k].strip()
                                                   for k in ("pola", "alasan", "contoh_sebelum", "contoh_sesudah")):
                 galat.append(f"usulan {i + 1}: isi pola, alasan, dan contoh sebelum/sesudah")
-            elif not isinstance(u.get("jumlah_revisi"), int) or u["jumlah_revisi"] < 2:
-                galat.append(f"usulan {i + 1}: pola harus didukung sedikitnya dua revisi")
+                continue
+            jumlah = u.get("jumlah_revisi")
+            if not isinstance(jumlah, int) or isinstance(jumlah, bool) or not 2 <= jumlah <= len(baris):
+                galat.append(f"usulan {i + 1}: jumlah revisi harus antara 2 dan {len(baris)}")
+            if u["contoh_sebelum"] not in sebelum_tersedia:
+                galat.append(f"usulan {i + 1}: contoh_sebelum tidak ditemukan persis pada arsip revisi")
+            if u["contoh_sesudah"] not in sesudah_tersedia:
+                galat.append(f"usulan {i + 1}: contoh_sesudah tidak ditemukan persis pada arsip revisi")
         return galat
     if tanya is None:
         hasil = llm.panggil("ringkas_pelajaran", sistem, prompt, json=True, validasi=validasi, maks_token=4000)
