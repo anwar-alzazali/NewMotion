@@ -21,7 +21,11 @@ Pemilik: Anwar Alzazali. Bahasa kerja: Indonesia. Ditulis 27 Nov 2026 oleh Claud
    centang tugasnya `[x]` di daftar di bawah, lalu langsung lanjut ke tugas berikutnya. Pemilik/Claude
    mengaudit seluruh `gpt/integrasi` sekaligus setelah semua tugas selesai, lalu menggabungkannya ke `main`.
    (Cabang terpisah ini menjaga bot produksi, yang otomatis ter-deploy dari `main`, tetap aman.)
-6. Di akhir sesi (selesai atau belum), **tambahkan satu entri di Log kerja**: tanggal, tugas, apa yang
+6. Di akhir sesi (selesai atau belum), **tulis entri log kerja sebagai BERKAS BARU** di
+   `docs/log_kerja/` bernama `YYYY-MM-DD-HHMM-tugas-N.md` (jangan menambah baris di bagian Log kerja di
+   bawah — dua pihak yang menambah baris di ujung berkas yang sama selalu membuat PR bentrok, dan alat
+   GitHub-mu tidak bisa memperbarui branch). Sesi baru membaca semua berkas di folder itu, urut nama.
+   Isi entri: tanggal, tugas, apa yang
    selesai, nomor PR, keputusan penting, dan langkah berikut yang persis. Sesi berikutnya hanya
    mengandalkan catatan ini. Bila sebuah tugas belum selesai, tulis bagian mana yang sudah ada di
    `gpt/integrasi` dan bagian mana yang belum.
