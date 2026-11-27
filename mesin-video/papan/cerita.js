@@ -546,6 +546,34 @@
         <g transform="rotate(${mir} 0 -296)"><rect x="-190" y="-306" width="380" height="20" rx="10" fill="url(#tbg)" stroke="${INK}" stroke-width="4"/>
         ${[-1, 1].map((sd) => { const px = sd * 172; return `<g transform="rotate(${-mir} ${px} -296)"><path d="M ${px} -296 L ${px - 62} -168 M ${px} -296 L ${px + 62} -168" stroke="#a87420" stroke-width="4" stroke-dasharray="10 6"/><circle cx="${px}" cy="-296" r="9" fill="#ffe9a0" stroke="${INK}" stroke-width="3"/><path d="M ${px - 78} -170 Q ${px} -96 ${px + 78} -170 Z" fill="url(#tbp)" stroke="${INK}" stroke-width="5"/><ellipse cx="${px}" cy="-170" rx="78" ry="12" fill="#ffe9a0" stroke="${INK}" stroke-width="4"/></g>`; }).join("")}</g>
         <circle cx="0" cy="-322" r="24" fill="url(#tbp)" stroke="${INK}" stroke-width="4"/>${bintik4(-10, -332, 12, 0.6 + 0.4 * Math.sin(t * 3))}`;
+    } else if (j === "genangan_tubuh") { // genangan pada tubuh simbolis umum; tinggi 0-500 dari telapak (35 mata kaki, 110 lutut, 210 pinggang, 320 dada, 440 mulut), riak 0-1
+      const tinggi = clamp(v(o.tinggi, t, d, 110), 0, 500), riak = clamp(v(o.riak, t, d, 0.65));
+      const permukaan = -tinggi + Math.sin(t * 2.6) * 5 * riak;
+      const air = "#63c9df", terang = "#d9fbff";
+      g = `<defs><linearGradient id="gnt" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#245c85"/><stop offset=".5" stop-color="#63c9df"/><stop offset="1" stop-color="#245c85"/></linearGradient></defs>
+        <ellipse cx="0" cy="8" rx="185" ry="20" fill="#000" opacity=".18"/>
+        <path d="M -52 0 L -60 -190 Q -72 -300 -92 -410 Q -112 -500 -74 -550 Q 0 -585 74 -550 Q 112 -500 92 -410 Q 72 -300 60 -190 L 52 0 Z" fill="#8b786e" stroke="${INK}" stroke-width="9"/>
+        <path d="M -52 0 L -60 -190 L -92 -410 L -74 -550 Q 0 -585 74 -550 L 92 -410 L 60 -190 L 52 0 Z" fill="#d8b99b" opacity=".42"/>
+        <path d="M -52 0 L -52 -185 L -86 -405 L -68 -540 Q 0 -570 68 -540 L 86 -405 L 52 -185 L 52 0 Z" fill="url(#gnt)" opacity=".18"/>
+        <path d="M -185 ${permukaan} Q -95 ${permukaan - 12} 0 ${permukaan} T 185 ${permukaan} L 185 30 L -185 30 Z" fill="url(#gnt)" opacity=".88"/>
+        <path d="M -185 ${permukaan} Q -95 ${permukaan - 12 - riak * 8} 0 ${permukaan} T 185 ${permukaan}" fill="none" stroke="${terang}" stroke-width="8" stroke-linecap="round"/>
+        ${[35,110,210,320,440].map((h0,i)=>`<g opacity=".95"><path d="M 100 ${-h0} h ${i===0||i===4?54:38}" stroke="${INK}" stroke-width="8" stroke-linecap="round"/><circle cx="100" cy="${-h0}" r="8" fill="${i===4?"#ffd27a":"#fff"}" stroke="${INK}" stroke-width="3"/></g>`).join("")}
+        ${Array.from({length:7},(_,i)=>{const xx=-130+i*42, yy=permukaan+14+Math.sin(t*3+i)*7*riak;return `<path d="M ${xx-18} ${yy} q 18 -8 36 0" stroke="${terang}" stroke-width="5" fill="none" opacity=".8"/>`;}).join("")}`;
+    } else if (j === "resapan_tanah") { // penampang tanah; kedalaman 0-1, alir 0-1, garis rembesan bergerak
+      const kedalaman=clamp(v(o.kedalaman,t,d,0.72)), alir=clamp(v(o.alir,t,d,0.7)), H=760*kedalaman, R=rng(o.seed||41);
+      g = `<defs><linearGradient id="rst" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#c88b56"/><stop offset=".35" stop-color="#8c5a42"/><stop offset="1" stop-color="#392c32"/></linearGradient></defs>
+        <path d="M -360 -12 Q -180 -30 0 -12 T 360 -12 L 360 80 L -360 80 Z" fill="#6d9a55" stroke="${INK}" stroke-width="8"/>
+        <rect x="-360" y="0" width="720" height="800" fill="url(#rst)" stroke="${INK}" stroke-width="8"/>
+        ${[120,260,420,590].map((yy,i)=>`<path d="M -360 ${yy} q 180 ${i%2?16:-16} 360 0 t 360 0" stroke="#4c342d" stroke-width="8" fill="none" opacity=".65"/>`).join("")}
+        ${Array.from({length:13},(_,i)=>{const xx=-300+i*50, len=H*(.72+R()*.28), sway=Math.sin(t*2.2+i)*16*alir, y2=Math.min(760,len);return `<path d="M ${xx} 8 q ${sway} ${y2*.32} ${sway*.3} ${y2*.68}" stroke="#ffd27a" stroke-width="${5+alir*5}" fill="none" stroke-linecap="round" opacity=".9"/><circle cx="${xx+sway*.3}" cy="${y2+8}" r="${5+alir*3}" fill="#fff0ae"/>`;}).join("")}
+        <path d="M -360 8 Q -180 -8 0 8 T 360 8" stroke="#e5c18c" stroke-width="12" fill="none"/>`;
+    } else if (j === "naungan_kelompok") { // awan peneduh + bayangan nyata untuk kelompok; luas 0-1, kuat 0-1
+      const luas=clamp(v(o.luas,t,d,0.78)), kuat=clamp(v(o.kuat,t,d,0.9)), w=220+luas*440, denyut=1+Math.sin(t*1.2)*.012;
+      g = `<ellipse cx="0" cy="10" rx="${w*1.12}" ry="${82*luas}" fill="#183c57" opacity="${.55*kuat}"/>
+        <path d="M ${-w} -330 Q ${-w*1.05} -430 ${-w*.72} -450 Q ${-w*.5} -590 ${-w*.22} -490 Q 0 -650 ${w*.22} -490 Q ${w*.58} -570 ${w*.72} -430 Q ${w*1.08} -430 ${w} -330 Z" fill="#e8f5fb" stroke="${INK}" stroke-width="10"/>
+        <path d="M ${-w*.9} -330 Q 0 -365 ${w*.9} -330 L ${w*1.08} -40 Q 0 -85 ${-w*1.08} -40 Z" fill="#bfefff" opacity="${.2*kuat}"/>
+        ${[-150,0,150].map((xx,i)=>`<g transform="translate(${xx*luas} 0) scale(${denyut})"><ellipse cx="0" cy="-110" rx="24" ry="27" fill="#51465a"/><path d="M -34 -78 Q 0 -105 34 -78 L 48 -8 L -48 -8 Z" fill="#51465a" stroke="${INK}" stroke-width="7"/><path d="M -20 -8 L -24 0 M 20 -8 L 24 0" stroke="#51465a" stroke-width="12" stroke-linecap="round"/></g>`).join("")}
+        <path d="M ${-w*.8} 8 Q 0 -24 ${w*.8} 8" stroke="#dff8ff" stroke-width="8" fill="none" opacity="${.65*kuat}"/>`;
     } else if (j === "bulan") {
       g = `<circle r="220" fill="#fff6d8" opacity=".12"/><circle r="140" fill="#fff6d8" opacity=".14"/><path d="M 0 -90 A 90 90 0 1 0 0 90 A 70 70 0 1 1 0 -90 Z" fill="#fff4cf"/>`;
     } else if (j === "bintang") { const R = rng(o.seed || 9);
