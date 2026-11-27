@@ -399,6 +399,15 @@ def buat_naskah(mode, masukan, naskah_lama=None, *, tanya=None):
     if not _PATH_SKILL.is_file():
         raise RuntimeError("Skill penulisan naskah tidak ditemukan")
     skill = _PATH_SKILL.read_text(encoding="utf-8").strip()
+    from newmotion.application import pelajaran_naskah
+    pedoman = pelajaran_naskah.pedoman_disetujui()
+    if pedoman:
+        skill += "\\n\\n## Pertimbangan tambahan yang disetujui pemilik (bukan aturan wajib)\\n" + pedoman
+    if mode == "ide":
+        contoh = pelajaran_naskah.pilih_contoh(masukan)
+        if contoh:
+            skill += "\\n\\n## Contoh naskah final yang disetujui dan mirip topik\\n"
+            skill += json.dumps([{"judul": x.get("judul"), "inti": x.get("inti"), "naskah": x.get("naskah")} for x in contoh], ensure_ascii=False)
     if mode == "tempel":
         judul, par = paragraf(masukan)
         isi = "Naskah bernomor:\n" + "\n".join(f"[{i}] {p}" for i, p in enumerate(par, 1))
