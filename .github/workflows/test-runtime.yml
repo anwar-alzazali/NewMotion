@@ -25,7 +25,7 @@ permissions:
   contents: write
 
 concurrency:
-  group: uji-runtime-${{ github.event.pull_request.head.ref || github.ref_name }}
+  group: uji-runtime-${{ github.ref }}
   cancel-in-progress: false
 
 jobs:
