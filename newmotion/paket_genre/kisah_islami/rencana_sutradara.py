@@ -199,7 +199,8 @@ def _validasi_figuran(fig: Any, jenis_beat: set, narasi: str, lbl: str) -> list[
         if f.get("hadap_ke") is not None:
             if not isinstance(f["hadap_ke"], str) or f["hadap_ke"] == nama or f["hadap_ke"] not in nama_figuran:
                 g.append(f"{lbl}: figuran.hadap_ke harus nama figuran lain pada beat yang sama")
-        if f.get("pegang") is not None and f["pegang"] not in pegang_sah:
+        if f.get("pegang") is not None and (
+                not isinstance(f.get("pegang"), str) or f["pegang"] not in pegang_sah):
             g.append(f"{lbl}: figuran.pegang harus salah satu {tuple(sorted(pegang_sah))}")
         if f.get("suku", "umum") not in SUKU:
             g.append(f"{lbl}: figuran.suku harus {SUKU}")
@@ -219,8 +220,8 @@ def _validasi_figuran(fig: Any, jenis_beat: set, narasi: str, lbl: str) -> list[
             elif n != 1:
                 g.append(f"{lbl}: figuran yang naik/duduk di benda jumlahnya 1")
     if any(isinstance(f, Mapping) and f.get("hadap_ke") for f in fig):
-        nama_x = {f.get("nama"): LETAK_FIGURAN.get(f.get("tempat", "tengah"), LETAK_FIGURAN["tengah"])[0]
-                  for f in fig if isinstance(f, Mapping) and f.get("nama")}
+        nama_x = {f["nama"]: LETAK_FIGURAN.get(f.get("tempat", "tengah"), LETAK_FIGURAN["tengah"])[0]
+                  for f in fig if isinstance(f, Mapping) and isinstance(f.get("nama"), str) and f.get("nama")}
         for f in fig:
             if (isinstance(f, Mapping) and isinstance(f.get("hadap_ke"), str)
                     and f.get("hadap_ke") in nama_x and f.get("nama") in nama_x):
