@@ -27,14 +27,18 @@ def main() -> int:
 
     from newmotion.application.katalog_renderer import katalog
 
-    jenis = sorted(katalog())
+    lama = json.loads(KELUARAN.read_text(encoding="utf-8")) if KELUARAN.is_file() else {}
+    jenis = sorted(set(katalog()) - set(lama))
+    if not jenis:
+        print(f"Semua {len(lama)} jenis sudah terukur.")
+        return 0
     shot = [{"at": i * DUR, "horizon": 1990, "palet": "pagi", "debu": 0, "langit": 0, "kamera": {"z": 1, "x": 540, "y": 960},
              "benda": [{"jenis": j, "x": X0, "y": Y0, "s": 1}]} for i, j in enumerate(jenis)]
     spek = {"latar": "gelap", "musik": False, "stempel": False, "dekor": False, "durasi": DUR * len(jenis),
             "cerita": {"shot": shot}}
     html = AKAR / "hasil_ukur_benda.html"
     html.write_text(buat_html(spek, str(AKAR / "mesin-video" / "papan"), sudah_dijaga=True), encoding="utf-8")
-    hasil = {}
+    hasil = dict(lama)
     with sync_playwright() as p:
         br = p.chromium.launch()
         pg = br.new_page(viewport={"width": 1080, "height": 1920})
@@ -54,7 +58,7 @@ def main() -> int:
     html.unlink(missing_ok=True)
     KELUARAN.parent.mkdir(parents=True, exist_ok=True)
     KELUARAN.write_text(json.dumps(hasil, indent=0, sort_keys=True) + "\n", encoding="utf-8")
-    print(f"{len(hasil)}/{len(jenis)} jenis tercatat -> {KELUARAN}")
+    print(f"{len(jenis)} jenis baru diukur; total {len(hasil)} tercatat -> {KELUARAN}")
     return 0
 
 
