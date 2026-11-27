@@ -74,6 +74,10 @@ def test_proses_antrean_menggunakan_verifikasi_paket_kisah_islami(tmp_path, monk
     assert st["tahap"]["tinjau"] == "jalan"
     tersimpan = json.loads((antrean / "naskah.json").read_text(encoding="utf-8"))
     assert tersimpan["judul"] == "Uji antrean"
+    assert st["naskah_ai"]["model"] == "uji"
+    assert st["naskah_ai"]["penyedia"] == "palsu"
+    assert st["naskah_ai"]["token_masuk"] == 12
+    assert st["token_ai"] == 12
 
 
 def test_status_baru_menyimpan_genre_dan_konteks_eksplisit():
