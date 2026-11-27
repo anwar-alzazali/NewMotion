@@ -98,3 +98,22 @@ def test_penerbit_menyisipkan_cabang_baru_sebelum_return_tanpa_mengubah_cabang_l
     assert hasil.index('j === "kendi_besar"') < hasil.index("return `<g")
     with pytest.raises(ValueError, match="sudah ada"):
         R.sisipkan_cabang(hasil, KODE, "kendi_besar")
+
+
+
+def test_antrean_menandai_kebutuhan_sebagai_draf(tmp_path):
+    from newmotion.application import kebutuhan_renderer as K
+
+    berkas = tmp_path / "kebutuhan_renderer.json"
+    K.catat(
+        [{"nama": "kafilah", "alasan": "rombongan belum tersedia",
+          "bukti": "kafilah berjalan"}],
+        sumber="sutradara", kisah="Kisah dagang", jalur=berkas,
+    )
+    antrean = K.tandai_draf({
+        "nama": "kafilah", "alasan": "rombongan belum tersedia",
+        "bukti_narasi": "kafilah berjalan",
+    }, jalur=berkas)
+    assert antrean["kebutuhan"]["kafilah"]["status"] == "draf"
+    assert "pembuat_komponen" in antrean["kebutuhan"]["kafilah"]["sumber"]
+    assert K.STATUS == ("menunggu", "draf", "dibuat")
