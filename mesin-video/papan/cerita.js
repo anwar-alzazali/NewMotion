@@ -2333,6 +2333,17 @@
     if (S.resap) isi += resap(S.resap, tl, d, h);
     if (S.kerumunan) isi += kerumunan(S.kerumunan, h, tl);
     (S.benda || []).filter((o) => !(o.jenis === "bintang" || o.jenis === "bulan" || o.belakang) && !o.depan).forEach((o) => { isi += o.hias ? `<g data-hias="1">${benda(o, tl, d)}</g>` : benda(o, tl, d); });
+    const serahList = S.serah_terima ? (Array.isArray(S.serah_terima) ? S.serah_terima : [S.serah_terima]) : [];
+    window.__tanganBoneka = {};
+    window.__catatSerahTerima = window.__catatSerahTerima || [];
+    const lintasanSerah = serahList.map((r) => {
+      const asal = (S.boneka || [])[r.dari], tujuan = (S.boneka || [])[r.ke];
+      if (!asal || !tujuan) return { r, galat: "tokoh pemberi/penerima tidak ditemukan" };
+      const awal = posisiTanganBawaan(asal, tl, d), akhir = posisiTanganBawaan(tujuan, tl, d);
+      const lama = Math.max(0.1, Number(r.durasi) || 1.2), q0 = clamp((tl - (Number(r.at) || 0)) / lama);
+      const q = q0 * q0 * (3 - 2 * q0), posisi = [mix(awal[0], akhir[0], q), mix(awal[1], akhir[1], q)];
+      return { r, awal, akhir, posisi, aktif: tl >= (Number(r.at) || 0) && tl <= (Number(r.at) || 0) + lama };
+    });
     (S.boneka || []).forEach((b, i) => {
       // Ikatan kendaraan membuat pengendara mengikuti posisi motor setiap frame.
       // Setelah lepas_kendaraan_at, lintasan tubuh mengambil alih untuk adegan jatuh.
@@ -2345,12 +2356,33 @@
         if (K.sudut === "samping") Object.assign(tokoh, { profil: true, cermin: K.arah < 0, pose: b.pose || "duduk_samping", _kaitDunia: K });
         else tokoh.pose = b.pose || "duduk";
       }
+      tokoh = Object.assign({}, tokoh);
       tokoh.id = i;
+      for (const lintas of lintasanSerah) {
+        const r = lintas.r, mulai = Number(r.at) || 0, akhir = mulai + Math.max(0.1, Number(r.durasi) || 1.2);
+        if (i === r.dari) {
+          if (tl >= mulai) tokoh._serahPegang = null;
+          if (lintas.aktif) tokoh._serahTarget = lintas.posisi;
+        }
+        if (i === r.ke) {
+          if (tl >= mulai && tl <= akhir) tokoh._serahTarget = lintas.posisi;
+          else if (tl > akhir) tokoh._serahPegang = r.benda;
+        }
+      }
       const bd = BADAN, by = BAYANG;
       if (CERAH && tokoh.gaya === "siluet") { BADAN = ["#b98262", "#a7806e", "#c79a74", "#9c7a68"][i % 4]; BAYANG = "#d9b08a"; }
       if (tokoh.gaya === "dajjal") BADAN = tokoh.baju || "#201a26"; else if (PAL && (tokoh.baju || C.baju)) BADAN = tokoh.baju || C.baju;
       isi += boneka(tokoh, tl, d); BADAN = bd; BAYANG = by;
     });
+    for (const lintas of lintasanSerah) {
+      if (lintas.galat) continue;
+      const r = lintas.r, mulai = Number(r.at) || 0, akhir = mulai + Math.max(0.1, Number(r.durasi) || 1.2);
+      if (lintas.aktif) {
+        isi += gambarBendaSerah(r.benda, lintas.posisi[0], lintas.posisi[1], Number(r.skala) || 0.48);
+        const a = window.__tanganBoneka[r.dari], b = window.__tanganBoneka[r.ke];
+        window.__catatSerahTerima.push({ t: tl, benda: r.benda, posisi: lintas.posisi, tangan_pemberi: a || null, tangan_penerima: b || null });
+      }
+    }
     (S.benda || []).filter((o) => o.depan).forEach((o) => { isi += o.hias ? `<g data-hias="1">${benda(o, tl, d)}</g>` : benda(o, tl, d); });
     const nDebu = S.debu == null ? 40 : S.debu === false ? 0 : Math.round(v(S.debu, tl, d, 40)); if (nDebu > 0) isi += debu(t, nDebu);
     const hj = v(S.hujan, tl, d, 0); if (hj > 0) { // hujan: tirai gelap tipis + garis air jatuh + percikan
