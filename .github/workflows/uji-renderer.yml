@@ -113,6 +113,7 @@ jobs:
           fi
           git commit -q -m "Hasil uji renderer run $RUN"
           git push -q "https://x-access-token:${TOKEN}@github.com/${REPO}.git" "HEAD:refs/heads/hasil/renderer-${RUN}"
+          rm -rf .git
           echo "Hasil tersimpan di branch hasil/renderer-${RUN}." >> "$GITHUB_STEP_SUMMARY"
       - name: Unggah artefak cadangan
         if: always()
