@@ -423,7 +423,7 @@
    {
     "narasi": "Musa diperintahkan memukul laut dengan tongkatnya. Laut terbelah, setiap belahannya seperti gunung yang besar.",
     "intonasi": "tegas",
-    "jeda": 0.6,
+    "jeda": 1.6,
     "palet": "pantai_pagi",
     "malam": 0,
     "langit": 0.5,
@@ -471,7 +471,7 @@
       ],
       "belah": [
        [
-        "@memukul",
+        "@tongkatnya+0.5",
         0
        ],
        [
@@ -1293,14 +1293,9 @@
    "ulang": true
   },
   {
-   "berkas": "../../aset/suara/whoosh.mp3",
-   "at": "@memukul",
+   "berkas": "../../aset/suara/laut_terbelah.mp3",
+   "at": "@tongkatnya+0.5",
    "vol": 0.6
-  },
-  {
-   "berkas": "../../aset/suara/dentum_jauh.mp3",
-   "at": "@terbelah",
-   "vol": 0.7
   },
   {
    "berkas": "../../aset/suara/air_mengalir.mp3",

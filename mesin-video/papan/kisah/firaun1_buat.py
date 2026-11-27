@@ -113,9 +113,9 @@ shot.append({
 # 5. Laut terbelah (klimaks pertama)
 shot.append({
     "narasi": "Musa diperintahkan memukul laut dengan tongkatnya. Laut terbelah, setiap belahannya seperti gunung yang besar.",
-    "intonasi": "tegas", "jeda": 0.6, **PAGI, "debu": 20,
+    "intonasi": "tegas", "jeda": 1.6, **PAGI, "debu": 20,  # jeda: gemuruh laut terdengar utuh setelah narasi
     "kamera": {"z": [1.2, 0.92], "x": [700, 540], "y": [1250, 1000], "guncang": [["@terbelah", 30]]},
-    "benda": [SURYA, laut(belah=[["@memukul", 0], ["@gunung", 1]]), bani_israil(), nur(x=[[0, 720], ["@gunung", 560]]),
+    "benda": [SURYA, laut(belah=[["@tongkatnya+0.5", 0], ["@gunung", 1]]), bani_israil(), nur(x=[[0, 720], ["@gunung", 560]]),
               pasukan(x=-40)],
     "teks": [teks("LAUT TERBELAH", "QS ASY-SYU'ARA 63", at="@gunung")],
 })
@@ -218,8 +218,7 @@ spek = {
         {"berkas": "../../aset/suara/langkah_lari.mp3", "at": "@bala", "sampai": "@Musa#2", "vol": 0.35, "ulang": True},
         {"berkas": "../../aset/suara/kerumunan_cemas.mp3", "at": "@depan", "sampai": "@Tuhanku", "vol": 0.35, "ulang": True},
         {"berkas": "../../aset/suara/detak_jantung.mp3", "at": "@belakang", "sampai": "@Tuhanku", "vol": 0.45, "ulang": True},
-        {"berkas": "../../aset/suara/whoosh.mp3", "at": "@memukul", "vol": 0.6},
-        {"berkas": "../../aset/suara/dentum_jauh.mp3", "at": "@terbelah", "vol": 0.7},
+        {"berkas": "../../aset/suara/laut_terbelah.mp3", "at": "@tongkatnya+0.5", "vol": 0.6},  # efek.yml; hentakan jatuh di jeda sebelum "Laut"
         {"berkas": "../../aset/suara/air_mengalir.mp3", "at": "@kering", "sampai": "@menutup", "vol": 0.3, "ulang": True},
         {"berkas": "../../aset/suara/langkah_pelan.mp3", "at": "@menyeberang", "sampai": "@selamat", "vol": 0.3, "ulang": True},
         {"berkas": "../../aset/suara/drone_gelap.mp3", "at": "@berhenti", "sampai": "@Jawabannya", "vol": 0.35, "ulang": True},
