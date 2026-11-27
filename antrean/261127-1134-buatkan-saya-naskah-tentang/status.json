@@ -9,8 +9,8 @@
   "diterima": "selesai",
   "dalil": "selesai",
   "tinjau": "selesai",
-  "sutradara": "jalan",
-  "tinjau_visual": "belum",
+  "sutradara": "selesai",
+  "tinjau_visual": "jalan",
   "narasi": "belum",
   "render": "belum",
   "periksa": "belum",
@@ -20,7 +20,8 @@
   "diterima": "9 beat, 8 dalil · Gemini",
   "dalil": "8/8",
   "tinjau": "disetujui",
-  "sutradara": "menyusun pratinjau visual tanpa TTS"
+  "sutradara": "9 shot disusun oleh kisah_islami; sutradara LLM claude-sonnet-5-5, biaya $0.29",
+  "tinjau_visual": "menunggu tinjauan visual pemilik; TTS belum dibuat"
  },
  "dibuat": "2026-11-27T04:34:37.402Z",
  "diperbarui": "2026-11-27T07:56:16.562Z",
@@ -36,5 +37,25 @@
   "✓ QS AN-NISA 18",
   "✓ QS YUNUS 92"
  ],
- "pesan_kartu": 445
+ "pesan_kartu": 445,
+ "sutradara": {
+  "mode": "llm",
+  "biaya_usd": 0.2944,
+  "model": "claude-sonnet-5-5",
+  "periksa": [
+   {
+    "putaran": 0,
+    "lulus": false,
+    "temuan": 10,
+    "revisi": "claude-sonnet-5-5"
+   },
+   {
+    "putaran": 1,
+    "lulus": false,
+    "temuan": 9,
+    "revisi": null
+   }
+  ]
+ },
+ "pratinjau_visual": "antrean/261127-1134-buatkan-saya-naskah-tentang/papan_pratinjau.json"
 }

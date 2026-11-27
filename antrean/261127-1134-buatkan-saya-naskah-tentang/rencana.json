@@ -1,0 +1,456 @@
+{
+ "objek_inti": {
+  "jenis": "laut_terbelah",
+  "perkembangan": "laut utuh menghadang di tepi, terbelah menjadi dua dinding air setinggi gunung dengan lorong kering di antaranya, lalu dinding itu menutup kembali menelan Firaun."
+ },
+ "beat": [
+  {
+   "beat": 1,
+   "bukti": "Saat hampir tenggelam ditelan laut, Firaun berseru menyatakan beriman",
+   "subjek": [
+    {
+     "jenis": "awan_badai",
+     "tempat": "jauh",
+     "keadaan": {
+      "gelap": 1,
+      "hujan": 0.9
+     }
+    },
+    {
+     "jenis": "ombak",
+     "tempat": "tengah",
+     "keadaan": {
+      "tinggi": [
+       220,
+       320
+      ],
+      "buih": 1,
+      "kilap": [
+       0.2,
+       0.8
+      ]
+     }
+    }
+   ],
+   "kamu": "saksi",
+   "kamera": {
+    "bidikan": "sedang",
+    "aksen": null
+   },
+   "teks_layar": "DETIK TERAKHIR",
+   "klimaks": false,
+   "suara": {
+    "suasana": "guntur_hujan",
+    "efek": [
+     {
+      "nama": "braam",
+      "pada": "tenggelam",
+      "keras": "kuat",
+      "ulang": 1
+     }
+    ],
+    "transisi": false,
+    "intonasi": "tegang"
+   },
+   "figuran": [
+    {
+     "jumlah": 1,
+     "suku": "umum",
+     "tempat": "depan_kanan",
+     "gerak": "dua_naik",
+     "hadap": "depan",
+     "pindah": null,
+     "naik": null,
+     "penutup_kepala": "nemes",
+     "janggut": true,
+     "janggut_model": "firaun",
+     "pakaian": {
+      "jenis": "jubah",
+      "bisht": true,
+      "kalung": "usekh"
+     }
+    }
+   ]
+  },
+  {
+   "beat": 2,
+   "bukti": "Firaun bersama bala tentaranya berhasil menyusul rombongan Nabi Musa tepat di tepi laut",
+   "subjek": [
+    {
+     "jenis": "surya",
+     "tempat": "jauh",
+     "keadaan": {
+      "r": 110,
+      "terang": [
+       0.3,
+       0.9
+      ]
+     }
+    },
+    {
+     "jenis": "pantai",
+     "tempat": "tengah",
+     "keadaan": {
+      "tinggi": 140
+     }
+    },
+    {
+     "jenis": "nur",
+     "tempat": "kiri",
+     "keadaan": {
+      "nama": "Nabi Musa"
+     }
+    }
+   ],
+   "kamu": "tidak",
+   "kamera": {
+    "bidikan": "lebar",
+    "aksen": null
+   },
+   "teks_layar": "TERSUSUL",
+   "klimaks": false,
+   "suara": {
+    "suasana": "angin_gurun",
+    "efek": [
+     {
+      "nama": "langkah_lari",
+      "pada": "menyusul",
+      "keras": "sedang",
+      "ulang": 3
+     }
+    ],
+    "transisi": true,
+    "intonasi": "tegang"
+   },
+   "belum_ada": [
+    {
+     "nama": "pasukan berkuda dan kereta perang Firaun",
+     "alasan": "pasukan pengejar perlu tampak berbeda dari rombongan Nabi Musa; siluet kerumunan atau arus bisa dikira sosok Nabi Musa atau pengikutnya",
+     "bukti": "Firaun bersama bala tentaranya berhasil menyusul rombongan Nabi Musa"
+    }
+   ]
+  },
+  {
+   "beat": 3,
+   "bukti": "kaum Nabi Musa panik karena merasa mereka benar-benar akan tersusul",
+   "subjek": [
+    {
+     "jenis": "laut_terbelah",
+     "tempat": "tengah",
+     "keadaan": {
+      "belah": 0,
+      "tinggi": 320
+     }
+    },
+    {
+     "jenis": "nur",
+     "tempat": "kiri",
+     "keadaan": {
+      "nama": "Nabi Musa"
+     }
+    },
+    {
+     "jenis": "burung_kawanan",
+     "tempat": "jauh",
+     "keadaan": {
+      "n": 12,
+      "terbang": 1
+     }
+    }
+   ],
+   "kamu": "tidak",
+   "kamera": {
+    "bidikan": "sedang",
+    "aksen": "hentak"
+   },
+   "teks_layar": "TERPOJOK",
+   "klimaks": false,
+   "suara": {
+    "suasana": "detak_jantung",
+    "efek": [],
+    "transisi": false,
+    "intonasi": "tegang"
+   }
+  },
+  {
+   "beat": 4,
+   "bukti": "Nabi Musa tidak goyah sedikit pun",
+   "subjek": [
+    {
+     "jenis": "laut_terbelah",
+     "tempat": "jauh",
+     "keadaan": {
+      "belah": 0,
+      "tinggi": 300
+     }
+    },
+    {
+     "jenis": "nur",
+     "tempat": "tengah",
+     "keadaan": {
+      "nama": "Nabi Musa"
+     }
+    }
+   ],
+   "kamu": "tidak",
+   "kamera": {
+    "bidikan": "dekat",
+    "aksen": null
+   },
+   "teks_layar": "TIDAK GOYAH",
+   "klimaks": false,
+   "suara": {
+    "suasana": "detak_jantung",
+    "efek": [],
+    "transisi": false,
+    "intonasi": "tegas"
+   }
+  },
+  {
+   "beat": 5,
+   "bukti": "memukulkan tongkatnya ke permukaan air, hingga laut terbelah dan setiap belahannya menjulang laksana gunung yang amat besar",
+   "subjek": [
+    {
+     "jenis": "laut_terbelah",
+     "tempat": "tengah",
+     "keadaan": {
+      "belah": [
+       0,
+       1
+      ],
+      "tinggi": 400,
+      "buih": 1,
+      "lebar": 280
+     }
+    },
+    {
+     "jenis": "nur",
+     "tempat": "kiri",
+     "keadaan": {
+      "nama": "Nabi Musa"
+     }
+    }
+   ],
+   "kamu": "saksi",
+   "kamera": {
+    "bidikan": "lebar",
+    "aksen": "guncang"
+   },
+   "teks_layar": "LAUT TERBELAH",
+   "klimaks": true,
+   "suara": {
+    "suasana": "air_mengalir",
+    "efek": [
+     {
+      "nama": "whoosh",
+      "pada": "memukulkan",
+      "keras": "sedang",
+      "ulang": 1
+     },
+     {
+      "nama": "dentum_jauh",
+      "pada": "terbelah",
+      "keras": "kuat",
+      "ulang": 1
+     }
+    ],
+    "transisi": true,
+    "intonasi": "tegas"
+   }
+  },
+  {
+   "beat": 6,
+   "bukti": "Nabi Musa dan seluruh pengikutnya menyeberangi dasar laut dengan selamat",
+   "subjek": [
+    {
+     "jenis": "laut_terbelah",
+     "tempat": "tengah",
+     "keadaan": {
+      "belah": 1,
+      "tinggi": 400,
+      "lebar": 280,
+      "jauh": 1
+     }
+    },
+    {
+     "jenis": "nur",
+     "tempat": "kiri",
+     "keadaan": {
+      "nama": "Nabi Musa"
+     }
+    }
+   ],
+   "kamu": "tidak",
+   "kamera": {
+    "bidikan": "lebar",
+    "aksen": null
+   },
+   "teks_layar": "SELAMAT",
+   "klimaks": false,
+   "suara": {
+    "suasana": "air_mengalir",
+    "efek": [
+     {
+      "nama": "langkah_pelan",
+      "pada": "menyeberangi",
+      "keras": "lemah",
+      "ulang": 4
+     }
+    ],
+    "transisi": false,
+    "intonasi": "tenang"
+   }
+  },
+  {
+   "beat": 7,
+   "bukti": "Ketika hampir tenggelam, Firaun berkata bahwa ia percaya tidak ada tuhan selain yang dipercayai Bani Israil.",
+   "subjek": [
+    {
+     "jenis": "laut_terbelah",
+     "tempat": "tengah",
+     "keadaan": {
+      "belah": [
+       1,
+       0.1
+      ],
+      "tinggi": 400,
+      "buih": 1
+     }
+    }
+   ],
+   "kamu": "tidak",
+   "kamera": {
+    "bidikan": "sedang",
+    "aksen": "hentak"
+   },
+   "teks_layar": "SUDAH TERLAMBAT",
+   "klimaks": false,
+   "suara": {
+    "suasana": "guntur_hujan",
+    "efek": [
+     {
+      "nama": "dentum_jauh",
+      "pada": "tenggelam",
+      "keras": "sedang",
+      "ulang": 1
+     }
+    ],
+    "transisi": true,
+    "intonasi": "berat"
+   },
+   "figuran": [
+    {
+     "jumlah": 1,
+     "suku": "umum",
+     "tempat": "depan_kiri",
+     "gerak": "dua_naik",
+     "hadap": "depan",
+     "pindah": null,
+     "naik": null,
+     "penutup_kepala": "nemes",
+     "janggut": true,
+     "janggut_model": "firaun",
+     "pakaian": {
+      "jenis": "jubah",
+      "bisht": true,
+      "kalung": "usekh"
+     }
+    }
+   ]
+  },
+  {
+   "beat": 8,
+   "bukti": "Allah kemudian menyelamatkan badan Firaun agar menjadi pelajaran bagi orang-orang yang datang sesudahnya",
+   "subjek": [
+    {
+     "jenis": "pantai",
+     "tempat": "tengah",
+     "keadaan": {
+      "tinggi": 120
+     }
+    },
+    {
+     "jenis": "surya",
+     "tempat": "jauh",
+     "keadaan": {
+      "r": 90,
+      "terang": [
+       0.3,
+       0.7
+      ]
+     }
+    }
+   ],
+   "kamu": "saksi",
+   "kamera": {
+    "bidikan": "sedang",
+    "aksen": null
+   },
+   "teks_layar": "PELAJARAN",
+   "klimaks": false,
+   "suara": {
+    "suasana": "senandung_haru",
+    "efek": [],
+    "transisi": true,
+    "intonasi": "haru"
+   },
+   "figuran": [
+    {
+     "jumlah": 1,
+     "suku": "umum",
+     "tempat": "tengah",
+     "gerak": "rebahan",
+     "hadap": "depan",
+     "pindah": null,
+     "naik": null,
+     "mata": "tutup",
+     "penutup_kepala": "nemes",
+     "janggut": true,
+     "janggut_model": "firaun",
+     "pakaian": {
+      "jenis": "jubah",
+      "bisht": true,
+      "kalung": "usekh"
+     }
+    }
+   ]
+  },
+  {
+   "beat": 9,
+   "bukti": "jangan pernah kehilangan sandaran kepada Allah, sebab pintu pertolongan sering kali terbuka",
+   "subjek": [
+    {
+     "jenis": "jendela",
+     "tempat": "tengah",
+     "keadaan": {
+      "terang": [
+       0.1,
+       1
+      ]
+     }
+    }
+   ],
+   "kamu": "saksi",
+   "kamera": {
+    "bidikan": "sedang",
+    "aksen": null
+   },
+   "teks_layar": "PINTU PERTOLONGAN",
+   "klimaks": false,
+   "suara": {
+    "suasana": "senandung_haru",
+    "efek": [
+     {
+      "nama": "kilau_cahaya",
+      "pada": "terbuka",
+      "keras": "lemah",
+      "ulang": 1
+     }
+    ],
+    "transisi": false,
+    "intonasi": "lega"
+   }
+  }
+ ],
+ "suku": "umum"
+}

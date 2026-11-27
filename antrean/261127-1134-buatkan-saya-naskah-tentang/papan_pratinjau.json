@@ -1,0 +1,989 @@
+{
+  "latar": "gelap",
+  "musik": false,
+  "cerita": {
+    "shot": [
+      {
+        "at": 0.0,
+        "_adegan": 0,
+        "_narasi": "Saat hampir tenggelam ditelan laut, Firaun berseru menyatakan beriman, namun Allah menolak tobatnya yang terlambat itu agar menjadi peringatan bagi kamu.",
+        "horizon": 1430,
+        "palet": "malam",
+        "malam": 1,
+        "langit": 0.08,
+        "debu": 10,
+        "kamera": {
+          "z": [
+            1.0,
+            1.07
+          ],
+          "x": 540,
+          "y": 1000
+        },
+        "benda": [
+          {
+            "jenis": "bintang",
+            "x": 540,
+            "y": -1250,
+            "s": 1,
+            "seed": 12,
+            "tinggi": 1500,
+            "n": 80
+          },
+          {
+            "jenis": "laut",
+            "x": 540,
+            "y": 1150,
+            "s": 1,
+            "pantul": -320,
+            "belakang": true
+          },
+          {
+            "jenis": "ikan",
+            "x": 220,
+            "y": 1300,
+            "s": 0.22,
+            "arah": 1,
+            "op": 0.45,
+            "belakang": true
+          },
+          {
+            "jenis": "kartu_dalil",
+            "x": 540,
+            "y": 960,
+            "at": 0.15,
+            "kitab": "QS 10:90-91",
+            "teks": "Dan Kami selamatkan Bani Israil melintasi laut, kemudian Fir'aun dan bala tentaranya mengikuti mereka, untuk menzalimi dan menindas (mereka). Sehingga ketika Fir'aun hampir tenggelam dia berkata, \"Aku percaya bahwa tidak ada tuhan melainkan Tuhan yang dipercayai oleh Bani Israil, dan aku termasuk orang-orang muslim (berserah diri).\" Mengapa baru sekarang (kamu beriman), padahal sesungguhnya engkau telah durhaka sejak dahulu, dan engkau termasuk orang yang berbuat kerusakan.",
+            "arab": "۞ وَجَـٰوَزْنَا بِبَنِىٓ إِسْرَٰٓءِيلَ ٱلْبَحْرَ فَأَتْبَعَهُمْ فِرْعَوْنُ وَجُنُودُهُۥ بَغْيًا وَعَدْوًا ۖ حَتَّىٰٓ إِذَآ أَدْرَكَهُ ٱلْغَرَقُ قَالَ ءَامَنتُ أَنَّهُۥ لَآ إِلَـٰهَ إِلَّا ٱلَّذِىٓ ءَامَنَتْ بِهِۦ بَنُوٓا۟ إِسْرَٰٓءِيلَ وَأَنَا۠ مِنَ ٱلْمُسْلِمِينَ ءَآلْـَٔـٰنَ وَقَدْ عَصَيْتَ قَبْلُ وَكُنتَ مِنَ ٱلْمُفْسِدِينَ",
+            "label": "QUR'AN",
+            "arab_ukuran": 38
+          }
+        ],
+        "_beat_id": "beat-001"
+      },
+      {
+        "at": 10.93,
+        "_adegan": 1,
+        "_narasi": "Saat matahari terbit, Firaun bersama bala tentaranya berhasil menyusul rombongan Nabi Musa tepat di tepi laut.",
+        "horizon": 1430,
+        "palet": "senja",
+        "malam": 0.25,
+        "langit": 0.14,
+        "debu": 10,
+        "kamera": {
+          "z": [
+            1.0,
+            1.03
+          ],
+          "x": 540,
+          "y": 1040
+        },
+        "benda": [
+          {
+            "jenis": "bintang",
+            "x": 540,
+            "y": -1250,
+            "s": 1,
+            "seed": 12,
+            "tinggi": 1500,
+            "n": 80
+          },
+          {
+            "jenis": "laut",
+            "x": 540,
+            "y": 1150,
+            "s": 1,
+            "pantul": 280,
+            "belakang": true
+          },
+          {
+            "jenis": "bulan",
+            "x": 820,
+            "y": 430,
+            "s": 0.9
+          },
+          {
+            "jenis": "kartu_dalil",
+            "x": 540,
+            "y": 960,
+            "at": 0.15,
+            "kitab": "QS 26:60",
+            "teks": "Lalu (Fir'aun dan bala tentaranya) dapat menyusul mereka pada waktu matahari terbit.",
+            "arab": "فَأَتْبَعُوهُم مُّشْرِقِينَ",
+            "label": "QUR'AN",
+            "arab_ukuran": 56
+          }
+        ],
+        "_beat_id": "beat-002"
+      },
+      {
+        "at": 18.79,
+        "_adegan": 2,
+        "_narasi": "Ketika kedua belah pihak sudah saling melihat, kaum Nabi Musa panik karena merasa mereka benar-benar akan tersusul.",
+        "horizon": 1430,
+        "palet": "senja",
+        "malam": 0.25,
+        "langit": 0.14,
+        "debu": 10,
+        "kamera": {
+          "z": [
+            1.0,
+            1.03
+          ],
+          "x": 540,
+          "y": 1000
+        },
+        "benda": [
+          {
+            "jenis": "bintang",
+            "x": 540,
+            "y": -1250,
+            "s": 1,
+            "seed": 12,
+            "tinggi": 1500,
+            "n": 80
+          },
+          {
+            "jenis": "laut",
+            "x": 540,
+            "y": 1150,
+            "s": 1,
+            "pantul": -320,
+            "belakang": true
+          },
+          {
+            "jenis": "tebing",
+            "x": 920,
+            "y": 1090,
+            "s": 0.5,
+            "warna": "#141020",
+            "belakang": true
+          },
+          {
+            "jenis": "kartu_dalil",
+            "x": 540,
+            "y": 960,
+            "at": 0.15,
+            "kitab": "QS 26:61",
+            "teks": "Maka ketika kedua golongan itu saling melihat, berkatalah pengikut-pengikut Musa, \"Kita benar-benar akan tersusul.\"",
+            "arab": "فَلَمَّا تَرَٰٓءَا ٱلْجَمْعَانِ قَالَ أَصْحَـٰبُ مُوسَىٰٓ إِنَّا لَمُدْرَكُونَ",
+            "label": "QUR'AN",
+            "arab_ukuran": 56
+          }
+        ],
+        "_beat_id": "beat-003"
+      },
+      {
+        "at": 27.0,
+        "_adegan": 3,
+        "_narasi": "Namun Nabi Musa tidak goyah sedikit pun. Di hadapan kepanikan massal, beliau menegaskan keyakinan mutlaknya kepada pertolongan Allah.",
+        "horizon": 1430,
+        "palet": "senja",
+        "malam": 0.25,
+        "langit": 0.14,
+        "debu": 10,
+        "kamera": {
+          "z": [
+            1.0,
+            1.03
+          ],
+          "x": 540,
+          "y": 1040
+        },
+        "benda": [
+          {
+            "jenis": "bintang",
+            "x": 540,
+            "y": -1250,
+            "s": 1,
+            "seed": 12,
+            "tinggi": 1500,
+            "n": 80
+          },
+          {
+            "jenis": "laut",
+            "x": 540,
+            "y": 1150,
+            "s": 1,
+            "pantul": 320,
+            "belakang": true
+          },
+          {
+            "jenis": "ikan",
+            "x": 860,
+            "y": 1300,
+            "s": 0.22,
+            "arah": -1,
+            "op": 0.45,
+            "belakang": true
+          },
+          {
+            "jenis": "kartu_dalil",
+            "x": 540,
+            "y": 960,
+            "at": 0.15,
+            "kitab": "QS 26:62",
+            "teks": "Dia (Musa) menjawab, \"Sekali-kali tidak akan (tersusul); sesungguhnya Tuhanku bersamaku, Dia akan memberi petunjuk kepadaku.\"",
+            "arab": "قَالَ كَلَّآ ۖ إِنَّ مَعِىَ رَبِّى سَيَهْدِينِ",
+            "label": "QUR'AN",
+            "arab_ukuran": 56
+          }
+        ],
+        "_beat_id": "beat-004"
+      },
+      {
+        "at": 36.5,
+        "_adegan": 4,
+        "_narasi": "Allah lalu memerintahkan Nabi Musa memukulkan tongkatnya ke permukaan air, hingga laut terbelah dan setiap belahannya menjulang laksana gunung yang amat besar.",
+        "horizon": 1430,
+        "palet": "senja",
+        "malam": 0.25,
+        "langit": 0.14,
+        "debu": 10,
+        "kamera": {
+          "z": [
+            1.0,
+            1.03
+          ],
+          "x": 540,
+          "y": 1000
+        },
+        "benda": [
+          {
+            "jenis": "bintang",
+            "x": 540,
+            "y": -1250,
+            "s": 1,
+            "seed": 12,
+            "tinggi": 1500,
+            "n": 80
+          },
+          {
+            "jenis": "laut",
+            "x": 540,
+            "y": 1150,
+            "s": 1,
+            "pantul": -280,
+            "belakang": true
+          },
+          {
+            "jenis": "bulan",
+            "x": 260,
+            "y": 430,
+            "s": 0.9
+          },
+          {
+            "jenis": "kartu_dalil",
+            "x": 540,
+            "y": 960,
+            "at": 0.15,
+            "kitab": "QS 26:63",
+            "teks": "Lalu Kami wahyukan kepada Musa, \"Pukullah laut itu dengan tongkatmu.\" Maka terbelahlah lautan itu, dan setiap belahan seperti gunung yang besar.",
+            "arab": "فَأَوْحَيْنَآ إِلَىٰ مُوسَىٰٓ أَنِ ٱضْرِب بِّعَصَاكَ ٱلْبَحْرَ ۖ فَٱنفَلَقَ فَكَانَ كُلُّ فِرْقٍ كَٱلطَّوْدِ ٱلْعَظِيمِ",
+            "label": "QUR'AN",
+            "arab_ukuran": 56
+          }
+        ],
+        "_beat_id": "beat-005"
+      },
+      {
+        "at": 47.86,
+        "_adegan": 5,
+        "_narasi": "Nabi Musa dan seluruh pengikutnya menyeberangi dasar laut dengan selamat, sebelum akhirnya Firaun dan seluruh pasukannya masuk mengejar ke tengah dinding air itu.",
+        "horizon": 1430,
+        "palet": "senja",
+        "malam": 0.25,
+        "langit": 0.14,
+        "debu": 10,
+        "kamera": {
+          "z": [
+            1.0,
+            1.03
+          ],
+          "x": 540,
+          "y": 1040
+        },
+        "benda": [
+          {
+            "jenis": "bintang",
+            "x": 540,
+            "y": -1250,
+            "s": 1,
+            "seed": 12,
+            "tinggi": 1500,
+            "n": 80
+          },
+          {
+            "jenis": "laut",
+            "x": 540,
+            "y": 1150,
+            "s": 1,
+            "pantul": 240,
+            "belakang": true
+          },
+          {
+            "jenis": "tebing",
+            "x": 240,
+            "y": 1090,
+            "s": 0.5,
+            "warna": "#141020",
+            "belakang": true
+          },
+          {
+            "jenis": "kartu_dalil",
+            "x": 540,
+            "y": 960,
+            "at": 0.15,
+            "kitab": "QS 26:65-66",
+            "teks": "Dan Kami selamatkan Musa dan orang-orang yang bersamanya. Kemudian Kami tenggelamkan golongan yang lain.",
+            "arab": "وَأَنجَيْنَا مُوسَىٰ وَمَن مَّعَهُۥٓ أَجْمَعِينَ ثُمَّ أَغْرَقْنَا ٱلْـَٔاخَرِينَ",
+            "label": "QUR'AN",
+            "arab_ukuran": 56
+          }
+        ],
+        "_beat_id": "beat-006"
+      },
+      {
+        "at": 59.43,
+        "_adegan": 6,
+        "_narasi": "Ketika hampir tenggelam, Firaun berkata bahwa ia percaya tidak ada tuhan selain yang dipercayai Bani Israil. Allah berfirman apakah sekarang baru beriman padahal sebelumnya durhaka.",
+        "horizon": 1430,
+        "palet": "senja",
+        "malam": 0.25,
+        "langit": 0.14,
+        "debu": 10,
+        "kamera": {
+          "z": [
+            1.0,
+            1.03
+          ],
+          "x": 540,
+          "y": 1000
+        },
+        "benda": [
+          {
+            "jenis": "bintang",
+            "x": 540,
+            "y": -1250,
+            "s": 1,
+            "seed": 12,
+            "tinggi": 1500,
+            "n": 80
+          },
+          {
+            "jenis": "laut",
+            "x": 540,
+            "y": 1150,
+            "s": 1,
+            "pantul": -280,
+            "belakang": true
+          },
+          {
+            "jenis": "ikan",
+            "x": 260,
+            "y": 1300,
+            "s": 0.22,
+            "arah": 1,
+            "op": 0.45,
+            "belakang": true
+          },
+          {
+            "jenis": "kartu_dalil",
+            "x": 540,
+            "y": 960,
+            "at": 0.15,
+            "kitab": "QS 10:90-91",
+            "teks": "Dan Kami selamatkan Bani Israil melintasi laut, kemudian Fir'aun dan bala tentaranya mengikuti mereka, untuk menzalimi dan menindas (mereka). Sehingga ketika Fir'aun hampir tenggelam dia berkata, \"Aku percaya bahwa tidak ada tuhan melainkan Tuhan yang dipercayai oleh Bani Israil, dan aku termasuk orang-orang muslim (berserah diri).\" Mengapa baru sekarang (kamu beriman), padahal sesungguhnya engkau telah durhaka sejak dahulu, dan engkau termasuk orang yang berbuat kerusakan.",
+            "arab": "۞ وَجَـٰوَزْنَا بِبَنِىٓ إِسْرَٰٓءِيلَ ٱلْبَحْرَ فَأَتْبَعَهُمْ فِرْعَوْنُ وَجُنُودُهُۥ بَغْيًا وَعَدْوًا ۖ حَتَّىٰٓ إِذَآ أَدْرَكَهُ ٱلْغَرَقُ قَالَ ءَامَنتُ أَنَّهُۥ لَآ إِلَـٰهَ إِلَّا ٱلَّذِىٓ ءَامَنَتْ بِهِۦ بَنُوٓا۟ إِسْرَٰٓءِيلَ وَأَنَا۠ مِنَ ٱلْمُسْلِمِينَ ءَآلْـَٔـٰنَ وَقَدْ عَصَيْتَ قَبْلُ وَكُنتَ مِنَ ٱلْمُفْسِدِينَ",
+            "label": "QUR'AN",
+            "arab_ukuran": 38
+          }
+        ],
+        "_beat_id": "beat-007"
+      },
+      {
+        "at": 72.36,
+        "_adegan": 7,
+        "_narasi": "Allah kemudian menyelamatkan badan Firaun agar menjadi pelajaran bagi orang-orang yang datang sesudahnya, termasuk kamu.",
+        "horizon": 1430,
+        "palet": "gelap_malam",
+        "malam": 1,
+        "langit": 0.05,
+        "debu": 10,
+        "kamera": {
+          "z": [
+            1.0,
+            1.12
+          ],
+          "x": 540,
+          "y": 1040
+        },
+        "benda": [
+          {
+            "jenis": "bintang",
+            "x": 540,
+            "y": -1250,
+            "s": 1,
+            "seed": 12,
+            "tinggi": 1500,
+            "n": 80
+          },
+          {
+            "jenis": "laut",
+            "x": 540,
+            "y": 1150,
+            "s": 1,
+            "pantul": 240,
+            "belakang": true
+          },
+          {
+            "jenis": "bulan",
+            "x": 780,
+            "y": 430,
+            "s": 0.9
+          },
+          {
+            "jenis": "kartu_dalil",
+            "x": 540,
+            "y": 960,
+            "at": 0.15,
+            "kitab": "QS 10:92",
+            "teks": "Maka pada hari ini Kami selamatkan jasadmu agar engkau dapat menjadi pelajaran bagi orang-orang yang datang setelahmu, tetapi kebanyakan manusia tidak mengindahkan tanda-tanda (kekuasaan) Kami.",
+            "arab": "فَٱلْيَوْمَ نُنَجِّيكَ بِبَدَنِكَ لِتَكُونَ لِمَنْ خَلْفَكَ ءَايَةً ۚ وَإِنَّ كَثِيرًا مِّنَ ٱلنَّاسِ عَنْ ءَايَـٰتِنَا لَغَـٰفِلُونَ",
+            "label": "QUR'AN",
+            "arab_ukuran": 56
+          }
+        ],
+        "_beat_id": "beat-008"
+      },
+      {
+        "at": 80.93,
+        "_adegan": 8,
+        "_narasi": "Sebesar apa pun ancaman yang mengepung hidupmu, jangan pernah kehilangan sandaran kepada Allah, sebab pintu pertolongan sering kali terbuka di saat manusia merasa segalanya telah berakhir.",
+        "horizon": 1430,
+        "palet": "subuh",
+        "malam": 0,
+        "langit": 0.22,
+        "debu": 10,
+        "kamera": {
+          "z": [
+            1.18,
+            1.25
+          ],
+          "x": 540,
+          "y": 1120
+        },
+        "benda": [
+          {
+            "jenis": "bintang",
+            "x": 540,
+            "y": -1250,
+            "s": 1,
+            "seed": 12,
+            "tinggi": 1500,
+            "n": 80
+          },
+          {
+            "jenis": "laut",
+            "x": 540,
+            "y": 1150,
+            "s": 1,
+            "pantul": -240,
+            "belakang": true
+          },
+          {
+            "jenis": "tebing",
+            "x": 840,
+            "y": 1090,
+            "s": 0.5,
+            "warna": "#141020",
+            "belakang": true
+          },
+          {
+            "jenis": "gerbang",
+            "x": 880,
+            "y": 1530,
+            "s": 0.8,
+            "buka": 0.85,
+            "belakang": true
+          },
+          {
+            "jenis": "jendela",
+            "x": 540,
+            "y": 1320,
+            "s": 0.82,
+            "terang": [
+              [
+                0,
+                0.1
+              ],
+              [
+                11.41,
+                1
+              ]
+            ]
+          }
+        ],
+        "teks": [
+          {
+            "at": 0.15,
+            "teks": "PINTU PERTOLONGAN",
+            "y": 330,
+            "ukuran": 68
+          }
+        ],
+        "boneka": [
+          {
+            "x": 200,
+            "y": 1980,
+            "s": 0.55,
+            "belakang": true,
+            "kulit": "#c99a72",
+            "rambut": "jambul",
+            "warna_rambut": "#3a2a20",
+            "kacamata": true,
+            "pakaian": {
+              "jenis": "hoodie",
+              "warna": "#5a7a9a",
+              "bawah": "celana",
+              "bawah_warna": "#2f3a4a"
+            },
+            "mata": "buka",
+            "hidup": true,
+            "pose": [
+              [
+                0,
+                "berdiri"
+              ],
+              [
+                1.8,
+                "berkacak"
+              ],
+              [
+                9.13,
+                "berdiri"
+              ]
+            ],
+            "wajah": [
+              [
+                0,
+                "netral"
+              ],
+              [
+                1.8,
+                "sedih"
+              ]
+            ],
+            "arah": [
+              [
+                0,
+                -0.17
+              ],
+              [
+                1.8,
+                0.175
+              ]
+            ]
+          }
+        ],
+        "_beat_id": "beat-009"
+      }
+    ],
+    "variasi": "Detik Terakhir Firaun di Dasar Laut"
+  },
+  "durasi": 95.36,
+  "volume_efek": 0,
+  "rekaman": [
+    {
+      "berkas": "aset/suara/guntur_hujan.mp3",
+      "at": 0.0,
+      "vol": 0.35,
+      "ulang": true,
+      "masuk": 0.8,
+      "keluar": 1.2,
+      "sampai": 11.53
+    },
+    {
+      "berkas": "aset/suara/braam.mp3",
+      "vol": 0.8,
+      "at": 0.87,
+      "masuk": 0.02
+    },
+    {
+      "berkas": "aset/suara/whoosh.mp3",
+      "vol": 0.25,
+      "at": 10.88,
+      "masuk": 0.02
+    },
+    {
+      "berkas": "aset/suara/angin_gurun.mp3",
+      "at": 10.93,
+      "vol": 0.35,
+      "ulang": true,
+      "masuk": 0.8,
+      "keluar": 1.2,
+      "sampai": 19.39
+    },
+    {
+      "berkas": "aset/suara/langkah_lari.mp3",
+      "vol": 0.5,
+      "at": 15.37,
+      "masuk": 0.02
+    },
+    {
+      "berkas": "aset/suara/langkah_lari.mp3",
+      "vol": 0.5,
+      "at": 15.97,
+      "masuk": 0.02
+    },
+    {
+      "berkas": "aset/suara/langkah_lari.mp3",
+      "vol": 0.5,
+      "at": 16.57,
+      "masuk": 0.02
+    },
+    {
+      "berkas": "aset/suara/detak_jantung.mp3",
+      "at": 18.79,
+      "vol": 0.35,
+      "ulang": true,
+      "masuk": 0.8,
+      "keluar": 1.2,
+      "sampai": 37.1
+    },
+    {
+      "berkas": "aset/suara/whoosh.mp3",
+      "vol": 0.25,
+      "at": 36.45,
+      "masuk": 0.02
+    },
+    {
+      "berkas": "aset/suara/air_mengalir.mp3",
+      "at": 36.5,
+      "vol": 0.35,
+      "ulang": true,
+      "masuk": 0.8,
+      "keluar": 1.2,
+      "sampai": 60.03
+    },
+    {
+      "berkas": "aset/suara/whoosh.mp3",
+      "vol": 0.5,
+      "at": 39.03,
+      "masuk": 0.02
+    },
+    {
+      "berkas": "aset/suara/dentum_jauh.mp3",
+      "vol": 0.8,
+      "at": 42.72,
+      "masuk": 0.02
+    },
+    {
+      "berkas": "aset/suara/langkah_pelan.mp3",
+      "vol": 0.3,
+      "at": 50.32,
+      "masuk": 0.02
+    },
+    {
+      "berkas": "aset/suara/langkah_pelan.mp3",
+      "vol": 0.3,
+      "at": 50.92,
+      "masuk": 0.02
+    },
+    {
+      "berkas": "aset/suara/langkah_pelan.mp3",
+      "vol": 0.3,
+      "at": 51.52,
+      "masuk": 0.02
+    },
+    {
+      "berkas": "aset/suara/langkah_pelan.mp3",
+      "vol": 0.3,
+      "at": 52.12,
+      "masuk": 0.02
+    },
+    {
+      "berkas": "aset/suara/whoosh.mp3",
+      "vol": 0.25,
+      "at": 59.38,
+      "masuk": 0.02
+    },
+    {
+      "berkas": "aset/suara/guntur_hujan.mp3",
+      "at": 59.43,
+      "vol": 0.35,
+      "ulang": true,
+      "masuk": 0.8,
+      "keluar": 1.2,
+      "sampai": 72.96
+    },
+    {
+      "berkas": "aset/suara/dentum_jauh.mp3",
+      "vol": 0.5,
+      "at": 60.45,
+      "masuk": 0.02
+    },
+    {
+      "berkas": "aset/suara/whoosh.mp3",
+      "vol": 0.25,
+      "at": 72.31,
+      "masuk": 0.02
+    },
+    {
+      "berkas": "aset/suara/senandung_haru.mp3",
+      "at": 72.36,
+      "vol": 0.35,
+      "ulang": true,
+      "masuk": 0.8,
+      "keluar": 1.2
+    },
+    {
+      "berkas": "aset/suara/kilau_cahaya.mp3",
+      "vol": 0.3,
+      "at": 90.36,
+      "masuk": 0.02
+    }
+  ],
+  "rencana_cerita": {
+    "tokoh": [
+      {
+        "id": "tokoh-d3a2d4d3985b",
+        "nama": "Firaun"
+      },
+      {
+        "id": "tokoh-29cdcbb5b29b",
+        "nama": "Nabi Musa"
+      },
+      {
+        "id": "tokoh-9104e15831d4",
+        "nama": "Bani Israil"
+      },
+      {
+        "id": "tokoh-7da4972b2ec2",
+        "nama": "tentara Firaun"
+      }
+    ],
+    "benda": [],
+    "adegan": [
+      {
+        "id": "beat-001",
+        "nama": "adegan_1",
+        "teks": "Saat hampir tenggelam ditelan laut, Firaun berseru menyatakan beriman, namun Allah menolak tobatnya yang terlambat itu agar menjadi peringatan bagi kamu.",
+        "peran": [
+          "Firaun"
+        ],
+        "tokoh_ids": [
+          "tokoh-d3a2d4d3985b"
+        ],
+        "dialog": [],
+        "benda_ids": []
+      },
+      {
+        "id": "beat-002",
+        "nama": "adegan_2",
+        "teks": "Saat matahari terbit, Firaun bersama bala tentaranya berhasil menyusul rombongan Nabi Musa tepat di tepi laut.",
+        "peran": [
+          "Nabi Musa",
+          "Firaun",
+          "Bani Israil",
+          "tentara Firaun"
+        ],
+        "tokoh_ids": [
+          "tokoh-29cdcbb5b29b",
+          "tokoh-d3a2d4d3985b",
+          "tokoh-9104e15831d4",
+          "tokoh-7da4972b2ec2"
+        ],
+        "dialog": [],
+        "benda_ids": []
+      },
+      {
+        "id": "beat-003",
+        "nama": "adegan_3",
+        "teks": "Ketika kedua belah pihak sudah saling melihat, kaum Nabi Musa panik karena merasa mereka benar-benar akan tersusul.",
+        "peran": [
+          "Nabi Musa",
+          "Bani Israil"
+        ],
+        "tokoh_ids": [
+          "tokoh-29cdcbb5b29b",
+          "tokoh-9104e15831d4"
+        ],
+        "dialog": [
+          {
+            "pembicara": "Bani Israil",
+            "ucapan": "Sesungguhnya kita benar-benar akan tersusul!",
+            "penjawab": "Nabi Musa"
+          }
+        ],
+        "benda_ids": []
+      },
+      {
+        "id": "beat-004",
+        "nama": "adegan_4",
+        "teks": "Namun Nabi Musa tidak goyah sedikit pun. Di hadapan kepanikan massal, beliau menegaskan keyakinan mutlaknya kepada pertolongan Allah.",
+        "peran": [
+          "Nabi Musa",
+          "Bani Israil"
+        ],
+        "tokoh_ids": [
+          "tokoh-29cdcbb5b29b",
+          "tokoh-9104e15831d4"
+        ],
+        "dialog": [
+          {
+            "pembicara": "Nabi Musa",
+            "ucapan": "Sekali-kali tidak! Sesungguhnya Tuhanku bersamaku, Dia akan memberi petunjuk kepadaku.",
+            "penjawab": "Bani Israil"
+          }
+        ],
+        "benda_ids": []
+      },
+      {
+        "id": "beat-005",
+        "nama": "adegan_5",
+        "teks": "Allah lalu memerintahkan Nabi Musa memukulkan tongkatnya ke permukaan air, hingga laut terbelah dan setiap belahannya menjulang laksana gunung yang amat besar.",
+        "peran": [
+          "Nabi Musa",
+          "Bani Israil"
+        ],
+        "tokoh_ids": [
+          "tokoh-29cdcbb5b29b",
+          "tokoh-9104e15831d4"
+        ],
+        "dialog": [],
+        "benda_ids": []
+      },
+      {
+        "id": "beat-006",
+        "nama": "adegan_6",
+        "teks": "Nabi Musa dan seluruh pengikutnya menyeberangi dasar laut dengan selamat, sebelum akhirnya Firaun dan seluruh pasukannya masuk mengejar ke tengah dinding air itu.",
+        "peran": [
+          "Nabi Musa",
+          "Bani Israil",
+          "Firaun",
+          "tentara Firaun"
+        ],
+        "tokoh_ids": [
+          "tokoh-29cdcbb5b29b",
+          "tokoh-9104e15831d4",
+          "tokoh-d3a2d4d3985b",
+          "tokoh-7da4972b2ec2"
+        ],
+        "dialog": [],
+        "benda_ids": []
+      },
+      {
+        "id": "beat-007",
+        "nama": "adegan_7",
+        "teks": "Ketika hampir tenggelam, Firaun berkata bahwa ia percaya tidak ada tuhan selain yang dipercayai Bani Israil. Allah berfirman apakah sekarang baru beriman padahal sebelumnya durhaka.",
+        "peran": [
+          "Firaun"
+        ],
+        "tokoh_ids": [
+          "tokoh-d3a2d4d3985b"
+        ],
+        "dialog": [
+          {
+            "pembicara": "Firaun",
+            "ucapan": "Aku percaya bahwa tidak ada tuhan melainkan Tuhan yang dipercayai oleh Bani Israil, dan aku termasuk orang-orang yang berserah diri.",
+            "penjawab": null
+          }
+        ],
+        "benda_ids": []
+      },
+      {
+        "id": "beat-008",
+        "nama": "adegan_8",
+        "teks": "Allah kemudian menyelamatkan badan Firaun agar menjadi pelajaran bagi orang-orang yang datang sesudahnya, termasuk kamu.",
+        "peran": [
+          "Firaun"
+        ],
+        "tokoh_ids": [
+          "tokoh-d3a2d4d3985b"
+        ],
+        "dialog": [],
+        "benda_ids": []
+      },
+      {
+        "id": "beat-009",
+        "nama": "adegan_9",
+        "teks": "Sebesar apa pun ancaman yang mengepung hidupmu, jangan pernah kehilangan sandaran kepada Allah, sebab pintu pertolongan sering kali terbuka di saat manusia merasa segalanya telah berakhir.",
+        "peran": [],
+        "tokoh_ids": [],
+        "dialog": [],
+        "benda_ids": []
+      }
+    ],
+    "diagnostik": []
+  },
+  "rencana_blocking": {
+    "versi": 1,
+    "tahap": "kontrak_semantik",
+    "catatan": "Belum berisi koordinat, lintasan, pose, atau gerak. Pengarah visual harus memetakannya ke boneka dan benda renderer.",
+    "peristiwa": [],
+    "transisi_keadaan": [],
+    "keadaan_akhir": {},
+    "shot": [
+      {
+        "indeks": 0,
+        "beat_id": "beat-001",
+        "peristiwa_ids": []
+      },
+      {
+        "indeks": 1,
+        "beat_id": "beat-002",
+        "peristiwa_ids": []
+      },
+      {
+        "indeks": 2,
+        "beat_id": "beat-003",
+        "peristiwa_ids": []
+      },
+      {
+        "indeks": 3,
+        "beat_id": "beat-004",
+        "peristiwa_ids": []
+      },
+      {
+        "indeks": 4,
+        "beat_id": "beat-005",
+        "peristiwa_ids": []
+      },
+      {
+        "indeks": 5,
+        "beat_id": "beat-006",
+        "peristiwa_ids": []
+      },
+      {
+        "indeks": 6,
+        "beat_id": "beat-007",
+        "peristiwa_ids": []
+      },
+      {
+        "indeks": 7,
+        "beat_id": "beat-008",
+        "peristiwa_ids": []
+      },
+      {
+        "indeks": 8,
+        "beat_id": "beat-009",
+        "peristiwa_ids": []
+      }
+    ],
+    "diagnostik": []
+  },
+  "rencana_visual_tokoh": {
+    "status": "belum_didukung_paket",
+    "shot": [],
+    "diagnostik": [
+      {
+        "kode": "paket_belum_menyediakan_pengarah_tokoh_visual",
+        "pesan": "Roster tokoh dipertahankan sebagai data cerita; paket genre belum mengizinkan pemetaan ke visual renderer."
+      }
+    ]
+  },
+  "genre": "kisah_islami",
+  "konteks_konten": "islami",
+  "judul": "Detik Terakhir Firaun di Dasar Laut"
+}

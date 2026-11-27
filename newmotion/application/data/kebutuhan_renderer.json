@@ -1,0 +1,39 @@
+{
+  "versi": 1,
+  "kebutuhan": {
+    "pasukan_berkuda_dan_kereta_perang_firaun": {
+      "nama": "pasukan berkuda dan kereta perang Firaun",
+      "jumlah": 1,
+      "contoh": [
+        {
+          "kisah": "Detik Terakhir Firaun di Dasar Laut",
+          "beat": 2,
+          "alasan": "pasukan pengejar perlu tampak berbeda dari rombongan Nabi Musa; siluet kerumunan atau arus bisa dikira sosok Nabi Musa atau pengikutnya",
+          "bukti": "Firaun bersama bala tentaranya berhasil menyusul rombongan Nabi Musa",
+          "dicatat": "2026-11-27T07:58:07.448554+00:00"
+        }
+      ],
+      "sumber": [
+        "sutradara"
+      ],
+      "status": "menunggu"
+    },
+    "jasad_terdampar_di_pantai_siluet": {
+      "nama": "jasad terdampar di pantai (siluet)",
+      "jumlah": 1,
+      "contoh": [
+        {
+          "kisah": "Detik Terakhir Firaun di Dasar Laut",
+          "beat": 8,
+          "alasan": "Narasi menyebut Allah menyelamatkan badan Firaun sebagai pelajaran; tanpa objek ini visual tidak menceritakan narasi.",
+          "bukti": "Allah kemudian menyelamatkan badan Firaun agar menjadi pelajaran",
+          "dicatat": "2026-11-27T07:59:25.457998+00:00"
+        }
+      ],
+      "sumber": [
+        "pemeriksa"
+      ],
+      "status": "menunggu"
+    }
+  }
+}

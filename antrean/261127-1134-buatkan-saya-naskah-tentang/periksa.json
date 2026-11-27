@@ -1,0 +1,161 @@
+[
+ {
+  "putaran": 0,
+  "model_periksa": "claude-sonnet-5-5",
+  "biaya_usd": 0.039452,
+  "temuan": {
+   "lulus": false,
+   "temuan": [
+    {
+     "beat": 1,
+     "berat": "berat",
+     "masalah": "Kartu ayat QS 10:90-91 menutupi hampir seluruh layar sehingga awan badai dan ombak tidak terlihat. Teks 'TOBAT TERLAMBAT' juga tidak tampak. Visual tidak menceritakan Firaun yang hampir tenggelam.",
+     "saran": "Pakai kartu ayat yang lebih pendek dan kecil, atau tampilkan sebentar saja, sehingga ombak tinggi, awan badai gelap, dan teks 'TOBAT TERLAMBAT' terlihat jelas di atas atau di bawah kartu."
+    },
+    {
+     "beat": 2,
+     "berat": "berat",
+     "masalah": "Kartu ayat menutupi pantai, rombongan Nabi Musa (nur), dan sebagian besar matahari. Hanya laut dan langit yang tampak. Teks 'TERSUSUL' tidak terlihat.",
+     "saran": "Perkecil atau geser kartu ayat agar pantai, nur Nabi Musa di kiri, dan matahari terbit tampak di belakang. Pastikan teks 'TERSUSUL' terbaca."
+    },
+    {
+     "beat": 3,
+     "berat": "berat",
+     "masalah": "Dinding laut hanya tampak sebagai bentuk gelap kecil di tepi kanan di balik kartu. Nur Nabi Musa, kawanan burung, dan teks 'TERPOJOK' tidak terlihat. Kepanikan dan keadaan terpojok tidak tersampaikan.",
+     "saran": "Kecilkan atau kurangi kartu ayat agar laut menghadang, nur Nabi Musa, dan burung beterbangan tampak. Tampilkan teks 'TERPOJOK' tanpa tertutup kartu."
+    },
+    {
+     "beat": 4,
+     "berat": "berat",
+     "masalah": "Nur Nabi Musa yang seharusnya di tengah dengan bidikan dekat tidak tampak karena tertutup kartu ayat. Teks 'TIDAK GOYAH' hilang. Ketegasan Musa tidak tersampaikan.",
+     "saran": "Tampilkan nur Nabi Musa jelas di tengah dengan kartu ayat diperkecil dan digeser ke atas atau bawah. Pastikan teks 'TIDAK GOYAH' terbaca."
+    },
+    {
+     "beat": 5,
+     "berat": "berat",
+     "masalah": "Ini klimaks (laut terbelah menjadi dua dinding air), tetapi frame hanya menampilkan kartu ayat di atas latar polos. Dinding air, lorong kering, nur Musa, dan teks 'LAUT TERBELAH' tidak tampak. Klimaks tidak terasa berbeda dari beat lain.",
+     "saran": "Untuk beat klimaks, jangan tampilkan kartu ayat penuh. Perlihatkan dua dinding air raksasa dengan lorong kering di tengah, nur Nabi Musa di kiri, dan teks 'LAUT TERBELAH' besar. Kartu ayat cukup kecil atau muncul di awal beat saja."
+    },
+    {
+     "beat": 6,
+     "berat": "berat",
+     "masalah": "Dinding air terbelah, lorong kering, dan penyeberangan Musa tidak terlihat karena kartu ayat menutup seluruh adegan. Hanya laut datar di belakang kartu.",
+     "saran": "Tampilkan lorong kering dengan dua dinding air di kedua sisi dan nur Musa menyeberang. Kartu ayat dikecilkan atau dihilangkan agar adegan terlihat."
+    },
+    {
+     "beat": 7,
+     "berat": "berat",
+     "masalah": "Dinding air yang menutup menelan Firaun tidak tampak karena tertutup kartu ayat QS 10:90-91 yang panjang. Teks 'SUDAH TERLAMBAT' juga tidak terlihat. Kartu ini mengulang beat 1, sehingga terasa monoton.",
+     "saran": "Tampilkan dinding air yang menutup kembali dengan buih besar dan teks 'SUDAH TERLAMBAT'. Hindari mengulang kartu ayat yang sama dengan beat 1, atau tampilkan sangat kecil."
+    },
+    {
+     "beat": 8,
+     "berat": "berat",
+     "masalah": "Pantai, matahari, dan tokoh 'kamu' sebagai saksi tidak tampak karena tertutup kartu ayat. Teks 'PELAJARAN' tidak terlihat. Jasad Firaun yang diselamatkan tidak digambarkan.",
+     "saran": "Perlihatkan pantai dengan matahari lembut dan 'kamu' sebagai saksi. Perkecil kartu ayat dan tampilkan teks 'PELAJARAN' jelas."
+    },
+    {
+     "beat": 9,
+     "berat": "ringan",
+     "masalah": "Tokoh 'kamu' menutupi jendela bercahaya sehingga jendela (simbol pintu pertolongan) hampir tidak terbaca. Ekspresi sedih tanpa kesan harapan, dan cahaya jendela tidak tampak membesar.",
+     "saran": "Geser 'kamu' ke samping agar jendela terang terlihat penuh, atau buat jendela lebih besar dan bersinar, dengan kamu menoleh ke arahnya."
+    },
+    {
+     "beat": 1,
+     "berat": "berat",
+     "masalah": "Sepanjang beat 1-8, hampir semua frame didominasi kartu ayat yang sama bentuknya, dan adegan inti (laut terbelah) praktis tidak pernah terlihat. Ritme terasa statis dan visual tidak membantu narasi.",
+     "saran": "Batasi kartu ayat hanya pada beberapa beat kunci dan dengan ukuran kecil. Biarkan adegan laut, nur Musa, dan dinding air menjadi fokus visual di tiap beat."
+    }
+   ],
+   "catatan": "Kartu ayat besar menutupi hampir seluruh adegan di beat 1-8 sehingga cerita laut terbelah tidak terlihat, dan hanya beat 9 yang menampilkan visual sesungguhnya."
+  },
+  "lembar": [
+   "/home/runner/work/NewMotion/NewMotion/antrean/261127-1134-buatkan-saya-naskah-tentang/periksa/putaran_0/lembar_1.jpg",
+   "/home/runner/work/NewMotion/NewMotion/antrean/261127-1134-buatkan-saya-naskah-tentang/periksa/putaran_0/lembar_2.jpg"
+  ],
+  "revisi": "claude-sonnet-5-5",
+  "biaya_revisi_usd": 0.096636
+ },
+ {
+  "putaran": 1,
+  "model_periksa": "claude-sonnet-5-5",
+  "biaya_usd": 0.041984,
+  "temuan": {
+   "lulus": false,
+   "temuan": [
+    {
+     "beat": 1,
+     "berat": "berat",
+     "masalah": "Frame hanya menampilkan kartu ayat Al-Qur'an (QS 10:90-91) yang menutupi seluruh layar. Awan badai dan ombak tidak terlihat, dan teks layar 'DETIK TERAKHIR' tidak tampak. Narasi tentang Firaun hampir tenggelam tidak tergambar. Teks Latin di kartu terlalu kecil untuk dibaca.",
+     "saran": "Beat 1: tampilkan adegan laut badai dan ombak tinggi sebagai visual utama, dengan Firaun yang hampir tenggelam disiratkan lewat ombak besar dan buih. Kartu ayat jangan menutupi seluruh layar; perkecil, atau tampilkan sebentar saja lalu beralih ke adegan. Pastikan teks_layar 'DETIK TERAKHIR' terbaca.",
+     "kebutuhan": null
+    },
+    {
+     "beat": 2,
+     "berat": "berat",
+     "masalah": "Kartu ayat menutupi hampir seluruh area tengah. Pantai, Nabi Musa (nur), rombongan, dan pasukan Firaun tidak tampak. Hanya sedikit laut dan matahari samar di belakang kartu. Teks layar 'TERSUSUL' tidak terlihat.",
+     "saran": "Beat 2: kartu ayat dikecilkan atau dipindah ke bagian atas. Perlihatkan pantai, matahari terbit, dan nur Nabi Musa di tepi laut. Pastikan teks_layar 'TERSUSUL' tampak.",
+     "kebutuhan": null
+    },
+    {
+     "beat": 3,
+     "berat": "berat",
+     "masalah": "Kartu ayat menutupi adegan. Laut utuh yang menghadang hanya tampak sebagai sisi gelap di kanan kartu. Nur Nabi Musa dan burung tidak terlihat. Teks layar 'TERPOJOK' tidak tampak.",
+     "saran": "Beat 3: kecilkan kartu ayat agar laut utuh setinggi dinding, nur Nabi Musa, dan kawanan burung terlihat. Tampilkan teks_layar 'TERPOJOK'.",
+     "kebutuhan": null
+    },
+    {
+     "beat": 4,
+     "berat": "berat",
+     "masalah": "Hanya kartu ayat QS 26:62 yang terlihat. Nur Nabi Musa dan laut tidak tampak sama sekali. Teks layar 'TIDAK GOYAH' hilang.",
+     "saran": "Beat 4: tampilkan nur Nabi Musa dari dekat sebagai fokus dengan laut di belakangnya. Kartu ayat dikecilkan dan tidak menutupi tokoh. Pastikan 'TIDAK GOYAH' terbaca.",
+     "kebutuhan": null
+    },
+    {
+     "beat": 5,
+     "berat": "berat",
+     "masalah": "Ini klimaks (laut terbelah), tetapi hanya kartu ayat yang tampak. Dua dinding air dan lorong kering tidak terlihat, dan nur Nabi Musa juga tidak. Klimaks tidak berbeda dari beat lain. Teks layar 'LAUT TERBELAH' tidak muncul.",
+     "saran": "Beat 5: sembunyikan atau kecilkan kartu ayat sehingga laut yang terbelah menjadi dua dinding setinggi gunung dengan lorong kering terlihat penuh dalam bidikan lebar. Beri guncangan kamera, nur Nabi Musa di kiri, dan teks 'LAUT TERBELAH'.",
+     "kebutuhan": null
+    },
+    {
+     "beat": 6,
+     "berat": "berat",
+     "masalah": "Dinding air, lorong dasar laut, dan rombongan yang menyeberang tidak tampak karena tertutup kartu ayat. Narasi tentang penyeberangan dan Firaun masuk mengejar tidak tergambar. Teks 'SELAMAT' tidak terlihat.",
+     "saran": "Beat 6: tampilkan lorong kering di antara dua dinding air dengan nur Nabi Musa bergerak menyeberang, dan bayangan pasukan Firaun di ujung lorong. Kartu ayat jangan menutupi adegan.",
+     "kebutuhan": null
+    },
+    {
+     "beat": 7,
+     "berat": "berat",
+     "masalah": "Kartu ayat QS 10:90-91 menutupi seluruh layar. Dinding air yang menutup dan menelan Firaun tidak tampak, dan teks 'SUDAH TERLAMBAT' tidak muncul. Kartu ini hampir identik dengan beat 1 sehingga terasa berulang.",
+     "saran": "Beat 7: tampilkan dinding air yang menutup kembali dengan buih besar dan hentakan kamera. Teks 'SUDAH TERLAMBAT' dibuat jelas. Hindari mengulang kartu penuh yang sama dengan beat 1; kartu cukup kecil atau singkat.",
+     "kebutuhan": null
+    },
+    {
+     "beat": 8,
+     "berat": "berat",
+     "masalah": "Pantai dan matahari tidak tampak karena tertutup kartu ayat QS 10:92. Jasad Firaun yang diselamatkan tidak tergambar. Teks 'PELAJARAN' tidak terlihat.",
+     "saran": "Beat 8: tampilkan pantai dengan matahari, dan perlihatkan jasad yang terdampar di pantai sebagai siluet kecil. Kartu ayat dikecilkan. 'kamu' sebagai saksi tampak di pantai. Pastikan 'PELAJARAN' terbaca.",
+     "kebutuhan": {
+      "nama": "jasad terdampar di pantai (siluet)",
+      "alasan": "Narasi menyebut Allah menyelamatkan badan Firaun sebagai pelajaran; tanpa objek ini visual tidak menceritakan narasi.",
+      "bukti": "Allah kemudian menyelamatkan badan Firaun agar menjadi pelajaran"
+     }
+    },
+    {
+     "beat": 9,
+     "berat": "ringan",
+     "masalah": "Tokoh 'kamu' terpotong di sudut kiri bawah dan sangat kecil. Jendela terang cukup mewakili 'pintu pertolongan', tetapi komposisinya agak kosong.",
+     "saran": "Beat 9: geser 'kamu' ke posisi yang utuh dan tidak terpotong, menghadap jendela yang bercahaya. Teks 'PINTU PERTOLONGAN' sudah terbaca.",
+     "kebutuhan": null
+    }
+   ],
+   "catatan": "Hampir semua beat (1-8) tertutup kartu ayat sehingga adegan laut, tokoh nur, dan klimaks tidak terlihat; ritme terasa datar dan seragam, dan hanya beat 9 yang menampilkan visual cerita."
+  },
+  "lembar": [
+   "/home/runner/work/NewMotion/NewMotion/antrean/261127-1134-buatkan-saya-naskah-tentang/periksa/putaran_1/lembar_1.jpg",
+   "/home/runner/work/NewMotion/NewMotion/antrean/261127-1134-buatkan-saya-naskah-tentang/periksa/putaran_1/lembar_2.jpg"
+  ]
+ }
+]
