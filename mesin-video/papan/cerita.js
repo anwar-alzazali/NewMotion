@@ -1283,9 +1283,25 @@
     } else if (j === "kebun_kurma") { // kebun kurma berbaris; buah 0-1 menampakkan tandan
       const buah=v(o.buah,t,d,0.7), n=Math.max(2,Math.min(7,o.n||4));
       for(let i=0;i<n;i++){const xx=(i-(n-1)/2)*210, hh=560+(i%2)*70;g += '<path d="M '+(xx-24)+' 0 Q '+(xx-55)+' -280 '+xx+' -'+hh+' Q '+(xx+35)+' -280 '+(xx+24)+' 0 Z" fill="#765035" stroke="'+INK+'" stroke-width="9"/>';for(let k=0;k<7;k++){const aa=-Math.PI*.9+k*Math.PI*.3, ex=xx+Math.cos(aa)*180, ey=-hh+Math.sin(aa)*110;g += '<path d="M '+xx+' '+(-hh+20)+' Q '+(xx+Math.cos(aa)*80)+' '+(-hh-70)+' '+ex+' '+ey+'" stroke="#315b37" stroke-width="22" fill="none"/>';}for(let k=0;k<5;k++)g += '<circle cx="'+(xx-45+k*22)+'" cy="'+(-hh+115)+'" r="'+(13*buah)+'" fill="#d99a35"/>';}
-    } else if (j === "ladang_gandum") { // ladang gandum; matang 0-1 mengubah hijau menjadi keemasan
-      const matang=v(o.matang,t,d,0.8), n=Math.max(8,Math.min(45,o.n||24)), R=rng(o.seed||31);
-      for(let i=0;i<n;i++){const xx=(R()-.5)*850, hh=180+R()*250, x2=xx+(R()-.5)*70;g += '<path d="M '+xx+' 0 Q '+(xx-15)+' '+(-hh/2)+' '+x2+' '+(-hh)+'" stroke="'+campur("#47733b","#d6a83d",matang)+'" stroke-width="8" fill="none"/>';for(let k=0;k<4;k++)g += '<ellipse cx="'+(x2+(k%2)*12-6)+'" cy="'+(-hh+18+k*13)+'" rx="10" ry="19" fill="'+campur("#668c43","#d8ad48",matang)+'"/>';}
+    } else if (j === "ladang_gandum") { // hamparan gandum berbulir; matang 0-1, angin mengayunkan batang
+      const matang=v(o.matang,t,d,0.8), angin=v(o.angin,t,d,0.65), n=Math.max(12,Math.min(64,o.n||38)), R=rng(o.seed||31);
+      const hijau=campur("#3f713d","#d6a83d",matang), bulir=campur("#6d9a49","#edc45b",matang);
+      for(let i=0;i<n;i++){
+        const z=i/n, xx=(R()-.5)*(500+z*520), sk=.48+z*.72, hh=(210+R()*150)*sk, fase=R()*Math.PI*2, ayun=Math.sin(t*2.4+fase)*angin*(8+z*16), x1=xx+ayun, y1=-hh;
+        g += '<path d="M '+xx+' 0 Q '+(xx-10*sk)+' '+(-hh*.48)+' '+x1+' '+y1+'" stroke="'+hijau+'" stroke-width="'+(7*sk)+'" fill="none" stroke-linecap="round"/>';
+        g += '<path d="M '+(xx-2)+' '+(-hh*.28)+' Q '+(xx-42*sk)+' '+(-hh*.43)+' '+(xx-58*sk)+' '+(-hh*.36)+' M '+(xx+2)+' '+(-hh*.53)+' Q '+(xx+38*sk)+' '+(-hh*.68)+' '+(xx+54*sk)+' '+(-hh*.59)+'" stroke="'+hijau+'" stroke-width="'+(9*sk)+'" fill="none" stroke-linecap="round"/>';
+        g += '<path d="M '+x1+' '+y1+' Q '+(x1+18*sk)+' '+(y1-22*sk)+' '+(x1+12*sk)+' '+(y1-66*sk)+'" stroke="'+bulir+'" stroke-width="'+(7*sk)+'" fill="none"/>';
+        for(let k=0;k<7;k++){const yy=y1-(k*8+8)*sk, side=k%2?1:-1, bx=x1+side*(9+k*1.2)*sk;g += '<ellipse cx="'+bx+'" cy="'+yy+'" rx="'+(7*sk)+'" ry="'+(13*sk)+'" transform="rotate('+(side*24)+' '+bx+' '+yy+')" fill="'+bulir+'" stroke="'+INK+'" stroke-width="'+(2.2*sk)+'"/>';}
+      }
+    } else if (j === "sungai") { // sungai bertepi jelas; arus 0-1 mengatur kecepatan riak yang bergerak
+      const arus=v(o.arus,t,d,0.5), lebar=o.lebar||620, warna=o.warna||"#397f9a", fase=(t*(1.2+arus*5.5))%1;
+      g += '<path d="M '+(-lebar-34)+' 0 Q '+(-lebar*.38-30)+' -220 '+(-lebar*.55-30)+' -480 Q -34 -700 '+(lebar*.5-30)+' -900 L '+(lebar+34)+' -900 Q '+(lebar*.2+34)+' -600 '+(lebar*.55+34)+' -400 Q '+(lebar*.8)+' -170 '+(lebar+34)+' 0 Z" fill="#806443" stroke="'+INK+'" stroke-width="14"/>';
+      g += '<path d="M '+(-lebar)+' 0 Q '+(-lebar*.35)+' -220 '+(-lebar*.55)+' -480 Q 0 -700 '+(lebar*.5)+' -900 L '+lebar+' -900 Q '+(lebar*.2)+' -600 '+(lebar*.55)+' -400 Q '+(lebar*.8)+' -170 '+lebar+' 0 Z" fill="'+warna+'" stroke="'+INK+'" stroke-width="9"/>';
+      g += '<path d="M '+(-lebar+18)+' -8 Q '+(-lebar*.34)+' -230 '+(-lebar*.51)+' -480 Q -8 -700 '+(lebar*.51)+' -890 M '+(lebar-18)+' -8 Q '+(lebar*.27)+' -600 '+(lebar*.51)+' -410 Q '+(lebar*.2)+' -600 '+(lebar*.47)+' -890" stroke="#b7d7c1" stroke-width="12" fill="none" opacity=".8"/>';
+      for(let i=0;i<14;i++){const yy=-45-i*62, lebarRiak=70+(i%4)*24, xBase=Math.sin(i*1.7)*lebar*.22, bergerak=((fase*2.8+i*.19)%1), xx=xBase+(bergerak-.5)*lebar*.38;
+        g += '<path d="M '+(xx-lebarRiak)+' '+yy+' q '+(lebarRiak*.5)+' -18 '+lebarRiak+' 0 q '+(lebarRiak*.5)+' 18 '+lebarRiak+' 0" stroke="#d5f2ec" stroke-width="'+(4+arus*7)+'" opacity="'+(.28+arus*.65)+'" fill="none" stroke-linecap="round"/>';
+        g += '<path d="M '+(xx-lebarRiak*.45)+' '+(yy+13)+' q '+(lebarRiak*.35)+' -7 '+(lebarRiak*.7)+' 0" stroke="#2b647d" stroke-width="4" opacity=".65" fill="none"/>';
+      }
     } else if (j === "sungai") { // sungai berkelok; arus 0-1 mengatur riak air
       const arus=v(o.arus,t,d,0.5), lebar=o.lebar||620, warna=o.warna||"#397f9a";
       g += '<path d="M '+(-lebar)+' 0 Q '+(-lebar*.35)+' -220 '+(-lebar*.55)+' -480 Q 0 -700 '+(lebar*.5)+' -900 L '+lebar+' -900 Q '+(lebar*.2)+' -600 '+(lebar*.55)+' -400 Q '+(lebar*.8)+' -170 '+lebar+' 0 Z" fill="'+warna+'" stroke="'+INK+'" stroke-width="10"/>';
@@ -1311,11 +1327,19 @@
       g += '<path d="M -230 -260 L 230 -260 L 170 0 L -170 0 Z" fill="#b78248" stroke="'+INK+'" stroke-width="12"/><path d="M -230 -260 Q 0 -570 230 -260" stroke="#8a5b32" stroke-width="28" fill="none"/>';
       for(let i=0;i<8;i++)g += '<path d="M '+(-180+i*50)+' -250 L '+(-145+i*42)+' -10" stroke="#e0b878" stroke-width="10"/>';
       for(let i=0;i<5;i++)g += '<circle cx="'+(-120+i*60)+'" cy="'+(-300-(i%2)*35)+'" r="'+(22*penuh)+'" fill="'+isi+'"/>';
-    } else if (j === "kambing") { // kambing jinak; jalan 0-1 menggerakkan langkah
-      const jalan=v(o.jalan,t,d,0), langkah=Math.sin(t*8)*24*jalan;
-      g += '<ellipse cx="0" cy="-180" rx="210" ry="120" fill="#d6c5a7" stroke="'+INK+'" stroke-width="12"/><path d="M 140 -260 Q 230 -390 270 -300 L 230 -170 L 170 -120 Z" fill="#d6c5a7" stroke="'+INK+'" stroke-width="10"/><path d="M 200 -360 Q 130 -470 170 -480 M 245 -360 Q 310 -450 300 -470" stroke="'+INK+'" stroke-width="13" fill="none"/>';
-      for(let i=0;i<4;i++){const xx=-140+(i%2)*230, yy=i<2?-75:-95;g += '<path d="M '+xx+' '+yy+' L '+(xx+langkah)+' 0 L '+(xx+langkah+28)+' 0" stroke="'+INK+'" stroke-width="20" fill="none" stroke-linecap="round"/>';}
-      g += '<circle cx="260" cy="-275" r="9" fill="'+INK+'"/>';
+    } else if (j === "kambing") { // kambing kampung bertubuh berisi, tanduk pendek, telinga jatuh, berjanggut
+      const jalan=v(o.jalan,t,d,0), langkah=Math.sin(t*8)*22*jalan;
+      g += '<ellipse cx="-8" cy="-190" rx="218" ry="132" fill="#d6c5a7" stroke="'+INK+'" stroke-width="13"/>';
+      g += '<path d="M 112 -245 Q 158 -325 220 -350 L 286 -305 L 274 -170 Q 222 -126 160 -142 Z" fill="#cbb797" stroke="'+INK+'" stroke-width="12"/>';
+      g += '<path d="M 218 -325 Q 260 -405 306 -374 Q 326 -350 296 -328 L 260 -312 Z" fill="#d6c5a7" stroke="'+INK+'" stroke-width="10"/>';
+      g += '<path d="M 224 -326 Q 160 -360 142 -318 Q 150 -272 205 -286 Z M 280 -326 Q 344 -365 356 -316 Q 348 -274 294 -286 Z" fill="#b99c7c" stroke="'+INK+'" stroke-width="9"/>';
+      g += '<path d="M 224 -394 Q 174 -445 198 -482 Q 224 -500 232 -464 M 280 -394 Q 324 -442 300 -478 Q 276 -494 270 -462" stroke="#6d5a43" stroke-width="17" fill="none" stroke-linecap="round"/>';
+      g += '<path d="M 280 -286 Q 326 -294 332 -260 Q 320 -230 280 -244 Z" fill="#b18f70" stroke="'+INK+'" stroke-width="8"/><circle cx="294" cy="-326" r="9" fill="'+INK+'"/>';
+      g += '<path d="M 260 -228 Q 280 -195 267 -165 Q 252 -184 260 -228 Z" fill="#8a7157" stroke="'+INK+'" stroke-width="6"/>';
+      for(let i=0;i<4;i++){const depan=i>=2, xx=depan?118:-138, fase=i%2?Math.PI:0, ayun=Math.sin(t*8+fase)*18*jalan, yy=depan?-105:-92;
+        g += '<path d="M '+xx+' '+yy+' L '+(xx+ayun*.55)+' -42 L '+(xx+ayun)+' 0" stroke="#75614d" stroke-width="31" fill="none" stroke-linecap="round"/>';
+        g += '<path d="M '+(xx+ayun-15)+' -2 L '+(xx+ayun+16)+' -2 L '+(xx+ayun+13)+' 12 L '+(xx+ayun-12)+' 12 Z" fill="#403a34" stroke="'+INK+'" stroke-width="4"/>';
+      }
     } else if (j === "domba") { // domba berbulu; jalan 0-1 menggerakkan langkah
       const jalan=v(o.jalan,t,d,0), langkah=Math.sin(t*8)*20*jalan;
       g += '<ellipse cy="-170" rx="210" ry="130" fill="#eee5d2" stroke="'+INK+'" stroke-width="12"/>';
@@ -1342,9 +1366,19 @@
     } else if (j === "jam_pasir") { // jam pasir; sisa 0-1 menunjukkan pasir di ruang atas
       const sisa=v(o.sisa,t,d,0.5);
       g += '<path d="M -130 -600 L 130 -600 L 35 -310 L 130 0 L -130 0 L -35 -310 Z" fill="#d7c7a3" stroke="'+INK+'" stroke-width="14"/><path d="M -90 -550 L 90 -550 L 22 -320 L -22 -320 Z" fill="#c58b3d" opacity="'+sisa+'"/><path d="M -22 -300 L 22 -300 L 90 -50 L -90 -50 Z" fill="#c58b3d" opacity="'+(1-sisa)+'"/><path d="M -150 -650 L 150 -650 M -150 40 L 150 40" stroke="#6d4c32" stroke-width="25"/>';
-    } else if (j === "rantai_belenggu") { // rantai belenggu besi; tegang 0-1 mengatur tarikan
-      const tegang=v(o.tegang,t,d,0.3), n=Math.max(3,Math.min(20,o.n||8));
-      for(let i=0;i<n;i++){const xx=-260+i*520/(n-1), yy=-110-Math.sin(i*1.7)*45;g += '<ellipse cx="'+xx+'" cy="'+yy+'" rx="38" ry="'+(22+tegang*7)+'" fill="none" stroke="#66636a" stroke-width="14" transform="rotate('+(i%2?55:-55)+' '+xx+' '+yy+')"/>';}
+    } else if (j === "rantai_belenggu") { // mata rantai besar dan borgol; tegang 0 kendur, 1 lurus
+      const tegang=v(o.tegang,t,d,0.3), n=Math.max(5,Math.min(24,o.n||10)), kendur=(1-tegang)*155, titik=[];
+      for(let i=0;i<n;i++){const u=i/(n-1), xx=-310+u*620, yy=-125+Math.sin(u*Math.PI)*kendur;titik.push([xx,yy]);}
+      for(let i=0;i<n-1;i++){const a=titik[i],b=titik[i+1],rot=Math.atan2(b[1]-a[1],b[0]-a[0])*180/Math.PI,mx=(a[0]+b[0])/2,my=(a[1]+b[1])/2;
+        g += '<line x1="'+a[0]+'" y1="'+a[1]+'" x2="'+b[0]+'" y2="'+b[1]+'" stroke="#383b40" stroke-width="28" stroke-linecap="round"/>';
+        g += '<ellipse cx="'+mx+'" cy="'+my+'" rx="36" ry="22" fill="none" stroke="#777d86" stroke-width="17" transform="rotate('+rot+' '+mx+' '+my+')"/>';
+        g += '<path d="M '+(a[0]-10)+' '+(a[1]-8)+' Q '+mx+' '+(Math.min(a[1],b[1])-27)+' '+(b[0]+10)+' '+(b[1]-8)+'" stroke="#c5c9ce" stroke-width="5" fill="none" opacity=".8"/>';
+      }
+      for(const xx of [-350,350]){g += '<circle cx="'+xx+'" cy="-125" r="58" fill="#4b4e54" stroke="'+INK+'" stroke-width="12"/>';
+        g += '<circle cx="'+xx+'" cy="-125" r="35" fill="#d2d5d8" stroke="#6d7279" stroke-width="9"/>';
+        g += '<rect x="'+(xx-18)+'" y="-205" width="36" height="24" rx="7" fill="#8e949b" stroke="'+INK+'" stroke-width="6"/>';
+        g += '<path d="M '+(xx-42)+' -165 Q '+xx+' -182 '+(xx+42)+' -165" stroke="#eef0f2" stroke-width="7" fill="none"/>';
+      }
     } else if (j === "pedang_tersarung") { // pedang selalu tersarung; tidak menyediakan adegan kekerasan
       const ornamen=v(o.ornamen,t,d,0.5);
       g += '<path d="M -15 -180 L 0 -680 L 15 -180 Z" fill="#776d62" stroke="'+INK+'" stroke-width="9"/><path d="M -90 -180 L 90 -180 L 90 -140 L -90 -140 Z" fill="#8a6846" stroke="'+INK+'" stroke-width="9"/><rect x="-25" y="-140" width="50" height="140" rx="18" fill="#5d4030" stroke="'+INK+'" stroke-width="8"/><circle cy="-660" r="'+(18+12*ornamen)+'" fill="#c7a46b"/>';
