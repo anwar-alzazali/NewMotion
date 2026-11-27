@@ -1262,52 +1262,47 @@
    "berkas": "../../aset/suara/angin_gurun.mp3",
    "at": 0,
    "sampai": "@bersabda",
-   "vol": 0.18,
+   "vol": 0.16,
    "ulang": true
   },
   {
    "berkas": "../../aset/suara/langkah_pelan.mp3",
    "at": 0,
    "sampai": "@Lalu",
-   "vol": 0.32,
+   "vol": 0.24,
    "ulang": true
   },
   {
    "berkas": "../../aset/suara/dengung_haru.mp3",
    "at": "@tiga",
-   "vol": 0.3
-  },
-  {
-   "berkas": "../../aset/suara/koin_jatuh.mp3",
-   "at": "@Hartamu",
-   "vol": 0.35
-  },
-  {
-   "berkas": "../../aset/suara/dengung_haru.mp3",
-   "at": "@amalmu",
-   "vol": 0.12
+   "vol": 0.18
   },
   {
    "berkas": "../../aset/suara/langkah_pelan.mp3",
    "at": "@Keluargamu#2",
    "sampai": "@Yang",
-   "vol": 0.3,
+   "vol": 0.22,
    "ulang": true
   },
   {
    "berkas": "../../aset/suara/isak_lembut.mp3",
    "at": "@Keluargamu#2",
-   "vol": 0.16
+   "vol": 0.14
   },
   {
    "berkas": "../../aset/suara/dengung_haru.mp3",
    "at": "@amalmu#2",
-   "vol": 0.12
+   "vol": 0.09
+  },
+  {
+   "berkas": "../../aset/suara/halaman_buku.mp3",
+   "at": "@amalmu#2",
+   "vol": 0.16
   },
   {
    "berkas": "../../aset/suara/hentak_serius.mp3",
    "at": "@mengumpulkan",
-   "vol": 0.35
+   "vol": 0.22
   }
  ]
 }
