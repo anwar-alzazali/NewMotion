@@ -627,6 +627,8 @@ def proses(id_: str, mode: str, *, folder: Path = ANTREAN, tanya=None, quran=Non
             ]
         temuan_awal = copy.deepcopy(temuan.get("temuan", []))
         berat = [x for x in temuan_awal if x.get("tingkat") == "berat"]
+        perbaikan_dilakukan = False
+        perbaikan_gagal = False
         if berat and mode != "tempel":
             arahan = {
                 "temuan_pemeriksa": temuan.get("temuan", []),
@@ -654,6 +656,7 @@ def proses(id_: str, mode: str, *, folder: Path = ANTREAN, tanya=None, quran=Non
             if not galat_revisi:
                 berubah = json.dumps(revisi, ensure_ascii=False, sort_keys=True) != json.dumps(n, ensure_ascii=False, sort_keys=True)
                 if berubah:
+                    perbaikan_dilakukan = True
                     n = normalisasi(revisi)
                     n, laporan = verifikasi(n, quran=quran)
                     # Verifikasi ulang setelah perbaikan memastikan dalil yang berubah tidak lolos dari cache lama.
@@ -667,21 +670,23 @@ def proses(id_: str, mode: str, *, folder: Path = ANTREAN, tanya=None, quran=Non
                         "biaya_usd": round(meta_penulis.biaya_usd + meta_periksa_ulang.biaya_usd, 6),
                     }
             else:
-                temuan.setdefault("temuan", []).append({
-                    "beat": 1, "kategori": "detail_tanpa_dalil", "tingkat": "berat",
-                    "bukti": "Keluaran perbaikan penulis tidak lolos validator.",
-                    "alasan": "; ".join(galat_revisi[:4]), "saran": "Perlu revisi manual pemilik.",
-                })
+                perbaikan_gagal = True
         temuan_akhir = temuan.get("temuan", [])
         st["pemeriksaan_naskah"] = {
             "temuan_awal": temuan_awal,
             "temuan_akhir": temuan_akhir,
             "perbaikan_otomatis_dicoba": bool(berat and mode != "tempel"),
+            "perbaikan_otomatis_dilakukan": perbaikan_dilakukan,
+            "perbaikan_otomatis_gagal": perbaikan_gagal,
         }
         kategori = ", ".join(dict.fromkeys(x.get("kategori", "") for x in temuan_awal if x.get("kategori")))
         if temuan_awal and berat and mode != "tempel":
+            status_perbaikan = (
+                "gagal divalidasi" if perbaikan_gagal else
+                "dilakukan" if perbaikan_dilakukan else "tidak menghasilkan perubahan"
+            )
             st["pemeriksaan_naskah_ringkas"] = (
-                f"{len(temuan_awal)} temuan awal ({kategori}); perbaikan otomatis dicoba; "
+                f"{len(temuan_awal)} temuan awal ({kategori}); perbaikan {status_perbaikan}; "
                 f"sisa {len(temuan_akhir)}"
             )[:300]
         elif temuan_akhir:
