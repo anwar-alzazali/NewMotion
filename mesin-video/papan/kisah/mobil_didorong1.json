@@ -1,0 +1,128 @@
+{
+  "latar": "gelap",
+  "musik": false,
+  "dekor": false,
+  "durasi": 7,
+  "cerita": {
+    "label": "MENDORONG MOBIL YANG BERAT",
+    "hidup": true,
+    "dua": false,
+    "cerah": true,
+    "shot": [
+      {
+        "at": 0,
+        "ruang": {
+          "jenis": "kota",
+          "waktu": "siang"
+        },
+        "kamera": {
+          "x": 540,
+          "y": 1500,
+          "z": 1.02
+        },
+        "benda": [
+          {
+            "id": "mobil-uji",
+            "jenis": "mobil_dorong",
+            "x": [
+              [
+                0,
+                700
+              ],
+              [
+                7,
+                716
+              ]
+            ],
+            "y": 1550,
+            "s": 0.9,
+            "tekan": [
+              [
+                0,
+                0
+              ],
+              [
+                1.4,
+                0.8
+              ],
+              [
+                3.4,
+                1
+              ],
+              [
+                5.4,
+                0.6
+              ],
+              [
+                7,
+                0.9
+              ]
+            ]
+          }
+        ],
+        "boneka": [
+          {
+            "npc": 61,
+            "x": 0,
+            "y": 0,
+            "s": 1,
+            "utama": true,
+            "kait": "mobil-uji",
+            "profil_wajah": true,
+            "pose": "dorong",
+            "wajah": [
+              [
+                0,
+                "fokus"
+              ],
+              [
+                0.9,
+                "lelah"
+              ],
+              [
+                3.5,
+                "lelah"
+              ],
+              [
+                5.4,
+                "sedih"
+              ],
+              [
+                6.2,
+                "lelah"
+              ]
+            ],
+            "mata": "depan",
+            "keringat": 2,
+            "pakaian": {
+              "jenis": "kaus",
+              "warna": "#d96b35",
+              "bawah": "celana",
+              "bawah_warna": "#35465b"
+            },
+            "reaksi": [
+              [
+                1.5,
+                "hentak",
+                0.35
+              ],
+              [
+                4.4,
+                "hentak",
+                0.25
+              ]
+            ]
+          }
+        ],
+        "teks": [
+          {
+            "at": 0.35,
+            "teks": "BERAT SEKALI!",
+            "y": 340,
+            "ukuran": 82
+          }
+        ]
+      }
+    ]
+  }
+}
