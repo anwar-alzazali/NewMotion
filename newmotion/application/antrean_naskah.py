@@ -20,6 +20,7 @@ Status: antrean/<id>/status.json -> kartu status (sama persis dengan bot/worker.
 """
 from __future__ import annotations
 
+import copy
 import datetime as _dt
 import json
 import os
