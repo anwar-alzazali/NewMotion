@@ -9,8 +9,8 @@
   "diterima": "selesai",
   "dalil": "selesai",
   "tinjau": "selesai",
-  "sutradara": "jalan",
-  "tinjau_visual": "belum",
+  "sutradara": "selesai",
+  "tinjau_visual": "jalan",
   "narasi": "belum",
   "render": "belum",
   "periksa": "belum",
@@ -20,7 +20,7 @@
   "diterima": "9 beat, 8 dalil · Gemini",
   "dalil": "8/8",
   "tinjau": "disetujui",
-  "sutradara": "rencana sutradara baru: tokoh yang disebut wajib tampil, Firaun dan pasukannya di lorong laut",
+  "sutradara": "9 shot disusun oleh kisah_islami; sutradara aturan (sutradara LLM gagal, memakai sutradara aturan: LLM tahap 'sutradara' gagal: claude-sonnet-5-5: ditolak validator (1 galat: beat 5: tokoh Bani Israil disebut tetapi tidak tampil; tambahkan figuran (atau kerumunan/arus untuk rombongan besar)) | claude-sonnet-5-5: ditolak validator (5 gala)",
   "tinjau_visual": "menunggu tinjauan visual pemilik; TTS belum dibuat"
  },
  "dibuat": "2026-11-27T04:34:37.402Z",
@@ -38,10 +38,9 @@
   "✓ QS YUNUS 92"
  ],
  "sutradara": {
-  "mode": "llm",
+  "mode": "aturan",
   "biaya_usd": 0.0,
-  "model": "rencana tersimpan",
-  "catatan": "memakai rencana sutradara yang sudah ada (naskah tidak berubah)"
+  "catatan": "sutradara LLM gagal, memakai sutradara aturan: LLM tahap 'sutradara' gagal: claude-sonnet-5-5: ditolak validator (1 galat: beat 5: tokoh Bani Israil disebut tetapi tidak tampil; tambahkan figuran (atau kerumunan/arus untuk rombongan besar)) | claude-sonnet-5-5: ditolak validator (5 gala"
  },
  "pratinjau_visual": "antrean/261127-1134-buatkan-saya-naskah-tentang/papan_pratinjau.json"
 }

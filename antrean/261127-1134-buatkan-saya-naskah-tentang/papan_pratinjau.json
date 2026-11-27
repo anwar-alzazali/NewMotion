@@ -1,6 +1,6 @@
 {
   "latar": "gelap",
-  "musik": false,
+  "musik": "santai",
   "cerita": {
     "shot": [
       {
@@ -14,168 +14,8 @@
         "debu": 10,
         "kamera": {
           "z": [
-            1.18,
-            1.25
-          ],
-          "x": 540,
-          "y": 1120
-        },
-        "benda": [
-          {
-            "jenis": "bintang",
-            "x": 540,
-            "y": -1250,
-            "s": 1,
-            "seed": 12,
-            "tinggi": 1500,
-            "n": 80
-          },
-          {
-            "jenis": "awan_badai",
-            "x": 540,
-            "y": 1240,
-            "s": 0.6,
-            "belakang": true,
-            "gelap": 1,
-            "hujan": 0.9
-          },
-          {
-            "jenis": "ombak",
-            "x": 540,
-            "y": [
-              [
-                0,
-                1480
-              ],
-              [
-                8.742857142857144,
-                1220
-              ]
-            ],
-            "s": 1.0,
-            "tinggi": [
-              [
-                0,
-                220
-              ],
-              [
-                9.29,
-                320
-              ]
-            ],
-            "depan": true,
-            "seed": 98,
-            "buih": 1,
-            "kilap": [
-              [
-                0,
-                0.2
-              ],
-              [
-                9.29,
-                0.8
-              ]
-            ]
-          }
-        ],
-        "teks": [
-          {
-            "at": 0.15,
-            "teks": "DETIK TERAKHIR",
-            "y": 330,
-            "ukuran": 92,
-            "sub": "QS YUNUS 90-91"
-          }
-        ],
-        "boneka": [
-          {
-            "x": 200,
-            "y": 1980,
-            "s": 0.55,
-            "belakang": true,
-            "kulit": "#c99a72",
-            "rambut": "jambul",
-            "warna_rambut": "#3a2a20",
-            "kacamata": true,
-            "pakaian": {
-              "jenis": "hoodie",
-              "warna": "#5a7a9a",
-              "bawah": "celana",
-              "bawah_warna": "#2f3a4a"
-            },
-            "mata": "buka",
-            "hidup": true,
-            "pose": [
-              [
-                0,
-                "berdiri"
-              ],
-              [
-                1.8,
-                "angkat_bahu"
-              ],
-              [
-                7.43,
-                "berdiri"
-              ]
-            ],
-            "wajah": [
-              [
-                0,
-                "netral"
-              ],
-              [
-                1.8,
-                "bingung"
-              ]
-            ],
-            "arah": [
-              [
-                0,
-                -0.17
-              ],
-              [
-                1.8,
-                0.175
-              ]
-            ]
-          },
-          {
-            "id": 0,
-            "npc": 0,
-            "pose": "dua_naik",
-            "x": 841,
-            "y": 1900,
-            "s": 1.0,
-            "suku": "umum",
-            "penutup_kepala": "nemes",
-            "janggut": true,
-            "janggut_model": "firaun",
-            "pakaian": {
-              "jenis": "jubah",
-              "bisht": "#3a2a1e",
-              "kalung": "usekh"
-            }
-          }
-        ],
-        "_tata_letak": [
-          "rombongan figuran digeser -9px ke dalam layar"
-        ],
-        "_beat_id": "beat-001"
-      },
-      {
-        "at": 10.93,
-        "_adegan": 1,
-        "_narasi": "Saat matahari terbit, Firaun bersama bala tentaranya berhasil menyusul rombongan Nabi Musa tepat di tepi laut.",
-        "horizon": 1430,
-        "palet": "senja",
-        "malam": 0.25,
-        "langit": 0.14,
-        "debu": 10,
-        "kamera": {
-          "z": [
             1.0,
-            1.06
+            1.07
           ],
           "x": 540,
           "y": 1000
@@ -191,48 +31,89 @@
             "n": 80
           },
           {
-            "jenis": "surya",
+            "jenis": "laut",
             "x": 540,
-            "y": 1200,
+            "y": 1150,
             "s": 1,
-            "r": 110,
-            "terang": [
-              [
-                0,
-                0.3
-              ],
-              [
-                6.68,
-                0.9
-              ]
-            ]
+            "pantul": -320,
+            "belakang": true
           },
           {
-            "jenis": "pantai",
+            "jenis": "ikan",
+            "x": 220,
+            "y": 1300,
+            "s": 0.22,
+            "arah": 1,
+            "op": 0.45,
+            "belakang": true
+          },
+          {
+            "jenis": "kartu_dalil",
             "x": 540,
-            "y": 1320,
-            "s": 0.82,
-            "tinggi": 140
+            "y": 960,
+            "at": 0.15,
+            "kitab": "QS 10:90-91",
+            "teks": "Dan Kami selamatkan Bani Israil melintasi laut, kemudian Fir'aun dan bala tentaranya mengikuti mereka, untuk menzalimi dan menindas (mereka). Sehingga ketika Fir'aun hampir tenggelam dia berkata, \"Aku percaya bahwa tidak ada tuhan melainkan Tuhan yang dipercayai oleh Bani Israil, dan aku termasuk orang-orang muslim (berserah diri).\" Mengapa baru sekarang (kamu beriman), padahal sesungguhnya engkau telah durhaka sejak dahulu, dan engkau termasuk orang yang berbuat kerusakan.",
+            "arab": "۞ وَجَـٰوَزْنَا بِبَنِىٓ إِسْرَٰٓءِيلَ ٱلْبَحْرَ فَأَتْبَعَهُمْ فِرْعَوْنُ وَجُنُودُهُۥ بَغْيًا وَعَدْوًا ۖ حَتَّىٰٓ إِذَآ أَدْرَكَهُ ٱلْغَرَقُ قَالَ ءَامَنتُ أَنَّهُۥ لَآ إِلَـٰهَ إِلَّا ٱلَّذِىٓ ءَامَنَتْ بِهِۦ بَنُوٓا۟ إِسْرَٰٓءِيلَ وَأَنَا۠ مِنَ ٱلْمُسْلِمِينَ ءَآلْـَٔـٰنَ وَقَدْ عَصَيْتَ قَبْلُ وَكُنتَ مِنَ ٱلْمُفْسِدِينَ",
+            "label": "QUR'AN",
+            "arab_ukuran": 38
+          }
+        ],
+        "_beat_id": "beat-001"
+      },
+      {
+        "at": 10.93,
+        "_adegan": 1,
+        "_narasi": "Saat matahari terbit, Firaun bersama bala tentaranya berhasil menyusul rombongan Nabi Musa tepat di tepi laut.",
+        "horizon": 1430,
+        "palet": "senja",
+        "malam": 0.25,
+        "langit": 0.14,
+        "debu": 10,
+        "kamera": {
+          "z": [
+            1.0,
+            1.03
+          ],
+          "x": 540,
+          "y": 1040
+        },
+        "benda": [
+          {
+            "jenis": "bintang",
+            "x": 540,
+            "y": -1250,
+            "s": 1,
+            "seed": 12,
+            "tinggi": 1500,
+            "n": 80
           },
           {
-            "jenis": "nur",
-            "x": 300,
-            "y": 1320,
-            "s": 0.82,
-            "nama": "Nabi Musa",
-            "nama_letak": "atas"
-          }
-        ],
-        "teks": [
+            "jenis": "laut",
+            "x": 540,
+            "y": 1150,
+            "s": 1,
+            "pantul": 280,
+            "belakang": true
+          },
           {
+            "jenis": "bulan",
+            "x": 820,
+            "y": 430,
+            "s": 0.9
+          },
+          {
+            "jenis": "kartu_dalil",
+            "x": 540,
+            "y": 960,
             "at": 0.15,
-            "teks": "TERSUSUL",
-            "y": 330,
-            "ukuran": 92,
-            "sub": "QS ASY-SYU'ARA 60"
+            "kitab": "QS 26:60",
+            "teks": "Lalu (Fir'aun dan bala tentaranya) dapat menyusul mereka pada waktu matahari terbit.",
+            "arab": "فَأَتْبَعُوهُم مُّشْرِقِينَ",
+            "label": "QUR'AN",
+            "arab_ukuran": 56
           }
         ],
-        "boneka": [],
         "_beat_id": "beat-002"
       },
       {
@@ -246,17 +127,11 @@
         "debu": 10,
         "kamera": {
           "z": [
-            1.18,
-            1.25
+            1.0,
+            1.03
           ],
-          "x": 480,
-          "y": 1120,
-          "hentak": [
-            [
-              1.4,
-              0.11
-            ]
-          ]
+          "x": 540,
+          "y": 1000
         },
         "benda": [
           {
@@ -269,44 +144,32 @@
             "n": 80
           },
           {
-            "jenis": "laut_terbelah",
+            "jenis": "laut",
             "x": 540,
-            "y": 1320,
-            "s": 0.82,
-            "belah": 0,
-            "tinggi": 320
+            "y": 1150,
+            "s": 1,
+            "pantul": -320,
+            "belakang": true
           },
           {
-            "jenis": "nur",
-            "x": 274,
-            "y": 1320,
-            "s": 0.73,
-            "nama": "Nabi Musa",
-            "nama_letak": "atas"
+            "jenis": "tebing",
+            "x": 920,
+            "y": 1090,
+            "s": 0.5,
+            "warna": "#141020",
+            "belakang": true
           },
           {
-            "jenis": "burung_kawanan",
-            "x": 684,
-            "y": 1240,
-            "s": 0.534,
-            "belakang": true,
-            "n": 12,
-            "terbang": 1
-          }
-        ],
-        "teks": [
-          {
+            "jenis": "kartu_dalil",
+            "x": 540,
+            "y": 960,
             "at": 0.15,
-            "teks": "TERPOJOK",
-            "y": 330,
-            "ukuran": 92,
-            "sub": "QS ASY-SYU'ARA 61"
+            "kitab": "QS 26:61",
+            "teks": "Maka ketika kedua golongan itu saling melihat, berkatalah pengikut-pengikut Musa, \"Kita benar-benar akan tersusul.\"",
+            "arab": "فَلَمَّا تَرَٰٓءَا ٱلْجَمْعَانِ قَالَ أَصْحَـٰبُ مُوسَىٰٓ إِنَّا لَمُدْرَكُونَ",
+            "label": "QUR'AN",
+            "arab_ukuran": 56
           }
-        ],
-        "boneka": [],
-        "_tata_letak": [
-          "nur & burung_kawanan dikecilkan x0.89 agar muat berdampingan",
-          "nur ke kiri, burung_kawanan ke kanan agar tidak saling menutupi"
         ],
         "_beat_id": "beat-003"
       },
@@ -321,11 +184,11 @@
         "debu": 10,
         "kamera": {
           "z": [
-            1.5,
-            1.6
+            1.0,
+            1.03
           ],
           "x": 540,
-          "y": 1220
+          "y": 1040
         },
         "benda": [
           {
@@ -338,33 +201,34 @@
             "n": 80
           },
           {
-            "jenis": "laut_terbelah",
+            "jenis": "laut",
             "x": 540,
-            "y": 1240,
-            "s": 0.6,
-            "belakang": true,
-            "belah": 0,
-            "tinggi": 300
+            "y": 1150,
+            "s": 1,
+            "pantul": 320,
+            "belakang": true
           },
           {
-            "jenis": "nur",
-            "x": 540,
-            "y": 1320,
-            "s": 0.82,
-            "nama": "Nabi Musa",
-            "nama_letak": "atas"
-          }
-        ],
-        "teks": [
+            "jenis": "ikan",
+            "x": 860,
+            "y": 1300,
+            "s": 0.22,
+            "arah": -1,
+            "op": 0.45,
+            "belakang": true
+          },
           {
+            "jenis": "kartu_dalil",
+            "x": 540,
+            "y": 960,
             "at": 0.15,
-            "teks": "TIDAK GOYAH",
-            "y": 330,
-            "ukuran": 92,
-            "sub": "QS ASY-SYU'ARA 62"
+            "kitab": "QS 26:62",
+            "teks": "Dia (Musa) menjawab, \"Sekali-kali tidak akan (tersusul); sesungguhnya Tuhanku bersamaku, Dia akan memberi petunjuk kepadaku.\"",
+            "arab": "قَالَ كَلَّآ ۖ إِنَّ مَعِىَ رَبِّى سَيَهْدِينِ",
+            "label": "QUR'AN",
+            "arab_ukuran": 56
           }
         ],
-        "boneka": [],
         "_beat_id": "beat-004"
       },
       {
@@ -379,16 +243,10 @@
         "kamera": {
           "z": [
             1.0,
-            1.06
+            1.03
           ],
           "x": 540,
-          "y": 1000,
-          "guncang": [
-            [
-              1.4,
-              30
-            ]
-          ]
+          "y": 1000
         },
         "benda": [
           {
@@ -401,85 +259,29 @@
             "n": 80
           },
           {
-            "jenis": "laut_terbelah",
+            "jenis": "laut",
             "x": 540,
-            "y": 1320,
-            "s": 0.82,
-            "belah": [
-              [
-                0,
-                0
-              ],
-              [
-                9.65,
-                1
-              ]
-            ],
-            "tinggi": 400,
-            "buih": 1,
-            "lebar": 280
+            "y": 1150,
+            "s": 1,
+            "pantul": -280,
+            "belakang": true
           },
           {
-            "jenis": "nur",
-            "x": 300,
-            "y": 1320,
-            "s": 0.82,
-            "nama": "Nabi Musa",
-            "nama_letak": "atas"
-          }
-        ],
-        "teks": [
+            "jenis": "bulan",
+            "x": 260,
+            "y": 430,
+            "s": 0.9
+          },
           {
+            "jenis": "kartu_dalil",
+            "x": 540,
+            "y": 960,
             "at": 0.15,
-            "teks": "LAUT TERBELAH",
-            "y": 330,
-            "ukuran": 92,
-            "sub": "QS ASY-SYU'ARA 63"
-          }
-        ],
-        "boneka": [
-          {
-            "x": 880,
-            "y": 1980,
-            "s": 0.55,
-            "belakang": true,
-            "kulit": "#c99a72",
-            "rambut": "jambul",
-            "warna_rambut": "#3a2a20",
-            "kacamata": true,
-            "pakaian": {
-              "jenis": "hoodie",
-              "warna": "#5a7a9a",
-              "bawah": "celana",
-              "bawah_warna": "#2f3a4a"
-            },
-            "mata": "buka",
-            "hidup": true,
-            "pose": [
-              [
-                0,
-                "berdiri"
-              ],
-              [
-                1.8,
-                "tangan_dada"
-              ],
-              [
-                7.72,
-                "berdiri"
-              ]
-            ],
-            "wajah": "netral",
-            "arah": [
-              [
-                0,
-                0.17
-              ],
-              [
-                1.8,
-                -0.175
-              ]
-            ]
+            "kitab": "QS 26:63",
+            "teks": "Lalu Kami wahyukan kepada Musa, \"Pukullah laut itu dengan tongkatmu.\" Maka terbelahlah lautan itu, dan setiap belahan seperti gunung yang besar.",
+            "arab": "فَأَوْحَيْنَآ إِلَىٰ مُوسَىٰٓ أَنِ ٱضْرِب بِّعَصَاكَ ٱلْبَحْرَ ۖ فَٱنفَلَقَ فَكَانَ كُلُّ فِرْقٍ كَٱلطَّوْدِ ٱلْعَظِيمِ",
+            "label": "QUR'AN",
+            "arab_ukuran": 56
           }
         ],
         "_beat_id": "beat-005"
@@ -496,7 +298,64 @@
         "kamera": {
           "z": [
             1.0,
-            1.06
+            1.03
+          ],
+          "x": 540,
+          "y": 1040
+        },
+        "benda": [
+          {
+            "jenis": "bintang",
+            "x": 540,
+            "y": -1250,
+            "s": 1,
+            "seed": 12,
+            "tinggi": 1500,
+            "n": 80
+          },
+          {
+            "jenis": "laut",
+            "x": 540,
+            "y": 1150,
+            "s": 1,
+            "pantul": 240,
+            "belakang": true
+          },
+          {
+            "jenis": "tebing",
+            "x": 240,
+            "y": 1090,
+            "s": 0.5,
+            "warna": "#141020",
+            "belakang": true
+          },
+          {
+            "jenis": "kartu_dalil",
+            "x": 540,
+            "y": 960,
+            "at": 0.15,
+            "kitab": "QS 26:65-66",
+            "teks": "Dan Kami selamatkan Musa dan orang-orang yang bersamanya. Kemudian Kami tenggelamkan golongan yang lain.",
+            "arab": "وَأَنجَيْنَا مُوسَىٰ وَمَن مَّعَهُۥٓ أَجْمَعِينَ ثُمَّ أَغْرَقْنَا ٱلْـَٔاخَرِينَ",
+            "label": "QUR'AN",
+            "arab_ukuran": 56
+          }
+        ],
+        "_beat_id": "beat-006"
+      },
+      {
+        "at": 59.43,
+        "_adegan": 6,
+        "_narasi": "Ketika hampir tenggelam, Firaun berkata bahwa ia percaya tidak ada tuhan selain yang dipercayai Bani Israil. Allah berfirman apakah sekarang baru beriman padahal sebelumnya durhaka.",
+        "horizon": 1430,
+        "palet": "senja",
+        "malam": 0.25,
+        "langit": 0.14,
+        "debu": 10,
+        "kamera": {
+          "z": [
+            1.0,
+            1.03
           ],
           "x": 540,
           "y": 1000
@@ -512,203 +371,33 @@
             "n": 80
           },
           {
-            "jenis": "laut_terbelah",
+            "jenis": "laut",
             "x": 540,
-            "y": 1320,
-            "s": 0.82,
-            "belah": 1,
-            "tinggi": 400,
-            "lebar": 280,
-            "jauh": 1
-          },
-          {
-            "jenis": "nur",
-            "x": 300,
-            "y": 1320,
-            "s": 0.82,
-            "nama": "Nabi Musa",
-            "nama_letak": "atas"
-          }
-        ],
-        "teks": [
-          {
-            "at": 0.15,
-            "teks": "SELAMAT",
-            "y": 330,
-            "ukuran": 92,
-            "sub": "QS ASY-SYU'ARA 65-66"
-          }
-        ],
-        "boneka": [],
-        "_beat_id": "beat-006"
-      },
-      {
-        "at": 59.43,
-        "_adegan": 6,
-        "_narasi": "Ketika hampir tenggelam, Firaun berkata bahwa ia percaya tidak ada tuhan selain yang dipercayai Bani Israil. Allah berfirman apakah sekarang baru beriman padahal sebelumnya durhaka.",
-        "horizon": 1430,
-        "palet": "senja",
-        "malam": 0.25,
-        "langit": 0.14,
-        "debu": 10,
-        "kamera": {
-          "z": [
-            1.18,
-            1.25
-          ],
-          "x": 540,
-          "y": 1120,
-          "hentak": [
-            [
-              1.4,
-              0.11
-            ]
-          ]
-        },
-        "benda": [
-          {
-            "jenis": "bintang",
-            "x": 540,
-            "y": -1250,
+            "y": 1150,
             "s": 1,
-            "seed": 12,
-            "tinggi": 1500,
-            "n": 80
+            "pantul": -280,
+            "belakang": true
           },
           {
-            "jenis": "laut_terbelah",
-            "x": 540,
-            "y": 1320,
-            "s": 0.82,
-            "belah": [
-              [
-                0,
-                1
-              ],
-              [
-                6.58,
-                0.1
-              ]
-            ],
-            "tinggi": 400,
-            "buih": 1
-          }
-        ],
-        "teks": [
-          {
-            "at": 0.15,
-            "teks": "SUDAH TERLAMBAT",
-            "y": 330,
-            "ukuran": 68,
-            "sub": "QS YUNUS 90-91"
-          }
-        ],
-        "boneka": [
-          {
-            "id": 6000,
-            "npc": 6000,
-            "pose": "dua_naik",
-            "x": 239,
-            "y": 1900,
-            "s": 1.0,
-            "suku": "umum",
-            "penutup_kepala": "nemes",
-            "janggut": true,
-            "janggut_model": "firaun",
-            "pakaian": {
-              "jenis": "jubah",
-              "bisht": "#3a2a1e",
-              "kalung": "usekh"
-            }
-          }
-        ],
-        "_tata_letak": [
-          "rombongan figuran digeser +9px ke dalam layar"
-        ],
-        "_beat_id": "beat-007"
-      },
-      {
-        "at": 67.17,
-        "_adegan": 6,
-        "_narasi": "Ketika hampir tenggelam, Firaun berkata bahwa ia percaya tidak ada tuhan selain yang dipercayai Bani Israil. Allah berfirman apakah sekarang baru beriman padahal sebelumnya durhaka.",
-        "horizon": 1430,
-        "palet": "senja",
-        "malam": 0.25,
-        "langit": 0.14,
-        "debu": 10,
-        "kamera": {
-          "z": [
-            1.18,
-            1.25
-          ],
-          "x": 540,
-          "y": 1120,
-          "hentak": [
-            [
-              1.4,
-              0.11
-            ]
-          ]
-        },
-        "kilat": false,
-        "benda": [
-          {
-            "jenis": "bintang",
-            "x": 540,
-            "y": -1250,
-            "s": 1,
-            "seed": 12,
-            "tinggi": 1500,
-            "n": 80
+            "jenis": "ikan",
+            "x": 260,
+            "y": 1300,
+            "s": 0.22,
+            "arah": 1,
+            "op": 0.45,
+            "belakang": true
           },
           {
-            "jenis": "laut_terbelah",
+            "jenis": "kartu_dalil",
             "x": 540,
-            "y": 1320,
-            "s": 0.82,
-            "belah": [
-              [
-                0,
-                1
-              ],
-              [
-                4.41,
-                0.1
-              ]
-            ],
-            "tinggi": 400,
-            "buih": 1
-          }
-        ],
-        "teks": [
-          {
+            "y": 960,
             "at": 0.15,
-            "teks": "SUDAH TERLAMBAT",
-            "y": 330,
-            "ukuran": 68
+            "kitab": "QS 10:90-91",
+            "teks": "Dan Kami selamatkan Bani Israil melintasi laut, kemudian Fir'aun dan bala tentaranya mengikuti mereka, untuk menzalimi dan menindas (mereka). Sehingga ketika Fir'aun hampir tenggelam dia berkata, \"Aku percaya bahwa tidak ada tuhan melainkan Tuhan yang dipercayai oleh Bani Israil, dan aku termasuk orang-orang muslim (berserah diri).\" Mengapa baru sekarang (kamu beriman), padahal sesungguhnya engkau telah durhaka sejak dahulu, dan engkau termasuk orang yang berbuat kerusakan.",
+            "arab": "۞ وَجَـٰوَزْنَا بِبَنِىٓ إِسْرَٰٓءِيلَ ٱلْبَحْرَ فَأَتْبَعَهُمْ فِرْعَوْنُ وَجُنُودُهُۥ بَغْيًا وَعَدْوًا ۖ حَتَّىٰٓ إِذَآ أَدْرَكَهُ ٱلْغَرَقُ قَالَ ءَامَنتُ أَنَّهُۥ لَآ إِلَـٰهَ إِلَّا ٱلَّذِىٓ ءَامَنَتْ بِهِۦ بَنُوٓا۟ إِسْرَٰٓءِيلَ وَأَنَا۠ مِنَ ٱلْمُسْلِمِينَ ءَآلْـَٔـٰنَ وَقَدْ عَصَيْتَ قَبْلُ وَكُنتَ مِنَ ٱلْمُفْسِدِينَ",
+            "label": "QUR'AN",
+            "arab_ukuran": 38
           }
-        ],
-        "boneka": [
-          {
-            "id": 6100,
-            "npc": 6100,
-            "pose": "dua_naik",
-            "x": 239,
-            "y": 1900,
-            "s": 1.0,
-            "suku": "umum",
-            "penutup_kepala": "nemes",
-            "janggut": true,
-            "janggut_model": "firaun",
-            "pakaian": {
-              "jenis": "jubah",
-              "bisht": "#3a2a1e",
-              "kalung": "usekh"
-            }
-          }
-        ],
-        "_tata_letak": [
-          "rombongan figuran digeser +9px ke dalam layar"
         ],
         "_beat_id": "beat-007"
       },
@@ -723,11 +412,11 @@
         "debu": 10,
         "kamera": {
           "z": [
-            1.18,
-            1.25
+            1.0,
+            1.12
           ],
           "x": 540,
-          "y": 1120
+          "y": 1040
         },
         "benda": [
           {
@@ -740,168 +429,29 @@
             "n": 80
           },
           {
-            "jenis": "pantai",
+            "jenis": "laut",
             "x": 540,
-            "y": 1320,
-            "s": 0.82,
-            "tinggi": 120
+            "y": 1150,
+            "s": 1,
+            "pantul": 240,
+            "belakang": true
           },
           {
-            "jenis": "surya",
-            "x": 540,
-            "y": 1200,
-            "s": 1,
-            "r": 90,
-            "terang": [
-              [
-                0,
-                0.3
-              ],
-              [
-                7.29,
-                0.7
-              ]
-            ]
+            "jenis": "bulan",
+            "x": 780,
+            "y": 430,
+            "s": 0.9
           },
           {
             "jenis": "kartu_dalil",
-            "x": [
-              [
-                0.0,
-                540.0
-              ],
-              [
-                4.28,
-                540.0
-              ],
-              [
-                8.57,
-                540.0
-              ]
-            ],
-            "y": [
-              [
-                0.0,
-                929.3
-              ],
-              [
-                4.28,
-                934.8
-              ],
-              [
-                8.57,
-                940.0
-              ]
-            ],
-            "s": [
-              [
-                0.0,
-                0.9763
-              ],
-              [
-                4.28,
-                0.9482
-              ],
-              [
-                8.57,
-                0.9216
-              ]
-            ],
-            "at": 2.0,
-            "kitab": "QS 10:92",
-            "label": "QUR'AN",
-            "teks": "Maka pada hari ini Kami selamatkan jasadmu agar engkau dapat menjadi pelajaran bagi orang-orang yang datang setelahmu, tetapi kebanyakan manusia tidak mengindahkan tanda-tanda (kekuasaan) Kami.",
-            "ukuran": 34,
-            "tulis_at": 0.4,
-            "latar": 0.4,
-            "arab": "فَٱلْيَوْمَ نُنَجِّيكَ بِبَدَنِكَ لِتَكُونَ لِمَنْ خَلْفَكَ ءَايَةً ۚ وَإِنَّ كَثِيرًا مِّنَ ٱلنَّاسِ عَنْ ءَايَـٰتِنَا لَغَـٰفِلُونَ",
-            "arab_ukuran": 40.8,
-            "arab_baris": [
-              "فَٱلْيَوْمَ نُنَجِّيكَ بِبَدَنِكَ لِتَكُونَ لِمَنْ خَلْفَكَ ءَايَةً",
-              "ۚ وَإِنَّ كَثِيرًا مِّنَ ٱلنَّاسِ عَنْ ءَايَـٰتِنَا لَغَـٰفِلُونَ"
-            ],
-            "arab_at": 0.15
-          }
-        ],
-        "teks": [
-          {
-            "at": 0.15,
-            "teks": "PELAJARAN",
-            "y": 330,
-            "ukuran": 92,
-            "sampai": 2.0
-          }
-        ],
-        "boneka": [
-          {
-            "x": 200,
-            "y": 1980,
-            "s": 0.55,
-            "belakang": true,
-            "kulit": "#c99a72",
-            "rambut": "jambul",
-            "warna_rambut": "#3a2a20",
-            "kacamata": true,
-            "pakaian": {
-              "jenis": "hoodie",
-              "warna": "#5a7a9a",
-              "bawah": "celana",
-              "bawah_warna": "#2f3a4a"
-            },
-            "mata": "buka",
-            "hidup": true,
-            "pose": [
-              [
-                0,
-                "berdiri"
-              ],
-              [
-                1.8,
-                "tangan_dada"
-              ],
-              [
-                5.83,
-                "berdiri"
-              ]
-            ],
-            "wajah": [
-              [
-                0,
-                "netral"
-              ],
-              [
-                1.8,
-                "lega"
-              ]
-            ],
-            "arah": [
-              [
-                0,
-                -0.17
-              ],
-              [
-                1.8,
-                0.175
-              ]
-            ]
-          },
-          {
-            "id": 7000,
-            "npc": 7000,
-            "pose": "rebahan",
             "x": 540,
-            "y": 1720,
-            "s": 0.78,
-            "suku": "umum",
-            "penutup_kepala": "nemes",
-            "janggut": true,
-            "janggut_model": "firaun",
-            "pakaian": {
-              "jenis": "jubah",
-              "bisht": "#3a2a1e",
-              "kalung": "usekh"
-            },
-            "mata": "tutup"
+            "y": 960,
+            "at": 0.15,
+            "kitab": "QS 10:92",
+            "teks": "Maka pada hari ini Kami selamatkan jasadmu agar engkau dapat menjadi pelajaran bagi orang-orang yang datang setelahmu, tetapi kebanyakan manusia tidak mengindahkan tanda-tanda (kekuasaan) Kami.",
+            "arab": "فَٱلْيَوْمَ نُنَجِّيكَ بِبَدَنِكَ لِتَكُونَ لِمَنْ خَلْفَكَ ءَايَةً ۚ وَإِنَّ كَثِيرًا مِّنَ ٱلنَّاسِ عَنْ ءَايَـٰتِنَا لَغَـٰفِلُونَ",
+            "label": "QUR'AN",
+            "arab_ukuran": 56
           }
         ],
         "_beat_id": "beat-008"
@@ -917,11 +467,14 @@
         "debu": 10,
         "kamera": {
           "z": [
-            1.18,
-            1.25
+            1.75,
+            1.0
           ],
           "x": 540,
-          "y": 1120
+          "y": [
+            1270,
+            1000
+          ]
         },
         "benda": [
           {
@@ -934,36 +487,44 @@
             "n": 80
           },
           {
-            "jenis": "jendela",
+            "jenis": "laut",
             "x": 540,
-            "y": 1320,
-            "s": 0.82,
-            "terang": [
-              [
-                0,
-                0.1
-              ],
-              [
-                11.41,
-                1
-              ]
-            ]
-          }
-        ],
-        "teks": [
+            "y": 1150,
+            "s": 1,
+            "pantul": -240,
+            "belakang": true
+          },
           {
-            "at": 0.15,
-            "teks": "PINTU PERTOLONGAN",
-            "y": 330,
-            "ukuran": 68
+            "jenis": "tebing",
+            "x": 840,
+            "y": 1090,
+            "s": 0.5,
+            "warna": "#141020",
+            "belakang": true
+          },
+          {
+            "jenis": "gerbang",
+            "x": 880,
+            "y": 1530,
+            "s": 0.8,
+            "buka": 0.85,
+            "belakang": true
+          },
+          {
+            "jenis": "kerumunan",
+            "x": 330,
+            "y": 1580,
+            "s": 0.72,
+            "n": 5,
+            "w": 420,
+            "seed": 596
           }
         ],
         "boneka": [
           {
-            "x": 200,
-            "y": 1980,
-            "s": 0.55,
-            "belakang": true,
+            "x": 540,
+            "y": 1700,
+            "s": 1.1,
             "kulit": "#c99a72",
             "rambut": "jambul",
             "warna_rambut": "#3a2a20",
@@ -983,11 +544,11 @@
               ],
               [
                 1.8,
-                "berkacak"
+                "stop"
               ],
               [
                 9.13,
-                "berdiri"
+                "tangan_dada"
               ]
             ],
             "wajah": [
@@ -1003,13 +564,27 @@
             "arah": [
               [
                 0,
-                -0.17
+                0.25
               ],
               [
                 1.8,
-                0.175
+                0.0
+              ]
+            ],
+            "reaksi": [
+              [
+                1.8,
+                "geleng"
               ]
             ]
+          }
+        ],
+        "teks": [
+          {
+            "at": 0.1,
+            "teks": "hikmah\ntawakal",
+            "y": 320,
+            "ukuran": 86
           }
         ],
         "_beat_id": "beat-009"
@@ -1018,158 +593,6 @@
     "variasi": "Detik Terakhir Firaun di Dasar Laut"
   },
   "durasi": 95.36,
-  "volume_efek": 0,
-  "rekaman": [
-    {
-      "berkas": "aset/suara/guntur_hujan.mp3",
-      "at": 0.0,
-      "vol": 0.35,
-      "ulang": true,
-      "masuk": 0.8,
-      "keluar": 1.2,
-      "sampai": 11.53
-    },
-    {
-      "berkas": "aset/suara/braam.mp3",
-      "vol": 0.8,
-      "at": 0.87,
-      "masuk": 0.02
-    },
-    {
-      "berkas": "aset/suara/whoosh.mp3",
-      "vol": 0.25,
-      "at": 10.88,
-      "masuk": 0.02
-    },
-    {
-      "berkas": "aset/suara/angin_gurun.mp3",
-      "at": 10.93,
-      "vol": 0.35,
-      "ulang": true,
-      "masuk": 0.8,
-      "keluar": 1.2,
-      "sampai": 19.39
-    },
-    {
-      "berkas": "aset/suara/langkah_lari.mp3",
-      "vol": 0.5,
-      "at": 15.37,
-      "masuk": 0.02
-    },
-    {
-      "berkas": "aset/suara/langkah_lari.mp3",
-      "vol": 0.5,
-      "at": 15.97,
-      "masuk": 0.02
-    },
-    {
-      "berkas": "aset/suara/langkah_lari.mp3",
-      "vol": 0.5,
-      "at": 16.57,
-      "masuk": 0.02
-    },
-    {
-      "berkas": "aset/suara/detak_jantung.mp3",
-      "at": 18.79,
-      "vol": 0.35,
-      "ulang": true,
-      "masuk": 0.8,
-      "keluar": 1.2,
-      "sampai": 37.1
-    },
-    {
-      "berkas": "aset/suara/whoosh.mp3",
-      "vol": 0.25,
-      "at": 36.45,
-      "masuk": 0.02
-    },
-    {
-      "berkas": "aset/suara/air_mengalir.mp3",
-      "at": 36.5,
-      "vol": 0.35,
-      "ulang": true,
-      "masuk": 0.8,
-      "keluar": 1.2,
-      "sampai": 60.03
-    },
-    {
-      "berkas": "aset/suara/whoosh.mp3",
-      "vol": 0.5,
-      "at": 39.03,
-      "masuk": 0.02
-    },
-    {
-      "berkas": "aset/suara/dentum_jauh.mp3",
-      "vol": 0.8,
-      "at": 42.72,
-      "masuk": 0.02
-    },
-    {
-      "berkas": "aset/suara/langkah_pelan.mp3",
-      "vol": 0.3,
-      "at": 50.32,
-      "masuk": 0.02
-    },
-    {
-      "berkas": "aset/suara/langkah_pelan.mp3",
-      "vol": 0.3,
-      "at": 50.92,
-      "masuk": 0.02
-    },
-    {
-      "berkas": "aset/suara/langkah_pelan.mp3",
-      "vol": 0.3,
-      "at": 51.52,
-      "masuk": 0.02
-    },
-    {
-      "berkas": "aset/suara/langkah_pelan.mp3",
-      "vol": 0.3,
-      "at": 52.12,
-      "masuk": 0.02
-    },
-    {
-      "berkas": "aset/suara/whoosh.mp3",
-      "vol": 0.25,
-      "at": 59.38,
-      "masuk": 0.02
-    },
-    {
-      "berkas": "aset/suara/guntur_hujan.mp3",
-      "at": 59.43,
-      "vol": 0.35,
-      "ulang": true,
-      "masuk": 0.8,
-      "keluar": 1.2,
-      "sampai": 72.96
-    },
-    {
-      "berkas": "aset/suara/dentum_jauh.mp3",
-      "vol": 0.5,
-      "at": 60.45,
-      "masuk": 0.02
-    },
-    {
-      "berkas": "aset/suara/whoosh.mp3",
-      "vol": 0.25,
-      "at": 72.31,
-      "masuk": 0.02
-    },
-    {
-      "berkas": "aset/suara/senandung_haru.mp3",
-      "at": 72.36,
-      "vol": 0.35,
-      "ulang": true,
-      "masuk": 0.8,
-      "keluar": 1.2
-    },
-    {
-      "berkas": "aset/suara/kilau_cahaya.mp3",
-      "vol": 0.3,
-      "at": 90.36,
-      "masuk": 0.02
-    }
-  ],
   "rencana_cerita": {
     "tokoh": [
       {
@@ -1388,16 +811,11 @@
       },
       {
         "indeks": 7,
-        "beat_id": "beat-007",
-        "peristiwa_ids": []
-      },
-      {
-        "indeks": 8,
         "beat_id": "beat-008",
         "peristiwa_ids": []
       },
       {
-        "indeks": 9,
+        "indeks": 8,
         "beat_id": "beat-009",
         "peristiwa_ids": []
       }
