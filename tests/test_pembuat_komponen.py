@@ -1,7 +1,6 @@
 """Uji pembuat draf komponen tanpa panggilan LLM atau GitHub sungguhan."""
 from __future__ import annotations
 
-from pathlib import Path
 from types import SimpleNamespace
 
 import pytest
