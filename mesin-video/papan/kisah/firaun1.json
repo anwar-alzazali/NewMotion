@@ -13,11 +13,19 @@
     "narasi": "Firaun sempat menyatakan beriman. Tapi imannya ditolak, karena diucapkan saat air sudah menenggelamkannya.",
     "intonasi": "berat",
     "jeda": 0.5,
-    "palet": "pantai_badai",
-    "malam": 0.3,
-    "langit": 0.2,
+    "palet": "pantai_pagi",
+    "malam": [
+     [
+      0,
+      0.12
+     ],
+     [
+      "@menenggelamkannya",
+      0.3
+     ]
+    ],
+    "langit": 0.5,
     "horizon": 1150,
-    "hujan": 0.7,
     "kamera": {
      "z": [
       1.3,
@@ -27,15 +35,22 @@
      "y": [
       1260,
       1300
+     ],
+     "guncang": [
+      [
+       "@ditolak",
+       14
+      ]
      ]
     },
     "benda": [
      {
-      "jenis": "awan_badai",
-      "x": 540,
-      "y": 420,
-      "gelap": 1,
-      "hujan": 0.6
+      "jenis": "surya",
+      "x": 790,
+      "y": 1110,
+      "r": 115,
+      "terang": 1,
+      "belakang": true
      },
      {
       "jenis": "ombak",
@@ -43,7 +58,12 @@
       "y": 1150,
       "tinggi": 180,
       "lapis": 2,
-      "seed": 3
+      "seed": 3,
+      "warna": [
+       "#5bb4dc",
+       "#3f8ac9",
+       "#245f9a"
+      ]
      },
      {
       "jenis": "ombak",
@@ -66,7 +86,12 @@
       "lapis": 3,
       "seed": 9,
       "jarak": 90,
-      "depan": true
+      "depan": true,
+      "warna": [
+       "#5bb4dc",
+       "#3f8ac9",
+       "#245f9a"
+      ]
      }
     ],
     "boneka": [
@@ -747,12 +772,24 @@
     "narasi": "Lalu laut menutup. Saat air menenggelamkannya, Firaun berkata: aku percaya tidak ada tuhan selain yang dipercayai Bani Israil.",
     "intonasi": "berat",
     "jeda": 0.8,
-    "palet": "pantai_badai",
-    "malam": 0.2,
-    "langit": 0.25,
+    "palet": "pantai_pagi",
+    "malam": [
+     [
+      0,
+      0
+     ],
+     [
+      "@menutup",
+      0.35
+     ],
+     [
+      "@Israil#2",
+      0.3
+     ]
+    ],
+    "langit": 0.5,
     "horizon": 880,
     "tanah": "pasir",
-    "hujan": 0.5,
     "kamera": {
      "z": [
       1.15,
@@ -772,16 +809,23 @@
     },
     "benda": [
      {
-      "jenis": "awan_gelap",
-      "x": 540,
-      "y": 380,
-      "kilat": 0.8
+      "jenis": "surya",
+      "x": 790,
+      "y": 840,
+      "r": 115,
+      "terang": 1,
+      "belakang": true
      },
      {
       "jenis": "laut_terbelah",
       "x": 540,
       "y": 1450,
       "s": 1,
+      "warna": [
+       "#5bb4dc",
+       "#3f8ac9",
+       "#245f9a"
+      ],
       "belah": [
        [
         0,
@@ -819,6 +863,11 @@
       "x": 540,
       "y": 1450,
       "s": 1,
+      "warna": [
+       "#5bb4dc",
+       "#3f8ac9",
+       "#245f9a"
+      ],
       "belah": [
        [
         0,
@@ -876,9 +925,18 @@
     "narasi": "Jawabannya: apakah baru sekarang? Padahal sebelumnya engkau durhaka.",
     "intonasi": "bisik",
     "jeda": 1.2,
-    "palet": "pantai_badai",
-    "malam": 0.1,
-    "langit": 0.35,
+    "palet": "pantai_pagi",
+    "malam": [
+     [
+      0,
+      0.25
+     ],
+     [
+      "@durhaka",
+      0.1
+     ]
+    ],
+    "langit": 0.5,
     "horizon": 880,
     "tanah": "pasir",
     "kamera": {
@@ -891,14 +949,22 @@
     },
     "benda": [
      {
+      "jenis": "surya",
+      "x": 790,
+      "y": 840,
+      "r": 115,
+      "terang": 1,
+      "belakang": true
+     },
+     {
       "jenis": "laut_terbelah",
       "x": 540,
       "y": 1450,
       "s": 1,
       "warna": [
-       "#4a7fa8",
-       "#2c5a82",
-       "#163a5c"
+       "#5bb4dc",
+       "#3f8ac9",
+       "#245f9a"
       ],
       "belah": 0
      }
@@ -1176,11 +1242,17 @@
  },
  "rekaman": [
   {
-   "berkas": "../../aset/suara/guntur_hujan.mp3",
+   "berkas": "../../aset/suara/laut_malam.mp3",
    "at": 0,
    "sampai": "@Pagi",
-   "vol": 0.45,
+   "vol": 0.6,
    "ulang": true
+  },
+  {
+   "berkas": "../../aset/suara/bawah_laut.mp3",
+   "at": "@menenggelamkannya",
+   "sampai": "@Pagi",
+   "vol": 0.5
   },
   {
    "berkas": "../../aset/suara/braam.mp3",
@@ -1252,10 +1324,28 @@
    "ulang": true
   },
   {
-   "berkas": "../../aset/suara/guntur_hujan.mp3",
+   "berkas": "../../aset/suara/laut_malam.mp3",
    "at": "@menutup",
    "sampai": "@Jawabannya",
-   "vol": 0.5,
+   "vol": 0.65,
+   "ulang": true
+  },
+  {
+   "berkas": "../../aset/suara/bawah_laut.mp3",
+   "at": "@menenggelamkannya#2",
+   "sampai": "@Jawabannya",
+   "vol": 0.45
+  },
+  {
+   "berkas": "../../aset/suara/napas_berat.mp3",
+   "at": "@berkata",
+   "vol": 0.4
+  },
+  {
+   "berkas": "../../aset/suara/laut_malam.mp3",
+   "at": "@Jawabannya",
+   "sampai": "@Rasulullah",
+   "vol": 0.25,
    "ulang": true
   },
   {
