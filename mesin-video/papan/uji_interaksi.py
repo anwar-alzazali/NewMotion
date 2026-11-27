@@ -14,7 +14,7 @@ from uji_tokoh import LEBAR, TINGGI, TOKOH, render
 
 
 BATAS_TANGAN = 14.0
-WAKTU = [0.5, 0.6, 0.9, 1.3, 1.7, 2.0, 2.1]
+WAKTU = [0.4, 0.5, 0.6, 0.9, 1.3, 1.7, 2.0, 2.1, 2.2]
 
 
 def jarak(a, b):
@@ -45,6 +45,21 @@ def uji(keluaran: Path, chrome: str | None = None) -> dict:
             temuan.append({"kode": "SERAH_DATA_HILANG", "pesan": "catatan lintasan tidak tersedia"})
             continue
         c = catatan[0]
+        if c.get("status") == "belum_mulai":
+            if c.get("pemilik") != "pemberi" or c.get("tangan_pemberi") is None:
+                temuan.append({"kode": "KEPEMILIKAN_AWAL_SALAH", "t": c["t"]})
+            elif jarak(c["tangan_pemberi"], c["posisi"]) > BATAS_TANGAN:
+                temuan.append({"kode": "BENDA_TIDAK_DIPEGANG_PEMBERI", "t": c["t"]})
+            continue
+        if c.get("status") == "selesai":
+            if c.get("pemilik") != "penerima" or c.get("tangan_penerima") is None:
+                temuan.append({"kode": "KEPEMILIKAN_AKHIR_SALAH", "t": c["t"]})
+            elif jarak(c["tangan_penerima"], c["posisi"]) > BATAS_TANGAN:
+                temuan.append({"kode": "BENDA_TIDAK_DIPEGANG_PENERIMA", "t": c["t"]})
+            continue
+        if c.get("status") != "berlangsung":
+            temuan.append({"kode": "STATUS_SERAH_TIDAK_DIKENAL", "t": c["t"], "status": c.get("status")})
+            continue
         if not c.get("grafis"):
             temuan.append({"kode": "BENDA_TIDAK_TERGAMBAR", "t": c["t"], "benda": c.get("benda")})
         fase = float(c.get("fase", 0))
@@ -62,12 +77,14 @@ def uji(keluaran: Path, chrome: str | None = None) -> dict:
             if galat > BATAS_TANGAN:
                 temuan.append({"kode": "TANGAN_TIDAK_MENEMPEL", "t": c["t"], "peran": peran,
                                "jarak_px": round(galat, 3), "batas_px": BATAS_TANGAN})
-    target_bukti = sum(1 if ((t - 0.5) / 1.6) < 0.25 or ((t - 0.5) / 1.6) > 0.75
-                       else 2 for t in WAKTU)
-    if len(bukti) != target_bukti:
-        temuan.append({"kode": "SAMPEL_TIDAK_LENGKAP", "jumlah": len(bukti), "target": target_bukti})
-    posisi_awal = gambar[0][2][0]["posisi"] if gambar and gambar[0][2] else None
-    posisi_akhir = gambar[-1][2][0]["posisi"] if gambar and gambar[-1][2] else None
+    if len(bukti) != 10:
+        temuan.append({"kode": "SAMPEL_TIDAK_LENGKAP", "jumlah": len(bukti), "target": 10})
+    if not gambar or gambar[0][2][0].get("status") != "belum_mulai":
+        temuan.append({"kode": "SAMPEL_SEBELUM_SERAH_HILANG"})
+    if not gambar or gambar[-1][2][0].get("status") != "selesai":
+        temuan.append({"kode": "SAMPEL_SETELAH_SERAH_HILANG"})
+    posisi_awal = gambar[1][2][0]["posisi"] if len(gambar) > 2 and gambar[1][2] else None
+    posisi_akhir = gambar[-2][2][0]["posisi"] if len(gambar) > 2 and gambar[-2][2] else None
     perpindahan = jarak(posisi_awal, posisi_akhir) if posisi_awal and posisi_akhir else 0
     if perpindahan < 20:
         temuan.append({"kode": "BENDA_TIDAK_BERPINDah", "jarak_px": round(perpindahan, 2)})
