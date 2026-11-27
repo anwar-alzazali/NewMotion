@@ -48,3 +48,41 @@ def test_ringkas_menulis_usulan_dengan_llm_palsu_dan_tidak_mengaktifkannya(tmp_p
     assert hasil["jumlah_revisi"] == 2
     assert (tmp_path / "usulan_pedoman_naskah.json").is_file()
     assert not (tmp_path / "pedoman.md").exists()
+
+
+def test_arsip_revisi_menghasilkan_json_dan_jsonl_terbaca(tmp_path, monkeypatch):
+    from newmotion.application import antrean_naskah as A
+
+    monkeypatch.setattr(A, "AKAR", tmp_path)
+    antrean = tmp_path / "antrean" / "cerita-1"
+    antrean.mkdir(parents=True)
+    sebelum = {"judul": "Sebelum", "beat": [{"narasi": "Pembuka lama"}]}
+    sesudah = {"judul": "Sesudah", "beat": [{"narasi": "Pembuka lebih kuat"}]}
+
+    arsip = A.simpan_revisi(antrean, "Perkuat pembuka", sebelum, sesudah)
+
+    file_arsip = antrean / "revisi" / "0001.json"
+    assert json.loads(file_arsip.read_text(encoding="utf-8")) == arsip
+    baris = (tmp_path / "newmotion/application/data/pelajaran_naskah.jsonl").read_text(
+        encoding="utf-8"
+    ).splitlines()
+    assert len(baris) == 1
+    assert json.loads(baris[0])["sesudah"] == sesudah
+
+
+def test_contoh_hanya_disimpan_sekali_dan_json_valid(tmp_path, monkeypatch):
+    from newmotion.application import antrean_naskah as A
+
+    monkeypatch.setattr(A, "AKAR", tmp_path)
+    antrean = tmp_path / "antrean" / "cerita-2"
+    antrean.mkdir(parents=True)
+    naskah = {"judul": "Nabi Hud", "inti": "Kaum Ad menolak dakwah", "beat": []}
+    status = {"genre": "kisah_islami"}
+
+    A.simpan_contoh_disetujui(antrean, naskah, status)
+    A.simpan_contoh_disetujui(antrean, {"judul": "Versi duplikat"}, status)
+
+    contoh = tmp_path / "newmotion/application/data/contoh_naskah/cerita-2.json"
+    data = json.loads(contoh.read_text(encoding="utf-8"))
+    assert data["judul"] == "Nabi Hud"
+    assert data["naskah"] == naskah
