@@ -382,7 +382,8 @@ def buat_naskah(mode, masukan, naskah_lama=None, *, tanya=None):
         isi = f"NASKAH SAAT INI:\n{json.dumps(naskah_lama, ensure_ascii=False)}\nCATATAN PEMILIK:\n{masukan}"
         sistem = skill + "\nMODE REVISI: ubah hanya bagian yang diminta pemilik; bagian lain kata demi kata. Sertakan uji_cerita lengkap. Keluarkan JSON naskah."
         tahap = "naskah"
-        pemeriksa = lambda d: validasi(d) + validasi_uji_cerita(d)
+        def pemeriksa(d):
+            return validasi(d) + validasi_uji_cerita(d)
     else:
         raise ValueError(f"mode tidak dikenal: {mode}")
 
