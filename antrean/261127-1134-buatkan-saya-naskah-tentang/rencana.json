@@ -1,63 +1,36 @@
 {
  "objek_inti": {
   "jenis": "laut_terbelah",
-  "perkembangan": "laut utuh menghadang di tepi, terbelah menjadi dua dinding air setinggi gunung dengan lorong kering di antaranya, lalu dinding itu menutup kembali menelan Firaun."
+  "perkembangan": "laut utuh menghadang, lalu terbelah menjadi lorong kering di antara dua dinding air setinggi gunung, kemudian menutup menelan Firaun dan pasukannya"
  },
  "beat": [
   {
    "beat": 1,
-   "bukti": "Saat hampir tenggelam ditelan laut, Firaun berseru menyatakan beriman",
+   "bukti": "Firaun berseru menyatakan beriman",
    "subjek": [
     {
      "jenis": "awan_badai",
      "tempat": "jauh",
      "keadaan": {
-      "gelap": 1,
-      "hujan": 0.9
+      "gelap": 0.8,
+      "hujan": 0.6
      }
     },
     {
      "jenis": "ombak",
      "tempat": "tengah",
      "keadaan": {
-      "tinggi": [
-       220,
-       320
-      ],
-      "buih": 1,
-      "kilap": [
-       0.2,
-       0.8
-      ]
+      "tinggi": 220,
+      "kilap": 0.4
      }
     }
    ],
-   "kamu": "saksi",
-   "kamera": {
-    "bidikan": "sedang",
-    "aksen": null
-   },
-   "teks_layar": "DETIK TERAKHIR",
-   "klimaks": false,
-   "suara": {
-    "suasana": "guntur_hujan",
-    "efek": [
-     {
-      "nama": "braam",
-      "pada": "tenggelam",
-      "keras": "kuat",
-      "ulang": 1
-     }
-    ],
-    "transisi": false,
-    "intonasi": "tegang"
-   },
    "figuran": [
     {
      "jumlah": 1,
      "suku": "umum",
-     "tempat": "depan_kanan",
-     "gerak": "dua_naik",
+     "tempat": "tengah",
+     "gerak": "tunjuk_atas",
      "hadap": "depan",
      "pindah": null,
      "naik": null,
@@ -71,35 +44,64 @@
      }
     }
    ],
-   "kartu_dalil": false
+   "kamu": "saksi",
+   "kamera": {
+    "bidikan": "dekat",
+    "aksen": "hentak"
+   },
+   "teks_layar": "DETIK TERAKHIR",
+   "klimaks": false,
+   "kartu_dalil": false,
+   "suara": {
+    "suasana": "drone_gelap",
+    "efek": [
+     {
+      "nama": "braam",
+      "pada": "ditelan",
+      "keras": "kuat",
+      "ulang": 1
+     }
+    ],
+    "transisi": false,
+    "intonasi": "berat"
+   }
   },
   {
    "beat": 2,
    "bukti": "Firaun bersama bala tentaranya berhasil menyusul rombongan Nabi Musa tepat di tepi laut",
    "subjek": [
     {
+     "jenis": "laut_terbelah",
+     "tempat": "tengah",
+     "keadaan": {
+      "belah": 0
+     }
+    },
+    {
      "jenis": "surya",
      "tempat": "jauh",
      "keadaan": {
-      "r": 110,
-      "terang": [
-       0.3,
-       0.9
-      ]
+      "r": 90,
+      "terang": 0.8
      }
     },
     {
-     "jenis": "pantai",
-     "tempat": "tengah",
-     "keadaan": {
-      "tinggi": 140
-     }
-    },
-    {
-     "jenis": "nur",
+     "jenis": "kerumunan",
      "tempat": "kiri",
      "keadaan": {
-      "nama": "Nabi Musa"
+      "n": 14,
+      "pose": "berdiri",
+      "rim": 0.6
+     }
+    },
+    {
+     "jenis": "kerumunan",
+     "tempat": "kanan",
+     "keadaan": {
+      "n": 22,
+      "baris": 3,
+      "pose": "berdiri",
+      "rim": 0.5
      }
     }
    ],
@@ -108,8 +110,9 @@
     "bidikan": "lebar",
     "aksen": null
    },
-   "teks_layar": "TERSUSUL",
+   "teks_layar": "TERSUSUL DI TEPI LAUT",
    "klimaks": false,
+   "kartu_dalil": false,
    "suara": {
     "suasana": "angin_gurun",
     "efek": [
@@ -117,20 +120,12 @@
       "nama": "langkah_lari",
       "pada": "menyusul",
       "keras": "sedang",
-      "ulang": 3
+      "ulang": 1
      }
     ],
-    "transisi": true,
+    "transisi": false,
     "intonasi": "tegang"
-   },
-   "belum_ada": [
-    {
-     "nama": "pasukan berkuda dan kereta perang Firaun",
-     "alasan": "pasukan pengejar perlu tampak berbeda dari rombongan Nabi Musa; siluet kerumunan atau arus bisa dikira sosok Nabi Musa atau pengikutnya",
-     "bukti": "Firaun bersama bala tentaranya berhasil menyusul rombongan Nabi Musa"
-    }
-   ],
-   "kartu_dalil": false
+   }
   },
   {
    "beat": 3,
@@ -140,58 +135,79 @@
      "jenis": "laut_terbelah",
      "tempat": "tengah",
      "keadaan": {
-      "belah": 0,
-      "tinggi": 320
+      "belah": 0
      }
     },
     {
-     "jenis": "nur",
+     "jenis": "kerumunan",
      "tempat": "kiri",
      "keadaan": {
-      "nama": "Nabi Musa"
+      "n": 12,
+      "pose": "angkat",
+      "rim": 0.5
      }
     },
     {
-     "jenis": "burung_kawanan",
+     "jenis": "kerumunan",
      "tempat": "jauh",
      "keadaan": {
-      "n": 12,
-      "terbang": 1
+      "n": 24,
+      "baris": 3,
+      "pose": "berdiri",
+      "rim": 0.4
      }
     }
    ],
    "kamu": "tidak",
    "kamera": {
     "bidikan": "sedang",
-    "aksen": "hentak"
+    "aksen": null
    },
-   "teks_layar": "TERPOJOK",
+   "teks_layar": "PANIK MASSAL",
    "klimaks": false,
+   "kartu_dalil": false,
    "suara": {
-    "suasana": "detak_jantung",
+    "suasana": "kerumunan_cemas",
     "efek": [],
     "transisi": false,
     "intonasi": "tegang"
-   },
-   "kartu_dalil": false
+   }
   },
   {
    "beat": 4,
-   "bukti": "Nabi Musa tidak goyah sedikit pun",
+   "bukti": "beliau menegaskan keyakinan mutlaknya kepada pertolongan Allah",
    "subjek": [
     {
      "jenis": "laut_terbelah",
-     "tempat": "jauh",
+     "tempat": "tengah",
      "keadaan": {
-      "belah": 0,
-      "tinggi": 300
+      "belah": 0
      }
     },
     {
      "jenis": "nur",
      "tempat": "tengah",
      "keadaan": {
-      "nama": "Nabi Musa"
+      "nama": "Nabi Musa",
+      "nama_letak": "bawah"
+     }
+    },
+    {
+     "jenis": "kerumunan",
+     "tempat": "kiri",
+     "keadaan": {
+      "n": 12,
+      "pose": "angkat",
+      "rim": 0.4
+     }
+    },
+    {
+     "jenis": "kerumunan",
+     "tempat": "kanan",
+     "keadaan": {
+      "n": 12,
+      "pose": "angkat",
+      "rim": 0.4
      }
     }
    ],
@@ -202,13 +218,13 @@
    },
    "teks_layar": "TIDAK GOYAH",
    "klimaks": false,
+   "kartu_dalil": false,
    "suara": {
-    "suasana": "detak_jantung",
+    "suasana": "kerumunan_cemas",
     "efek": [],
     "transisi": false,
     "intonasi": "tegas"
-   },
-   "kartu_dalil": false
+   }
   },
   {
    "beat": 5,
@@ -219,98 +235,144 @@
      "tempat": "tengah",
      "keadaan": {
       "belah": [
-       0,
-       1
+       0.0,
+       1.0
       ],
-      "tinggi": 400,
-      "buih": 1,
-      "lebar": 280
+      "tinggi": 300
      }
     },
     {
      "jenis": "nur",
      "tempat": "kiri",
      "keadaan": {
-      "nama": "Nabi Musa"
-     }
-    }
-   ],
-   "kamu": "saksi",
-   "kamera": {
-    "bidikan": "lebar",
-    "aksen": "guncang"
-   },
-   "teks_layar": "LAUT TERBELAH",
-   "klimaks": true,
-   "suara": {
-    "suasana": "air_mengalir",
-    "efek": [
-     {
-      "nama": "whoosh",
-      "pada": "memukulkan",
-      "keras": "sedang",
-      "ulang": 1
-     },
-     {
-      "nama": "dentum_jauh",
-      "pada": "terbelah",
-      "keras": "kuat",
-      "ulang": 1
-     }
-    ],
-    "transisi": true,
-    "intonasi": "tegas"
-   },
-   "kartu_dalil": false
-  },
-  {
-   "beat": 6,
-   "bukti": "Nabi Musa dan seluruh pengikutnya menyeberangi dasar laut dengan selamat",
-   "subjek": [
-    {
-     "jenis": "laut_terbelah",
-     "tempat": "tengah",
-     "keadaan": {
-      "belah": 1,
-      "tinggi": 400,
-      "lebar": 280,
-      "jauh": 1
+      "nama": "Nabi Musa",
+      "nama_letak": "atas"
      }
     },
     {
-     "jenis": "nur",
-     "tempat": "kiri",
+     "jenis": "kerumunan",
+     "tempat": "kanan",
      "keadaan": {
-      "nama": "Nabi Musa"
+      "n": 14,
+      "pose": "tunduk",
+      "rim": 0.5
      }
     }
    ],
    "kamu": "tidak",
    "kamera": {
     "bidikan": "lebar",
-    "aksen": null
+    "aksen": "hentak"
    },
-   "teks_layar": "SELAMAT",
+   "teks_layar": "LAKSANA GUNUNG",
    "klimaks": false,
+   "kartu_dalil": false,
    "suara": {
     "suasana": "air_mengalir",
     "efek": [
      {
-      "nama": "langkah_pelan",
-      "pada": "menyeberangi",
+      "nama": "palu_kayu",
+      "pada": "memukulkan",
       "keras": "lemah",
+      "ulang": 1
+     },
+     {
+      "nama": "whoosh",
+      "pada": "terbelah",
+      "keras": "sedang",
+      "ulang": 1
+     }
+    ],
+    "transisi": true,
+    "intonasi": "tegas"
+   }
+  },
+  {
+   "beat": 6,
+   "bukti": "Firaun dan seluruh pasukannya masuk mengejar ke tengah dinding air itu",
+   "subjek": [
+    {
+     "jenis": "laut_terbelah",
+     "tempat": "tengah",
+     "keadaan": {
+      "belah": 1,
+      "tinggi": 300
+     }
+    },
+    {
+     "jenis": "kerumunan",
+     "tempat": "jauh",
+     "keadaan": {
+      "n": 18,
+      "baris": 3,
+      "pose": "berdiri",
+      "rim": 0.6
+     }
+    },
+    {
+     "jenis": "arus",
+     "tempat": "tengah",
+     "keadaan": {
+      "mode": "lari",
+      "n": 26,
+      "maju": [
+       0.0,
+       0.7
+      ],
+      "rim": 0.4
+     }
+    }
+   ],
+   "kamu": "tidak",
+   "kamera": {
+    "bidikan": "sedang",
+    "aksen": null
+   },
+   "teks_layar": "MASUK MENGEJAR",
+   "klimaks": false,
+   "kartu_dalil": false,
+   "suara": {
+    "suasana": "air_mengalir",
+    "efek": [
+     {
+      "nama": "langkah_lari",
+      "pada": "menyeberangi",
+      "keras": "sedang",
       "ulang": 4
      }
     ],
     "transisi": false,
-    "intonasi": "tenang"
-   },
-   "kartu_dalil": false
+    "intonasi": "tegang"
+   }
   },
   {
    "beat": 7,
-   "bukti": "Ketika hampir tenggelam, Firaun berkata bahwa ia percaya tidak ada tuhan selain yang dipercayai Bani Israil.",
+   "bukti": "Ketika hampir tenggelam, Firaun berkata bahwa ia percaya",
    "subjek": [
+    {
+     "jenis": "awan_badai",
+     "tempat": "jauh",
+     "keadaan": {
+      "gelap": [
+       0.6,
+       1.0
+      ],
+      "hujan": [
+       0.5,
+       1.0
+      ]
+     }
+    },
+    {
+     "jenis": "awan_gelap",
+     "tempat": "jauh",
+     "keadaan": {
+      "kilat": [
+       0.2,
+       1.0
+      ]
+     }
+    },
     {
      "jenis": "laut_terbelah",
      "tempat": "tengah",
@@ -319,37 +381,17 @@
        1,
        0.1
       ],
-      "tinggi": 400,
-      "buih": 1
+      "tinggi": 300,
+      "buih": 0.9
      }
     }
    ],
-   "kamu": "tidak",
-   "kamera": {
-    "bidikan": "sedang",
-    "aksen": "hentak"
-   },
-   "teks_layar": "SUDAH TERLAMBAT",
-   "klimaks": false,
-   "suara": {
-    "suasana": "guntur_hujan",
-    "efek": [
-     {
-      "nama": "dentum_jauh",
-      "pada": "tenggelam",
-      "keras": "sedang",
-      "ulang": 1
-     }
-    ],
-    "transisi": true,
-    "intonasi": "berat"
-   },
    "figuran": [
     {
      "jumlah": 1,
      "suku": "umum",
-     "tempat": "depan_kiri",
-     "gerak": "dua_naik",
+     "tempat": "di_lorong:laut_terbelah",
+     "gerak": "tunjuk_atas",
      "hadap": "depan",
      "pindah": null,
      "naik": null,
@@ -361,13 +403,43 @@
       "bisht": true,
       "kalung": "usekh"
      }
+    },
+    {
+     "jumlah": 4,
+     "suku": "umum",
+     "tempat": "di_lorong:laut_terbelah",
+     "gerak": "lari",
+     "hadap": "kanan",
+     "pindah": "ke_kanan",
+     "naik": null,
+     "jenis_kelamin": "pria"
     }
    ],
-   "kartu_dalil": false
+   "kamu": "tidak",
+   "kamera": {
+    "bidikan": "sedang",
+    "aksen": "guncang"
+   },
+   "teks_layar": "SUDAH TERLAMBAT",
+   "klimaks": true,
+   "kartu_dalil": false,
+   "suara": {
+    "suasana": "bawah_laut",
+    "efek": [
+     {
+      "nama": "dentum_jauh",
+      "pada": "tenggelam",
+      "keras": "kuat",
+      "ulang": 1
+     }
+    ],
+    "transisi": false,
+    "intonasi": "tegas"
+   }
   },
   {
    "beat": 8,
-   "bukti": "Allah kemudian menyelamatkan badan Firaun agar menjadi pelajaran bagi orang-orang yang datang sesudahnya",
+   "bukti": "Allah kemudian menyelamatkan badan Firaun agar menjadi pelajaran",
    "subjek": [
     {
      "jenis": "pantai",
@@ -380,27 +452,11 @@
      "jenis": "surya",
      "tempat": "jauh",
      "keadaan": {
-      "r": 90,
-      "terang": [
-       0.3,
-       0.7
-      ]
+      "r": 80,
+      "terang": 0.5
      }
     }
    ],
-   "kamu": "saksi",
-   "kamera": {
-    "bidikan": "sedang",
-    "aksen": null
-   },
-   "teks_layar": "PELAJARAN",
-   "klimaks": false,
-   "suara": {
-    "suasana": "senandung_haru",
-    "efek": [],
-    "transisi": true,
-    "intonasi": "haru"
-   },
    "figuran": [
     {
      "jumlah": 1,
@@ -421,32 +477,54 @@
      }
     }
    ],
-   "kartu_dalil": true
-  },
-  {
-   "beat": 9,
-   "bukti": "jangan pernah kehilangan sandaran kepada Allah, sebab pintu pertolongan sering kali terbuka",
-   "subjek": [
-    {
-     "jenis": "jendela",
-     "tempat": "tengah",
-     "keadaan": {
-      "terang": [
-       0.1,
-       1
-      ]
-     }
-    }
-   ],
    "kamu": "saksi",
    "kamera": {
     "bidikan": "sedang",
     "aksen": null
    },
-   "teks_layar": "PINTU PERTOLONGAN",
+   "teks_layar": null,
    "klimaks": false,
+   "kartu_dalil": false,
    "suara": {
     "suasana": "senandung_haru",
+    "efek": [],
+    "transisi": true,
+    "intonasi": "haru"
+   }
+  },
+  {
+   "beat": 9,
+   "bukti": "jangan pernah kehilangan sandaran kepada Allah",
+   "subjek": [
+    {
+     "jenis": "pantai",
+     "tempat": "tengah",
+     "keadaan": {
+      "tinggi": 120
+     }
+    },
+    {
+     "jenis": "surya",
+     "tempat": "tengah",
+     "keadaan": {
+      "r": 110,
+      "terang": [
+       0.4,
+       1.0
+      ]
+     }
+    }
+   ],
+   "kamu": "utama",
+   "kamera": {
+    "bidikan": "sedang",
+    "aksen": null
+   },
+   "teks_layar": "JANGAN PUTUS ASA",
+   "klimaks": false,
+   "kartu_dalil": false,
+   "suara": {
+    "suasana": "dengung_haru",
     "efek": [
      {
       "nama": "kilau_cahaya",
@@ -457,8 +535,7 @@
     ],
     "transisi": false,
     "intonasi": "lega"
-   },
-   "kartu_dalil": false
+   }
   }
  ],
  "suku": "umum"
