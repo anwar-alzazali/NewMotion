@@ -700,6 +700,18 @@ def arahkan(naskah: dict, waktu_adegan: list[float] | None = None,
                 from .rencana_sutradara import figuran_dari_rencana
 
                 s["boneka"] = s["boneka"] + figuran_dari_rencana(rb, s["benda"], idx * 10 + j, ds)
+                indeks_nama = {tokoh.get("_nama_interaksi"): n for n, tokoh in enumerate(s["boneka"])
+                               if tokoh.get("_nama_interaksi")}
+                for pemberi in rb.get("figuran", []):
+                    if pemberi.get("serahkan_ke"):
+                        s["serah_terima"] = {
+                            "dari": indeks_nama[pemberi["nama"]],
+                            "ke": indeks_nama[pemberi["serahkan_ke"]],
+                            "benda": pemberi["pegang"],
+                            "at": round(ds * 0.25, 2),
+                            "durasi": round(max(0.8, ds * 0.45), 2),
+                            "skala": 0.48,
+                        }
             # Kerumunan latar hanya di tema "padang terbuka" (di kota/kampung/ruang dalam
             # kerumunan siluet di cakrawala terlihat janggal).
             if (tema in AV.TEMA_BOLEH_KERUMUNAN and not ruang
