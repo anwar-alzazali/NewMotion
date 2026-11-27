@@ -99,3 +99,27 @@ def test_perbaikan_otomatis_satu_putaran_dan_pemeriksaan_ulang(tmp_path, monkeyp
     assert status["pemeriksaan_naskah"]["temuan"] == []
     assert status["pemeriksaan_naskah_ringkas"] == "tidak ada temuan"
     assert status["pemeriksaan_naskah_ai"]["tahap"] == "periksa_naskah"
+
+def test_usulan_yunus_92_harus_lolos_verifikasi_resmi_sebelum_dipakai():
+    from types import SimpleNamespace
+    from newmotion.paket_genre.kisah_islami.dalil.verifikasi import verifikasi
+
+    class QuranPalsu:
+        def ayat(self, surah, ayat):
+            assert (surah, ayat) == (10, 92)
+            return SimpleNamespace(
+                nama_surah="Yunus", ar="teks arab sumber",
+                terjemah="Jasad Firaun diselamatkan sebagai tanda bagi manusia.",
+                sumber_terjemah="terjemahan uji", tautan="https://contoh.invalid/10/92",
+                kata=[],
+            )
+
+    calon = {"dalil": [{
+        "id": "yunus92_usulan", "jenis": "quran", "label": "QS Yunus 92",
+        "surah": 10, "ayat": "92", "alasan": "Fakta penutup yang kuat",
+    }]}
+    hasil_tanpa_klien, _ = verifikasi(calon, quran=None)
+    assert hasil_tanpa_klien["dalil"][0].get("status") != "terverifikasi"
+    hasil, _ = verifikasi(calon, quran=QuranPalsu())
+    assert hasil["dalil"][0]["status"] == "terverifikasi"
+    assert hasil["dalil"][0]["diverifikasi_oleh"].startswith("sutradara.dalil")
