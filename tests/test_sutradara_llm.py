@@ -207,3 +207,34 @@ def test_figuran_berpencar_saling_menjauh():
 def test_variasi_dan_tanah_per_tema():
     spek, _, _ = arahkan_naskah(terapkan_rencana(NASKAH, RENCANA))
     assert spek["cerita"]["variasi"] == NASKAH["judul"]
+
+
+def test_figuran_saling_menghadap_dan_memegang_benda():
+    from newmotion.paket_genre.kisah_islami.rencana_sutradara import figuran_dari_rencana
+
+    r = {"figuran": [
+        {"nama": "pemberi", "hadap_ke": "penerima", "pegang": "surat", "tempat": "kiri"},
+        {"nama": "penerima", "hadap_ke": "pemberi", "pegang": "kendi", "tempat": "kanan"},
+    ]}
+    assert S.validasi_rencana({**copy.deepcopy(RENCANA), "beat": [
+        {**copy.deepcopy(RENCANA["beat"][0]), "figuran": r["figuran"]}
+    ] + copy.deepcopy(RENCANA["beat"][1:])}, NARASI) == []
+    tokoh = figuran_dari_rencana(r, [], 7)
+    assert tokoh[0]["profil"] == "kanan" and tokoh[1]["profil"] == "kiri"
+    assert tokoh[0]["pose"] == "pegang_surat"
+    assert tokoh[1]["pose"] == "pegang_kendi"
+    assert tokoh[0]["id"] != tokoh[1]["id"]
+
+
+def test_figuran_interaksi_menolak_rujukan_dan_benda_tidak_dikenal():
+    from newmotion.paket_genre.kisah_islami.rencana_sutradara import _validasi_figuran
+
+    jenis = {"penduduk"}
+    narasi = "Dua penduduk saling menyerahkan surat."
+    galat = _validasi_figuran([
+        {"nama": "a", "hadap_ke": "hilang", "pegang": "senjata_api", "tempat": "kiri"},
+        {"nama": "a", "hadap_ke": "a", "tempat": "kanan"},
+    ], jenis, narasi, "beat 1")
+    assert any("nama figuran harus unik" in e for e in galat)
+    assert any("hadap_ke" in e for e in galat)
+    assert any("pegang" in e for e in galat)
