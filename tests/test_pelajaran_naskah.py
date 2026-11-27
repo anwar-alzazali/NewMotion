@@ -86,3 +86,35 @@ def test_contoh_hanya_disimpan_sekali_dan_json_valid(tmp_path, monkeypatch):
     data = json.loads(contoh.read_text(encoding="utf-8"))
     assert data["judul"] == "Nabi Hud"
     assert data["naskah"] == naskah
+
+
+def test_ringkas_menolak_bukti_yang_tidak_ada_di_arsip(tmp_path, monkeypatch):
+    monkeypatch.setattr(P, "DATA", tmp_path)
+    baris = [
+        {"id": "a", "sebelum": {"beat": [{"narasi": "Pembuka lama"}]},
+         "sesudah": {"beat": [{"narasi": "Pembuka kuat"}]}},
+        {"id": "b", "sebelum": {"beat": [{"narasi": "Awal lama"}]},
+         "sesudah": {"beat": [{"narasi": "Awal kuat"}]}},
+    ]
+    (tmp_path / "pelajaran_naskah.jsonl").write_text(
+        "\n".join(json.dumps(x) for x in baris) + "\n", encoding="utf-8"
+    )
+
+    jawaban = {
+        "usulan": [{
+            "pola": "Hook spesifik", "alasan": "Muncul berulang",
+            "jumlah_revisi": 2, "contoh_sebelum": "Kalimat rekaan",
+            "contoh_sesudah": "Pembuka kuat",
+        }]
+    }
+
+    def tanya(_sistem, _prompt):
+        return json.dumps(jawaban), None
+
+    try:
+        P.ringkas(tanya=tanya)
+    except ValueError as exc:
+        assert "contoh_sebelum tidak ditemukan" in str(exc)
+    else:
+        raise AssertionError("Bukti yang tidak ada di arsip harus ditolak")
+    assert not (tmp_path / "usulan_pedoman_naskah.json").exists()
