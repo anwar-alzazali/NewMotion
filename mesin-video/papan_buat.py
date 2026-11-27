@@ -116,6 +116,38 @@ def pasang_waktu(spec, dasar):
         C["meteran"] = ubah(C["meteran"])
 
 
+def efek_kartu_dalil(spec):
+    """(27 Nov) Kartu dalil masuk dengan efek suara gaya NGOPAI: whoosh saat kartu jatuh, stempel saat cap nomor
+    menghentak (0,5 dtk), kilau tipis saat teks Arab muncul. Matikan dengan "efek_kartu": false."""
+    if spec.get("efek_kartu") is False:
+        return
+    shot = (spec.get("cerita") or {}).get("shot") or []
+    rek = spec.setdefault("rekaman", [])
+
+    def berkas(n):
+        return "../../aset/suara/%s.mp3" % n
+
+    def ada(nama, t):
+        return any(nama in str(r.get("berkas", "")) and isinstance(r.get("at"), (int, float)) and abs(r["at"] - t) < 0.4
+                   for r in rek)
+
+    for sh in shot:
+        if not isinstance(sh.get("at", 0), (int, float)):
+            continue
+        for b in sh.get("benda") or []:
+            if not isinstance(b, dict) or b.get("jenis") != "kartu_dalil" or not isinstance(b.get("at", 0), (int, float)):
+                continue
+            t0 = float(sh.get("at", 0)) + float(b.get("at", 0))
+            if not ada("whoosh", t0):
+                rek.append({"berkas": berkas("whoosh"), "at": round(max(0, t0 - 0.05), 2), "vol": 0.45})
+            if b.get("no") and not ada("stempel", t0 + 0.5):
+                rek.append({"berkas": berkas("stempel"), "at": round(t0 + 0.5, 2), "vol": 0.5})
+            if b.get("arab"):
+                ta = t0 + float(b.get("arab_at", 0.7))
+                if not ada("kilau_cahaya", ta):
+                    rek.append({"berkas": berkas("kilau_cahaya"), "at": round(ta, 2), "vol": 0.22})
+
+
 def sematkan_gambar(spec, dasar):
     """Nilai "src" (komponen gambar) dan "latar_gambar" (adegan) berupa jalur berkas -> data URI, supaya HTML mandiri."""
     import base64, mimetypes
@@ -374,6 +406,7 @@ def main():
     spec = json.load(open(a.spec, encoding="utf-8"))
     dasar = os.path.dirname(os.path.abspath(a.spec))
     pasang_waktu(spec, dasar)
+    efek_kartu_dalil(spec)
     jaga_spek(spec)  # gerbang wajib: sebelum gambar disematkan (nama berkas masih terbaca) dan sebelum HTML ditulis
     sematkan_gambar(spec, dasar)
     suara = cari(spec["suara"], dasar) if spec.get("suara") else None

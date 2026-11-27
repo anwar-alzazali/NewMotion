@@ -146,6 +146,8 @@ def periksa(spek: dict, dasar: Path = DASAR_KISAH) -> tuple[list[str], list[str]
             pose = bo.get("pose")
             if isinstance(pose, str) and pose not in pose_sah:
                 galat.append(f"shot {n} boneka {j + 1}: pose \"{pose}\" tidak ada (lihat Kemampuan tokoh)")
+            if isinstance(bo.get("profil"), str) and bo["profil"] not in ("kiri", "kanan"):
+                galat.append(f"shot {n} boneka {j + 1}: profil hanya \"kiri\" atau \"kanan\" (tampak depan: hapus profil)")
             if bo.get("hadap") and bo["hadap"] not in HADAP:
                 galat.append(f"shot {n} boneka {j + 1}: hadap harus {', '.join(HADAP)}")
 
