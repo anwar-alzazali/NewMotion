@@ -1971,8 +1971,9 @@
     const T = `translate(0 ${J.turun + geserY}) rotate(${J.badan} 0 -200)`;
     const g = o.profilMotor && J.depan <= 0.5
       ? kaki + `<g transform="${T}">${L.ats}${L.bwh}${bdn}${Rk.ats}${Rk.bwh}${barang}</g>` // samping: lengan jauh di balik badan
+      : o.belakang ? kaki + `<g transform="${T}">${L.ats}${L.bwh}${Rk.ats}${Rk.bwh}${barang}${bdn}</g>` // (27 Nov) belakang: lengan di balik badan
       : kaki + `<g transform="${T}">${bdn}${L.ats}${Rk.ats}${J.depan > 0.5 ? "" : L.bwh + Rk.bwh + barang}</g>`;
-    const depan = J.depan > 0.5 ? `<g transform="${T}">${L.bwh}${Rk.bwh}${barang}</g>` : "";
+    const depan = J.depan > 0.5 && !o.belakang ? `<g transform="${T}">${L.bwh}${Rk.bwh}${barang}</g>` : "";
     // sendi (koordinat lokal, sebelum T untuk lengan) dipakai alat uji tokoh (mesin-video/papan/uji_tokoh.py)
     const sendi = { kaki: titik, lengan: [[L.S, L.E, L.H], [Rk.S, Rk.E, Rk.H]], turun: J.turun, badan: J.badan, geserY };
     return { g, depan, T, kepala: J.kepala, guling: J.guling, sendi };
@@ -2084,7 +2085,7 @@
     const tangan = (x2, y2) => (P ? (P.bisht ? `<line x1="${x2 - (x2 > 0 ? 6 : -6)}" y1="${y2 - 34}" x2="${x2}" y2="${y2}" stroke="${BD}" stroke-width="28" stroke-linecap="round"/>` : "") + `<circle cx="${x2}" cy="${y2}" r="19" fill="${KLB}" stroke="${INK}" stroke-width="4"/>` : "");
     const LBD = P && P.bisht ? P.bisht : BD, LW = P && P.bisht ? 46 : 36;
     const lenganKiri = `<line x1="${-SH}" y1="${-360 + nafas}" x2="${-SH - 22 - ayun * 0.3}" y2="${-200 + nafas}" stroke="${LBD}" stroke-width="${LW}" stroke-linecap="round"/>` + tangan(-SH - 22 - ayun * 0.3, -192 + nafas);
-    g += lenganKiri;
+    if (BLK) g = lenganKiri + g; else g += lenganKiri; // (27 Nov) tampak belakang: lengan dan tangan di balik badan, hanya ujungnya mengintip di sisi
     const kaitL = b._kaitDunia ? (() => { const cm = b.cermin || b.profil === "kiri" ? -1 : 1, L = (p) => [cm * (p[0] - x) / s, (p[1] - y) / s - tubuh], K = b._kaitDunia;
       return { pijak: K.pijak && K.pijak.map(L), pegang: K.pegang && K.pegang.map(L) }; })() : null;
     if (RIG && b._serahTarget) {
@@ -2103,6 +2104,7 @@
       if (window.__tanganBoneka) window.__tanganBoneka[b.id] = tanganDunia({ sendi: RG.sendi, x, y, s, tubuh, guling: RG.guling }, b);
     }
     let lenganKanan = RIG ? "" : `<line x1="${SH}" y1="${-360 + nafas}" x2="${SH + 22 + ayun * 0.3}" y2="${-200 + nafas}" stroke="${LBD}" stroke-width="${LW}" stroke-linecap="round"/>` + tangan(SH + 22 + ayun * 0.3, -192 + nafas);
+    if (BLK && lenganKanan) { g = lenganKanan + g; lenganKanan = ""; }
     // kepala
     const hx = arah * 10, hy = -492 - (KB - 1) * 96 + nafas + tunduk * 14 + (H ? H.ky : 0), ex = arah * 24, ey = tunduk * 14 + (mata === "atas" ? -8 : mata === "bawah" ? 8 : 0);
     let k = b.profil === "kanan" || b.profil === true || b.profil === "kiri"
@@ -2246,7 +2248,7 @@
     }
     if (belakang && !pfl && gaya !== "siluet" && b.rambut !== "kerudung" && ((b.penutup_kepala && b.penutup_kepala !== "tanpa") || (P && P.peci))) { // (27 Nov) penutup kepala dari belakang: kepala orang yang membelakangi kamera tetap terbaca bersorban/berpeci/bernemes
       const pkB = P && P.peci ? "kopiah" : b.penutup_kepala, WPK = P && P.peci ? (P.peci === true ? "#1d1520" : P.peci === "putih" ? "#ffffff" : P.peci) : (b.warna_penutup || "#e8dcc4"), gr = warna(WPK, "#000000", 0.16);
-      if (pkB === "imamah") k += `<path d="M -80 -10 Q -92 -96 -40 -116 Q 0 -132 40 -116 Q 92 -96 80 -10 Q 0 -30 -80 -10 Z" fill="${WPK}" stroke="${INK}" stroke-width="6"/><path d="M -76 -40 Q 0 -70 76 -40 M -70 -72 Q 0 -104 70 -72" fill="none" stroke="${gr}" stroke-width="7" stroke-linecap="round"/><path d="M -14 -20 Q -22 40 -12 92 L 12 92 Q 20 40 12 -20 Z" fill="${WPK}" stroke="${INK}" stroke-width="5"/>`; // ekor sorban di tengkuk
+      if (pkB === "imamah") k += `<path d="M -80 -10 Q -92 -96 -40 -116 Q 0 -132 40 -116 Q 92 -96 80 -10 Q 0 -30 -80 -10 Z" fill="${WPK}" stroke="${INK}" stroke-width="6"/><path d="M -76 -40 Q 0 -70 76 -40 M -70 -72 Q 0 -104 70 -72" fill="none" stroke="${gr}" stroke-width="7" stroke-linecap="round"/><path d="M 22 -24 Q 16 30 30 96 L 50 90 Q 38 30 44 -28 Z" fill="${WPK}" stroke="${INK}" stroke-width="5"/>`; // ekor sorban jatuh di sisi tengkuk sampai bahu (leher tetap tampak)
       else if (pkB === "kain") k += `<path d="M -82 -30 Q -88 -110 -30 -120 Q 0 -126 30 -120 Q 88 -110 82 -30 L 104 118 L -104 118 Z" fill="${WPK}" stroke="${INK}" stroke-width="6" stroke-linejoin="round"/><path d="M -80 -66 Q 0 -96 80 -66" fill="none" stroke="#1d1a22" stroke-width="12" stroke-linecap="round"/><path d="M -40 0 Q -46 60 -50 116 M 40 0 Q 46 60 50 116" stroke="${gr}" stroke-width="5" fill="none"/>`; // ghutrah menutup tengkuk sampai punggung + iqal
       else if (pkB === "kopiah") k += `<path d="M -72 -36 Q 0 -54 72 -36 L 66 -88 Q 0 -110 -66 -88 Z" fill="${WPK}" stroke="${INK}" stroke-width="6"/>`;
       else if (pkB === "mahkota") k += `<path d="M -70 -58 L 70 -58 L 82 -116 L 44 -88 L 22 -130 L 0 -92 L -22 -130 L -44 -88 L -82 -116 Z" fill="${b.warna_penutup || "#e8b934"}" stroke="${INK}" stroke-width="6" stroke-linejoin="round"/><rect x="-74" y="-70" width="148" height="18" rx="6" fill="#b8841c" stroke="${INK}" stroke-width="4"/>`;
