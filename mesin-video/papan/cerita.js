@@ -442,7 +442,7 @@
   }
   function benda(o, t, d) {
     const tl = t - (o.at || 0); if (tl < 0) return "";
-    const x = v(o.x, t, d, 540), y = v(o.y, t, d, 1000), sc = v(o.s, t, d, 1), miring = v(o.miring, t, d, 0), op = (o.at ? clamp(tl / 0.4) : 1) * v(o.op, t, d, 1), j = o.jenis;
+    const x = v(o.x, t, d, 540), y = v(o.y, t, d, 1000), sc = v(o.s, t, d, 1), ayun = v(o.ayun, t, d, 0), miring = v(o.miring, t, d, 0) + (ayun ? Math.sin(t * 5.2) * ayun : 0), op = (o.at ? clamp(tl / 0.4) : 1) * v(o.op, t, d, 1), j = o.jenis;
     let g = "";
     if (j === "ngarai") { // dinding besi-tembaga Zulkarnain di celah dua gunung (QS 18:93-97). x,y = kaki dinding; lubang 0-1 (galian, inti terang = hampir tembus), jebol 0-1, kilap = detik dinding "utuh kembali"
       const lb = v(o.lubang, t, d, 0), jb = v(o.jebol, t, d, 0), lx = o.lx || 0, ly = o.ly == null ? -190 : o.ly, R = rng(o.seed || 3), kil = o.kilap != null ? t - o.kilap : -1, H = 1500, BATU = o.gaya === "batu_kapur";
@@ -624,6 +624,14 @@
       g = `<g transform="scale(${k})"><path d="M 0 30 C -90 -30 -60 -110 0 -70 C 60 -110 90 -30 0 30 Z" fill="#ff7a8a" stroke="#1d1520" stroke-width="7"/></g>`;
     } else if (j === "sajadah") {
       g = `<path d="M -170 0 L 170 0 L 140 -60 L -140 -60 Z" fill="#7a2a3a" stroke="#1d1520" stroke-width="6"/><path d="M -120 -8 L 120 -8 L 100 -52 L -100 -52 Z" fill="none" stroke="#ffd27a" stroke-width="4"/>`;
+    } else if (j === "tasbih") { // untaian tasbih sebagai simbol zikir; bukan cahaya/ruh
+      const n = Math.max(11, Math.min(99, o.n || 33)), rx = 125, ry = 82;
+      g = `<ellipse cx="0" cy="-8" rx="${rx}" ry="${ry}" fill="none" stroke="#7a5234" stroke-width="9" opacity=".9"/>`;
+      for (let i = 0; i < n; i++) {
+        const a = (i / n) * Math.PI * 2, bx = Math.cos(a) * rx, by = -8 + Math.sin(a) * ry;
+        g += `<circle cx="${bx}" cy="${by}" r="${n > 45 ? 8 : 10}" fill="${i % 11 === 0 ? "#d6ad65" : "#65432f"}" stroke="#2b211b" stroke-width="3"/>`;
+      }
+      g += `<path d="M 0 74 Q 18 118 4 145" stroke="#8b5a35" stroke-width="7" fill="none"/><circle cx="4" cy="150" r="11" fill="#d6ad65" stroke="#2b211b" stroke-width="3"/>`;
     } else if (j === "telaga") { const w = o.w || 560, h = o.h || 130, R = rng(o.seed || 17);
       g = `<defs><radialGradient id="tlg"><stop offset="0" stop-color="#ffffff"/><stop offset=".55" stop-color="#eefcff"/><stop offset="1" stop-color="#a8e6f5"/></radialGradient></defs>
         <ellipse rx="${w * 1.25}" ry="${h * 1.6}" fill="#fff6d8" opacity="${0.22 + 0.06 * Math.sin(t * 2)}"/>
