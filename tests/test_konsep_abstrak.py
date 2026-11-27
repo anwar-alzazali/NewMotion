@@ -81,3 +81,12 @@ def test_penjaga_adab_tidak_melarang_konsep_abstrak_pada_narasi_umum():
         x.kode == "BENDA_MANUSIA_TOKOH_SAKRAL"
         for x in periksa_adab_tokoh(spek)
     )
+
+
+def test_genangan_menampilkan_lima_label_ketinggian():
+    from pathlib import Path
+
+    renderer = Path(__file__).resolve().parents[1] / "mesin-video" / "papan" / "cerita.js"
+    sumber = renderer.read_text(encoding="utf-8")
+    for label in ("mata kaki", "lutut", "pinggang", "dada", "mulut"):
+        assert f'"{label}"' in sumber
