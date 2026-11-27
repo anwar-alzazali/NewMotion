@@ -50,10 +50,30 @@ sebutkan pengganti terdekat di tabel; pemilik yang memutuskan bila ingin lebih.
   cahaya, benda di sekitar (tongkat, bahtera, mimbar), atau tempat, bukan sosok.
 - **Tidak menakutkan berlebihan / tidak sadis:** azab, neraka, kematian digambar tegas tetapi tanpa darah,
   luka, atau penyiksaan rinci. Simbol, cahaya, api, kegelapan, dan reaksi tokoh lebih kuat dari gore.
-- **Tidak ada gambar raster/AI, foto, atau logo/merek asli.** Semua vektor di `cerita.js`.
+- **Tidak ada gambar AI atau foto.** Bentuk-bentuk digambar vektor di `cerita.js`. Logo/merek: lihat
+  bagian "Logo dan merek" (boleh, dengan berkas resmi; tidak digambar ulang).
 - **Tidak ada tulisan Arab di dalam komponen** (ayat/teks ditampilkan oleh kartu dalil, bukan benda).
 - **Video lama tidak berubah:** benda/parameter lama tidak diubah tampilannya kecuali parameter baru diberi
   nilai; `tests/test_referensi_kisah.py` harus tetap lulus.
+
+## Logo dan merek (untuk video tutorial/edukasi)
+
+Video tutorial butuh logo asli (WhatsApp, Excel, ChatGPT, Google, Supabase, dll.) agar penonton langsung
+mengenali aplikasinya. Aturannya:
+
+- **Pakai berkas logo resmi, jangan menggambar ulang.** Logo buatan tangan (vektor tiruan, warna/bentuk
+  dikira-kira) terlihat palsu dan bisa salah. Berkas resmi diambil dari halaman *brand/press kit* resmi
+  pemiliknya dan disediakan pemilik di `mesin-video/aset/logo/<nama>.svg` (atau `.png`, latar transparan),
+  dengan nama sederhana: `whatsapp.svg`, `excel.svg`, `chatgpt.svg`.
+- **Ditampilkan lewat komponen gambar yang sudah ada**: kartu Papan `gambar` dengan `logo: true`
+  (`mesin-video/papan/papan.js`), atau komponen kecil di `cerita.js` yang memuat berkas dari
+  `aset/logo/` bila logo harus menempel di adegan bertokoh (mis. di layar HP yang dipegang tokoh).
+  Komponen pemuat logo dibuat **sekali** dan dipakai untuk semua logo; jangan satu komponen per merek.
+- **Bila berkas belum ada**, jangan menunggu dan jangan menggambar tiruan: pakai tempat-kosong netral
+  (kotak membulat abu-abu berisi nama aplikasi) dan tulis di PR daftar berkas logo yang perlu disiapkan pemilik.
+- **Pemakaian yang wajar:** logo dipakai untuk menunjuk aplikasi yang sedang dibahas, ukuran dan warnanya
+  tidak diubah-ubah, tidak dipotong/didistorsi, tidak ditempel seolah-olah video itu dibuat/disponsori merek itu.
+- **Kisah Islami tidak memakai logo/merek** (penjaga konten akun itu tetap berlaku).
 
 ## Standar gambar
 
