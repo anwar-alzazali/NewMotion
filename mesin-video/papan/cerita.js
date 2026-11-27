@@ -1285,7 +1285,7 @@
       for(let i=0;i<n;i++){const xx=(i-(n-1)/2)*210, hh=560+(i%2)*70;g += '<path d="M '+(xx-24)+' 0 Q '+(xx-55)+' -280 '+xx+' -'+hh+' Q '+(xx+35)+' -280 '+(xx+24)+' 0 Z" fill="#765035" stroke="'+INK+'" stroke-width="9"/>';for(let k=0;k<7;k++){const aa=-Math.PI*.9+k*Math.PI*.3, ex=xx+Math.cos(aa)*180, ey=-hh+Math.sin(aa)*110;g += '<path d="M '+xx+' '+(-hh+20)+' Q '+(xx+Math.cos(aa)*80)+' '+(-hh-70)+' '+ex+' '+ey+'" stroke="#315b37" stroke-width="22" fill="none"/>';}for(let k=0;k<5;k++)g += '<circle cx="'+(xx-45+k*22)+'" cy="'+(-hh+115)+'" r="'+(13*buah)+'" fill="#d99a35"/>';}
     } else if (j === "ladang_gandum") { // hamparan batang gandum berbulir; matang 0-1, angin mengayunkan malai
       const matang=v(o.matang,t,d,0.8), angin=v(o.angin,t,d,0.65), n=Math.max(30,Math.min(100,o.n||58)), R=rng(o.seed||31);
-      const hijau=campur("#477b3c","#c69a32",matang), bulir=campur("#759e45","#edbd4b",matang);
+      const hijau=warna("#477b3c","#c69a32",matang), bulir=warna("#759e45","#edbd4b",matang);
       // Baris belakang lebih rapat dan kecil; baris depan lebih lebar dan tinggi.
       for(let i=0;i<n;i++){
         const z=i/n, xx=(R()-.5)*(420+z*560), sk=.55+z*.72, dasar=-(1-z)*115;
@@ -1336,7 +1336,7 @@
       // Telinga panjang menggantung; kedua sisi sedikit berbeda agar terbaca dari samping.
       g += '<path d="M 224 -326 Q 174 -354 151 -322 Q 146 -278 193 -258 Q 212 -282 224 -326 Z M 280 -326 Q 333 -354 352 -318 Q 352 -278 304 -260 Q 286 -282 280 -326 Z" fill="#b99c7c" stroke="'+INK+'" stroke-width="9"/>';
       // Tanduk pendek melengkung ke luar, bukan lingkaran panjang.
-      g += '<path d="M 222 -390 Q 194 -416 205 -438 Q 224 -432 232 -399 Z M 280 -390 Q 308 -416 297 -438 Q 278 -432 270 -399 Z" fill="#9b8566" stroke="#5c4b38" stroke-width="8" stroke-linejoin="round"/>';
+      g += '<path d="M 222 -365 Q 194 -390 205 -414 Q 224 -408 232 -374 Z M 280 -365 Q 308 -390 297 -414 Q 278 -408 270 -374 Z" fill="#9b8566" stroke="#5c4b38" stroke-width="8" stroke-linejoin="round"/>';
       g += '<path d="M 280 -286 Q 326 -294 332 -260 Q 320 -230 280 -244 Z" fill="#b18f70" stroke="'+INK+'" stroke-width="8"/><circle cx="294" cy="-326" r="9" fill="'+INK+'"/>';
       g += '<path d="M 260 -228 Q 280 -195 267 -165 Q 252 -184 260 -228 Z" fill="#8a7157" stroke="'+INK+'" stroke-width="6"/>';
       // Empat kaki terpisah pada tampak samping, dengan sendi dan kuku gelap.
