@@ -1274,6 +1274,92 @@
       g = `<g transform="rotate(${o.rot || 0})"><defs><filter id="${id}"><feGaussianBlur stdDeviation="10"/></filter></defs><rect x="-170" y="-220" width="340" height="440" rx="10" fill="#f2ead8" stroke="${INK}" stroke-width="8"/><rect x="-146" y="-196" width="292" height="330" fill="#2a2230"/>
         <path d="M -90 120 Q -110 -40 -10 -80 Q 90 -60 100 120 Z" fill="#0c0a10" filter="url(#${id})"/><text x="0" y="40" text-anchor="middle" font-size="150" font-weight="800" fill="#ffd27a" font-family="sans-serif" data-hias="1">?</text>
         <rect x="-120" y="160" width="240" height="18" rx="9" fill="#cfc6b4"/></g>`;
+    } else if (j === "tenda_badui") { // tenda badui kain bergaris; buka 0-1 membuka tirai
+      const buka=v(o.buka,t,d,0), warna=o.warna||"#c49a63";
+      g += '<path d="M -330 0 L -250 -270 L 0 -420 L 250 -270 L 330 0 Z" fill="'+warna+'" stroke="'+INK+'" stroke-width="12"/><path d="M -250 -270 L 0 -420 L 250 -270 M -110 -346 L -110 0 M 110 -346 L 110 0" stroke="#6b4933" stroke-width="8" fill="none"/><path d="M -100 0 L -70 -210 L 0 -250 L 100 0 Z" fill="#35251d" stroke="'+INK+'" stroke-width="8"/><path d="M -100 0 L -70 -210 L 0 -250 L 0 0 Z" fill="#d6b77c" opacity="'+buka+'"/>';
+    } else if (j === "sumur") { // sumur batu; air 0-1 mengatur tinggi air
+      const air=v(o.air,t,d,0.65), timba=v(o.timba,t,d,0.4);
+      g += '<path d="M -190 -150 L -170 0 L 170 0 L 190 -150" fill="#716b63" stroke="'+INK+'" stroke-width="12"/><ellipse cy="-145" rx="142" ry="43" fill="#183f50"/><ellipse cy="'+(-130+air*30)+'" rx="120" ry="30" fill="#4b9ca8"/><path d="M -220 -155 L -220 -470 L 220 -470 L 220 -155 M -220 -470 L 0 -530 L 220 -470" stroke="'+INK+'" stroke-width="15" fill="none"/><path d="M '+(130+timba*30)+' -390 L '+(130+timba*30)+' -210 l 90 0 l -8 65 l -74 0 Z" fill="#9a7449" stroke="'+INK+'" stroke-width="8"/>';
+    } else if (j === "kebun_kurma") { // kebun kurma berbaris; buah 0-1 menampakkan tandan
+      const buah=v(o.buah,t,d,0.7), n=Math.max(2,Math.min(7,o.n||4));
+      for(let i=0;i<n;i++){const xx=(i-(n-1)/2)*210, hh=560+(i%2)*70;g += '<path d="M '+(xx-24)+' 0 Q '+(xx-55)+' -280 '+xx+' -'+hh+' Q '+(xx+35)+' -280 '+(xx+24)+' 0 Z" fill="#765035" stroke="'+INK+'" stroke-width="9"/>';for(let k=0;k<7;k++){const aa=-Math.PI*.9+k*Math.PI*.3, ex=xx+Math.cos(aa)*180, ey=-hh+Math.sin(aa)*110;g += '<path d="M '+xx+' '+(-hh+20)+' Q '+(xx+Math.cos(aa)*80)+' '+(-hh-70)+' '+ex+' '+ey+'" stroke="#315b37" stroke-width="22" fill="none"/>';}for(let k=0;k<5;k++)g += '<circle cx="'+(xx-45+k*22)+'" cy="'+(-hh+115)+'" r="'+(13*buah)+'" fill="#d99a35"/>';}
+    } else if (j === "ladang_gandum") { // ladang gandum; matang 0-1 mengubah hijau menjadi keemasan
+      const matang=v(o.matang,t,d,0.8), n=Math.max(8,Math.min(45,o.n||24)), R=rng(o.seed||31);
+      for(let i=0;i<n;i++){const xx=(R()-.5)*850, hh=180+R()*250, x2=xx+(R()-.5)*70;g += '<path d="M '+xx+' 0 Q '+(xx-15)+' '+(-hh/2)+' '+x2+' '+(-hh)+'" stroke="'+campur("#47733b","#d6a83d",matang)+'" stroke-width="8" fill="none"/>';for(let k=0;k<4;k++)g += '<ellipse cx="'+(x2+(k%2)*12-6)+'" cy="'+(-hh+18+k*13)+'" rx="10" ry="19" fill="'+campur("#668c43","#d8ad48",matang)+'"/>';}
+    } else if (j === "sungai") { // sungai berkelok; arus 0-1 mengatur riak air
+      const arus=v(o.arus,t,d,0.5), lebar=o.lebar||620, warna=o.warna||"#397f9a";
+      g += '<path d="M '+(-lebar)+' 0 Q '+(-lebar*.35)+' -220 '+(-lebar*.55)+' -480 Q 0 -700 '+(lebar*.5)+' -900 L '+lebar+' -900 Q '+(lebar*.2)+' -600 '+(lebar*.55)+' -400 Q '+(lebar*.8)+' -170 '+lebar+' 0 Z" fill="'+warna+'" stroke="'+INK+'" stroke-width="10"/>';
+      for(let i=0;i<9;i++){const yy=-70-i*85, xx=Math.sin(t*2+i)*35*arus;g += '<path d="M '+(-lebar*.55+xx)+' '+yy+' q '+(lebar*.25)+' -22 '+(lebar*.5)+' 0" stroke="#b8e0df" stroke-width="7" opacity="'+(0.25+0.55*arus)+'" fill="none"/>';}
+    } else if (j === "perahu_kecil") { // perahu kecil kayu; goyang 0-1 mengatur olengan
+      const goyang=v(o.goyang,t,d,0.1), muatan=v(o.muatan,t,d,0.25);
+      g += '<g transform="rotate('+(goyang*8)+' 0 -80)"><path d="M -330 -90 L 330 -90 L 240 30 Q 0 110 -240 30 Z" fill="#8b5735" stroke="'+INK+'" stroke-width="12"/><path d="M -260 -80 L 260 -80 M -180 -35 L 180 -35" stroke="#d6a36a" stroke-width="12"/><path d="M 0 -100 L 0 -500 L 230 -180 L 0 -180 Z" fill="#e5d4a7" stroke="'+INK+'" stroke-width="10"/><path d="M 0 -500 L 0 -100" stroke="#65452e" stroke-width="12"/><rect x="-110" y="-180" width="'+(220*muatan)+'" height="75" rx="12" fill="#b48a53" stroke="'+INK+'" stroke-width="7"/></g>';
+    } else if (j === "lentera") { // lentera minyak; nyala 0-1 mengatur cahaya
+      const nyala=v(o.nyala,t,d,1), id="ln"+Math.round(x+y);
+      g += '<defs><radialGradient id="'+id+'"><stop stop-color="#fff4bd"/><stop offset=".5" stop-color="#ffb33f" stop-opacity=".8"/><stop offset="1" stop-color="#ff8b20" stop-opacity="0"/></radialGradient></defs><path d="M -75 -380 L 75 -380 L 95 -90 L -95 -90 Z" fill="#4b4034" stroke="'+INK+'" stroke-width="10"/><rect x="-58" y="-330" width="116" height="180" rx="24" fill="#f6c66b" opacity="'+(.25+.55*nyala)+'"/><circle cy="-240" r="'+(145*nyala)+'" fill="url(#'+id+')"/><path d="M -60 -380 Q -100 -520 0 -520 Q 100 -520 60 -380 M -100 -90 L 100 -90 L 70 0 L -70 0 Z" stroke="'+INK+'" stroke-width="12" fill="#76604a"/>';
+    } else if (j === "api_unggun") { // api unggun dan kayu; nyala 0-1 mengatur besar api
+      const nyala=v(o.nyala,t,d,1), R=rng(o.seed||7);
+      g += '<ellipse cy="-15" rx="230" ry="65" fill="#e96c25" opacity="'+(.18*nyala)+'"/><path d="M -180 -40 L 160 -120 M -160 -120 L 170 -35" stroke="#65402b" stroke-width="38" stroke-linecap="round"/>';
+      for(let i=0;i<7;i++){const xx=(R()-.5)*150, hh=(180+R()*150)*nyala;g += '<path d="M '+(xx-45)+' -70 Q '+(xx-90)+' '+(-70-hh*.45)+' '+xx+' '+(-70-hh)+' Q '+(xx+70)+' '+(-70-hh*.45)+' '+(xx+45)+' -70 Z" fill="'+(i%2?"#f17b2b":"#ffbd55")+'" stroke="#a93d1b" stroke-width="5"/>';}
+    } else if (j === "pintu_kota_kuno") { // pintu gerbang kota kuno; buka 0-1 membuka daun pintu
+      const buka=v(o.buka,t,d,0), tinggi=o.tinggi||720, bukaan=210*buka;
+      g += '<rect x="-430" y="'+(-tinggi)+'" width="180" height="'+tinggi+'" fill="#9b8060" stroke="'+INK+'" stroke-width="14"/><rect x="250" y="'+(-tinggi)+'" width="180" height="'+tinggi+'" fill="#9b8060" stroke="'+INK+'" stroke-width="14"/><path d="M -250 0 L -250 -360 Q 0 -650 250 -360 L 250 0 Z" fill="#4a392b" stroke="'+INK+'" stroke-width="18"/><path d="M -220 0 L -220 -350 Q 0 -600 220 -350 L 220 0 Z" fill="#2b211b"/><path d="M 0 0 L '+(-210+bukaan)+' -340 L '+(-210+bukaan)+' 0 Z M 0 0 L '+(210-bukaan)+' -340 L '+(210-bukaan)+' 0 Z" fill="#8b633d" stroke="#4d3625" stroke-width="10"/>';
+    } else if (j === "karung") { // karung dagangan; penuh 0-1 mengatur volume
+      const penuh=v(o.penuh,t,d,0.75);
+      g += '<path d="M -130 -430 Q '+(-230*penuh)+' -280 -190 0 Q 0 60 190 0 Q '+(230*penuh)+' -280 130 -430 L 70 -460 L -70 -460 Z" fill="#b28c58" stroke="'+INK+'" stroke-width="12"/><path d="M -90 -430 Q 0 -390 90 -430 M -130 -350 Q 0 -310 130 -350 M -90 -220 Q 0 -180 90 -220" stroke="#715338" stroke-width="10" fill="none"/>';
+    } else if (j === "keranjang") { // keranjang anyaman; penuh 0-1 mengatur isi
+      const penuh=v(o.penuh,t,d,0.6), isi=o.isi||"#d69b43";
+      g += '<path d="M -230 -260 L 230 -260 L 170 0 L -170 0 Z" fill="#b78248" stroke="'+INK+'" stroke-width="12"/><path d="M -230 -260 Q 0 -570 230 -260" stroke="#8a5b32" stroke-width="28" fill="none"/>';
+      for(let i=0;i<8;i++)g += '<path d="M '+(-180+i*50)+' -250 L '+(-145+i*42)+' -10" stroke="#e0b878" stroke-width="10"/>';
+      for(let i=0;i<5;i++)g += '<circle cx="'+(-120+i*60)+'" cy="'+(-300-(i%2)*35)+'" r="'+(22*penuh)+'" fill="'+isi+'"/>';
+    } else if (j === "kambing") { // kambing jinak; jalan 0-1 menggerakkan langkah
+      const jalan=v(o.jalan,t,d,0), langkah=Math.sin(t*8)*24*jalan;
+      g += '<ellipse cx="0" cy="-180" rx="210" ry="120" fill="#d6c5a7" stroke="'+INK+'" stroke-width="12"/><path d="M 140 -260 Q 230 -390 270 -300 L 230 -170 L 170 -120 Z" fill="#d6c5a7" stroke="'+INK+'" stroke-width="10"/><path d="M 200 -360 Q 130 -470 170 -480 M 245 -360 Q 310 -450 300 -470" stroke="'+INK+'" stroke-width="13" fill="none"/>';
+      for(let i=0;i<4;i++){const xx=-140+(i%2)*230, yy=i<2?-75:-95;g += '<path d="M '+xx+' '+yy+' L '+(xx+langkah)+' 0 L '+(xx+langkah+28)+' 0" stroke="'+INK+'" stroke-width="20" fill="none" stroke-linecap="round"/>';}
+      g += '<circle cx="260" cy="-275" r="9" fill="'+INK+'"/>';
+    } else if (j === "domba") { // domba berbulu; jalan 0-1 menggerakkan langkah
+      const jalan=v(o.jalan,t,d,0), langkah=Math.sin(t*8)*20*jalan;
+      g += '<ellipse cy="-170" rx="210" ry="130" fill="#eee5d2" stroke="'+INK+'" stroke-width="12"/>';
+      for(let i=0;i<13;i++){const aa=i*Math.PI*2/13;g += '<circle cx="'+(Math.cos(aa)*175)+'" cy="'+(-170+Math.sin(aa)*100)+'" r="62" fill="#f5eddf" stroke="'+INK+'" stroke-width="7"/>';}
+      g += '<path d="M 150 -250 Q 270 -330 300 -220 L 250 -120 L 170 -120 Z" fill="#9b765b" stroke="'+INK+'" stroke-width="10"/><circle cx="255" cy="-240" r="8" fill="'+INK+'"/>';
+      for(let i=0;i<4;i++){const xx=-135+(i%2)*220;g += '<path d="M '+xx+' -80 L '+(xx+langkah)+' 0" stroke="#6d5746" stroke-width="20"/>';}
+    } else if (j === "burung_kawanan") { // kawanan burung; terbang 0-1 mengatur kepak sayap
+      const terbang=v(o.terbang,t,d,0.7), n=Math.max(3,Math.min(30,o.n||12)), R=rng(o.seed||9);
+      for(let i=0;i<n;i++){const xx=(R()-.5)*850, yy=-180-R()*330, wing=(25+35*Math.sin(t*7+i))*terbang;g += '<path d="M '+(xx-42)+' '+(yy+wing)+' Q '+(xx-18)+' '+(yy-35)+' '+xx+' '+yy+' Q '+(xx+18)+' '+(yy-35)+' '+(xx+42)+' '+(yy+wing)+'" stroke="'+INK+'" stroke-width="10" fill="none" stroke-linecap="round"/>';}
+    } else if (j === "ular_siluet") { // ular berupa siluet sederhana, tidak agresif; gerak 0-1 mengubah gelombang
+      const gerak=v(o.gerak,t,d,0.4);
+      g += '<path d="M -360 -30 Q -240 '+(-190-80*gerak)+' -100 -60 T 160 -70 T 340 -20" stroke="#66804a" stroke-width="48" fill="none" stroke-linecap="round"/><ellipse cx="350" cy="-20" rx="48" ry="34" fill="#7e965a" stroke="'+INK+'" stroke-width="8"/><circle cx="365" cy="-30" r="5" fill="'+INK+'"/>';
+    } else if (j === "kapal_dagang") { // kapal dagang layar; muatan 0-1 mengatur peti di geladak
+      const muatan=v(o.muatan,t,d,0.5), layar=v(o.layar,t,d,1);
+      g += '<path d="M -470 -100 L 470 -100 L 330 60 Q 0 150 -330 60 Z" fill="#795039" stroke="'+INK+'" stroke-width="15"/><path d="M 0 -100 L 0 -900" stroke="#5c3c29" stroke-width="24"/><path d="M 20 -850 Q '+(420*layar)+' -650 20 -170 Z" fill="#e7d8b4" stroke="'+INK+'" stroke-width="12"/><path d="M -20 -780 Q '+(-280*layar)+' -570 -20 -220 Z" fill="#c7b58d" stroke="'+INK+'" stroke-width="10"/>';
+      for(let i=0;i<4;i++)g += '<rect x="'+(-220+i*115)+'" y="-180" width="'+(80*muatan)+'" height="75" fill="#a67a4c" stroke="'+INK+'" stroke-width="6"/>';
+    } else if (j === "menara_pengawas") { // menara pengawas; penjaga 0-1 membuka celah pengamatan
+      const penjaga=v(o.penjaga,t,d,0.3);
+      g += '<path d="M -170 0 L -130 -620 L 130 -620 L 170 0 Z" fill="#8c795f" stroke="'+INK+'" stroke-width="13"/><rect x="-250" y="-690" width="500" height="110" fill="#aa8d65" stroke="'+INK+'" stroke-width="12"/><path d="M -270 -690 L 0 -850 L 270 -690 Z" fill="#654b35" stroke="'+INK+'" stroke-width="12"/><rect x="-75" y="-570" width="150" height="100" fill="#30251e"/><rect x="-65" y="-560" width="'+(130*penjaga)+'" height="80" fill="#d4b77d"/>';
+    } else if (j === "rak_kitab") { // rak kitab kayu; isi 0-1 mengatur kepadatan kitab
+      const isi=v(o.isi,t,d,0.8);
+      g += '<rect x="-230" y="-600" width="460" height="600" fill="#805b3b" stroke="'+INK+'" stroke-width="15"/><path d="M -230 -400 L 230 -400 M -230 -200 L 230 -200" stroke="'+INK+'" stroke-width="16"/>';
+      for(let rr=0;rr<3;rr++)for(let i=0;i<5;i++){const xx=-180+i*75, yy=-565+rr*200, hh=95+((i+rr)%3)*22;g += '<rect x="'+xx+'" y="'+yy+'" width="'+(58*isi)+'" height="'+hh+'" rx="5" fill="'+["#b98a55","#6d8790","#9c6d52"][i%3]+'" stroke="#392b22" stroke-width="5"/>';}
+    } else if (j === "jam_pasir") { // jam pasir; sisa 0-1 menunjukkan pasir di ruang atas
+      const sisa=v(o.sisa,t,d,0.5);
+      g += '<path d="M -130 -600 L 130 -600 L 35 -310 L 130 0 L -130 0 L -35 -310 Z" fill="#d7c7a3" stroke="'+INK+'" stroke-width="14"/><path d="M -90 -550 L 90 -550 L 22 -320 L -22 -320 Z" fill="#c58b3d" opacity="'+sisa+'"/><path d="M -22 -300 L 22 -300 L 90 -50 L -90 -50 Z" fill="#c58b3d" opacity="'+(1-sisa)+'"/><path d="M -150 -650 L 150 -650 M -150 40 L 150 40" stroke="#6d4c32" stroke-width="25"/>';
+    } else if (j === "rantai_belenggu") { // rantai belenggu besi; tegang 0-1 mengatur tarikan
+      const tegang=v(o.tegang,t,d,0.3), n=Math.max(3,Math.min(20,o.n||8));
+      for(let i=0;i<n;i++){const xx=-260+i*520/(n-1), yy=-110-Math.sin(i*1.7)*45;g += '<ellipse cx="'+xx+'" cy="'+yy+'" rx="38" ry="'+(22+tegang*7)+'" fill="none" stroke="#66636a" stroke-width="14" transform="rotate('+(i%2?55:-55)+' '+xx+' '+yy+')"/>';}
+    } else if (j === "pedang_tersarung") { // pedang selalu tersarung; tidak menyediakan adegan kekerasan
+      const hias=v(o.hias,t,d,0.5);
+      g += '<path d="M -15 -180 L 0 -680 L 15 -180 Z" fill="#776d62" stroke="'+INK+'" stroke-width="9"/><path d="M -90 -180 L 90 -180 L 90 -140 L -90 -140 Z" fill="#8a6846" stroke="'+INK+'" stroke-width="9"/><rect x="-25" y="-140" width="50" height="140" rx="18" fill="#5d4030" stroke="'+INK+'" stroke-width="8"/><circle cy="-660" r="'+(18+12*hias)+'" fill="#c7a46b"/>';
+    } else if (j === "awan_badai") { // awan badai; hujan 0-1 mengatur hujan dan gelap 0-1 warna awan
+      const hujan=v(o.hujan,t,d,0.2), gelap=v(o.gelap,t,d,0.8), warna=campur("#9aa3a8","#303a48",gelap);
+      g += '<g fill="'+warna+'" stroke="'+INK+'" stroke-width="10"><circle cx="-180" cy="-130" r="145"/><circle cy="-220" r="190"/><circle cx="190" cy="-130" r="150"/><rect x="-300" y="-180" width="600" height="170" rx="80"/></g>';
+      for(let i=0;i<9;i++)g += '<path d="M '+(-230+i*58)+' 30 l -28 90" stroke="#74a6bd" stroke-width="8" opacity="'+hujan+'"/>';
+    } else if (j === "kios_pasar") { // kios pasar beratap kain; dagangan 0-1 mengatur isi meja
+      const dagangan=v(o.dagangan,t,d,0.7);
+      g += '<rect x="-300" y="-260" width="600" height="260" fill="#a77b4c" stroke="'+INK+'" stroke-width="12"/><path d="M -340 -270 L 340 -270 L 260 -470 L -260 -470 Z" fill="#d7b36e" stroke="'+INK+'" stroke-width="12"/>';
+      for(let i=0;i<6;i++)g += '<path d="M '+(-300+i*100)+' -470 L '+(-260+i*86)+' -270" stroke="#875b3a" stroke-width="12"/>';
+      g += '<rect x="-260" y="'+(-220+60*dagangan)+'" width="'+(520*dagangan)+'" height="95" fill="#9d7545" stroke="'+INK+'" stroke-width="7"/>';
+    } else if (j === "awan_gelap") { // awan gelap; kilat 0-1 mengatur kilatan
+      const kilat=v(o.kilat,t,d,0);
+      g += '<path d="M -340 -80 Q -360 -280 -180 -290 Q -80 -500 90 -350 Q 280 -390 340 -170 Q 420 -20 210 0 L -230 0 Q -390 -10 -340 -80 Z" fill="#46505b" stroke="'+INK+'" stroke-width="12"/><path d="M 30 -10 L -35 140 L 55 95 L 0 250 L 140 55 L 55 90 L 105 -10 Z" fill="#f4d36a" opacity="'+kilat+'"/>';
     } else if (j === "cahaya") { // berkas cahaya turun dari atas
       g = `<defs><linearGradient id="cb" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e8fbff" stop-opacity=".0"/><stop offset=".4" stop-color="#e8fbff" stop-opacity=".35"/><stop offset="1" stop-color="#bfefff" stop-opacity=".05"/></linearGradient></defs><path d="M -90 -1400 L 90 -1400 L 260 0 L -260 0 Z" fill="url(#cb)"/>`;
     }
