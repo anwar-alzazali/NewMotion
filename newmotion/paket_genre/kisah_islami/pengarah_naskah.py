@@ -494,6 +494,12 @@ def arahkan(naskah: dict, waktu_adegan: list[float] | None = None,
     (buat_video.py) bisa memetakan shot kembali ke adegan."""
     adegan = naskah.get("adegan", [])
     total = len(adegan)
+    # Waktu narasi final (narasi_final.buat_narasi) boleh dibawa di naskah: arahkan_naskah tidak
+    # meneruskan argumen tambahan ke paket genre.
+    if waktu_adegan is None and isinstance(naskah.get("_waktu_adegan"), list):
+        waktu_adegan = naskah["_waktu_adegan"]
+    if waktu_kata is None and isinstance(naskah.get("_waktu_kata"), list):
+        waktu_kata = naskah["_waktu_kata"]
     judul = naskah.get("judul", "")
     seed0 = _seed_dasar(judul)
     dalil_dipakai = naskah.get("dalil_dipakai", [])

@@ -21,7 +21,7 @@ export const idAman = (s) => String(s || "").toLowerCase().replace(/[^a-z0-9_-]+
  *  Batas Telegram 64 byte. */
 export function bacaTombol(data) {
   const [aksi, id, kode] = String(data || "").split(":");
-  if (!["st", "tl", "al", "ub", "nl", "nr", "nb", "nu", "va", "vr"].includes(aksi) || !idAman(id) || idAman(id) !== id) return null;
+  if (!["st", "tl", "al", "ub", "nl", "nr", "nb", "nu", "va", "vr", "fu"].includes(aksi) || !idAman(id) || idAman(id) !== id) return null;
   if (aksi === "al" && !ALASAN[kode]) return null;
   return { aksi, id, alasan: kode || null };
 }
@@ -61,6 +61,10 @@ export function tombolKartu(st) {
     return [[{ text: "🔁 Ulangi pratinjau visual", callback_data: `nu:${i}` }],
             [{ text: "🏠 Menu", callback_data: "menu" }]];
   }
+  // Produksi final (narasi + render) gagal: boleh dicoba ulang; audio yang sudah dibuat dipakai ulang.
+  if (st.tahap.tinjau_visual === "selesai" && [st.tahap.narasi, st.tahap.render].includes("gagal"))
+    return [[{ text: "🔁 Ulangi produksi final", callback_data: `fu:${i}` }],
+            [{ text: "🏠 Menu", callback_data: "menu" }]];
   if (["belum", "jalan"].includes(st.tahap.tinjau) && st.tahap.dalil === "selesai")
     return [[{ text: "✅ Lanjut", callback_data: `nl:${i}` }, { text: "✏️ Revisi", callback_data: `nr:${i}` }],
             [{ text: "❌ Batal", callback_data: `nb:${i}` }, { text: "🏠 Menu", callback_data: "menu" }]];
@@ -331,15 +335,39 @@ async function putuskanVisual(env, q, t) {
     ? "disetujui pemilik; TTS boleh dilanjutkan"
     : "ditolak pemilik; TTS diblokir sampai visual direvisi" };
   if (setuju) {
-    st.tahap.narasi = "tunggu";
-    st.ket.narasi = "menunggu integrasi produksi TTS setelah persetujuan visual";
+    st.tahap.narasi = "jalan";
+    st.ket.narasi = "narasi ElevenLabs dan render final berjalan di GitHub Actions…";
   }
   st.diperbarui = new Date().toISOString();
   await simpanStatus(env, st);
+  if (setuju) {
+    try { await dispatch(env, "final.yml", { id: t.id }); }
+    catch (e) {
+      st.tahap.narasi = "gagal"; st.ket.narasi = `gagal memulai produksi final: ${String(e.message || e).slice(0, 120)}`;
+      await simpanStatus(env, st);
+    }
+  }
   await TG(env, "answerCallbackQuery", { callback_query_id: q.id, text: setuju ? "Visual disetujui" : "Visual ditolak; TTS tetap diblokir" });
   await kirimKartu(env, st);
   if (!setuju) return kirim(env, `Visual ${t.id} ditolak. TTS dan render final diblokir. Perbaiki naskah atau adegan dalam antrean baru; regenerasi visual otomatis dari catatan penolakan belum tersedia.`);
-  return kirim(env, `Visual ${t.id} disetujui. Tahap TTS dapat dimulai berikutnya; belum ada TTS atau render final yang dijalankan oleh persetujuan ini.`);
+  return kirim(env, st.tahap.narasi === "gagal"
+    ? `Visual ${t.id} disetujui, tetapi produksi final gagal dimulai. Tekan "Ulangi produksi final" di kartu.`
+    : `Visual ${t.id} disetujui. Narasi dan render final sedang dibuat; video bersuara dikirim ke sini bila selesai.`);
+}
+
+async function ulangiFinal(env, q, t) {
+  const st = await bacaJsonRepo(env, `antrean/${t.id}/status.json`);
+  if (!st || st.tahap?.tinjau_visual !== "selesai" || ![st.tahap.narasi, st.tahap.render].includes("gagal")) {
+    return TG(env, "answerCallbackQuery", { callback_query_id: q.id, text: "Tidak ada produksi final gagal untuk antrean ini." });
+  }
+  st.tahap.narasi = st.tahap.narasi === "selesai" ? "selesai" : "jalan";
+  if (st.tahap.render === "gagal") st.tahap.render = "belum";
+  st.ket = { ...(st.ket || {}), render: "produksi final diulang…" };
+  st.diperbarui = new Date().toISOString();
+  await simpanStatus(env, st);
+  await dispatch(env, "final.yml", { id: t.id });
+  await TG(env, "answerCallbackQuery", { callback_query_id: q.id, text: "Produksi final diulang" });
+  return kirimKartu(env, st);
 }
 
 async function revisiAntrean(env, id, catatan) {
@@ -412,6 +440,7 @@ async function tanganiTombol(env, q) {
   const t = bacaTombol(q.data);
   if (t && ["nl", "nr", "nb", "nu"].includes(t.aksi)) return ubahAntrean(env, q, t);
   if (t && ["va", "vr"].includes(t.aksi)) return putuskanVisual(env, q, t);
+  if (t && t.aksi === "fu") return ulangiFinal(env, q, t);
   if (!t) return TG(env, "answerCallbackQuery", { callback_query_id: q.id });
   if (t.aksi === "st") {
     await catatPersetujuan(env, t.id, "disetujui");

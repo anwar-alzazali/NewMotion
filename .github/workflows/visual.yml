@@ -1,4 +1,4 @@
-name: Pratinjau visual sebelum TTS
+name: Pratinjau visual sebelum TTS (sutradara hibrida)
 
 on:
   workflow_dispatch:
@@ -44,6 +44,8 @@ jobs:
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
           QURAN_FOUNDATION_CLIENT_ID: ${{ secrets.QURAN_FOUNDATION_CLIENT_ID }}
           QURAN_FOUNDATION_CLIENT_SECRET: ${{ secrets.QURAN_FOUNDATION_CLIENT_SECRET }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         shell: bash
         run: |
           set -euo pipefail
@@ -60,7 +62,9 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898333+github-actions[bot]@users.noreply.github.com"
           git add "antrean/$ID/status.json"
-          if [[ -f "antrean/$ID/papan_pratinjau.json" ]]; then git add "antrean/$ID/papan_pratinjau.json"; fi
+          for f in papan_pratinjau.json rencana.json periksa.json; do
+            if [[ -f "antrean/$ID/$f" ]]; then git add "antrean/$ID/$f"; fi
+          done
           if git diff --cached --quiet; then exit 0; fi
           git commit -m "Antrean $ID: simpan hasil pratinjau visual"
           for i in 1 2 3; do

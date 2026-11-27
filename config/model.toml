@@ -25,3 +25,9 @@ model = ["gemini", "claude-haiku-5-5"]
 "claude-sonnet-5-5" = [2.0, 10.0]
 "claude-haiku-5-5" = [0.10, 0.50]
 "gemini" = [0.0, 0.0]
+
+# Produksi lewat bot: sutradara "llm" (hibrida: rencana LLM + mesin) atau "aturan" (tanpa LLM).
+# Bila LLM gagal/kunci tidak ada, pratinjau otomatis memakai sutradara aturan dan mencatatnya.
+[produksi]
+sutradara = "llm"
+periksa_putaran = 1      # putaran periksa visual + revisi rencana (0 = mati)
