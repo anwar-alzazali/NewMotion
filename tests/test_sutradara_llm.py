@@ -189,7 +189,7 @@ def test_figuran_naik_benda_menempel_lewat_kait():
 
 def test_skill_memuat_kemampuan_tokoh():
     skill = S.skill_sutradara()
-    assert "{KEMAMPUAN_TOKOH}" not in skill and "motor (samping)" in skill and "- aksi berulang:" in skill
+    assert "{KEMAMPUAN_TOKOH}" not in skill and "motor (samping)" in skill and "- aksi berulang:" in skill and "benda yang dapat dipegang" in skill
 
 
 def test_figuran_berpencar_saling_menjauh():
