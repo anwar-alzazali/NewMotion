@@ -260,3 +260,31 @@ def test_katalog_benda_genggam_dibaca_dari_renderer():
     teks = teks_kemampuan_tokoh()
     assert "- benda yang dapat dipegang: " in teks
     assert "karung_kecil" in teks
+
+
+def test_rencana_serah_terima_diterjemahkan_ke_papan():
+    r = copy.deepcopy(RENCANA)
+    r["beat"][8]["figuran"] = [
+        {"nama": "pemberi", "hadap_ke": "penerima", "pegang": "surat",
+         "serahkan_ke": "penerima", "tempat": "kiri"},
+        {"nama": "penerima", "hadap_ke": "pemberi", "tempat": "kanan"},
+    ]
+    assert S.validasi_lengkap(r, NASKAH) == []
+    spek, _, _ = arahkan_naskah(terapkan_rencana(NASKAH, r))
+    adegan = [sh for sh in spek["cerita"]["shot"] if sh.get("serah_terima")]
+    assert adegan
+    transfer = adegan[0]["serah_terima"]
+    assert transfer["benda"] == "surat" and transfer["dari"] != transfer["ke"]
+    tokoh = adegan[0]["boneka"]
+    assert tokoh[transfer["dari"]]["pose"] == "pegang_surat"
+    assert tokoh[transfer["ke"]]["_nama_interaksi"] == "penerima"
+
+
+def test_serah_terima_ditolak_bila_penerima_tidak_ada_atau_benda_tidak_sah():
+    r = copy.deepcopy(RENCANA)
+    r["beat"][8]["figuran"] = [
+        {"nama": "pemberi", "pegang": "pedang", "serahkan_ke": "orang_hilang", "tempat": "kiri"}
+    ]
+    galat = validasi_rencana(r, NARASI)
+    assert any("serahkan_ke" in e for e in galat)
+    assert any("serah-terima" in e for e in galat)
