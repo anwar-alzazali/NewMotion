@@ -35,6 +35,14 @@ Aturan ini melengkapi `docs/TUGAS_GPT.md` (protokol sesi, batas wajib, CI) — b
 3. **Benda baru** hanya bila 1 dan 2 tidak cukup.
 4. **Kemampuan tokoh** (pose, aksi, pegang, kait) hanya bila beat tak terbaca tanpa gerak itu.
 
+**Manusia selalu lewat boneka/figuran, bukan benda baru.** Tokoh biasa (Firaun, raja, prajurit, penduduk,
+jasad) digambar dengan `boneka`/figuran yang sudah dijaga penjaga adab dan punya wajah, pose, dan gerak.
+Kebutuhan manusia yang belum ada = **kemampuan tokoh**: aksesori/pakaian (mis. mahkota raja, jubah kebesaran),
+pose (mis. terbaring tak bernyawa, tanpa luka), atau aksi. Larangan "bentuk manusia" di prompt
+`skill/pembuat_komponen.md` itu benar dan tetap: yang dilarang adalah **benda** bersosok manusia, karena
+benda tidak melewati aturan wajah/adab boneka. Contoh naskah Firaun: Firaun = boneka + aksesori raja;
+jasad Firaun = boneka pose terbaring di tepi air (+ benda `ombak`/pantai); laut terbelah = benda baru yang sah.
+
 Batas per naskah: **paling banyak 5 komponen baru/diubah**. Sisanya catat di antrean kebutuhan dan
 sebutkan pengganti terdekat di tabel; pemilik yang memutuskan bila ingin lebih.
 
