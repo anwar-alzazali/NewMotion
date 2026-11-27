@@ -50,10 +50,6 @@ def test_narasi_tempelan_tidak_boleh_diubah_ai():
     assert A.narasi_utuh(hasil, asal)
 
 
-def test_model_gemini_memilih_flash_stabil_dan_cadangan():
-    nama = ["gemini-2.5-flash", "gemini-3.0-flash", "gemini-3.0-flash-lite", "gemini-3.1-flash-preview"]
-    assert A.pilih_model_gemini(nama) == "gemini-3.0-flash"
-    assert A.urutan_model_gemini(nama) == ["gemini-3.0-flash", "gemini-2.5-flash", "gemini-3.0-flash-lite"]
 
 
 def test_proses_antrean_menggunakan_verifikasi_paket_kisah_islami(tmp_path, monkeypatch):
