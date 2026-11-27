@@ -116,7 +116,7 @@ Lembar kontak + video + hasil `periksa.py`. GAGAL = kerusakan teknis atau batas 
 - jam_pasir: jam pasir; sisa 0-1 menunjukkan pasir di ruang atas [keadaan: sisa*]
 - jembatan: shirath: jembatan sangat tipis di atas jurang api
 - jembatan_desa: jembatan desa: badan jembatan kayu/beton melintasi sungai, dengan pagar dan tiang penyangga [keadaan: air, lebar, warna_pagar]
-- jenazah: jenazah berkafan putih di atas keranda kayu (sopan, tanpa wajah); kain = warna kain penutup opsional; dipikul = sedang diusung (tanpa bayangan/kaki); ayun = amplitudo ayunan lembut keranda dalam derajat (opsional) [keadaan: ayun*, dipikul, kain]
+- jenazah: jenazah berkafan putih di atas keranda kayu (sopan, tanpa wajah); kain = warna kain penutup opsional; dipikul = sedang diusung (tanpa bayangan/kaki) [keadaan: ayun*, dipikul, kain]
 - jendela: jendela kamar dengan cahaya Subuh masuk; terang 0-1 [keadaan: terang*]
 - jurang: (16 Nov) jurang neraka dilihat dari tepi atas: cincin tebing mengecil ke dasar membara. jatuh 0-1 (batu dari atas ke dasar), dasar 0-1 terang, cahaya warna [keadaan: cahaya, dasar*, jatuh*]
 - kambing: kambing kampung bertubuh berisi, tanduk pendek, telinga jatuh, berjanggut [keadaan: jalan*]
@@ -191,7 +191,7 @@ Lembar kontak + video + hasil `periksa.py`. GAGAL = kerusakan teknis atau batas 
 - rumput: rumpun rumput bergoyang; {n, w} [keadaan: n, w]
 - saf: barisan orang tampak belakang (siluet, cahaya tepi emas dari depan); n per baris, baris, jarak [keadaan: baris, jarak, n]
 - sajadah: -
-- tasbih: untaian tasbih 33 butir (n dapat diatur 11–99) sebagai benda mandiri untuk simbol zikir
+- tasbih: untaian tasbih sebagai simbol zikir; bukan cahaya/ruh [keadaan: n]
 - sapu: sapu ijuk; rot = sudut (derajat), pangkal di (0,0) [keadaan: rot*]
 - sawah: hamparan sawah bertingkat dari cakrawala (y=0) ke depan; {w, gubuk, hijau 0-1 (0 = menguning)} [keadaan: gubuk, hijau*, w]
 - sekolah: gedung sekolah dua lantai + tiang bendera + papan nama [keadaan: atap, dinding, nama]
