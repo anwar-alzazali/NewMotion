@@ -73,5 +73,13 @@
         "Firaun"
       ]
     }
-  ]
+  ],
+  "uji_cerita": {
+    "kalimat_inti": "Firaun mengakui keimanan saat tenggelam, tetapi pengakuan itu datang terlambat; jasadnya dijadikan tanda bagi manusia.",
+    "fakta_terkuat_detik_0": "Pengakuan Firaun ketika tenggelam.",
+    "jawaban_hook": "Pengakuan itu datang terlambat.",
+    "momen_emosi_kejutan": "Pengakuan saat tenggelam.",
+    "alasan_interaksi": "Pelajaran tentang kesombongan.",
+    "kalimat_dibuang": []
+  }
 }
