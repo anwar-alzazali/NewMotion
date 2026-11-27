@@ -33,7 +33,7 @@ def teks(t, sub=None, at=0.2, **k):
     return o
 
 
-def iring(t0=0.0, dx=420, dur=9.0):
+def iring(t0=0.0, dx=900, dur=9.0):
     """Keranda + 4 pengusung + 4 pengantar berjalan ke kanan (posisi menyambung antar-shot lewat t0)."""
     def gerak(x0):
         return [[0, x0 + dx * t0 / dur], [dur - t0, x0 + dx]]
@@ -41,7 +41,7 @@ def iring(t0=0.0, dx=420, dur=9.0):
     pikul = [org(3, gerak(140), 1500, 0.82), org(5, gerak(400), 1500, 0.82),
              org(8, gerak(110), 1580, 0.92), org(12, gerak(370), 1580, 0.92)]
     ikut = [org(20 + i, gerak(-260 - i * 95), 1560 + (i % 2) * 40, 0.85 + (i % 2) * 0.05) for i in range(4)]
-    keranda = {"jenis": "jenazah", "x": gerak(270), "y": 1075, "s": 0.8, "kain": HIJAU, "dipikul": True}
+    keranda = {"jenis": "jenazah", "x": gerak(270), "y": 1075, "s": 0.8, "kain": HIJAU, "dipikul": True, "ayun": 2.2}
     return [keranda], ikut + pikul
 
 
@@ -51,7 +51,7 @@ b, o = iring(0)
 shot.append({
     "narasi": "Saat kamu dikubur, tiga hal ikut mengantarmu.",
     "intonasi": "berat", "jeda": 0.3, **SIANG,
-    "kamera": {"z": [1.05, 1.12], "x": [360, 520], "y": 1180},
+    "kamera": {"z": 1.04, "x": 540, "y": 1280},
     "benda": [{"jenis": "makam", "x": 1150, "y": 1290, "n": 3, "jarak": 140, "s": 0.7}] + b,
     "boneka": o,
     "teks": [teks("TIGA YANG\nMENGANTARMU", "HR BUKHARI 6514", at="@tiga")],
@@ -60,14 +60,14 @@ shot.append({
 b, o = iring(3.2)
 shot.append({
     "narasi": "Keluargamu.", "intonasi": "haru", "jeda": 0.25, **SIANG,
-    "kamera": {"z": 1.5, "x": [140, 190], "y": 1300},
+    "kamera": {"z": 1.28, "x": 480, "y": 1320},
     "benda": b, "boneka": o,
     "teks": [teks("KELUARGA", at=0.1, y=360)],
 })
 # 3. Harta: karung dan dinar ikut terbawa
 shot.append({
     "narasi": "Hartamu.", "intonasi": "haru", "jeda": 0.25, **SIANG,
-    "kamera": {"z": [1.3, 1.38], "x": 540, "y": 1330},
+    "kamera": {"z": 1.12, "x": 540, "y": 1320},
     "benda": [{"jenis": "karung", "x": 440, "y": 1560, "s": 0.55, "penuh": 1},
               {"jenis": "koin", "x": 640, "y": 1580, "s": 0.6, "n": 6, "jatuh": 1}],
     "teks": [teks("HARTA", at=0.1, y=360)],
@@ -76,8 +76,8 @@ shot.append({
 b, o = iring(5.0)
 shot.append({
     "narasi": "Dan amalmu.", "intonasi": "haru", "jeda": 0.6, **SIANG,
-    "kamera": {"z": [1.2, 1.3], "x": 520, "y": 1300},
-    "benda": b + [{"jenis": "lentera", "x": [[0, 640], [3, 690]], "y": 1640, "s": 0.42, "nyala": [[0, 0.4], [0.8, 1]], "depan": True}],
+    "kamera": {"z": 1.08, "x": 540, "y": 1320},
+    "benda": b + [{"jenis": "sajadah", "x": 190, "y": 1710, "s": 0.82, "op": [[0, 0], [0.55, 1]]}, {"jenis": "buku", "x": 520, "y": 1660, "s": 0.34, "sub": "MUSHAF", "op": [[0, 0], [1.25, 1]]}, {"jenis": "tasbih", "x": 830, "y": 1680, "s": 0.52, "op": [[0, 0], [2.0, 1]]}],
     "boneka": o,
     "teks": [teks("AMAL", at=0.1, y=360)],
 })
@@ -116,7 +116,7 @@ shot.append({
     "narasi": "Yang tetap tinggal bersamamu, hanya satu: amalmu.", "intonasi": "berat", "jeda": 0.9, **SIANG,
     "malam": [[0, 0], ["@amalmu#2", 0.25]],
     "kamera": {"z": [1.1, 1.45], "x": 560, "y": [1250, 1400]},
-    "benda": MAKAM_SEPI + [{"jenis": "lentera", "x": 690, "y": 1500, "s": 0.9, "nyala": [[0, 0.5], ["@amalmu#2", 1]]}],
+    "benda": MAKAM_SEPI + [{"jenis": "sajadah", "x": 220, "y": 1710, "s": 0.82, "op": [[0, 0], [0.45, 1]]}, {"jenis": "buku", "x": 540, "y": 1660, "s": 0.34, "sub": "MUSHAF", "op": [[0, 0], [1.0, 1]]}, {"jenis": "tasbih", "x": 850, "y": 1680, "s": 0.52, "op": [[0, 0], [1.7, 1]]}],
     "teks": [teks("HANYA AMAL", at="@amalmu#2", warna="#ffd27a")],
 })
 # 8. Dalil (kartu masuk gaya NGOPAI)
@@ -135,7 +135,7 @@ shot.append({
 shot.append({
     "narasi": "Hari ini, kamu sibuk mengumpulkan yang mana?", "intonasi": "tegas", "jeda": 1.0, **SIANG, "malam": 0.2,
     "kamera": {"z": [1.2, 1.3], "x": 600, "y": 1350},
-    "benda": MAKAM_SEPI + [{"jenis": "lentera", "x": 690, "y": 1500, "s": 0.9, "nyala": 1}],
+    "benda": MAKAM_SEPI + [{"jenis": "sajadah", "x": 220, "y": 1710, "s": 0.82}, {"jenis": "buku", "x": 540, "y": 1660, "s": 0.34, "sub": "MUSHAF"}, {"jenis": "tasbih", "x": 850, "y": 1680, "s": 0.52}],
     "teks": [teks("KAMU SIBUK\nMENGUMPULKAN\nYANG MANA?", at="@mengumpulkan", warna="#ffd27a", ukuran=76)],
 })
 
@@ -147,11 +147,10 @@ spek = {
         {"berkas": "../../aset/suara/langkah_pelan.mp3", "at": 0, "sampai": "@Lalu", "vol": 0.32, "ulang": True},
         {"berkas": "../../aset/suara/dengung_haru.mp3", "at": "@tiga", "vol": 0.3},
         {"berkas": "../../aset/suara/koin_jatuh.mp3", "at": "@Hartamu", "vol": 0.35},
-        {"berkas": "../../aset/suara/kilau_cahaya.mp3", "at": "@amalmu", "vol": 0.35},
+        {"berkas": "../../aset/suara/dengung_haru.mp3", "at": "@amalmu", "vol": 0.12},
         {"berkas": "../../aset/suara/langkah_pelan.mp3", "at": "@Keluargamu#2", "sampai": "@Yang", "vol": 0.3, "ulang": True},
         {"berkas": "../../aset/suara/isak_lembut.mp3", "at": "@Keluargamu#2", "vol": 0.16},
-        {"berkas": "../../aset/suara/kilau_cahaya.mp3", "at": "@amalmu#2", "vol": 0.4},
-        {"berkas": "../../aset/suara/senandung_haru.mp3", "at": "@amalmu#2", "vol": 0.2, "ulang": True},
+        {"berkas": "../../aset/suara/dengung_haru.mp3", "at": "@amalmu#2", "vol": 0.12},
         {"berkas": "../../aset/suara/hentak_serius.mp3", "at": "@mengumpulkan", "vol": 0.35},
     ],
 }
