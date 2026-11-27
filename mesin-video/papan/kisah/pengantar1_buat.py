@@ -72,12 +72,12 @@ shot.append({
               {"jenis": "koin", "x": 640, "y": 1580, "s": 0.6, "n": 6, "jatuh": 1}],
     "teks": [teks("HARTA", at=0.1, y=360)],
 })
-# 4. Amal: cahaya kecil di sisi keranda
+# 4. Penyebutan amal: tetap pada iring-iringan, tanpa simbol amal
 b, o = iring(5.0)
 shot.append({
     "narasi": "Dan amalmu.", "intonasi": "haru", "jeda": 0.6, **SIANG,
     "kamera": {"z": 1.08, "x": 540, "y": 1320},
-    "benda": b + [{"jenis": "sajadah", "x": 190, "y": 1710, "s": 0.82, "op": [[0, 0], [0.55, 1]]}, {"jenis": "buku", "x": 520, "y": 1660, "s": 0.34, "sub": "MUSHAF", "op": [[0, 0], [1.25, 1]]}, {"jenis": "tasbih", "x": 830, "y": 1680, "s": 0.52, "op": [[0, 0], [2.0, 1]]}],
+    "benda": b,
     "boneka": o,
     "teks": [teks("AMAL", at=0.1, y=360)],
 })
@@ -111,7 +111,7 @@ shot.append({
     "boneka": [pulang(8, 180, 1460, 0.2, 0.78), pulang(20, 260, 1400, 0.7), pulang(21, 380, 1430, 1.3),
                pulang(3, 700, 1400, 1.8), pulang(5, 820, 1430, 2.4), pulang(12, 900, 1460, 2.9, 0.78)],
 })
-# 7. Yang tinggal hanya amal
+# 7. Satu-satunya visual amal: setelah keluarga dan harta pergi, di kuburan
 shot.append({
     "narasi": "Yang tetap tinggal bersamamu, hanya satu: amalmu.", "intonasi": "berat", "jeda": 0.9, **SIANG,
     "malam": [[0, 0], ["@amalmu#2", 0.25]],
@@ -135,7 +135,7 @@ shot.append({
 shot.append({
     "narasi": "Hari ini, kamu sibuk mengumpulkan yang mana?", "intonasi": "tegas", "jeda": 1.0, **SIANG, "malam": 0.2,
     "kamera": {"z": 1.2, "x": 540, "y": 1350},
-    "benda": MAKAM_SEPI + [{"jenis": "sajadah", "x": 220, "y": 1710, "s": 0.82}, {"jenis": "buku", "x": 540, "y": 1660, "s": 0.34, "sub": "MUSHAF"}, {"jenis": "tasbih", "x": 850, "y": 1680, "s": 0.52}],
+    "benda": MAKAM_SEPI,
     "teks": [teks("KAMU SIBUK\nMENGUMPULKAN\nYANG MANA?", at="@mengumpulkan", warna="#ffd27a", ukuran=76)],
 })
 
