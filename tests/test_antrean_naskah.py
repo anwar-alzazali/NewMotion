@@ -174,22 +174,6 @@ def test_peta_tempel_menolak_nomor_paragraf_nol():
     assert A.validasi_peta_tempel({"beat": [{"paragraf": [0]}]})
 
 
-def test_uji_cerita_memvalidasi_enam_unsur():
-    assert A.validasi_uji_cerita(NASKAH) == []
-    rusak = json.loads(json.dumps(NASKAH))
-    del rusak["uji_cerita"]["jawaban_hook"]
-    assert any("jawaban_hook" in x for x in A.validasi_uji_cerita(rusak))
-
-
-def test_kartu_telegram_memuat_ringkasan_uji_cerita():
-    st = A.status_baru("uji", "Uji", "ide")
-    st["uji_cerita_ringkas"] = "Inti | fakta detik nol | jawaban hook"
-    assert "Uji cerita" in A.kartu(st)
-
-
-def test_peta_tempel_menolak_nomor_paragraf_nol():
-    assert A.validasi_peta_tempel({"beat": [{"paragraf": [0]}]})
-
 
 def test_jalur_ide_revisi_dan_tempel_memakai_tahap_llm_yang_tepat(monkeypatch):
     from newmotion.infrastructure import llm
