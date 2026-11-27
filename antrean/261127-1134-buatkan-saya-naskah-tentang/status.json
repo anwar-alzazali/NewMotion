@@ -8,8 +8,8 @@
  "tahap": {
   "diterima": "selesai",
   "dalil": "selesai",
-  "tinjau": "jalan",
-  "sutradara": "belum",
+  "tinjau": "selesai",
+  "sutradara": "jalan",
   "tinjau_visual": "belum",
   "narasi": "belum",
   "render": "belum",
@@ -19,10 +19,11 @@
  "ket": {
   "diterima": "9 beat, 8 dalil · Gemini",
   "dalil": "8/8",
-  "tinjau": "menunggu Anda membaca naskah"
+  "tinjau": "disetujui",
+  "sutradara": "menyusun pratinjau visual tanpa TTS"
  },
  "dibuat": "2026-11-27T04:34:37.402Z",
- "diperbarui": "2026-11-27T06:18:46+00:00",
+ "diperbarui": "2026-11-27T07:56:16.562Z",
  "token_ai": 34005,
  "penyedia_ai": "Gemini gemini-3.5-flash-lite (gratis)",
  "laporan_dalil": [
