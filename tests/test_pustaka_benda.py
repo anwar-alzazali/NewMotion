@@ -8,7 +8,7 @@ BARU = {
     "karung": "penuh", "keranjang": "penuh", "kambing": "jalan",
     "domba": "jalan", "burung_kawanan": "terbang", "ular_siluet": "gerak",
     "kapal_dagang": "muatan", "menara_pengawas": "penjaga", "rak_kitab": "isi",
-    "jam_pasir": "sisa", "rantai_belenggu": "tegang", "pedang_tersarung": "hias",
+    "jam_pasir": "sisa", "rantai_belenggu": "tegang", "pedang_tersarung": "ornamen",
     "awan_badai": "hujan", "kios_pasar": "dagangan", "awan_gelap": "kilat",
 }
 
