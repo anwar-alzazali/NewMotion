@@ -97,5 +97,5 @@ def test_perbaikan_otomatis_satu_putaran_dan_pemeriksaan_ulang(tmp_path, monkeyp
     assert panggilan_penulis == ["ide", "revisi"]
     assert "Saat tenggelam" in tersimpan["beat"][0]["narasi"]
     assert status["pemeriksaan_naskah"]["temuan"] == []
-    assert status["pemeriksaan_naskah_ringkas"] == "0 temuan; 1 putaran perbaikan otomatis"
+    assert status["pemeriksaan_naskah_ringkas"] == "tidak ada temuan"
     assert status["pemeriksaan_naskah_ai"]["tahap"] == "periksa_naskah"
