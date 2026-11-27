@@ -53,10 +53,10 @@ daftar tugas dari posisi terakhir.
 - [x] Tugas 2 — Pencatat kekurangan renderer (antrean kebutuhan)
 - [x] Tugas 3 — Pustaka benda renderer untuk banyak jenis cerita
 - [x] Tugas 4 — Lapis A uji tokoh menuju nol temuan
-- [ ] Tugas 5 — Interaksi antartokoh dan benda yang dipegang
-- [ ] Tugas 5b — Perbaikan benda lemah dari Tugas 3 (temuan audit Claude, kerjakan setelah Tugas 5)
+- [x] Tugas 5 — Interaksi antartokoh dan benda yang dipegang
+- [x] Tugas 5b — Perbaikan benda lemah dari Tugas 3 (temuan audit Claude, kerjakan setelah Tugas 5)
 - [x] Tugas 5c — Pemeriksa naskah sebelum sampai ke pemilik (prioritas tinggi)
-- [ ] Tugas 5d — Belajar dari revisi pemilik dan naskah yang disetujui
+- [x] Tugas 5d — Belajar dari revisi pemilik dan naskah yang disetujui
 - [ ] Tugas 6 — Visual konsep abstrak
 - [ ] Tugas 7 — Lembar uji renderer otomatis
 - [ ] Tugas 8 — Pembuat komponen renderer (bersyarat, lihat syaratnya)
