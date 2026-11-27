@@ -10,9 +10,14 @@ Pemilik: Anwar Alzazali. Bahasa kerja: Indonesia. Ditulis 27 Nov 2026 oleh Claud
    sendiri menyatakan ada masalah.
 3. **Cabang kerja = `gpt/integrasi`** (bukan `main`). Satu tugas = satu branch dari `gpt/integrasi` terbaru
    = satu PR **ke `gpt/integrasi`**. Jangan menggabungkan dua tugas dalam satu PR. Jangan membuat PR ke `main`.
-4. Sebelum merge: `python -m pytest -q` lulus semua (saat ini 384), `ruff check` bersih untuk berkas yang
-   kamu ubah, dan `node --test bot/` lulus bila menyentuh bot.
-5. **Jangan menunggu audit.** Bila semua pemeriksaan butir 4 lulus, merge sendiri PR-mu ke `gpt/integrasi`,
+4. **Uji lewat CI (bukan lokal).** Sesi pengerja tidak bisa menjalankan pytest/browser sendiri; yang
+   menjalankan adalah workflow `Uji runtime NewMotion` (`.github/workflows/test-runtime.yml`), otomatis
+   setiap push ke branch bernama `tugas-*`. Ia menjalankan: sintaks Python/JS, ruff untuk berkas yang
+   berubah (hanya galat ruff BARU yang menggagalkan; galat lama di berkas itu boleh tetap), ukur ulang benda (dan meng-commit `ukuran_benda.json` ke branch-mu bila berubah — tarik dulu
+   sebelum push berikutnya), seluruh pytest, uji bot, dan uji tokoh lapis A (harus 0 temuan). Lembar
+   bukti PNG ada di artefak run. Jadi: beri nama branch `tugas-<nomor>-<ringkas>`, push, tunggu run itu
+   hijau, baru merge. Bila merah, baca log run, perbaiki, push lagi (ingat batas macet butir 7).
+5. **Jangan menunggu audit.** Bila run CI butir 4 hijau, merge sendiri PR-mu ke `gpt/integrasi`,
    centang tugasnya `[x]` di daftar di bawah, lalu langsung lanjut ke tugas berikutnya. Pemilik/Claude
    mengaudit seluruh `gpt/integrasi` sekaligus setelah semua tugas selesai, lalu menggabungkannya ke `main`.
    (Cabang terpisah ini menjaga bot produksi, yang otomatis ter-deploy dari `main`, tetap aman.)
@@ -28,7 +33,12 @@ Pemilik: Anwar Alzazali. Bahasa kerja: Indonesia. Ditulis 27 Nov 2026 oleh Claud
 
 9. **Jangan audit diri berulang-ulang.** Satu putaran pemeriksaan sendiri + semua uji lulus = cukup, lalu
    merge dan lanjut. Hal yang belum pasti dicatat di log sebagai "catatan untuk audit", bukan alasan berhenti.
-   Uji dijalankan lokal (`pytest`, `ruff`, `node --test bot/`); jangan menambah workflow per-branch.
+   Jangan menambah workflow baru untuk menguji; `test-runtime.yml` sudah mencakup semuanya. Bila memang
+   butuh pemeriksaan baru, tambahkan langkah di workflow itu atau tambahkan uji pytest.
+
+**Permintaan komponen dari naskah pemilik** (pemilik menempel naskah dan meminta komponen visualnya)
+diutamakan di atas daftar tugas dan mengikuti `docs/ATURAN_KOMPONEN.md`. Setelah PR-nya dibuat, lanjutkan
+daftar tugas dari posisi terakhir.
 
 ## Daftar tugas (centang bila selesai dan sudah di-merge ke `gpt/integrasi`)
 
@@ -37,6 +47,7 @@ Pemilik: Anwar Alzazali. Bahasa kerja: Indonesia. Ditulis 27 Nov 2026 oleh Claud
 - [x] Tugas 3 — Pustaka benda renderer untuk banyak jenis cerita
 - [x] Tugas 4 — Lapis A uji tokoh menuju nol temuan
 - [ ] Tugas 5 — Interaksi antartokoh dan benda yang dipegang
+- [ ] Tugas 5b — Perbaikan benda lemah dari Tugas 3 (temuan audit Claude, kerjakan setelah Tugas 5)
 - [ ] Tugas 6 — Visual konsep abstrak
 - [ ] Tugas 7 — Lembar uji renderer otomatis
 - [ ] Tugas 8 — Pembuat komponen renderer (bersyarat, lihat syaratnya)
@@ -186,6 +197,21 @@ Jangan membuat lolos dengan melonggarkan ambang tanpa alasan anatomi.
 **Selesai bila:** ada uji otomatis yang mengukur jarak tangan ke benda saat memberi/menerima (seperti A6,
 batas 14 px) dan lembar PNG bukti di PR.
 
+## Tugas 5b — Perbaikan benda lemah dari Tugas 3 (temuan audit Claude, 27 Nov)
+
+Audit lembar `hasil/pustaka-benda-baru.png`: 20 benda sudah layak pakai, empat belum terbaca di layar ponsel.
+
+| Benda | Masalah yang terlihat | Yang harus terbaca |
+|---|---|---|
+| `ladang_gandum` | hanya coretan hitam kecil berserakan; tidak terbaca sebagai tanaman | hamparan batang gandum berbulir, warna gandum (hijau saat muda, keemasan saat `matang`), bergoyang tertiup angin; rapat di belakang, lebih besar di depan |
+| `kambing` | kaki seperti kawat tipis, kepala/telinga janggal, lebih mirip rusa | kambing kampung yang jelas: badan berisi, kaki proporsional, tanduk pendek melengkung, janggut kecil, telinga menggantung; gaya sama dengan `domba` |
+| `rantai_belenggu` | hanya deretan lingkaran kecil; tidak terbaca sebagai belenggu | rantai mata besar yang tebal dengan kilau logam, borgol/gelang di ujung; `tegang` membuat rantai lurus vs kendur melengkung |
+| `sungai` | keadaan awal dan akhir hampir sama; `arus` tidak terasa | arus terlihat bergerak (garis arus/riak mengalir sepanjang waktu, makin deras saat `arus` 1), tepi sungai jelas |
+
+**Selesai bila:** lembar dua keadaan baru untuk keempatnya terbaca tanpa label pada ukuran seperempat
+layar, gaya sama dengan benda lain (garis `INK`, warna datar + bayangan lembut), `ukur_benda.py` dijalankan
+ulang, semua uji lulus. Benda lain dari Tugas 3 tidak perlu diubah.
+
 ## Tugas 6 — Visual konsep abstrak yang sering muncul di Kisah Islami
 
 **Tujuan:** pemeriksa visual berulang menemukan bahwa konsep abstrak tidak tergambar (contoh Mahsyar:
@@ -211,6 +237,7 @@ ukuran, temuan lapis A. Tanpa LLM.
 ## Tugas 8 — Pembuat komponen renderer (bersyarat)
 
 **Syarat mulai:** Tugas 2, 3, dan 7 sudah di-merge ke `gpt/integrasi`. Bila belum, lewati tugas ini.
+Standar gambar, adab, dan bukti komponen mengikuti `docs/ATURAN_KOMPONEN.md`.
 
 **Tujuan:** mengambil kebutuhan teratas dari antrean kebutuhan (Tugas 2) atau dari daftar contoh Tugas 3
 yang belum dibuat, lalu menghasilkan **draf** komponen benda baru beserta bukti mutunya, sehingga pembuatan
@@ -272,4 +299,12 @@ Format: `- YYYY-MM-DD | Tugas N | status (selesai/sebagian/MACET) | PR #.. | cat
 
 - 2026-11-27 | Tugas 4 | selesai | PR #58 | Memperbaiki pijakan kaki aksi `gali`/`menolong` dengan IK, menjaga badan samping pada pose `rebahan`/`rebahan_hp`, mengarahkan ayunan beliung ke depan-bawah, dan menyatukan panjang tulang kaki dengan acuan 100 px. Siklus `lompat` dijadikan lintasan periodik halus tanpa patahan pada batas modulo. `uji_tokoh.py` terbaru menguji 29 pose, lima sudut, dan sepuluh aksi; hasil eksplisit: **Lapis A: tidak ada temuan**. A6 perahu kecil juga lulus. Pada commit akhir `aa8f4ae`, GitHub Actions runtime dan uji pembuat karakter sukses; pytest **404 passed**, Ruff bersih, uji bot/CLI/doctor sukses. Perbaikan pencatatan `badan_samping` mencegah false positive pada pose rebah. PR #58 digabung ke `gpt/integrasi`. Berikutnya: Tugas 5 — interaksi antartokoh dan benda yang dipegang.
 
-- 2026-11-27 | Tugas 5 | sebagian | PR #59 | Branch `tugas-5-interaksi-tokoh-benda` sudah ada dari `gpt/integrasi` (komit awal menambahkan delapan pose dan gambar vektor benda genggam; komit berikutnya membuat katalog `pegang` otomatis). Ditambahkan validasi `figuran.nama`, relasi `hadap_ke` ke tokoh lain, dan `pegang` yang harus cocok dengan katalog renderer; pembuat papan memberi ID unik dan mengarahkan profil tokoh ke kiri/kanan berdasarkan posisi pasangannya. Skill sutradara dan tes kontrak diperbarui. Belum selesai: gerak serah-terima benda yang benar-benar berpindah secara kontinu di antara dua tangan, pengukuran jarak tangan-benda <=14 px, dan lembar PNG bukti interaksi. Berikutnya: selesaikan lintasan serah-terima dan alat ukur visual; jangan merge sebelum bukti dan semua tes lulus.
+- 2026-11-27 | Audit bertahap Tugas 1–4 | Claude | — | 404 uji lulus di gpt/integrasi; uji tokoh lapis A memang 0
+  temuan tanpa melonggarkan ambang. Tugas 3: 20 dari 24 benda layak; empat benda lemah dijadikan Tugas 5b
+  (kerjakan setelah Tugas 5 selesai, sebelum Tugas 6). Catatan untuk audit akhir: test-runtime.yml kini
+  terpicu push `tugas-*` dan meng-commit balik ukuran_benda.json — dirapikan saat merge ke main.
+- 2026-11-27 | Protokol | Claude | — | Pengerja tidak bisa pytest lokal: butir 4 kini resmi memakai CI
+  `test-runtime.yml` (dirapikan: push `tugas-*`, ruff otomatis untuk berkas berubah, ukur benda + commit balik,
+  pytest, bot, uji tokoh 0 temuan, artefak bukti). Workflow lama lint-naskah.yml dihapus (sudah tercakup).
+
+- 2026-11-27 | Tugas 5 | sebagian | PR #59 | Menambahkan katalog otomatis pose benda genggam dari `POSE` renderer (tongkat, kendi, lentera, keranjang, tasbih, surat, gulungan, karung kecil, roti, koin); figuran bernama dapat saling menghadap dan memegang benda. Rencana `serahkan_ke` diterjemahkan menjadi lintasan tiga fase: pemberi membawa benda ke titik temu, kedua tangan menempel, lalu penerima mengambil alih. Kedua tangan memakai IK ke satu titik benda; pengarah panggung mendekatkan dua figuran dan mengatur profil saling menghadap. CI pembuat karakter run #45938860940 lulus, bukti tujuh sampel menunjukkan perpindahan 102,62 px dan jarak tangan-benda maksimum 0 px (batas 14 px). Runtime run #45938860963 lulus: Ruff bersih, pytest 410 passed, bot, CLI, doctor dan pengukuran benda sukses. Artifact `bukti-interaksi-tokoh` berisi lembar PNG + laporan JSON. Belum digabung: perlu menyelaraskan branch dengan tiga commit terbaru `gpt/integrasi`, menjalankan ulang CI di merge-base terbaru, lalu audit PR.
