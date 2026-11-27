@@ -1,0 +1,77 @@
+{
+  "judul": "Detik Terakhir Firaun di Dasar Laut",
+  "inti": "Firaun mengakui keimanan saat tenggelam, tetapi pengakuan itu datang terlambat; jasadnya dijadikan tanda bagi manusia.",
+  "dalil": [
+    {
+      "id": "yunus90",
+      "jenis": "quran",
+      "label": "QS Yunus 90",
+      "surah": 10,
+      "ayat": "90",
+      "status": "terverifikasi",
+      "diverifikasi_oleh": "fixture-uji",
+      "terjemah": "Firaun dan tentaranya mengikuti Bani Israil dengan melampaui batas dan memusuhi mereka."
+    },
+    {
+      "id": "yunus91",
+      "jenis": "quran",
+      "label": "QS Yunus 91",
+      "surah": 10,
+      "ayat": "91",
+      "status": "terverifikasi",
+      "diverifikasi_oleh": "fixture-uji",
+      "terjemah": "Firaun baru menyatakan beriman ketika tenggelam, setelah sebelumnya durhaka dan berbuat kerusakan."
+    },
+    {
+      "id": "yunus92",
+      "jenis": "quran",
+      "label": "QS Yunus 92",
+      "surah": 10,
+      "ayat": "92",
+      "status": "terverifikasi",
+      "diverifikasi_oleh": "fixture-uji",
+      "terjemah": "Jasad Firaun diselamatkan agar menjadi tanda bagi orang-orang sesudahnya."
+    }
+  ],
+  "beat": [
+    {
+      "narasi": "Pernahkah kamu membayangkan bagaimana akhir seorang raja yang sangat berkuasa?",
+      "dalil": [
+        "yunus90"
+      ],
+      "kata_kunci": [
+        "Firaun"
+      ],
+      "peran": [
+        "Firaun"
+      ]
+    },
+    {
+      "narasi": "Di Laut Merah, Firaun dan tentaranya yang bersenjata lengkap berteriak sebelum akhirnya binasa.",
+      "dalil": [
+        "yunus90",
+        "yunus91"
+      ],
+      "kata_kunci": [
+        "Firaun",
+        "tentara"
+      ],
+      "peran": [
+        "Firaun",
+        "tentara"
+      ]
+    },
+    {
+      "narasi": "Air menelan semuanya. Tidak ada lagi yang tersisa.",
+      "dalil": [
+        "yunus91"
+      ],
+      "kata_kunci": [
+        "tenggelam"
+      ],
+      "peran": [
+        "Firaun"
+      ]
+    }
+  ]
+}
