@@ -86,7 +86,7 @@ def spek_lembar(baris: list[tuple[str, list[tuple[str, dict]]]], durasi: float) 
                                  "kamera": {"z": 1, "x": 540, "y": 960}, "boneka": boneka}]}}
 
 
-def render(spek: dict, waktu: list[float], kerja: Path, nama: str, chrome: str | None):
+def render(spek: dict, waktu: list[float], kerja: Path, nama: str, chrome: str | None, ambil_serah: bool = False):
     """Render spek pada beberapa detik. Kembalikan [(png_bytes, catatan_boneka)] per waktu."""
     from papan_buat import buat_html
     from playwright.sync_api import sync_playwright
@@ -103,10 +103,13 @@ def render(spek: dict, waktu: list[float], kerja: Path, nama: str, chrome: str |
         pg.evaluate("document.fonts.ready")
         pg.wait_for_timeout(300)
         for t in waktu:
-            pg.evaluate("window.__catatBoneka = []")
+            pg.evaluate("window.__catatBoneka = []; window.__catatSerahTerima = []")
             pg.evaluate(f"setT({t:.4f})")
             catatan = pg.evaluate("window.__catatBoneka")
-            hasil.append((pg.screenshot(type="png"), catatan))
+            if ambil_serah:
+                hasil.append((pg.screenshot(type="png"), catatan, pg.evaluate("window.__catatSerahTerima")))
+            else:
+                hasil.append((pg.screenshot(type="png"), catatan))
         br.close()
     return hasil
 
