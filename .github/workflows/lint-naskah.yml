@@ -1,6 +1,9 @@
 name: Lint Python — Tugas Naskah
 
 on:
+  push:
+    branches:
+      - tugas-1-llm-naskah
   pull_request:
     paths:
       - "newmotion/application/antrean_naskah.py"
