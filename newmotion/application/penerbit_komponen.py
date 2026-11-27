@@ -5,6 +5,8 @@ import json
 import subprocess
 from pathlib import Path
 
+from newmotion.application.kebutuhan_renderer import tandai_draf
+
 AKAR = Path(__file__).resolve().parents[2]
 
 
@@ -48,7 +50,12 @@ def terbitkan(data: dict, *, akar: Path = AKAR) -> str:
     (folder / "komponen_draf.json").write_text(
         json.dumps(data, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
     )
-    jalankan(["git", "add", "mesin-video/papan/cerita.js", "hasil/komponen-draf/komponen_draf.json"], cwd=akar)
+    tandai_draf(data, jalur=akar / "newmotion" / "application" / "data" / "kebutuhan_renderer.json")
+    jalankan([
+        "git", "add", "mesin-video/papan/cerita.js",
+        "hasil/komponen-draf/komponen_draf.json",
+        "newmotion/application/data/kebutuhan_renderer.json",
+    ], cwd=akar)
     jalankan(["git", "commit", "-m", "Draf komponen renderer: " + nama], cwd=akar)
     jalankan(["git", "push", "-u", "origin", cabang], cwd=akar)
     jalankan([
