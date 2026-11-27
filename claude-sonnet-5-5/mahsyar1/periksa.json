@@ -1,0 +1,126 @@
+[
+ {
+  "putaran": 0,
+  "model_periksa": "claude-sonnet-5-5",
+  "biaya_usd": 0.040174,
+  "temuan": {
+   "lulus": false,
+   "temuan": [
+    {
+     "beat": 5,
+     "berat": "berat",
+     "masalah": "Matahari didekatkan hanya sejauh satu mil, tetapi di frame ukurannya hampir sama dengan beat 6 dan 8, jadi tidak terasa membesar. Kerumunan 'depan_kanan' terlalu kecil dan menumpuk di bawah, dan 'kamu' terpotong di tepi bawah. Klimaks tidak punya perbedaan visual yang jelas dari beat sesudahnya.",
+     "saran": "Buat matahari tampil sangat besar, hampir memenuhi langit, dengan lonjakan terang yang jelas. Geser kerumunan agar terbaca sebagai manusia yang tertunduk dan kecil di hadapan matahari. Letakkan 'kamu' sebagai saksi di sisi kiri dan jangan sampai terpotong. Beri aksen kamera hentak yang nyata."
+    },
+    {
+     "beat": 6,
+     "berat": "berat",
+     "masalah": "Narasi menyebut manusia tenggelam dalam keringat sampai mata kaki, lutut, pinggang, dan mulut, tetapi frame hanya menampilkan siluet gelap di kiri bawah dan kolam kecil di atas kepala mereka. Danau tampak melayang seperti piringan di atas kerumunan, bukan genangan tempat orang tenggelam. Kerumunan terpotong tepi kiri.",
+     "saran": "Letakkan danau sebagai genangan yang melingkupi kerumunan di tengah, dan buat siluet berdiri di dalamnya dengan permukaan air yang naik menuju mulut. Geser kerumunan ke tengah supaya tidak terpotong, dan pakai bidikan sedang."
+    },
+    {
+     "beat": 7,
+     "berat": "berat",
+     "masalah": "Keringat meresap ke tanah sedalam tujuh puluh hasta, tetapi frame hanya menampilkan kolam seperti cakram dengan garis kuning vertikal yang tidak terbaca sebagai lapisan tanah atau kedalaman. Cakram kolam terpotong tepi kiri dan kanan. Teks '70 HASTA' tidak punya objek yang menjelaskannya.",
+     "saran": "Tampilkan potongan penampang tanah dengan kolam di permukaan dan resapan air turun ke bawah. Beri penanda kedalaman yang sederhana agar teks '70 HASTA' terbaca. Pastikan kolam utuh dan tidak terpotong tepi layar."
+    },
+    {
+     "beat": 9,
+     "berat": "ringan",
+     "masalah": "Danau berada di belakang 'kamu', sehingga tidak jelas keringat naik sampai mana. Ada kotak oranye aneh di kaki 'kamu'. Posisi 'kamu' menutupi danau.",
+     "saran": "Geser 'kamu' ke samping atau gunakan bidikan yang menampakkan kolam dan tubuh 'kamu' bersamaan, supaya tingkat air terhadap tubuh terlihat. Hilangkan objek oranye yang tidak jelas."
+    },
+    {
+     "beat": 10,
+     "berat": "ringan",
+     "masalah": "Matahari menumpuk di atas pohon mangga sehingga dua bentuk bulat tampak menyatu dan membingungkan. Kolam kabur tembus pandang di belakang. Pesan naungan kurang jelas.",
+     "saran": "Pindahkan matahari ke sisi kanan atas agar tidak tumpang tindih dengan tajuk pohon. Buat bayangan teduh di bawah pohon supaya terasa sebagai naungan."
+    },
+    {
+     "beat": 8,
+     "berat": "ringan",
+     "masalah": "Beat 8 hampir tidak berubah antara frame awal dan akhir. Arus orang berlari tampak diam, kerumunan terpecah di dua sisi, dan 'kamu' kecil terpotong di pojok kiri bawah.",
+     "saran": "Buat siluet bergerak jelas menjauh ke arah kamera atau ke tepi, dengan jarak yang berubah, dan tempatkan 'kamu' utuh di layar."
+    },
+    {
+     "beat": 4,
+     "berat": "ringan",
+     "masalah": "Dua frame beat 4 hampir identik dan kerumunan siluet gelap kecil tampak diam. Teks 'TANPA TANDA' bertumpuk dengan langit sehingga kurang kontras. Bidikan lebar tidak terasa seluruh manusia.",
+     "saran": "Tambah variasi antar bagian beat, misalnya kamera menoleh atau kerumunan bertambah, dan perbesar cakupan kerumunan supaya terkesan seluruh manusia."
+    }
+   ],
+   "catatan": "Adabnya aman (Rasulullah sebagai nur, tidak ada sosok bertubuh), tetapi beberapa beat inti, yaitu matahari didekatkan, keringat sampai mulut, dan resapan 70 hasta, belum menceritakan narasi dengan jelas."
+  },
+  "lembar": [
+   "hasil/claude-sonnet-5-5/mahsyar1/periksa/putaran_0/lembar_1.jpg",
+   "hasil/claude-sonnet-5-5/mahsyar1/periksa/putaran_0/lembar_2.jpg",
+   "hasil/claude-sonnet-5-5/mahsyar1/periksa/putaran_0/lembar_3.jpg"
+  ],
+  "revisi": "claude-sonnet-5-5",
+  "biaya_revisi_usd": 0.084808
+ },
+ {
+  "putaran": 1,
+  "model_periksa": "claude-sonnet-5-5",
+  "biaya_usd": 0.041502,
+  "temuan": {
+   "lulus": false,
+   "temuan": [
+    {
+     "beat": 8,
+     "berat": "berat",
+     "masalah": "Narasi bicara tentang orang yang lari dari saudara, ibu-ayah, istri dan anak. Visual malah menampilkan tokoh berwajah jelas yang berjalan berdampingan searah (ayah, ibu, kakek, dst.) dan tampak akrab, bukan menjauh dari keluarga. Pesan 'lari dari kerabat' tidak tersampaikan, dan 'semua lari' terlihat seperti berjalan santai bersama.",
+     "saran": "Ubah arus agar tokoh tampak berpencar dan saling membelakangi (satu arah ke kiri, satu ke kanan), dengan pose lari dan wajah panik. Jangan pasang tokoh yang tampak bergandengan atau sejajar. Beri jarak antar pasangan agar terlihat 'lari dari saudara/orang tua'."
+    },
+    {
+     "beat": 2,
+     "berat": "ringan",
+     "masalah": "Frame hampir seluruhnya hitam. Retakan tanah tidak terbaca jelas, hanya tampak gelap dengan titik-titik. Tokoh 'kamu' menghadap membelakangi dan hanya sebagian tubuh terlihat, sehingga adegan 'tanah terbelah, bangkit' kurang jelas.",
+     "saran": "Pertegas retakan dengan cahaya putih yang lebih jelas di tengah, tampilkan tanah terbelah di sekitar kamu, dan perlihatkan kamu bangkit dari retakan dengan bidikan sedang."
+    },
+    {
+     "beat": 6,
+     "berat": "ringan",
+     "masalah": "Narasi menyebut tingkat keringat (mata kaki, lutut, pinggang, mulut), tetapi visual hanya menampilkan danau kecil di samping dan tokoh 'kamu' terpotong di pojok kiri bawah. Tidak ada gambaran manusia tenggelam dalam keringat sampai mulut.",
+     "saran": "Letakkan kerumunan kecil di dalam danau dengan tingkat genangan berbeda dan dekatkan kamera ke satu tokoh yang genangannya setinggi mulut. Tampilkan kamu utuh, tidak terpotong tepi layar."
+    },
+    {
+     "beat": 7,
+     "berat": "ringan",
+     "masalah": "Beat 7 menampilkan danau di atas tanah dengan garis-garis kuning vertikal yang membingungkan. Tidak jelas bahwa ini keringat meresap ke tanah sedalam 70 hasta; kotak hitam di bawah juga tampak seperti kesalahan render.",
+     "saran": "Tampilkan penampang tanah dengan lapisan yang jelas dan genangan meresap ke bawah, serta hilangkan kotak hitam. Pastikan teks '70 HASTA' tidak bertabrakan dengan objek lain."
+    },
+    {
+     "beat": 9,
+     "berat": "ringan",
+     "masalah": "Tokoh kamu tampak menutupi sebagian danau, dan kotak oranye di kaki kiri bawah tidak jelas maknanya. Keringat 'sampai mana' tidak terbaca karena kamu tidak berada di dalam genangan.",
+     "saran": "Posisikan kamu berdiri di dalam genangan sehingga tinggi air terhadap tubuhnya terlihat jelas, dan hapus objek tak bermakna di kaki."
+    },
+    {
+     "beat": 3,
+     "berat": "ringan",
+     "masalah": "Dua frame beat 3 hampir identik (nur di tengah, matahari kanan atas) selama sekitar 8 detik, sehingga terasa diam. Tidak ada elemen yang menunjukkan percakapan Aisyah.",
+     "saran": "Beri perubahan di tengah beat, misalnya nur membesar atau kamera mendekat perlahan, atau tambahkan teks layar singkat seperti 'URUSAN HARI ITU DAHSYAT'."
+    },
+    {
+     "beat": 4,
+     "berat": "ringan",
+     "masalah": "Dua frame beat 4 nyaris sama; kerumunan siluet gelap kecil di depan tampak terpisah dan kontras dengan kerumunan latar. Kamu terpotong di tepi kiri layar.",
+     "saran": "Geser kamu ke dalam bingkai agar tidak terpotong, dan buat kerumunan menyatu dengan latar atau tambah pergerakan kamera untuk memberi kesan luasnya manusia."
+    },
+    {
+     "beat": 11,
+     "berat": "ringan",
+     "masalah": "Pada frame akhir beat 11, pohon mangga tepat di atas kepala kamu sehingga tampak seperti topi pohon. Frame awal beat 11 juga menunjukkan batang pohon yang terpotong di belakang kamu.",
+     "saran": "Geser pohon ke samping kamu (kiri atau kanan) dengan batang utuh, dan pastikan kamu berdiri di bawah naungan, bukan tertimpa tajuk pohon."
+    }
+   ],
+   "catatan": "Atmosfer padang mahsyar dan puncak matahari di beat 5 sudah kuat serta tidak ada pelanggaran adab, tetapi beat 8 tidak menggambarkan 'lari dari keluarga' dan beberapa beat lain kabur atau terlalu mirip."
+  },
+  "lembar": [
+   "hasil/claude-sonnet-5-5/mahsyar1/periksa/putaran_1/lembar_1.jpg",
+   "hasil/claude-sonnet-5-5/mahsyar1/periksa/putaran_1/lembar_2.jpg",
+   "hasil/claude-sonnet-5-5/mahsyar1/periksa/putaran_1/lembar_3.jpg"
+  ]
+ }
+]

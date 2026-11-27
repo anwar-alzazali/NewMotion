@@ -1,0 +1,100 @@
+[
+ {
+  "putaran": 0,
+  "model_periksa": "claude-sonnet-5-5",
+  "biaya_usd": 0.031876,
+  "temuan": {
+   "lulus": false,
+   "temuan": [
+    {
+     "beat": 5,
+     "berat": "berat",
+     "masalah": "Dinding yang 'utuh kembali' hampir tertutup gunung besar dan dua lingkaran cahaya besar. Hanya sebagian kecil dinding terlihat, dan gunung menutupi bagian bawahnya. Penonton tidak bisa melihat bahwa lubang sudah hilang, dan kilap dinding tidak terbaca. Komposisinya juga tampak berbeda dari beat lain, seperti salah tempat.",
+     "saran": "Hilangkan gunung dari depan dinding atau pindahkan ke tepi. Kecilkan kilau gunung supaya tidak berupa lingkaran besar. Tampilkan dinding utuh penuh dengan permukaan mengilap dan tanpa lubang, bidikan sedang ke dinding."
+    },
+    {
+     "beat": 11,
+     "berat": "berat",
+     "masalah": "Tangan tokoh 'kamu' menutupi sebagian teks notifikasi ponsel. Judul 'Pengingat' dan kalimat 'Besok aku lakukan' terpotong sehingga pesan inti beat tidak terbaca. Tanggal juga sebagian tertutup kepala tokoh ('...is, 5 November').",
+     "saran": "Geser tokoh 'kamu' ke samping ponsel, atau turunkan tangannya, supaya notifikasi 'Pengingat – Besok aku lakukan' terbaca penuh. Pakai bidikan dekat ke layar ponsel dengan tokoh sebagian di tepi."
+    },
+    {
+     "beat": 8,
+     "berat": "ringan",
+     "masalah": "Cahaya jebol berupa bentuk putih-kuning besar yang menelan seluruh frame. Tidak tampak dinding yang jebol atau Ya'juj dan Ma'juj yang keluar. Teks 'JEBOL' kontrasnya rendah di atas latar terang.",
+     "saran": "Tampilkan siluet bayang_misteri yang menerobos di dalam lubang. Beri tepi dinding yang hancur lebih jelas. Beri teks_layar kontur gelap yang tebal."
+    },
+    {
+     "beat": 10,
+     "berat": "ringan",
+     "masalah": "Siluet yang rebah sangat gelap dan kecil di atas latar gelap, sehingga sulit terbaca sebagai manusia binasa. Awan terpotong di tepi atas dan tidak ada teks. Tidak ada tanda ulat.",
+     "saran": "Perbesar kelompok yang rebah dan beri cahaya latar lebih terang. Turunkan awan supaya tidak terpotong. Bila perlu beri teks_layar singkat seperti 'BINASA'."
+    },
+    {
+     "beat": 1,
+     "berat": "ringan",
+     "masalah": "Beat 1, 3, 4, 6, dan 7 tampak sangat mirip: dinding gelap dengan lubang bercahaya dan siluet. Ritme terasa datar sampai jebol. Beat 4 dan 7 hampir identik.",
+     "saran": "Variasikan bidikan, misalnya dekat ke lubang di beat 3 dan lebar dengan bulan di beat 6. Bedakan beat 7 dari beat 4 dengan cahaya senja atau fajar dan penekanan pada ucapan 'insya Allah'."
+    },
+    {
+     "beat": 2,
+     "berat": "ringan",
+     "masalah": "Bayang_misteri di balik dinding tidak jelas. Hanya tampak lubang kecil hitam dan tidak ada tanda makhluk besar di baliknya.",
+     "saran": "Tampilkan siluet besar samar di belakang dinding atau lubang, dan tonjolkan 'nafas' agar terasa mengancam."
+    }
+   ],
+   "catatan": "Cerita bisa diikuti dan adab terjaga (tidak ada sosok nabi atau Allah), tetapi beat 5 dan beat 11 perlu diperbaiki karena objek inti tertutup dan teks tidak terbaca."
+  },
+  "lembar": [
+   "hasil/claude-sonnet-5-5/yajuj1/periksa/putaran_0/lembar_1.jpg",
+   "hasil/claude-sonnet-5-5/yajuj1/periksa/putaran_0/lembar_2.jpg"
+  ],
+  "revisi": "claude-sonnet-5-5",
+  "biaya_revisi_usd": 0.083698
+ },
+ {
+  "putaran": 1,
+  "model_periksa": "claude-sonnet-5-5",
+  "biaya_usd": 0.044022,
+  "temuan": {
+   "lulus": true,
+   "temuan": [
+    {
+     "beat": 2,
+     "berat": "ringan",
+     "masalah": "Narasi menyebut Ya'juj dan Ma'juj di balik dinding, tetapi yang tampak hanya bercak hitam kecil mirip lubang. Bayangan besar yang mengancam tidak terasa.",
+     "saran": "Dekatkan kamera ke dinding dan buat bayang_misteri tampak besar menekan dari balik dinding, dengan celah bercahaya di tengah supaya jelas ada sesuatu di baliknya."
+    },
+    {
+     "beat": 4,
+     "berat": "ringan",
+     "masalah": "Narasi 'pulanglah' tidak terlihat: hanya pemimpin yang tampak, penggali yang pulang tidak ada, dan matahari senja di kejauhan tidak muncul. Beat ini juga hampir sama dengan beat 7 (siluet pemimpin menunjuk lubang).",
+     "saran": "Tampilkan beberapa penggali berjalan menjauh di sisi kanan dengan langit senja jingga. Bedakan dengan beat 7 lewat sudut kamera atau letak pemimpin."
+    },
+    {
+     "beat": 7,
+     "berat": "ringan",
+     "masalah": "Komposisi hampir identik dengan beat 4, dan bintang malam hampir tidak terlihat. Penekanan 'waktu yang Allah tetapkan' tidak terasa berbeda.",
+     "saran": "Buat langit lebih gelap dengan bintang jelas, pemimpin lebih besar atau bidikan lebih rendah, dan tanpa penggali yang pulang. Dengan begitu beat ini terasa lebih berat dari beat 4."
+    },
+    {
+     "beat": 6,
+     "berat": "ringan",
+     "masalah": "Lima penggali menumpuk di sekitar lubang kecil sehingga ramai dan sulit dibaca. Bulan yang direncanakan tidak tampak.",
+     "saran": "Kurangi jumlah penggali menjadi 3-4 dan beri jarak di antara mereka. Tampilkan bulan di langit atau hilangkan dari rencana."
+    },
+    {
+     "beat": 11,
+     "berat": "ringan",
+     "masalah": "Tokoh 'kamu' hanya tampak sebagian kecil kepalanya di tepi kiri bawah, terpotong tanpa alasan jelas. Ponsel memenuhi layar.",
+     "saran": "Geser 'kamu' agar utuh di sisi bawah atau samping ponsel sedang menatap layar, atau hilangkan 'kamu' dari beat ini."
+    }
+   ],
+   "catatan": "Cerita jelas dan adab terjaga (tidak ada sosok suci, stempel ILUSTRASI ada, teks terbaca), dengan klimaks beat 8 yang kuat. Kelemahannya hanya ritme beat 1-7 yang mirip dan beberapa detail narasi yang belum tampak."
+  },
+  "lembar": [
+   "hasil/claude-sonnet-5-5/yajuj1/periksa/putaran_1/lembar_1.jpg",
+   "hasil/claude-sonnet-5-5/yajuj1/periksa/putaran_1/lembar_2.jpg"
+  ]
+ }
+]

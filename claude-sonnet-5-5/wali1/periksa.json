@@ -1,0 +1,106 @@
+[
+ {
+  "putaran": 0,
+  "model_periksa": "claude-sonnet-5-5",
+  "biaya_usd": 0.031292,
+  "temuan": {
+   "lulus": false,
+   "temuan": [
+    {
+     "beat": 3,
+     "berat": "berat",
+     "masalah": "Teks di dalam buku ('Anak di luar nikah: nasab hanya ke ibu') terlalu lebar sehingga terpotong di kedua tepi layar dan meluber keluar halaman buku. Bagian awal dan akhir kalimat hilang, jadi isi fatwa tidak terbaca. Gunung besar di belakang buku juga membuat latar penuh dan ramai.",
+     "saran": "Persingkat teks buku jadi 2-3 kata per baris, misalnya 'Nasab hanya ke ibu'. Ganti bidikan 'dekat' ke 'sedang' agar buku dan teks muat di layar. Kecilkan atau hilangkan gunung di belakang buku."
+    },
+    {
+     "beat": 4,
+     "berat": "berat",
+     "masalah": "Teks hadis di dalam buku ('...sah pernikahan kecuali deng...') terpotong di kiri dan kanan layar, melebihi lebar buku. Kata 'Tidak' dan 'wali' tidak terbaca, padahal ini inti dalil.",
+     "saran": "Pecah teks buku jadi baris pendek, misalnya 'Tidak sah nikah / kecuali dengan wali', atau ringkas jadi 'Tidak sah tanpa wali'. Gunakan bidikan 'sedang' agar seluruh teks masuk halaman buku."
+    },
+    {
+     "beat": 7,
+     "berat": "berat",
+     "masalah": "Gedung KUA, benda inti beat ini, hampir seluruhnya tertutup tokoh 'kamu' dan tokoh perempuan berjilbab kuning. Tulisan 'KUA' nyaris tak terbaca karena kecil dan gelap, sehingga penonton tidak tahu itu KUA. Gedung juga terpotong tepi kanan layar.",
+     "saran": "Geser 'kamu' ke kiri dan hilangkan tokoh tambahan, atau taruh tokoh di depan pagar. Biarkan gedung KUA di kanan terlihat penuh, dengan papan nama 'KUA' yang besar dan terang. Pakai bidikan 'lebar' agar gedung tidak terpotong."
+    },
+    {
+     "beat": 5,
+     "berat": "ringan",
+     "masalah": "Masjid tertutup tokoh 'kamu' dan dua laki-laki di depannya, dan tokoh-tokoh itu terpotong tepi bawah dan kiri layar. Klimaks terasa penuh sesak, bukan jelas. Dua laki-laki (ayah dan wali) tidak disebut di rencana.",
+     "saran": "Kecilkan atau geser 'kamu' agar masjid terlihat utuh di tengah. Pakai bidikan 'lebar' supaya tokoh tidak terpotong, dan tambahkan hentakan atau perubahan warna agar klimaks beda dari beat lain."
+    },
+    {
+     "beat": 6,
+     "berat": "ringan",
+     "masalah": "Jendela gelap dan tokoh laki-laki berpeci hampir tidak berhubungan dengan narasi tentang anak yang menanggung akibat. Tanpa teks layar, beat ini terasa kosong dan nyaris sama dengan beat 8.",
+     "saran": "Tambahkan teks layar singkat, misalnya 'ANAK TAK TAHU APA-APA'. Beri 'kamu' atau anak perempuan di dekat jendela agar maknanya jelas."
+    },
+    {
+     "beat": 8,
+     "berat": "ringan",
+     "masalah": "Tokoh terpotong tepi kiri dan bawah layar tanpa alasan jelas. Komposisi hampir sama dengan beat 6 (jendela dan satu tokoh), sehingga ritme akhir terasa datar. Tokoh ini juga bukan 'kamu' yang berkaos, padahal rencana menyebut kamu 'tidak'.",
+     "saran": "Pindahkan tokoh ke dalam bingkai penuh, dekat jendela yang terang. Bedakan dengan jendela yang makin terang dan bidikan sedikit lebih lebar, supaya penutup terasa lega."
+    }
+   ],
+   "catatan": "Gaya dan stempel ILUSTRASI sudah baik dan tidak ada pelanggaran adab, tetapi teks buku di beat 3-4 terpotong dan KUA di beat 7 tertutup tokoh sehingga pesan inti tidak sampai."
+  },
+  "lembar": [
+   "hasil/claude-sonnet-5-5/wali1/periksa/putaran_0/lembar_1.jpg",
+   "hasil/claude-sonnet-5-5/wali1/periksa/putaran_0/lembar_2.jpg"
+  ],
+  "revisi": "claude-sonnet-5-5",
+  "biaya_revisi_usd": 0.070808
+ },
+ {
+  "putaran": 1,
+  "model_periksa": "claude-sonnet-5-5",
+  "biaya_usd": 0.02919,
+  "temuan": {
+   "lulus": false,
+   "temuan": [
+    {
+     "beat": 3,
+     "berat": "ringan",
+     "masalah": "Teks di dalam buku ('Nasab hanya ke ibu') nyaris menyentuh tepi halaman kiri dan kanan. Teks layar atas sama persis dengan isi buku sehingga terasa berulang. Gunung besar di belakang buku juga membuat latar ramai.",
+     "saran": "Persingkat teks buku (misalnya 'Nasab ke ibu') dan ganti teks layar dengan poin yang berbeda, misalnya 'TANPA NASAB, TANPA WALI'. Kecilkan atau hilangkan gunung di belakang buku."
+    },
+    {
+     "beat": 4,
+     "berat": "ringan",
+     "masalah": "Teks buku 'Tidak sah tanpa wali' terpotong di tepi halaman, huruf 'T' dan 'i' terakhir menempel pada pinggir buku. Buku juga digeser ke kiri sehingga tidak berada di tengah.",
+     "saran": "Persingkat teks buku menjadi 'Tidak sah tanpa wali' dengan ukuran lebih kecil, atau ubah menjadi 'Wali wajib'. Letakkan buku di tengah layar."
+    },
+    {
+     "beat": 3,
+     "berat": "ringan",
+     "masalah": "Dua frame Beat 3 (16 dtk dan 24 dtk) hampir identik, jadi sekitar 8 detik terasa diam. Beat 3 dan Beat 4 juga sama-sama menampilkan buku terbuka di tengah dengan latar yang mirip.",
+     "saran": "Beri perubahan di tengah Beat 3, misalnya kamera mendekat ke halaman buku, atau tampilkan tokoh ibu dan anak tanpa sosok ayah. Bedakan Beat 4 dengan bidikan dekat atau latar yang berbeda."
+    },
+    {
+     "beat": 5,
+     "berat": "ringan",
+     "masalah": "Beat 5 adalah klimaks, tetapi visualnya hanya masjid dengan tokoh kecil di pojok kiri bawah. Tokoh 'kamu' terpotong di tepi bawah, dan ada siluet hitam tak jelas di pojok. Pesan 'pernikahan tidak sah' kurang terasa karena tidak ada penanda ketidaksahan.",
+     "saran": "Buat klimaks lebih berbeda: bidikan lebih dekat ke masjid dengan keadaan yang menandai masalah (misalnya lampu meredup). Pindahkan 'kamu' ke posisi yang utuh di dalam layar."
+    },
+    {
+     "beat": 7,
+     "berat": "ringan",
+     "masalah": "Gedung KUA tampak seperti gedung perkantoran modern tanpa nama 'KUA' yang terlihat. Tokoh 'kamu' hanya muncul sebagian di tepi bawah dan terpotong.",
+     "saran": "Tampilkan nama 'KUA' pada gedung atau gunakan bangunan kantor yang lebih sederhana. Naikkan 'kamu' agar tampak utuh menghadap gedung."
+    },
+    {
+     "beat": 8,
+     "berat": "ringan",
+     "masalah": "Narasi menyebut firman Allah, tetapi tidak ada ayat atau penanda sumber di layar. Tokoh berdiri di pojok kiri, jauh dari jendela yang menjadi pusat cahaya.",
+     "saran": "Dekatkan tokoh ke jendela, atau tambahkan buku/mushaf dengan sub 'QS. Al-An'am: 164'. Naikkan cahaya jendela agar terasa sebagai penutup yang lega."
+    }
+   ],
+   "catatan": "Tidak ada pelanggaran adab dan cerita cukup terbaca, tetapi ritme monoton, ada teks buku yang terpotong, dan klimaks di Beat 5 belum terasa berbeda."
+  },
+  "lembar": [
+   "hasil/claude-sonnet-5-5/wali1/periksa/putaran_1/lembar_1.jpg",
+   "hasil/claude-sonnet-5-5/wali1/periksa/putaran_1/lembar_2.jpg"
+  ]
+ }
+]
