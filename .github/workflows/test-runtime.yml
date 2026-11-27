@@ -4,6 +4,7 @@ on:
   pull_request:
     paths:
       - 'newmotion/**'
+      - 'mesin-video/papan/**'
       - 'config/**'
       - 'tests/**'
       - 'pyproject.toml'
