@@ -330,7 +330,7 @@ def validasi_uji_cerita(data):
     return galat
 
 
-def validasi_peta_tempel(data, jumlah_paragraf=None):
+def validasi_peta_tempel(data, jumlah_paragraf=None, rujukan_asli=()):
     """Pastikan pemetaan mencakup naskah asli tanpa paragraf hilang/terduplikasi."""
     if not isinstance(data, dict):
         return ["pemetaan tempel harus berupa objek JSON"]
@@ -338,8 +338,22 @@ def validasi_peta_tempel(data, jumlah_paragraf=None):
     for k in ("judul", "inti"):
         if not isinstance(data.get(k), str) or not data[k].strip():
             galat.append(f"{k} pemetaan tempel wajib diisi")
-    if not isinstance(data.get("dalil", []), list):
+    daftar_dalil = data.get("dalil", [])
+    if not isinstance(daftar_dalil, list):
         galat.append("dalil pemetaan tempel harus berupa daftar")
+        daftar_dalil = []
+    else:
+        label_ai = {
+            _polos(d.get("label", "")) for d in daftar_dalil if isinstance(d, dict)
+        }
+        label_asli = {
+            _polos(str(r).strip("()[] ")) for r in rujukan_asli
+        }
+        if label_ai != label_asli:
+            galat.append(
+                "dalil tempel harus sama persis dengan rujukan yang ditulis pemilik; "
+                "AI tidak boleh menambah, mengubah, atau menghilangkan rujukan"
+            )
     if not isinstance(data.get("beat"), list) or not data["beat"]:
         return galat + ["pemetaan tempel harus memiliki daftar beat"]
 
@@ -390,7 +404,7 @@ def buat_naskah(mode, masukan, naskah_lama=None, *, tanya=None):
         tahap = "rapikan"
 
         def pemeriksa(data):
-            galat = validasi_peta_tempel(data, len(par))
+            galat = validasi_peta_tempel(data, len(par), [m.group(0) for m in _RUJUKAN.finditer(masukan)])
             if galat:
                 return galat
             beat_uji = []
