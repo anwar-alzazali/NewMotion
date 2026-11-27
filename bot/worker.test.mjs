@@ -114,3 +114,12 @@ test("produksi final gagal memberi tombol ulangi", async () => {
   assert.equal(t[0][0].callback_data, "fu:a1");
   assert.deepEqual(bacaTombol("fu:a1"), { aksi: "fu", id: "a1", alasan: null });
 });
+
+import { cekPapan } from "./worker.js";
+
+test("papan manual: JSON rusak atau kosong ditolak, papan bershot diterima", () => {
+  assert.match(cekPapan("{rusak"), /tidak terbaca/);
+  assert.match(cekPapan("[]"), /objek/);
+  assert.match(cekPapan("{}"), /kosong/);
+  assert.equal(cekPapan(JSON.stringify({ cerita: { shot: [{ at: 0 }] } })), null);
+});

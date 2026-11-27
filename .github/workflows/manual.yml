@@ -1,0 +1,57 @@
+name: Jalur manual — render papan JSON tanpa LLM
+
+on:
+  workflow_dispatch:
+    inputs:
+      spek:
+        description: "Jalur papan di repo, mis. mesin-video/papan/kisah/mahsyar1.json atau antrean/<id>/papan_manual.json"
+        required: true
+        type: string
+      kirim:
+        description: "Kirim hasil ke Telegram"
+        required: false
+        default: "true"
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: manual-${{ inputs.spek }}
+  cancel-in-progress: true
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Pasang renderer
+        run: |
+          python -m pip install -e '.[render]'
+          python -m playwright install --with-deps chromium
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq ffmpeg fonts-noto-core fonts-dejavu-core
+      - name: Render dan periksa
+        env:
+          SPEK: ${{ inputs.spek }}
+          KIRIM: ${{ inputs.kirim }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p hasil
+          tambahan=()
+          [[ "$KIRIM" == "true" ]] && tambahan+=(--kirim)
+          python -m newmotion.application.jalur_manual "$SPEK" -o hasil/video.mp4 "${tambahan[@]}"
+      - name: Simpan artefak
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: jalur-manual
+          path: hasil/
+          retention-days: 7

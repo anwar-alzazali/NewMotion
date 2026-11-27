@@ -290,6 +290,33 @@ async function antreanBaru(env, mode, teks) {
   await dispatch(env, "naskah.yml", { id, mode });
 }
 
+export function cekPapan(isi) {
+  let spek;
+  try { spek = JSON.parse(isi); } catch (e) { return "JSON tidak terbaca: " + String(e.message || e).slice(0, 150); }
+  if (!spek || typeof spek !== "object" || Array.isArray(spek)) return "Papan harus berupa objek JSON.";
+  if (!(spek.cerita && Array.isArray(spek.cerita.shot) && spek.cerita.shot.length) && !spek.kartu && !spek.adegan)
+    return "Papan kosong: tidak ada cerita.shot, kartu, atau adegan.";
+  return null;
+}
+
+async function papanManual(env, nama, isi) {
+  if (isi.length > 900000) return kirim(env, "Berkas JSON terlalu besar (maks ±900 KB).");
+  const salah = cekPapan(isi);
+  if (salah) return kirim(env, "❌ " + salah);
+  const id = idAntrean("manual " + nama);
+  const spek = `antrean/${id}/papan_manual.json`;
+  await simpanTeks(env, spek, isi, `Antrean ${id}: papan manual`);
+  await dispatch(env, "manual.yml", { spek, kirim: "true" });
+  return kirim(env, `🧾 Papan manual diterima (${id}). Dirender tanpa LLM: render → periksa → video dikirim ke sini (±5–10 menit).\nRujukan relatif di JSON dibaca dari mesin-video/papan/kisah/, sama seperti mahsyar1.json.`);
+}
+
+async function renderPapanRepo(env, nama) {
+  const n = String(nama || "").trim().replace(/\.json$/i, "");
+  if (!/^[A-Za-z0-9_-]{1,60}$/.test(n)) return kirim(env, "Pakai: /papan <nama> — mis. /papan mahsyar1 (berkas di mesin-video/papan/kisah/). Atau kirim berkas .json langsung.");
+  await dispatch(env, "manual.yml", { spek: `mesin-video/papan/kisah/${n}.json`, kirim: "true" });
+  return kirim(env, `🧾 Render papan ${n}.json dimulai tanpa LLM. Video dan hasil periksa dikirim ke sini (±5–10 menit).`);
+}
+
 async function ubahAntrean(env, q, t) {
   const st = await bacaJsonRepo(env, `antrean/${t.id}/status.json`);
   if (!st) return TG(env, "answerCallbackQuery", { callback_query_id: q.id, text: "Antrean tidak ditemukan" });
@@ -475,11 +502,13 @@ const BANTUAN = `Mesin KONTEN (pribadi)
 • 💡 Ide: tulis topik, AI menyusun naskah (Gemini gratis; bila gagal, Claude ±Rp500), dalil diverifikasi, Anda cek.
 • Setelah naskah disetujui, bot membuat pratinjau visual MP4 tanpa TTS. Tinjau blocking, aksi, tokoh, latar, dan kamera; pilih Setujui visual atau Revisi visual. TTS belum dimulai sebelum visual disetujui.
 • Video baru datang dengan tombol ✅ Setujui / ❌ Tolak. Tolak → pilih alasan (atau "Lainnya" lalu ketik). Berubah pikiran? Ketuk ↩️ Ubah. Keputusan tersimpan di repo (keputusan lama ikut tercatat) dan jadi bahan belajar mesin.
+• 🧾 Jalur manual (tanpa LLM): kirim berkas .json papan tulisan tangan (format seperti mahsyar1.json), atau /papan <nama> untuk papan yang sudah ada di repo. Langsung render → periksa → video dikirim. Narasi dipakai bila JSON merujuk berkas suaranya.
 • Balas komentar: kirim tangkapan layar komentar (tanpa keterangan, atau keterangan "k" + catatan, mis. "k jawab singkat").
 • Tanya apa saja: ketik pesan biasa. /reset = hapus riwayat obrolan.`;
 
 const PERINTAH = [{ command: "menu", description: "Menu utama" }, { command: "naskah", description: "Kirim naskah jadi" },
   { command: "ide", description: "Ide jadi naskah" }, { command: "status", description: "Lihat proses antrean" },
+  { command: "papan", description: "Render papan JSON di repo tanpa LLM" },
   { command: "bantuan", description: "Cara pakai" }, { command: "reset", description: "Hapus riwayat obrolan" }];
 
 async function tangani(env0, u) {
@@ -501,6 +530,13 @@ async function tangani(env0, u) {
     if (id) return revisiAntrean(env, id, msg.text.trim().slice(0, 2000));
   }
   const dok = msg.document;
+  // Jalur manual: papan JSON tulisan tangan langsung dirender, tanpa LLM.
+  if (dok && /\.json$/i.test(dok.file_name || "")) {
+    const info = await TG(env, "getFile", { file_id: dok.file_id });
+    if (!info.ok) return kirim(env, "Gagal mengambil berkas.");
+    const isi = await (await fetch(`https://api.telegram.org/file/bot${env.TELEGRAM_BOT_TOKEN}/${info.result.file_path}`)).text();
+    return papanManual(env, dok.file_name.replace(/\.json$/i, ""), isi);
+  }
   if (dok && /^naskah/i.test((msg.caption || "").trim()) && /\.(txt|md)$/i.test(dok.file_name || "")) {
     const info = await TG(env, "getFile", { file_id: dok.file_id });
     if (!info.ok) return kirim(env, "Gagal mengambil berkas.");
@@ -523,6 +559,7 @@ async function tangani(env0, u) {
   if (t === "/naskah") return sisa.length > 40 ? antreanBaru(env, "tempel", sisa) : tanyaNaskah(env);
   if (t === "/ide") return sisa ? antreanBaru(env, "ide", sisa) : tanyaIde(env);
   if (t === "/status") return daftarStatus(env);
+  if (t === "/papan") return renderPapanRepo(env, sisa);
   if (t === "/reset") { await simpanPengaturan(env, "chat_" + env.DARI, "[]"); return kirim(env, "Riwayat obrolan dihapus."); }
   if (teks.startsWith("/")) return kirim(env, "Perintah tidak dikenal. /bantuan");
   return chatPribadi(env, teks);
