@@ -645,6 +645,15 @@ def proses(id_: str, mode: str, *, folder: Path = ANTREAN, tanya=None, quran=Non
                 "revisi", "PERBAIKAN WAJIB BERDASARKAN PEMERIKSA INDEPENDEN:\\n"
                 + json.dumps(arahan, ensure_ascii=False), n
             )
+            token_penulis = meta_penulis.token_masuk + meta_penulis.token_keluar
+            st["token_ai"] += token_penulis
+            st["biaya_ai_usd"] = round(st["biaya_ai_usd"] + meta_penulis.biaya_usd, 6)
+            st["pemeriksaan_naskah_ai"]["percobaan_perbaikan"] = {
+                "model": meta_penulis.model,
+                "token_masuk": meta_penulis.token_masuk,
+                "token_keluar": meta_penulis.token_keluar,
+                "biaya_usd": meta_penulis.biaya_usd,
+            }
             daftar_diizinkan = {d["id"]: d for d in n.get("dalil", []) if isinstance(d, dict)}
             daftar_diizinkan.update({d["id"]: d for d in usulan_terverifikasi if d.get("id")})
             revisi["dalil"] = [
@@ -661,13 +670,14 @@ def proses(id_: str, mode: str, *, folder: Path = ANTREAN, tanya=None, quran=Non
                     n, laporan = verifikasi(n, quran=quran)
                     # Verifikasi ulang setelah perbaikan memastikan dalil yang berubah tidak lolos dari cache lama.
                     temuan, meta_periksa_ulang = pemeriksa_naskah.periksa(n)
-                    st["token_ai"] += meta_penulis.token_masuk + meta_penulis.token_keluar + meta_periksa_ulang.token_masuk + meta_periksa_ulang.token_keluar
-                    st["biaya_ai_usd"] = round(st["biaya_ai_usd"] + meta_penulis.biaya_usd + meta_periksa_ulang.biaya_usd, 6)
-                    st["pemeriksaan_naskah_ai"]["perbaikan"] = {
-                        "model_penulis": meta_penulis.model,
-                        "model_verifikasi_ulang": meta_periksa_ulang.model,
-                        "token": meta_penulis.token_masuk + meta_penulis.token_keluar + meta_periksa_ulang.token_masuk + meta_periksa_ulang.token_keluar,
-                        "biaya_usd": round(meta_penulis.biaya_usd + meta_periksa_ulang.biaya_usd, 6),
+                    token_periksa_ulang = meta_periksa_ulang.token_masuk + meta_periksa_ulang.token_keluar
+                    st["token_ai"] += token_periksa_ulang
+                    st["biaya_ai_usd"] = round(st["biaya_ai_usd"] + meta_periksa_ulang.biaya_usd, 6)
+                    st["pemeriksaan_naskah_ai"]["perbaikan"]["pemeriksaan_ulang"] = {
+                        "model": meta_periksa_ulang.model,
+                        "token_masuk": meta_periksa_ulang.token_masuk,
+                        "token_keluar": meta_periksa_ulang.token_keluar,
+                        "biaya_usd": meta_periksa_ulang.biaya_usd,
                     }
             else:
                 perbaikan_gagal = True
