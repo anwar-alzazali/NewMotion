@@ -52,6 +52,12 @@ Bot Telegram tetap ada untuk alur cepat di HP; halaman ini untuk meninjau dan me
   dibuat otomatis di CI (tambahkan langkah di `test-runtime.yml` atau uji pytest dengan Playwright yang sudah
   terpasang di CI) dan diunggah sebagai artefak run. Mutu tampilan dinilai dari tangkapan layar ini.
 - Tidak ada pustaka berat tanpa alasan; bila memakai pustaka kanvas node, tulis alasannya di PR.
+- **Animasi aliran (gaya bebas, tujuan wajib):** cara menganimasikan sambungan dan node diserahkan ke
+  pengerja, tetapi animasi harus *bermakna*: memperlihatkan tahap mana yang sedang berjalan, arah aliran
+  hasil dari node ke node, dan perubahan status (mis. selesai/gagal) saat terjadi. Sambungan yang belum
+  dilewati terlihat diam; yang sudah selesai terlihat berbeda dari yang sedang mengalir. Tidak boleh sekadar
+  hiasan yang bergerak terus di semua tempat, tidak boleh membuat HP panas/patah-patah (ringan, berhenti saat
+  tab tidak terlihat), dan menghormati pengaturan "kurangi gerakan" di perangkat.
 
 ## Daftar tugas
 
