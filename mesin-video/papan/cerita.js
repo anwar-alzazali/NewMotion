@@ -1710,9 +1710,14 @@
   }
   // gambar badan bersendi (kaki di tanah, badan + lengan dalam bingkai T). Mengembalikan {g, depan, T, kepala, guling}
   // detail baju (7 Nov, akun komedi): kaus|koko|gamis|jaket{logo,aksen}|kemeja{motif batik}|daster|hoodie|blazer + handuk leher; gm = gemuk 0-1
-  function bajuDetail(P, BD, n, gm) {
+  function bajuDetail(P, BD, n, gm, blk) {
     const G = (f) => warna(BD, "#000000", f), W = 70 + 30 * gm, j = P.jenis;
     let s = "";
+    if (blk) { // (27 Nov) tampak belakang: tanpa kerah, kancing, celah dada, atau kalung; hanya garis punggung tipis
+      s += `<path d="M -30 ${-404 + n} Q 0 ${-398 + n} 30 ${-404 + n}" fill="none" stroke="${G(0.3)}" stroke-width="5"/>`;
+      if (P.handuk) s += `<path d="M -56 ${-398 + n} Q 0 ${-376 + n} 56 ${-398 + n}" stroke="${P.handuk}" stroke-width="24" fill="none" stroke-linecap="round"/>`;
+      return s;
+    }
     if (j === "kaus") s += `<path d="M -26 ${-393 + n} Q 0 ${-360 + n} 26 ${-393 + n}" fill="none" stroke="${G(0.3)}" stroke-width="6"/>`;
     else if (j === "jaket") {
       const A = P.aksen || "#ffc83d";
@@ -1882,11 +1887,12 @@
     let bdn = o.profilMotor
       ? `<path d="M -30 ${-396 + nafas} Q 22 ${-420 + nafas} 52 ${-382 + nafas} L 68 ${-270 + nafas} Q 56 ${-222 + nafas} 8 ${-206 + nafas} L -28 ${-244 + nafas} Z" fill="${BD}" stroke="${warna(BD, "#000000", 0.18)}" stroke-width="4"/>`
       : `<rect x="${-70 - 30 * GM}" y="${-395 + nafas}" width="${140 + 60 * GM}" height="215" rx="${58 + 20 * GM}" fill="${BD}"/>`;
-    if (P && !o.profilMotor) bdn += bajuDetail(P, BD, nafas, GM);
+    if (P && !o.profilMotor) bdn += bajuDetail(P, BD, nafas, GM, o.belakang);
     if (P && P.bisht) { // bisht: jubah luar terbuka berlis emas, dari bahu sampai betis
       const BS = P.bisht, lis = "#c9a24a", yb = hy0 + geserY + 150;
       bdn += o.profilMotor
         ? `<path d="M -26 ${-400 + nafas} Q -62 ${-300 + nafas} -70 ${yb} L -14 ${yb} Q -6 ${-250 + nafas} 14 ${-398 + nafas} Z" fill="${BS}" stroke="${INK}" stroke-width="4"/><path d="M 14 ${-398 + nafas} Q -6 ${-250 + nafas} -14 ${yb}" fill="none" stroke="${lis}" stroke-width="6"/>`
+        : o.belakang ? `<path d="M ${-78 - 30 * GM} ${-392 + nafas} Q 0 ${-410 + nafas} ${78 + 30 * GM} ${-392 + nafas} L ${104 + 30 * GM} ${yb} L ${-104 - 30 * GM} ${yb} Z" fill="${BS}" stroke="${INK}" stroke-width="4"/><path d="M -34 ${-402 + nafas} Q 0 ${-392 + nafas} 34 ${-402 + nafas}" stroke="${lis}" stroke-width="6" fill="none"/>` // bisht dari belakang: satu bidang utuh menutup punggung, lis emas hanya di kerah
         : [-1, 1].map((sg) => `<path d="M ${sg * 30} ${-404 + nafas} L ${sg * (78 + 30 * GM)} ${-392 + nafas} L ${sg * (104 + 30 * GM)} ${yb} L ${sg * 40} ${yb} Z" fill="${BS}" stroke="${INK}" stroke-width="4"/><path d="M ${sg * 30} ${-404 + nafas} L ${sg * 40} ${yb}" stroke="${lis}" stroke-width="6"/>`).join("");
     }
     // lengan
@@ -2035,6 +2041,7 @@
     const BD = P ? (P.warna || "#ece6d6") : BADAN, WC = P ? (P.bawah_warna || "#2f4a6a") : BADAN, bawahP = P ? (P.bawah || (P.jenis === "gamis" || P.jenis === "daster" || P.jenis === "jubah" ? "gamis" : "sarung")) : "";
     const GM = v(b.gemuk, t, d, 0), SH = 62 + 26 * GM, KB = b.kepala_besar || 1;
     const kaki = (dx, a, w = BADAN, tb = 44) => `<line x1="${dx}" y1="-200" x2="${dx + Math.sin((a * Math.PI) / 180) * 200}" y2="${-200 + Math.cos((a * Math.PI) / 180) * 200}" stroke="${w}" stroke-width="${tb}" stroke-linecap="round"/>`;
+    const BLK = !b.profil && !!v(b.belakang, t, d, false); // tampak belakang: pakaian tanpa detail depan
     const RIG = b.pose != null || HD || b.profil ? poseKini(b, HD ? ta : t, HD) : null; // tampak samping selalu bersendi (badan ikut menyamping)
     if (RIG && b._gabungan) { x += RIG.geser || 0; arah += (RIG.toleh || 0) * 4; tunduk += (RIG.angguk || 0) * 3; }
     // AKSI GALI: pose kerja adalah aksi berulang, bukan pose statis.
@@ -2069,8 +2076,9 @@
         }
       }
       if (bawahP !== "gamis") g += `<rect x="${-70 - 30 * GM}" y="${-395 + nafas}" width="${140 + 60 * GM}" height="${bawahP === "sarung" ? 190 : 215}" rx="${56 + 20 * GM}" fill="${BD}"/>`;
-      g += bajuDetail(P, BD, nafas, GM);
-      if (P.bisht) g += [-1, 1].map((sg) => `<path d="M ${sg * 30} ${-404 + nafas} L ${sg * (78 + 30 * GM)} ${-392 + nafas} L ${sg * (104 + 30 * GM)} -50 L ${sg * 40} -50 Z" fill="${P.bisht}" stroke="${INK}" stroke-width="4"/><path d="M ${sg * 30} ${-404 + nafas} L ${sg * 40} -50" stroke="#c9a24a" stroke-width="6"/>`).join(""); // bisht (tanpa rangka)
+      g += bajuDetail(P, BD, nafas, GM, BLK);
+      if (P.bisht && BLK) g += `<path d="M ${-78 - 30 * GM} ${-392 + nafas} Q 0 ${-410 + nafas} ${78 + 30 * GM} ${-392 + nafas} L ${104 + 30 * GM} -50 L ${-104 - 30 * GM} -50 Z" fill="${P.bisht}" stroke="${INK}" stroke-width="4"/><path d="M -34 ${-402 + nafas} Q 0 ${-392 + nafas} 34 ${-402 + nafas}" stroke="#c9a24a" stroke-width="6" fill="none"/>`;
+      else if (P.bisht) g += [-1, 1].map((sg) => `<path d="M ${sg * 30} ${-404 + nafas} L ${sg * (78 + 30 * GM)} ${-392 + nafas} L ${sg * (104 + 30 * GM)} -50 L ${sg * 40} -50 Z" fill="${P.bisht}" stroke="${INK}" stroke-width="4"/><path d="M ${sg * 30} ${-404 + nafas} L ${sg * 40} -50" stroke="#c9a24a" stroke-width="6"/>`).join(""); // bisht (tanpa rangka)
     }
     const tangan = (x2, y2) => (P ? `<circle cx="${x2}" cy="${y2}" r="19" fill="${KLB}" stroke="${INK}" stroke-width="4"/>` : "");
     const lenganKiri = `<line x1="${-SH}" y1="${-360 + nafas}" x2="${-SH - 22 - ayun * 0.3}" y2="${-200 + nafas}" stroke="${BD}" stroke-width="36" stroke-linecap="round"/>` + tangan(-SH - 22 - ayun * 0.3, -192 + nafas);
@@ -2088,7 +2096,7 @@
     if (RIG && (b.profil === "kanan" || b.profil === "kiri" || b.profil === true)
         && ["surat", "kendi", "gelas", "karung_kecil", "gulungan", "roti", "koin"].includes(RIG.pegang))
       RIG.ra = [40, 90];
-    let RG = null; if (RIG) { RG = rangka(RIG, { P, BD, WC, KLB, nafas, ayun, bawahP, t: HD ? ta : t, gm: GM, aksi: RIG && RIG._aksi || b.aksi, id: b.npc != null ? b.npc : b.id, offset: b._gerak_offset, profilMotor: (b.profil === "kanan" || b.profil === true || b.profil === "kiri") && !!RIG,
+    let RG = null; if (RIG) { RG = rangka(RIG, { P, BD, WC, KLB, belakang: BLK, nafas, ayun, bawahP, t: HD ? ta : t, gm: GM, aksi: RIG && RIG._aksi || b.aksi, id: b.npc != null ? b.npc : b.id, offset: b._gerak_offset, profilMotor: (b.profil === "kanan" || b.profil === true || b.profil === "kiri") && !!RIG,
       kait: kaitL, tanganTarget: RIG.tanganTarget }); g = RG.g;
       if (window.__tanganBoneka) window.__tanganBoneka[b.id] = tanganDunia({ sendi: RG.sendi, x, y, s, tubuh, guling: RG.guling }, b);
     }
@@ -2233,6 +2241,17 @@
       } else if (b.penutup_kepala === "kopiah") {
         k += `<path d="M -68 -48 Q 0 -68 68 -48 L 62 -88 Q 0 -110 -62 -88 Z" fill="${WPK}" stroke="${INK}" stroke-width="6"/><path d="M -58 -58 Q 0 -76 58 -58" stroke="${warna(WPK, "#000000", 0.18)}" stroke-width="5" fill="none"/>`;
       }
+    }
+    if (belakang && !pfl && gaya !== "siluet" && b.rambut !== "kerudung" && ((b.penutup_kepala && b.penutup_kepala !== "tanpa") || (P && P.peci))) { // (27 Nov) penutup kepala dari belakang: kepala orang yang membelakangi kamera tetap terbaca bersorban/berpeci/bernemes
+      const pkB = P && P.peci ? "kopiah" : b.penutup_kepala, WPK = P && P.peci ? (P.peci === true ? "#1d1520" : P.peci === "putih" ? "#ffffff" : P.peci) : (b.warna_penutup || "#e8dcc4"), gr = warna(WPK, "#000000", 0.16);
+      if (pkB === "imamah") k += `<path d="M -80 -10 Q -92 -96 -40 -116 Q 0 -132 40 -116 Q 92 -96 80 -10 Q 0 -30 -80 -10 Z" fill="${WPK}" stroke="${INK}" stroke-width="6"/><path d="M -76 -40 Q 0 -70 76 -40 M -70 -72 Q 0 -104 70 -72" fill="none" stroke="${gr}" stroke-width="7" stroke-linecap="round"/><path d="M -14 -20 Q -22 40 -12 92 L 12 92 Q 20 40 12 -20 Z" fill="${WPK}" stroke="${INK}" stroke-width="5"/>`; // ekor sorban di tengkuk
+      else if (pkB === "kain") k += `<path d="M -82 -30 Q -88 -110 -30 -120 Q 0 -126 30 -120 Q 88 -110 82 -30 L 104 118 L -104 118 Z" fill="${WPK}" stroke="${INK}" stroke-width="6" stroke-linejoin="round"/><path d="M -80 -66 Q 0 -96 80 -66" fill="none" stroke="#1d1a22" stroke-width="12" stroke-linecap="round"/><path d="M -40 0 Q -46 60 -50 116 M 40 0 Q 46 60 50 116" stroke="${gr}" stroke-width="5" fill="none"/>`; // ghutrah menutup tengkuk sampai punggung + iqal
+      else if (pkB === "kopiah") k += `<path d="M -72 -36 Q 0 -54 72 -36 L 66 -88 Q 0 -110 -66 -88 Z" fill="${WPK}" stroke="${INK}" stroke-width="6"/>`;
+      else if (pkB === "mahkota") k += `<path d="M -70 -58 L 70 -58 L 82 -116 L 44 -88 L 22 -130 L 0 -92 L -22 -130 L -44 -88 L -82 -116 Z" fill="${b.warna_penutup || "#e8b934"}" stroke="${INK}" stroke-width="6" stroke-linejoin="round"/><rect x="-74" y="-70" width="148" height="18" rx="6" fill="#b8841c" stroke="${INK}" stroke-width="4"/>`;
+      else if (pkB === "nemes") { const WN = b.warna_penutup || "#e2b13c", GN = "#1f3f8a";
+        k += `<path d="M -80 -40 Q -90 -112 -36 -124 Q 0 -132 36 -124 Q 90 -112 80 -40 L 104 100 L -104 100 Z" fill="${WN}" stroke="${INK}" stroke-width="6" stroke-linejoin="round"/>`;
+        for (let i = 0; i < 6; i++) k += `<path d="M ${-82 - i * 3} ${-80 + i * 30} Q 0 ${-98 + i * 30} ${82 + i * 3} ${-80 + i * 30}" stroke="${GN}" stroke-width="8" fill="none" stroke-linecap="round"/>`;
+        k += `<path d="M -16 60 L 16 60 L 12 150 Q 0 158 -12 150 Z" fill="${WN}" stroke="${INK}" stroke-width="5"/>` + [80, 104, 128].map((yy) => `<line x1="-14" y1="${yy}" x2="14" y2="${yy}" stroke="${GN}" stroke-width="5"/>`).join(""); } // kepang kain di punggung
     }
     const muka = ANW && !belakang && !b.profil && gaya !== "dajjal";
     if (muka && gaya !== "siluet") k += `<path d="M 18 -80 A 75 82 0 0 1 18 80 A 58 82 0 0 0 18 -80 Z" fill="#3a1f2a" opacity=".13"/>`; // bayangan separuh wajah
