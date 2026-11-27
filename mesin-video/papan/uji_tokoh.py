@@ -141,6 +141,9 @@ TOKOH_KAIT = {k: v for k, v in TOKOH.items() if k != "bayangan"}
 ADEGAN_KAIT = [
     ("motor", {"horizon": 1300, "palet": "siang", "benda": [{"jenis": "motor", "id": "m", "x": 540, "y": 1650, "s": 1.4}],
                "boneka": [{**TOKOH_KAIT, "kait": "m"}]}, "samping"),
+    ("perahu kecil", {"horizon": 1300, "palet": "siang",
+                     "benda": [{"jenis": "perahu_kecil", "id": "p", "x": 540, "y": 1700, "s": 1.1}],
+                     "boneka": [{**TOKOH_KAIT, "kait": "p"}]}, "samping"),
     ("motor arah kiri", {"horizon": 1300, "palet": "siang",
                          "benda": [{"jenis": "motor", "id": "m", "x": 540, "y": 1650, "s": 1.4, "arah": -1}],
                          "boneka": [{**TOKOH_KAIT, "kait": "m"}]}, "samping"),
