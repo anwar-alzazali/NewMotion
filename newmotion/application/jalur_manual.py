@@ -202,7 +202,7 @@ def siapkan_pratinjau_visual(p: Path, durasi_per_shot: float = 4.0) -> Path:
         spek.pop(k, None)
     spek["musik"] = False
     tujuan = p.parent / f".pratinjau-{p.stem}.json"
-    tujuan.write_text(json.dumps(spek, ensure_ascii=False, indent=2) + "\\n", encoding="utf-8")
+    tujuan.write_text(json.dumps(spek, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     return tujuan
 
 
@@ -229,7 +229,7 @@ def jalankan(p: Path, video: Path, *, tts_fn=None, pratinjau_visual: bool = Fals
     baris = [b for b in hasil_periksa.stdout.splitlines() if b.startswith(("GAGAL", "PERIKSA"))]
     return {"lulus": hasil_periksa.returncode == 0, "tahap": "periksa",
             "mode": "pratinjau_visual" if pratinjau_visual else "final", "ada_narasi": ada_narasi,
-            "laporan": "\\n".join(baris) or "semua butir LOLOS", "periksa": str(kerja)}
+            "laporan": "\n".join(baris) or "semua butir LOLOS", "periksa": str(kerja)}
 
 
 # ---------------- Telegram ----------------
