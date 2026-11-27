@@ -492,6 +492,16 @@
     const tl = t - (o.at || 0); if (tl < 0) return "";
     const x = v(o.x, t, d, 540), y = v(o.y, t, d, 1000), sc = v(o.s, t, d, 1), miring = v(o.miring, t, d, 0), op = (o.at ? clamp(tl / 0.4) : 1) * v(o.op, t, d, 1), j = o.jenis;
     let g = "";
+    if (j === "mobil_dorong") { // mobil tampak samping; gerak x kecil menandai roda terdorong
+      const putar = t * 5.5, badan = v(o.tekan, t, d, 0);
+      g += `<ellipse cx="0" cy="8" rx="330" ry="28" fill="#1d1520" opacity=".22"/>`;
+      g += `<path d="M -310 -92 L -270 -190 Q -245 -245 -155 -250 L 110 -250 Q 170 -245 215 -165 L 300 -125 L 320 -48 L 300 4 L -300 4 Z" fill="#397f9e" stroke="${INK}" stroke-width="12" stroke-linejoin="round"/>`;
+      g += `<path d="M -205 -190 Q -180 -230 -130 -230 L -30 -230 L -30 -145 L -240 -145 Z M -5 -230 L 100 -230 Q 145 -225 180 -145 L -5 -145 Z" fill="#cce8f1" stroke="${INK}" stroke-width="8" stroke-linejoin="round"/>`;
+      g += `<path d="M -300 -92 L 300 -92 L 312 -40 L -300 -40 Z" fill="#28627b" stroke="${INK}" stroke-width="7"/>`;
+      g += `<rect x="-285" y="-30" width="45" height="24" rx="8" fill="#ffe7a6" stroke="${INK}" stroke-width="5"/><rect x="260" y="-30" width="35" height="24" rx="7" fill="#e86b52" stroke="${INK}" stroke-width="5"/>`;
+      [-190, 190].forEach((cx) => { g += `<g transform="translate(${cx} -4) rotate(${putar})"><circle r="62" fill="#24252b" stroke="${INK}" stroke-width="9"/><circle r="31" fill="#c4cbd0" stroke="#4a5159" stroke-width="8"/><circle r="9" fill="#6b7780"/><path d="M -24 0 H 24 M 0 -24 V 24 M -17 -17 L 17 17 M 17 -17 L -17 17" stroke="#6b7780" stroke-width="6"/></g>`; });
+      g += `<path d="M -50 -88 Q 0 -104 55 -88" stroke="#a9d5e2" stroke-width="8" fill="none" opacity=".7"/>`;
+      if (badan > 0) g += `<path d="M -320 -115 l -32 0 M -330 -90 l -28 0" stroke="#d8e9ef" stroke-width="7" stroke-linecap="round" opacity=".7"/>`;
     if (j === "ngarai") { // dinding besi-tembaga Zulkarnain di celah dua gunung (QS 18:93-97). x,y = kaki dinding; lubang 0-1 (galian, inti terang = hampir tembus), jebol 0-1, kilap = detik dinding "utuh kembali"
       const lb = v(o.lubang, t, d, 0), jb = v(o.jebol, t, d, 0), lx = o.lx || 0, ly = o.ly == null ? -190 : o.ly, R = rng(o.seed || 3), kil = o.kilap != null ? t - o.kilap : -1, H = 1500, BATU = o.gaya === "batu_kapur";
       g = `<defs><linearGradient id="ngw" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${BATU ? "#d7bd91" : "#626a7a"}"/><stop offset=".55" stop-color="${BATU ? "#a9875d" : "#3c404d"}"/><stop offset="1" stop-color="${BATU ? "#70563d" : "#1c1e27"}"/></linearGradient><linearGradient id="ngf" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${BATU ? "#8b7053" : "#34305a"}"/><stop offset=".6" stop-color="${BATU ? "#5e4938" : "#1b1830"}"/><stop offset="1" stop-color="${BATU ? "#34291f" : "#0b0a14"}"/></linearGradient><radialGradient id="ngl"><stop offset="0" stop-color="#fffbe0"/><stop offset=".22" stop-color="#ffd27a"/><stop offset=".55" stop-color="#ff8a2a" stop-opacity=".5"/><stop offset="1" stop-color="#ff8a2a" stop-opacity="0"/></radialGradient></defs>`;
@@ -1528,6 +1538,7 @@
   // ditempelkan: pinggul ke dudukan, kaki ke pijakan, tangan ke pegangan (IK dua tulang), sudut tokoh mengikuti benda.
   const KAIT = {
     motor: { sudut: "samping", duduk: [-36, -250], pegang: [[118, -334], [110, -330]], pijak: [[44, -108], [56, -108]], skala: 0.85 },
+    mobil_dorong: { sudut: "samping", duduk: [-300, -90], pegang: [[-245, -190], [-245, -105]], pijak: [[-175, 0], [-65, 0]], skala: 1 },
     perahu_kecil: { sudut: "samping", duduk: [0, -120], pijak: [[-60, -90], [60, -90]], skala: 0.82 }, // penumpang duduk; tidak ada pegangan tetap
     kursi: { sudut: "depan", duduk: [0, -125], skala: 1 },
     sofa: { sudut: "depan", duduk: [0, -125], skala: 1 },
@@ -1605,6 +1616,7 @@
     silang: { la: [20, -100], ra: [20, -100], depan: 1 }, pinggang1: { la: [45, -45] },
     tepuk_dahi: { ra: [150, -165], depan: 1, kepala: -6 }, garuk_kepala: { ra: [150, -178], depan: 1, kepala: 8, lambai: 0.35 },
     condong: { badan: 7, la: [14, 10], ra: [14, 10] }, mundur: { badan: -7, la: [26, 40], ra: [26, 40] },
+    dorong: { turun: 24, badan: 22, kepala: 8, la: [105, 78], ra: [105, 78], lk: [-8, 18], rk: [-8, 18] },
     lemas: { badan: 4, kepala: 10, la: [4, 2], ra: [4, 2] },
   };
   // ---- TOKOH HIDUP (13 Nov 2026): cerita.hidup:true (atau boneka.hidup) -> pose loncat + tahan, wajah berganti, lip-sync vokal, idle, reaksi ----
@@ -2331,7 +2343,7 @@
         for (let i = 0; i < 6; i++) k += `<path d="M ${-82 - i * 3} ${-80 + i * 30} Q 0 ${-98 + i * 30} ${82 + i * 3} ${-80 + i * 30}" stroke="${GN}" stroke-width="8" fill="none" stroke-linecap="round"/>`;
         k += `<path d="M -16 60 L 16 60 L 12 150 Q 0 158 -12 150 Z" fill="${WN}" stroke="${INK}" stroke-width="5"/>` + [80, 104, 128].map((yy) => `<line x1="-14" y1="${yy}" x2="14" y2="${yy}" stroke="${GN}" stroke-width="5"/>`).join(""); } // kepang kain di punggung
     }
-    const muka = ANW && !belakang && !b.profil && gaya !== "dajjal";
+    const muka = ANW && !belakang && (!b.profil || b.profil_wajah) && gaya !== "dajjal";
     if (muka && gaya !== "siluet") k += `<path d="M 18 -80 A 75 82 0 0 1 18 80 A 58 82 0 0 0 18 -80 Z" fill="#3a1f2a" opacity=".13"/>`; // bayangan separuh wajah
     if (muka && (wajah === "lelah" || wajah === "takut" || wajah === "marah" || wajah === "malu" || keringat > 0) && gaya !== "siluet") k += `<ellipse cx="${ex - 44}" cy="${30 + ey}" rx="16" ry="9" fill="#ff6b6b" opacity="${0.25 + 0.3 * PANAS}"/><ellipse cx="${ex + 44}" cy="${30 + ey}" rx="16" ry="9" fill="#ff6b6b" opacity="${0.25 + 0.3 * PANAS}"/>`; // pipi memerah
     if (muka) {
