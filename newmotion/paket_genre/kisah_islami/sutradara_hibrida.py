@@ -76,6 +76,8 @@ def arahkan_hibrida(naskah: Mapping, folder: str | Path, *, genre: str = "kisah_
             return spek, info
         except (GalatLLM, ValueError, RuntimeError) as e:
             info["catatan"] = f"sutradara LLM gagal, memakai sutradara aturan: {str(e)[:240]}"
+            folder.mkdir(parents=True, exist_ok=True)
+            (folder / "sutradara_galat.txt").write_text(str(e) + "\n", encoding="utf-8")  # galat lengkap untuk diperbaiki
     elif k["sutradara"] == "llm":
         info["catatan"] = "kunci LLM tidak tersedia; memakai sutradara aturan"
     spek, _, _ = arahkan_naskah(naskah, genre_pilihan=genre)
