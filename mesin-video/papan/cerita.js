@@ -469,16 +469,17 @@
         for (let i = 0; i < 14; i++) { const a = R2() * 6.283, sp = 70 + R2() * 260; g += `<circle cx="${Math.cos(a) * sp * q}" cy="${Math.sin(a) * sp * q + 170 * q * q}" r="${6 * (1 - q) + 1.5}" fill="${i % 3 ? "#ffd27a" : "#fff"}" opacity="${1 - q}"/>`; } }
     } else if (j === "pemimpin") { // siluet pemimpin di atas batu; angkat 0-1 = lengan terangkat
       g = `<path d="M -170 0 Q -130 -76 -40 -90 L 70 -86 Q 140 -64 175 0 Z" fill="#0b0912"/><g transform="translate(0 -84)">` + sosok(0, 0, 1.3, { ang: mix(14, -150, v(o.angkat, t, d, 0)), rim: v(o.rim, t, d, 0.8) }) + `</g>`;
-    } else if (j === "arus") { // kerumunan siluet bergerak. mode lereng (turun dari dua punggung bukit ke (0,0)), cahaya (berlari masuk ke cahaya di (0,0)), lari (mendatar ke kanan); maju = kemajuan, rebah 0-1
+    } else if (j === "arus") { // kerumunan siluet bergerak. mode lereng (turun dari dua punggung bukit ke (0,0)), cahaya (berlari masuk ke cahaya di (0,0)), lari (mendatar ke kanan), lorong (masuk menjauh ke ujung lorong laut_terbelah; otomatis menempel ke laut_terbelah di beat yang sama); maju = kemajuan, rebah 0-1
       const n = o.n || 40, R = rng(o.seed || 21), mj = v(o.maju, t, d, t * 0.2), rb = v(o.rebah, t, d, 0), md = o.mode || "lereng", L = [];
       for (let i = 0; i < n; i++) { const r1 = R(), r2 = R(), r3 = R(), sg = i % 2 ? 1 : -1, p = md === "cahaya" ? clamp(mj * (0.7 + r2 * 0.6) - r1 * 0.5) : (mj + r1) % 1; let px, py, k;
         if (md === "lereng") { px = sg * mix(640, 50 + r2 * 330, p) + (r3 - 0.5) * 120; py = mix(-860, 240, Math.pow(p, 1.25)) + (r2 - 0.5) * 60; k = mix(0.14, 1.0, p); }
         else if (md === "cahaya") { px = mix((r3 - 0.5) * 1150, (r3 - 0.5) * 70, p); py = mix(430 + r2 * 220, -10, Math.pow(p, 0.8)); k = mix(1.3, 0.1, Math.pow(p, 0.7)); }
+        else if (md === "lorong") { const Dl = o.jauh || 560; px = (r3 - 0.5) * mix(460, 50, Math.pow(p, 0.7)); py = mix(60, -Dl * 0.95, Math.pow(p, 0.8)); k = mix(0.95, 0.22, Math.pow(p, 0.8)); } // (27 Nov) masuk menjauh ke ujung lorong (laut terbelah)
         else { px = mix(-760, 760, p); py = (r2 - 0.5) * 170; k = 0.5 + r2 * 0.28; }
         L.push({ px, py, k, ph: r1 * 6, sg, p }); }
       L.sort((a, b) => a.k - b.k);
       L.forEach((f) => { if (md === "cahaya" && (f.p >= 1 || f.p <= 0)) return; const fx = md === "lari" ? 1 : md === "cahaya" ? (f.px > 0 ? -1 : 1) : -f.sg;
-        g += `<g transform="translate(${f.px} ${f.py}) scale(${fx} 1)" opacity="${md === "lereng" ? clamp(f.p * 6) * clamp((1 - f.p) * 8) : md === "lari" ? clamp(f.p * 8) * clamp((1 - f.p) * 8) : 1}">` + sosok(0, 0, f.k, { ang: rb > 0 ? 10 : 20 + Math.sin(t * 10 + f.ph) * 40, langkah: rb > 0 ? 0 : Math.sin(t * 10 + f.ph), rot: rb * 86 * (f.ph > 3 ? 1 : -1), rim: o.rim || 0, warna: o.warna }) + `</g>`; });
+        g += `<g transform="translate(${f.px} ${f.py}) scale(${fx} 1)" opacity="${md === "lereng" ? clamp(f.p * 6) * clamp((1 - f.p) * 8) : md === "lari" || md === "lorong" ? clamp(f.p * 8) * clamp((1 - f.p) * 8) : 1}">` + sosok(0, 0, f.k, { ang: rb > 0 ? 10 : 20 + Math.sin(t * 10 + f.ph) * 40, langkah: rb > 0 ? 0 : Math.sin(t * 10 + f.ph), rot: rb * 86 * (f.ph > 3 ? 1 : -1), rim: o.rim || 0, warna: o.warna }) + `</g>`; });
     } else if (j === "ombak") { // banjir / laut badai berlapis (15 Nov): y = permukaan air; tinggi = amplitudo px (300 = "laksana gunung"); lapis, jarak, panjang, cepat, warna [atas, bawah], buih
       const A = v(o.tinggi, t, d, 40), n = o.lapis || 3, L = o.panjang || 260, sd = o.seed || 0, id = "om" + sd + "_" + Math.round(y), ca = o.warna || ["#2b4a78", "#0b1832"], kc = o.cepat || 1;
       g = `<defs><linearGradient id="${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${ca[0]}"/><stop offset=".35" stop-color="${ca[1]}"/><stop offset="1" stop-color="#03060f"/></linearGradient></defs>`;

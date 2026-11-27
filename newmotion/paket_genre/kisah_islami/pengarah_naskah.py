@@ -439,7 +439,29 @@ def _maks(v, bawaan):
     return float(v) if isinstance(v, (int, float)) else bawaan
 
 
-def _ikat_langit(shot: dict, subjek: list[dict]) -> None:
+def _angka_awal(v, bawaan: float) -> float:
+    if isinstance(v, (int, float)):
+        return float(v)
+    if isinstance(v, list) and v and isinstance(v[0], list):
+        return float(v[0][1])
+    return bawaan
+
+
+def _cakrawala_air(benda: list[dict], h: float) -> float:
+    """y garis laut terjauh yang tampak (tempat matahari terbit/terbenam), dari benda air di shot."""
+    for o in benda:
+        s = _angka_awal(o.get("s"), 1.0)
+        y = _angka_awal(o.get("y"), h)
+        if o.get("jenis") == "laut_terbelah":
+            return y - _angka_awal(o.get("jauh"), 560) * s - 20 * s
+        if o.get("jenis") == "pantai":
+            return y - _angka_awal(o.get("tinggi"), 200) * s
+        if o.get("jenis") in ("laut", "ombak"):
+            return y
+    return h
+
+
+def _ikat_langit(shot: dict, subjek: list[dict], teks: str = "") -> None:
     """Benda langit duduk di langit relatif terhadap cakrawala shot, bukan di tanah.
 
     Tanpa ini matahari/bulan subjek mendapat y tanah bawaan dan tertutup tanah/kerumunan
@@ -451,6 +473,13 @@ def _ikat_langit(shot: dict, subjek: list[dict]) -> None:
             # piringan (ukuran terbesarnya) hampir utuh di atas cakrawala, digambar di depan
             # gunung latar: matahari subjek adalah pusat perhatian, bukan hiasan di balik bukit.
             r = _maks(o.get("r"), 300)
+            air = any(x.get("jenis") in ("laut", "laut_terbelah", "ombak", "pantai") for x in subjek)
+            if re.search(r"\b(terbit|fajar|subuh|terbenam|senja|maghrib|tenggelamnya matahari)\b", teks, re.IGNORECASE) or air:
+                # (27 Nov) matahari terbit/terbenam (atau di atas laut): duduk DI cakrawala, di belakang laut/darat,
+                # sehingga separuh piringan tertutup garis laut, tidak melayang di depan dinding air.
+                o.update({"x": o.get("x", 540), "y": round(_cakrawala_air(subjek, h) - r * 0.35), "s": 1, "belakang": True})
+                o.pop("depan", None)
+                continue
             o.update({"y": round(h - max(r * 0.85, 230.0)), "s": 1})  # kecil: di atas kepala tokoh depan
             o.pop("belakang", None)
             continue
@@ -728,7 +757,7 @@ def arahkan(naskah: dict, waktu_adegan: list[float] | None = None,
                 benda += [x for x in subjek["benda"] if x.get("jenis") not in jenis_ada]
             if subjek["benda"]:
                 _ikat_posisi_subjek(s, subjek["benda"])
-                _ikat_langit(s, subjek["benda"])
+                _ikat_langit(s, subjek["benda"], tx)
                 if not rb or subjek["kamu"] == "saksi":
                     benda, b, kamera = _susun_ulang_untuk_subjek(benda, subjek["benda"], b, kamera, look, wajah,
                                                                   pose, ds, tx, posisi, R, paksa_saksi=bool(rb))

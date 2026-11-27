@@ -183,7 +183,7 @@ def perbaiki_rencana(r: Any, narasi_beat: list[str], *, beat_berdalil: set[int] 
                 # adab: figuran berwajah tidak boleh di beat bertokoh mulia -> kerumunan siluet
                 total = sum(f.get("jumlah", 1) if isinstance(f.get("jumlah"), int) else 1 for f in fig)
                 b["subjek"].append({"jenis": "arus", "tempat": "tengah",
-                                    "keadaan": {"mode": "lari", "n": max(6, min(20, total * 3)), "maju": [0.1, 0.9]}})
+                                    "keadaan": {"mode": "lorong" if "laut_terbelah" in jenis_beat else "lari", "n": max(6, min(20, total * 3)), "maju": [0.1, 0.9]}})
                 b.pop("figuran")
                 catat.append(f"{lbl}: figuran diganti kerumunan siluet (beat menyebut tokoh mulia)")
                 continue
