@@ -625,7 +625,7 @@ def proses(id_: str, mode: str, *, folder: Path = ANTREAN, tanya=None, quran=Non
                 and d.get("diverifikasi_oleh")
                 and (d.get("derajat", "sahih") in ("sahih", "hasan"))
             ]
-        berat = [x for x in temuan.get("temuan", []) if x.get("tingkat") == "berat"]
+        temuan_awal = copy.deepcopy(temuan.get("temuan", []))\n        berat = [x for x in temuan_awal if x.get("tingkat") == "berat"]
         if berat and mode != "tempel":
             arahan = {
                 "temuan_pemeriksa": temuan.get("temuan", []),
@@ -671,13 +671,24 @@ def proses(id_: str, mode: str, *, folder: Path = ANTREAN, tanya=None, quran=Non
                     "bukti": "Keluaran perbaikan penulis tidak lolos validator.",
                     "alasan": "; ".join(galat_revisi[:4]), "saran": "Perlu revisi manual pemilik.",
                 })
-        st["pemeriksaan_naskah"] = temuan
-        jumlah_t = len(temuan.get("temuan", []))
-        st["pemeriksaan_naskah_ringkas"] = (
-            (f"{jumlah_t} temuan; 1 putaran perbaikan otomatis" if mode != "tempel" and berat
-             else f"{jumlah_t} temuan; perlu tinjauan pemilik")
-            if jumlah_t else "tidak ada temuan"
-        )
+        temuan_akhir = temuan.get("temuan", [])
+        st["pemeriksaan_naskah"] = {
+            "temuan_awal": temuan_awal,
+            "temuan_akhir": temuan_akhir,
+            "perbaikan_otomatis_dicoba": bool(berat and mode != "tempel"),
+        }
+        kategori = ", ".join(dict.fromkeys(x.get("kategori", "") for x in temuan_awal if x.get("kategori")))
+        if temuan_awal and berat and mode != "tempel":
+            st["pemeriksaan_naskah_ringkas"] = (
+                f"{len(temuan_awal)} temuan awal ({kategori}); perbaikan otomatis dicoba; "
+                f"sisa {len(temuan_akhir)}"
+            )[:300]
+        elif temuan_akhir:
+            st["pemeriksaan_naskah_ringkas"] = (
+                f"{len(temuan_akhir)} temuan ({kategori}); perlu tinjauan pemilik"
+            )[:300]
+        else:
+            st["pemeriksaan_naskah_ringkas"] = "tidak ada temuan"
     lolos = [x for x in n.get("dalil", []) if x.get("status") == "terverifikasi" and x.get("derajat", "sahih") in ("sahih", "hasan")]
     total = len(n.get("dalil", []))
     if total and len(lolos) < total:
