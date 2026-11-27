@@ -219,7 +219,8 @@
             "x": 300,
             "y": 1320,
             "s": 0.82,
-            "nama": "Nabi Musa"
+            "nama": "Nabi Musa",
+            "nama_letak": "atas"
           }
         ],
         "teks": [
@@ -280,7 +281,8 @@
             "x": 274,
             "y": 1320,
             "s": 0.73,
-            "nama": "Nabi Musa"
+            "nama": "Nabi Musa",
+            "nama_letak": "atas"
           },
           {
             "jenis": "burung_kawanan",
@@ -349,7 +351,8 @@
             "x": 540,
             "y": 1320,
             "s": 0.82,
-            "nama": "Nabi Musa"
+            "nama": "Nabi Musa",
+            "nama_letak": "atas"
           }
         ],
         "teks": [
@@ -421,7 +424,8 @@
             "x": 300,
             "y": 1320,
             "s": 0.82,
-            "nama": "Nabi Musa"
+            "nama": "Nabi Musa",
+            "nama_letak": "atas"
           }
         ],
         "teks": [
@@ -433,11 +437,6 @@
             "sub": "QS ASY-SYU'ARA 63"
           }
         ],
-        "retak": {
-          "x": 540,
-          "y": 1500,
-          "p": 0.7
-        },
         "boneka": [
           {
             "x": 880,
@@ -527,7 +526,8 @@
             "x": 300,
             "y": 1320,
             "s": 0.82,
-            "nama": "Nabi Musa"
+            "nama": "Nabi Musa",
+            "nama_letak": "atas"
           }
         ],
         "teks": [
@@ -813,6 +813,7 @@
             "teks": "Maka pada hari ini Kami selamatkan jasadmu agar engkau dapat menjadi pelajaran bagi orang-orang yang datang setelahmu, tetapi kebanyakan manusia tidak mengindahkan tanda-tanda (kekuasaan) Kami.",
             "ukuran": 34,
             "tulis_at": 0.4,
+            "latar": 0.4,
             "arab": "فَٱلْيَوْمَ نُنَجِّيكَ بِبَدَنِكَ لِتَكُونَ لِمَنْ خَلْفَكَ ءَايَةً ۚ وَإِنَّ كَثِيرًا مِّنَ ٱلنَّاسِ عَنْ ءَايَـٰتِنَا لَغَـٰفِلُونَ",
             "arab_ukuran": 40.8,
             "arab_baris": [
