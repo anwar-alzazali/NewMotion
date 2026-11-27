@@ -34,7 +34,7 @@ def test_ringkas_menulis_usulan_dengan_llm_palsu_dan_tidak_mengaktifkannya(tmp_p
          "sesudah": {"beat": [{"narasi": "Pembuka kuat"}]}},
     ]
     (tmp_path / "pelajaran_naskah.jsonl").write_text(
-        "\\n".join(json.dumps(x) for x in baris) + "\\n", encoding="utf-8")
+        "\n".join(json.dumps(x) for x in baris) + "\n", encoding="utf-8")
     class Jawaban:
         data = {"usulan": [{"pola": "Hook spesifik", "alasan": "Muncul berulang",
                             "jumlah_revisi": 2, "contoh_sebelum": "Awal",
