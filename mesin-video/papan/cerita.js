@@ -1412,6 +1412,14 @@
     // Pengendara duduk stabil, lutut menekuk dan kedua tangan menjangkau setang.
     mengendarai_motor: { turun: 70, pp: 0.3, lk: [18, 34], rk: [18, 34], la: [88, 88], ra: [88, 88], badan: -3 },
     duduk_samping: { turun: 70, badan: 4 }, // dipakai tokoh berkait tampak samping: kaki/tangan diatur titik kait
+    pegang_tongkat: { ra: [24, -18], pegang: "tongkat" },
+    pegang_kendi: { ra: [22, -28], pegang: "kendi" },
+    pegang_lentera: { ra: [18, -36], pegang: "lentera" },
+    pegang_keranjang: { ra: [28, -22], pegang: "keranjang" },
+    pegang_tasbih: { ra: [18, -70], pegang: "tasbih" },
+    pegang_surat: { ra: [20, -54], pegang: "surat" },
+    pegang_gulungan: { ra: [20, -48], pegang: "gulungan" },
+    pegang_karung_kecil: { ra: [30, -20], pegang: "karung_kecil" },
     // Penolong merendahkan pusat tubuh dan menjulurkan kedua lengan ke arah korban.
     menolong: { turun: 70, badan: 22, kepala: 8, la: [15, 20], ra: [88, 35], depan: 1 },
     peluk_lutut: { turun: 70, pp: 0.3, lk: [8, 2], rk: [8, 2], la: [-4, -22], ra: [-4, -22], badan: 0 },
@@ -1766,6 +1774,14 @@
     if (J.pegang === "hp") barang = `<g transform="translate(${Rk.H[0] - 14} ${Rk.H[1] - 30}) rotate(-8)"><rect x="-24" y="-44" width="48" height="84" rx="9" fill="#15121a" stroke="${INK}" stroke-width="4"/><rect x="-19" y="-38" width="38" height="70" rx="5" fill="#8fd0ff" opacity="${0.8 + 0.2 * Math.sin(t * 3)}"/></g>`;
     else if (J.pegang === "buku") barang = `<g transform="translate(${Rk.H[0] - 20} ${Rk.H[1] - 20})"><rect x="-40" y="-50" width="80" height="96" rx="6" fill="#7b2a20" stroke="${INK}" stroke-width="4"/><rect x="-32" y="-42" width="64" height="80" fill="#fbf2dc"/></g>`;
     else if (J.pegang === "gelas") barang = `<g transform="translate(${Rk.H[0]} ${Rk.H[1] - 26})"><path d="M -20 -30 L 20 -30 L 16 30 L -16 30 Z" fill="#dff3ff" stroke="${INK}" stroke-width="4" opacity=".9"/></g>`;
+    else if (J.pegang === "tongkat") barang = `<g transform="translate(${Rk.H[0]} ${Rk.H[1]}) rotate(-8)"><path d="M 0 12 Q -8 -72 2 -168" stroke="#80532f" stroke-width="18" fill="none" stroke-linecap="round"/><path d="M -2 -166 Q 28 -190 34 -156" stroke="#80532f" stroke-width="15" fill="none" stroke-linecap="round"/></g>`;
+    else if (J.pegang === "kendi") barang = `<g transform="translate(${Rk.H[0]} ${Rk.H[1] - 16})"><path d="M -10 -62 L 10 -62 L 12 -40 Q 44 -20 34 24 Q 28 60 -28 60 Q -44 28 -34 -6 Q -28 -32 -12 -40 Z" fill="#b97845" stroke="#503526" stroke-width="6"/><ellipse cx="0" cy="-62" rx="14" ry="7" fill="#d69b63" stroke="#503526" stroke-width="5"/></g>`;
+    else if (J.pegang === "lentera") barang = `<g transform="translate(${Rk.H[0]} ${Rk.H[1] - 18})"><path d="M -24 -46 Q 0 -86 24 -46" fill="none" stroke="#9a7445" stroke-width="7"/><rect x="-28" y="-42" width="56" height="76" rx="8" fill="#d9a34a" stroke="#503526" stroke-width="6"/><path d="M 0 -30 Q -18 -4 0 20 Q 18 -4 0 -30" fill="#fff0a0" opacity=".85"/></g>`;
+    else if (J.pegang === "keranjang") barang = `<g transform="translate(${Rk.H[0]} ${Rk.H[1] - 10})"><path d="M -42 -26 Q 0 -90 42 -26" fill="none" stroke="#8b5a2b" stroke-width="9"/><path d="M -46 -24 L 46 -24 L 34 42 L -34 42 Z" fill="#bd8b4b" stroke="#704522" stroke-width="6"/><path d="M -28 -20 L -20 38 M -4 -20 L 0 40 M 20 -20 L 24 38 M -40 0 L 40 0" stroke="#704522" stroke-width="5"/></g>`;
+    else if (J.pegang === "tasbih") barang = `<g transform="translate(${Rk.H[0]} ${Rk.H[1] - 8})"><path d="M -24 -12 C -74 -70 50 -100 52 -24 C 54 36 -32 54 -24 -12 Z" fill="none" stroke="#8b5a35" stroke-width="7"/>${Array.from({length:11},(_,i)=>{const a=i*Math.PI*2/11;return `<circle cx="${14+34*Math.cos(a)}" cy="${-20+34*Math.sin(a)}" r="7" fill="#5a3828"/>`;}).join("")}</g>`;
+    else if (J.pegang === "surat") barang = `<g transform="translate(${Rk.H[0] - 12} ${Rk.H[1] - 18}) rotate(-8)"><rect x="-34" y="-42" width="68" height="84" rx="4" fill="#f5e7c4" stroke="#8b6b42" stroke-width="5"/><path d="M -22 -20 L 22 -20 M -22 -4 L 22 -4 M -22 12 L 12 12" stroke="#9c8059" stroke-width="4"/></g>`;
+    else if (J.pegang === "gulungan") barang = `<g transform="translate(${Rk.H[0]} ${Rk.H[1] - 12}) rotate(-8)"><rect x="-38" y="-42" width="76" height="84" rx="8" fill="#ead6a7" stroke="#9a7748" stroke-width="5"/><path d="M -28 -42 Q -40 -56 -42 -42 L -42 42 Q -40 56 -28 42 M 28 -42 Q 40 -56 42 -42 L 42 42 Q 40 56 28 42" fill="#d7bd87" stroke="#9a7748" stroke-width="5"/></g>`;
+    else if (J.pegang === "karung_kecil") barang = `<g transform="translate(${Rk.H[0]} ${Rk.H[1] - 12})"><path d="M -28 -38 Q 0 -54 28 -38 L 36 34 Q 0 56 -36 34 Z" fill="#b69a68" stroke="#6f5736" stroke-width="5"/><path d="M -24 -38 Q 0 -20 24 -38" fill="none" stroke="#6f5736" stroke-width="5"/></g>`;
     else if (J.pegang === "beliung") {
       // Satu gagang mengikuti kedua titik genggam, bukan menempel pada satu tangan.
       const dx = Rk.H[0] - L.H[0], dy = Rk.H[1] - L.H[1];
