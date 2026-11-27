@@ -100,6 +100,7 @@ def test_perbaikan_otomatis_satu_putaran_dan_pemeriksaan_ulang(tmp_path, monkeyp
     assert "hook_lemah" in status["pemeriksaan_naskah_ringkas"]
     assert "sisa 0" in status["pemeriksaan_naskah_ringkas"]
     assert status["pemeriksaan_naskah_ai"]["tahap"] == "periksa_naskah"
+    assert status["token_ai"] == 18  # penulis awal + pemeriksa awal + revisi + pemeriksa ulang
 
 def test_usulan_yunus_92_harus_lolos_verifikasi_resmi_sebelum_dipakai():
     from types import SimpleNamespace
