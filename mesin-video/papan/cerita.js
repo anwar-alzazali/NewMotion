@@ -1334,13 +1334,17 @@
       g += '<ellipse cx="-8" cy="-190" rx="218" ry="132" fill="#d6c5a7" stroke="'+INK+'" stroke-width="13"/>';
       g += '<path d="M 112 -245 Q 158 -325 220 -350 L 286 -305 L 274 -170 Q 222 -126 160 -142 Z" fill="#cbb797" stroke="'+INK+'" stroke-width="12"/>';
       g += '<path d="M 218 -325 Q 260 -405 306 -374 Q 326 -350 296 -328 L 260 -312 Z" fill="#d6c5a7" stroke="'+INK+'" stroke-width="10"/>';
-      g += '<path d="M 224 -326 Q 160 -360 142 -318 Q 150 -272 205 -286 Z M 280 -326 Q 344 -365 356 -316 Q 348 -274 294 -286 Z" fill="#b99c7c" stroke="'+INK+'" stroke-width="9"/>';
-      g += '<path d="M 224 -394 Q 174 -445 198 -482 Q 224 -500 232 -464 M 280 -394 Q 324 -442 300 -478 Q 276 -494 270 -462" stroke="#6d5a43" stroke-width="17" fill="none" stroke-linecap="round"/>';
+      // Telinga panjang menggantung; kedua sisi sedikit berbeda agar terbaca dari samping.
+      g += '<path d="M 224 -326 Q 174 -354 151 -322 Q 146 -278 193 -258 Q 212 -282 224 -326 Z M 280 -326 Q 333 -354 352 -318 Q 352 -278 304 -260 Q 286 -282 280 -326 Z" fill="#b99c7c" stroke="'+INK+'" stroke-width="9"/>';
+      // Tanduk pendek melengkung ke luar, bukan lingkaran panjang.
+      g += '<path d="M 222 -390 Q 194 -416 205 -438 Q 224 -432 232 -399 Z M 280 -390 Q 308 -416 297 -438 Q 278 -432 270 -399 Z" fill="#9b8566" stroke="#5c4b38" stroke-width="8" stroke-linejoin="round"/>';
       g += '<path d="M 280 -286 Q 326 -294 332 -260 Q 320 -230 280 -244 Z" fill="#b18f70" stroke="'+INK+'" stroke-width="8"/><circle cx="294" cy="-326" r="9" fill="'+INK+'"/>';
       g += '<path d="M 260 -228 Q 280 -195 267 -165 Q 252 -184 260 -228 Z" fill="#8a7157" stroke="'+INK+'" stroke-width="6"/>';
-      for(let i=0;i<4;i++){const depan=i>=2, xx=depan?118:-138, fase=i%2?Math.PI:0, ayun=Math.sin(t*8+fase)*18*jalan, yy=depan?-105:-92;
-        g += '<path d="M '+xx+' '+yy+' L '+(xx+ayun*.55)+' -42 L '+(xx+ayun)+' 0" stroke="#75614d" stroke-width="31" fill="none" stroke-linecap="round"/>';
-        g += '<path d="M '+(xx+ayun-15)+' -2 L '+(xx+ayun+16)+' -2 L '+(xx+ayun+13)+' 12 L '+(xx+ayun-12)+' 12 Z" fill="#403a34" stroke="'+INK+'" stroke-width="4"/>';
+      // Empat kaki terpisah pada tampak samping, dengan sendi dan kuku gelap.
+      for(let i=0;i<4;i++){
+        const xx=[-150,-92,108,166][i], fase=i%2?Math.PI:0, ayun=Math.sin(t*8+fase)*18*jalan, yy=i<2?-98:-108;
+        g += '<path d="M '+xx+' '+yy+' L '+(xx+ayun*.45)+' -45 L '+(xx+ayun)+' 0" stroke="#75614d" stroke-width="29" fill="none" stroke-linecap="round"/>';
+        g += '<path d="M '+(xx+ayun-16)+' -2 L '+(xx+ayun+16)+' -2 L '+(xx+ayun+13)+' 13 L '+(xx+ayun-13)+' 13 Z" fill="#403a34" stroke="'+INK+'" stroke-width="4"/>';
       }
     } else if (j === "domba") { // domba berbulu; jalan 0-1 menggerakkan langkah
       const jalan=v(o.jalan,t,d,0), langkah=Math.sin(t*8)*20*jalan;
