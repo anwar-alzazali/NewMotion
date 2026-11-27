@@ -60,8 +60,10 @@ def uji(keluaran: Path, chrome: str | None = None) -> dict:
             if galat > BATAS_TANGAN:
                 temuan.append({"kode": "TANGAN_TIDAK_MENEMPEL", "t": c["t"], "peran": peran,
                                "jarak_px": round(galat, 3), "batas_px": BATAS_TANGAN})
-    if len(bukti) < len(WAKTU) + 2:
-        temuan.append({"kode": "SAMPEL_TIDAK_LENGKAP", "jumlah": len(bukti), "target": len(WAKTU) * 2})
+    target_bukti = sum(1 if ((t - 0.5) / 1.6) < 0.25 or ((t - 0.5) / 1.6) > 0.75
+                       else 2 for t in WAKTU)
+    if len(bukti) != target_bukti:
+        temuan.append({"kode": "SAMPEL_TIDAK_LENGKAP", "jumlah": len(bukti), "target": target_bukti})
     posisi_awal = gambar[0][2][0]["posisi"] if gambar and gambar[0][2] else None
     posisi_akhir = gambar[-1][2][0]["posisi"] if gambar and gambar[-1][2] else None
     perpindahan = jarak(posisi_awal, posisi_akhir) if posisi_awal and posisi_akhir else 0
