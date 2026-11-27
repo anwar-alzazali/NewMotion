@@ -26,6 +26,16 @@ atau sahabat (rencana ditolak). Kisah berlatar Jazirah Arab: tulis `"suku": "ara
 `berpencar` = separuh ke kiri, separuh ke kanan, saling menjauh (mis. orang yang lari dari keluarganya).
 {KEMAMPUAN_TOKOH}
 
+### Interaksi antartokoh dan benda genggam
+Bila narasi menyebut dua orang biasa berhadapan, gunakan dua entri figuran bernama unik dalam beat yang sama:
+- `nama`: ID sederhana unik, misalnya `pemberi` dan `penerima`.
+- `hadap_ke`: nama figuran lain; mesin memilih profil kiri/kanan otomatis dari posisi mereka.
+- `pegang`: salah satu jenis pada daftar "benda yang dapat dipegang" di atas. Renderer menempelkan benda ke tangan kanan tokoh.
+- Figuran yang diberi `nama` atau `hadap_ke` harus `jumlah: 1`; tempatkan pada posisi horizontal berbeda (mis. kiri dan kanan).
+- Untuk memberi benda, tambahkan `serahkan_ke` pada figuran pemberi; nama penerima harus ada di beat yang sama. Benda kecil yang dapat diserahkan: surat, kendi, gelas, karung_kecil, gulungan, roti, koin. Sistem menggerakkan kedua tangan mengikuti satu lintasan benda selama durasi serah-terima.
+Contoh: `{"nama":"pemberi","hadap_ke":"penerima","pegang":"surat","serahkan_ke":"penerima","tempat":"kiri"}` dan `{"nama":"penerima","hadap_ke":"pemberi","tempat":"kanan"}`.
+Jangan gunakan identitas tokoh nabi, rasul, malaikat, atau sahabat; pagar adab figuran tetap berlaku.
+
 ## Adab (WAJIB, pelanggaran membuat rencana ditolak)
 - Allah tidak digambarkan dalam bentuk apa pun.
 - Nabi dan rasul tidak digambar sebagai sosok; bila perlu hadir, pakai `nur` (cahaya penanda).

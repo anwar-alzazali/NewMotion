@@ -7,6 +7,7 @@ on:
       - 'mesin-video/papan/karakter/**'
       - 'mesin-video/papan/cerita.js'
       - 'mesin-video/papan/uji_tokoh.py'
+      - 'mesin-video/papan/uji_interaksi.py'
       - 'mesin-video/papan_buat.py'
       - 'mesin-video/papan/kisah/yajuj2_visual3.json'
       - 'tests/test_penataan_panggung.py'
@@ -15,9 +16,11 @@ on:
   push:
     branches:
       - 'feature/pembuat-karakter-gabungan'
+      - 'tugas-5-interaksi-tokoh-benda'
     paths:
       - 'mesin-video/papan/karakter/**'
       - 'mesin-video/papan/cerita.js'
+      - 'mesin-video/papan/uji_interaksi.py'
       - 'mesin-video/papan_buat.py'
       - 'tests/test_penataan_panggung.py'
       - 'tests/data/adegan_uji_visual.json'
@@ -41,10 +44,21 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      - name: Pasang pytest
-        run: python -m pip install pytest
+      - name: Pasang alat uji renderer
+        run: |
+          python -m pip install pytest playwright pillow
+          python -m playwright install --with-deps chromium
       - name: Jalankan tes renderer karakter
         working-directory: mesin-video/papan
         run: python -m pytest karakter/test_karakter.py karakter/test_uji_tokoh.py -v
       - name: Jalankan tes penataan panggung dan adegan motor
         run: python -m pytest tests/test_penataan_panggung.py -v
+      - name: Uji jarak tangan dan lintasan serah-terima benda
+        run: python mesin-video/papan/uji_interaksi.py -o hasil/uji_interaksi
+      - name: Simpan bukti visual interaksi
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: bukti-interaksi-tokoh
+          path: hasil/uji_interaksi/
+          if-no-files-found: ignore

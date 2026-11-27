@@ -176,6 +176,13 @@ def _validasi_figuran(fig: Any, jenis_beat: set, narasi: str, lbl: str) -> list[
     if fig and POLA_SAKRAL.search(narasi):
         return [f"{lbl}: figuran tidak boleh di beat yang menyebut nabi, malaikat, atau sahabat (adab); pakai kerumunan siluet atau tanpa tokoh"]
     g, total, kait = [], 0, kemampuan()["kait"]
+    pegang_sah = set(kemampuan()["pegang"])
+    nama_figuran = [f.get("nama") for f in fig if isinstance(f, Mapping) and isinstance(f.get("nama"), str)]
+    if len(nama_figuran) != len(set(nama_figuran)):
+        g.append(f"{lbl}: nama figuran harus unik dalam satu beat")
+    serah = [f for f in fig if isinstance(f, Mapping) and f.get("serahkan_ke") is not None]
+    if len(serah) > 1:
+        g.append(f"{lbl}: maksimal satu serah-terima benda per beat")
     for f in fig:
         if not isinstance(f, Mapping):
             g.append(f"{lbl}: figuran harus objek")
@@ -185,6 +192,30 @@ def _validasi_figuran(fig: Any, jenis_beat: set, narasi: str, lbl: str) -> list[
             g.append(f"{lbl}: figuran.jumlah 1..{MAKS_FIGURAN}")
             n = 1
         total += n
+        nama = f.get("nama")
+        if nama is not None and (not isinstance(nama, str) or not re.fullmatch(r"[a-zA-Z][a-zA-Z0-9_-]{0,23}", nama)):
+            g.append(f"{lbl}: figuran.nama harus ID sederhana 1..24 karakter")
+        if (nama is not None or f.get("hadap_ke") is not None) and n != 1:
+            g.append(f"{lbl}: figuran bernama/berelasi harus jumlah 1")
+        if f.get("hadap_ke") is not None and nama is None:
+            g.append(f"{lbl}: figuran.hadap_ke mewajibkan figuran.nama")
+        if f.get("hadap_ke") is not None:
+            if not isinstance(f["hadap_ke"], str) or f["hadap_ke"] == nama or f["hadap_ke"] not in nama_figuran:
+                g.append(f"{lbl}: figuran.hadap_ke harus nama figuran lain pada beat yang sama")
+        if f.get("pegang") is not None and (
+                not isinstance(f.get("pegang"), str) or f["pegang"] not in pegang_sah):
+            g.append(f"{lbl}: figuran.pegang harus salah satu {tuple(sorted(pegang_sah))}")
+        if f.get("serahkan_ke") is not None:
+            if not isinstance(f.get("nama"), str) or f["nama"] == f.get("serahkan_ke"):
+                g.append(f"{lbl}: figuran.serahkan_ke mewajibkan nama pemberi yang berbeda dari penerima")
+            if f.get("serahkan_ke") not in nama_figuran:
+                g.append(f"{lbl}: figuran.serahkan_ke harus nama figuran penerima pada beat yang sama")
+            benda_serah = f.get("pegang")
+            if not isinstance(benda_serah, str) or benda_serah not in {
+                    "surat", "kendi", "gelas", "karung_kecil", "gulungan", "roti", "koin"}:
+                g.append(f"{lbl}: figuran.serahkan_ke memerlukan benda kecil yang didukung serah-terima")
+            if n != 1:
+                g.append(f"{lbl}: figuran pemberi serah-terima harus jumlah 1")
         if f.get("suku", "umum") not in SUKU:
             g.append(f"{lbl}: figuran.suku harus {SUKU}")
         if f.get("tempat", "tengah") not in TEMPAT_DASAR:
@@ -202,6 +233,26 @@ def _validasi_figuran(fig: Any, jenis_beat: set, narasi: str, lbl: str) -> list[
                 g.append(f"{lbl}: figuran.naik {f['naik']!r} harus ada di subjek beat ini")
             elif n != 1:
                 g.append(f"{lbl}: figuran yang naik/duduk di benda jumlahnya 1")
+    if any(isinstance(f, Mapping) and f.get("hadap_ke") for f in fig):
+        nama_x = {f["nama"]: LETAK_FIGURAN.get(f.get("tempat", "tengah"), LETAK_FIGURAN["tengah"])[0]
+                  for f in fig if isinstance(f, Mapping) and isinstance(f.get("nama"), str) and f.get("nama")}
+        for f in fig:
+            if (isinstance(f, Mapping) and isinstance(f.get("hadap_ke"), str)
+                    and f.get("hadap_ke") in nama_x and f.get("nama") in nama_x):
+                if nama_x[f["hadap_ke"]] == nama_x[f["nama"]]:
+                    g.append(f"{lbl}: pasangan hadap_ke tidak boleh berada pada tempat horizontal yang sama")
+    for f in serah:
+        penerima = next((q for q in fig if isinstance(q, Mapping) and q.get("nama") == f.get("serahkan_ke")), None)
+        if penerima is not None:
+            if penerima.get("jumlah", 1) != 1:
+                g.append(f"{lbl}: figuran penerima serah-terima harus jumlah 1")
+            tempat_pasangan = {f.get("tempat", "tengah"), penerima.get("tempat", "tengah")}
+            if tempat_pasangan != {"kiri", "kanan"}:
+                g.append(f"{lbl}: serah-terima memerlukan pemberi dan penerima pada tempat kiri/kanan")
+            if f.get("hadap_ke") != f.get("serahkan_ke") or penerima.get("hadap_ke") != f.get("nama"):
+                g.append(f"{lbl}: pemberi dan penerima serah-terima harus saling menghadap")
+            if f.get("pindah") or penerima.get("pindah"):
+                g.append(f"{lbl}: serah-terima otomatis hanya untuk tokoh yang tidak berpindah tempat")
     if total > MAKS_FIGURAN:
         g.append(f"{lbl}: total figuran maksimal {MAKS_FIGURAN} per beat")
     return g
@@ -216,17 +267,39 @@ LETAK_FIGURAN = {  # (x, y kaki, skala, jauh)
 def figuran_dari_rencana(rb: Mapping, benda: list[dict], kunci: int, ds: float = 4.0) -> list[dict]:
     """Rencana figuran satu beat -> boneka figuran (npc) dengan posisi, gerak, hadap, pindah, dan kait."""
     keluar: list[dict] = []
-    for i, f in enumerate(rb.get("figuran") or []):
+    daftar = rb.get("figuran") or []
+    posisi_serah: dict[str, int] = {}
+    for pemberi in daftar:
+        if pemberi.get("serahkan_ke"):
+            penerima = next((q for q in daftar if q.get("nama") == pemberi["serahkan_ke"]), None)
+            if penerima is not None:
+                kiri_kanan = pemberi.get("tempat") == "kiri"
+                posisi_serah[pemberi["nama"]] = 400 if kiri_kanan else 580
+                posisi_serah[penerima["nama"]] = 580 if kiri_kanan else 400
+    for i, f in enumerate(daftar):
         x0, y0, sk, blk = LETAK_FIGURAN[f.get("tempat", "tengah")]
         n = int(f.get("jumlah", 1))
         for k in range(n):
             x = round(x0 + (k - (n - 1) / 2) * 150 * sk)
+            if f.get("nama") in posisi_serah:
+                x = posisi_serah[f["nama"]]
             gerak = f.get("gerak", "berdiri")
-            o = {"npc": kunci * 10 + i * 3 + k, "pose": gerak, "x": x, "y": y0 + (k % 2) * 18, "s": sk}
+            identitas = kunci * 100 + i * 10 + k
+            o = {"id": identitas, "npc": identitas, "pose": gerak, "x": x, "y": y0 + (k % 2) * 18, "s": sk}
+            if f.get("nama"):
+                o["_nama_interaksi"] = f["nama"]
+            if f.get("pegang"):
+                o["pose"] = f"pegang_{f['pegang']}"
             if f.get("suku"):  # tanpa suku: ikut suku cerita
                 o["suku"] = f["suku"]
             if f.get("hadap") in ("kanan", "kiri"):
                 o["profil"] = f["hadap"]
+            if f.get("hadap_ke"):
+                target = next((q for q in rb.get("figuran", []) if q.get("nama") == f["hadap_ke"]), None)
+                if target is not None:
+                    tx0 = LETAK_FIGURAN.get(target.get("tempat", "tengah"), LETAK_FIGURAN["tengah"])[0]
+                    tx = tx0  # pasangan bernama selalu satu orang
+                    o["profil"] = "kanan" if tx > x else "kiri"
             pindah = f.get("pindah")
             if pindah:  # bergerak sepanjang beat; berpencar = separuh ke kiri, separuh ke kanan (saling menjauh)
                 arah = -1 if pindah == "ke_kiri" or (pindah == "berpencar" and k < n / 2) else 1
