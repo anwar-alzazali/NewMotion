@@ -66,6 +66,13 @@ def siapkan(p: Path, *, tts_fn=None) -> tuple[Path, bool]:
     spek = baca_spek(p)
     dasar = p.parent if p.is_relative_to(MV) else DASAR_KISAH
     if butuh_narasi(spek):
+        from newmotion.application.validasi_papan_manual import laporan, periksa
+
+        galat, awas = periksa(spek)  # sebelum TTS: JSON salah tidak memakan kredit ElevenLabs
+        for x in awas:
+            print("peringatan papan:", x)
+        if galat:
+            raise ValueError(laporan(galat))
         fa = folder_audio(p)
         buat_narasi_spek(spek, fa, tts_fn=tts_fn)
         for k, v in PENGATURAN_SUARA.items():
