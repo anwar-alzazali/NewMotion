@@ -115,6 +115,42 @@ jobs:
           git push -q "https://x-access-token:${TOKEN}@github.com/${REPO}.git" "HEAD:refs/heads/hasil/renderer-${RUN}"
           rm -rf .git
           echo "Hasil tersimpan di branch hasil/renderer-${RUN}." >> "$GITHUB_STEP_SUMMARY"
+      - name: Kirim hasil percobaan ke Telegram
+        if: always()
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          RUN_ID: ${{ github.run_id }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ -z "${TELEGRAM_BOT_TOKEN:-}" || -z "${TELEGRAM_CHAT_ID:-}" ]]; then
+            echo "::error::TELEGRAM_BOT_TOKEN dan TELEGRAM_CHAT_ID wajib diatur agar hasil percobaan terkirim."
+            exit 1
+          fi
+          mkdir -p hasil
+          if [[ ! -f hasil/ringkasan.md ]]; then
+            printf '# Uji renderer\n\nPercobaan berhenti sebelum ringkasan dibuat. Periksa log GitHub Actions.\n' > hasil/ringkasan.md
+          fi
+          python - <<'PY'
+          from pathlib import Path
+          from zipfile import ZipFile, ZIP_DEFLATED
+          sumber = Path("hasil")
+          with ZipFile("hasil-renderer.zip", "w", ZIP_DEFLATED) as arsip:
+              for berkas in sumber.rglob("*"):
+                  if berkas.is_file():
+                      arsip.write(berkas, berkas.relative_to(sumber))
+          PY
+          curl --fail --silent --show-error \
+            --form "chat_id=${TELEGRAM_CHAT_ID}" \
+            --form "text=Hasil percobaan renderer #${RUN_ID}\nStatus workflow: ${{ job.status }}\nLog: ${RUN_URL}\n\n$(cat hasil/ringkasan.md | head -c 3000)" \
+            "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" >/dev/null
+          curl --fail --silent --show-error \
+            --form "chat_id=${TELEGRAM_CHAT_ID}" \
+            --form "caption=Paket hasil renderer #${RUN_ID} (visual, JSON, dan laporan)" \
+            --form "document=@hasil-renderer.zip" \
+            "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendDocument" >/dev/null
       - name: Unggah artefak cadangan
         if: always()
         uses: actions/upload-artifact@v4
