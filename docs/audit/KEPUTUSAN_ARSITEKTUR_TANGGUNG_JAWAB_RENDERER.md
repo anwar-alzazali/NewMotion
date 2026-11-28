@@ -92,3 +92,97 @@ RND-001 tetap **BERJALAN** sampai baseline render dari GitHub Actions diperoleh 
 - tinjauan pemilik atas keputusan arsitektur ini.
 
 RND-002 kemudian merinci skema input/output dan validator berdasarkan batas tanggung jawab di dokumen ini. Dokumen ini tidak mengubah status RND-001 menjadi selesai.
+
+
+## 9. Keputusan koordinat dan transformasi — wajib untuk kontrak
+
+Untuk mencegah gerak, benda, dan kamera menghitung posisi yang sama dua kali, kontrak memakai tiga ruang koordinat yang berbeda:
+
+1. **Koordinat dunia/panggung**: posisi dan orientasi akar aktor serta benda independen. Ini adalah satu-satunya posisi semantik objek di panggung.
+2. **Koordinat lokal**: posisi bagian tubuh relatif terhadap rangka; posisi benda yang sedang melekat relatif terhadap titik kait aktor; detail geometri relatif terhadap induknya.
+3. **Koordinat kamera/layar**: hasil transformasi tampilan dari koordinat dunia melalui kamera. Ini hanya untuk proyeksi/framing, bukan sumber posisi dunia baru.
+
+### Pemilik nilai dan aturan evaluasi
+
+- Sutradara menetapkan *blocking* dan lintasan akar aktor/benda pada waktu tertentu dalam koordinat dunia. Untuk fixture manual, penulis fixture mengisi nilai yang sama secara eksplisit.
+- Adapter hanya menerjemahkan nilai dan identitas tersebut; adapter tidak menggeser posisi untuk mengompensasi kamera.
+- Sistem gerak mengevaluasi lintasan akar yang sudah ditetapkan dan pose/sendi lokal. Ia tidak menambahkan perpindahan panggung kedua di atas lintasan akar yang sama.
+- Sistem tokoh menghitung geometri anggota tubuh dalam koordinat lokal, lalu menerapkannya pada transformasi akar aktor.
+- Sistem benda menggambar geometri lokal benda. Benda independen memiliki transformasi dunia sendiri; benda yang dibawa/dipegang menggunakan relasi *attachment* ke titik kait aktor dan tidak boleh sekaligus menerima lintasan dunia independen untuk gerak yang sama.
+- Kamera menghitung transformasi pandang dari dunia ke layar. Tracking/panning mengubah kamera, bukan koordinat dunia aktor atau benda.
+- Mesin render mengevaluasi urutan transformasi secara konsisten: keadaan dunia → gerak akar dan pose lokal → relasi attachment → kamera/proyeksi → gambar. Urutan implementasi rinci harus disesuaikan dengan struktur renderer yang terukur, tetapi kepemilikan koordinat di atas tidak boleh berubah.
+
+### Kasus tokoh berjalan sambil membawa benda dan kamera tracking
+
+- Lintasan akar tokoh ditetapkan satu kali dalam koordinat dunia.
+- Gerak kaki/tangan dan pose dihitung relatif terhadap akar tokoh.
+- Benda yang dibawa memiliki `parent/attachment` ke aktor dan `anchor/socket` yang eksplisit; transformasi dunia benda diturunkan dari transformasi aktor + transformasi lokal attachment.
+- Kamera tracking mengikuti target dengan offset/aturan kamera; kamera tidak mengubah lintasan tokoh atau benda.
+- Validator menolak kombinasi yang ambigu, misalnya benda memiliki attachment aktif sekaligus lintasan dunia independen yang mengendalikan translasi yang sama, kecuali kontrak secara eksplisit mendefinisikan mode override dan rentang waktunya.
+- Relasi attachment harus punya waktu mulai/akhir agar serah-terima atau benda terlepas dapat dinyatakan tanpa teleportasi.
+
+Nama field di atas adalah konsep kontrak, bukan klaim bahwa field tersebut sudah ada di JSON runtime. Nama final ditetapkan dalam RND-002 setelah pemetaan kompatibilitas terhadap papan lama.
+
+## 10. Pemilik timeline, durasi, dan audio
+
+Timeline ditetapkan sebagai **kontrak waktu lintas-sistem**, bukan keputusan tersembunyi di dalam kamera, sistem gerak, atau mesin render.
+
+- Sutradara menentukan struktur naratif: urutan peristiwa/shot, durasi sasaran, titik dialog/narasi, jeda, dan maksud sinkronisasi.
+- Paket genre/adab memeriksa batas konten audio/visual yang relevan, tetapi tidak menggeser timestamp secara mandiri.
+- Adapter menerjemahkan waktu semantik ke satuan waktu kontrak dan mempertahankan relasi waktunya.
+- **Pengelola timeline** (logika ringan dalam orkestrasi, tidak harus layanan/modul terpisah) menjadi pemilik jadwal final: rentang shot, keyframe, cue narasi/dialog, musik, efek suara, fade, serta offset.
+- Sistem gerak, benda, lingkungan, dan kamera hanya membaca waktu global yang sama dan mengevaluasi keadaan pada timestamp tersebut. Tidak satu pun membuat jam/durasi lokal yang mengubah timeline global.
+- Mesin render menjadi pemilik *clock* eksekusi: mengambil sampel pada timestamp/frame yang diminta, memastikan frame menggunakan waktu global yang konsisten, dan mengirim hasil video ke tahap muxing.
+- Sistem audio/muxing bertanggung jawab memuat aset audio yang dirujuk, menerapkan level/fade/penempatan yang sudah dijadwalkan, serta menyatukan audio-video. Ia tidak menentukan ulang isi narasi atau urutan cerita.
+
+### Aturan waktu
+
+- Satu *timebase* kanonis: detik pecahan dari awal video; frame dihitung dari `fps` yang dinyatakan pada dokumen render. Konversi frame ↔ detik dilakukan satu tempat.
+- Durasi total video dinyatakan eksplisit; tidak boleh hanya disimpulkan berbeda-beda oleh tiap subsistem.
+- Setiap shot memiliki waktu mulai dan batas akhir/durasi yang tidak tumpang tindih secara ambigu. Transisi memiliki rentang eksplisit.
+- Cue audio memiliki waktu mulai, durasi atau aturan akhir, sumber aset, kanal/jenis, gain, dan fade bila diperlukan.
+- Narasi/dialog, musik, dan efek suara menggunakan clock yang sama dengan animasi.
+- Perubahan durasi shot harus memicu validasi ulang cue dan keyframe yang bergantung padanya; jangan menggeser audio secara diam-diam.
+- Pengujian wajib memeriksa durasi akhir, offset audio-video, dan batas toleransi sinkronisasi.
+
+Nama field dan format cue final belum dikunci di sini. Inventaris format audio papan lama harus selesai sebelum RND-002 menetapkan skema yang kompatibel.
+
+## 11. Menjaga pipeline tetap ringan
+
+Sebelas peran dalam tabel adalah **pemisahan tanggung jawab logis**, bukan sebelas proses, layanan, atau panggilan serial.
+
+Batas implementasi:
+1. Pertukaran antarbagian memakai satu objek papan/scene terstruktur yang tervalidasi, bukan rangkaian salin-tempel objek per lapisan.
+2. Gunakan referensi ID dan data immutable sebisa mungkin; jangan serialisasi ulang seluruh papan di antara fungsi internal.
+3. Evaluasi per-frame memakai konteks waktu dan transformasi yang dibagikan; hindari menghitung transformasi akar/kamera berulang kali di setiap subsistem.
+4. Modul hanya dibuat terpisah bila punya tanggung jawab kohesif, antarmuka stabil, atau kebutuhan uji/isolasi yang nyata.
+5. Pengelola timeline dan mesin render boleh menjadi bagian dari orkestrator yang sama; validator dapat menjadi tahap sebelum render, bukan layanan runtime terpisah.
+6. Log diagnostik harus menyertakan ID shot, aktor/benda, timestamp, dan tahap transformasi agar sumber koordinat ganda dapat dilacak.
+7. Hindari salinan penuh objek adegan per frame; gunakan data papan sebagai sumber dan simpan keadaan evaluasi yang diperlukan saja.
+
+Target bentuk pipeline runtime yang disederhanakan:
+
+`papan tervalidasi → evaluasi scene pada t → transformasi aktor/benda/lingkungan → kamera → frame → mux audio-video`
+
+Ini adalah urutan kerja logis, bukan kewajiban membuat tujuh modul fisik.
+
+## 12. Gerbang kontrak RND-002 yang diperbarui
+
+RND-002 wajib mengunci dan menguji:
+- ruang koordinat dunia/lokal/kamera serta urutan transformasi;
+- pemilik lintasan akar aktor dan benda;
+- relasi attachment, anchor/socket, dan perpindahan kepemilikan benda;
+- larangan translasi ganda dan cara menyatakan override yang sah;
+- satu timebase, durasi total, rentang shot, keyframe, cue audio, dan transisi;
+- pemisahan maksud timing Sutradara dari jadwal final timeline;
+- satu struktur papan yang dipakai bersama dan batas kapan modul fisik dipisah;
+- kompatibilitas dengan JSON lama, termasuk perilaku `at`, `durasi`, kamera, `suara`, `musik`, dan `ekor_suara` setelah seluruh penggunaannya diaudit.
+
+Kasus penerimaan kontrak minimum:
+1. Tokoh berjalan membawa benda sementara kamera tracking; posisi dunia tokoh tidak digeser kamera dan benda tidak memiliki translasi ganda.
+2. Tokoh meletakkan/melepas benda; attachment berakhir pada waktu yang dinyatakan dan benda melanjutkan transformasi dunia tanpa loncatan.
+3. Kamera panning pada aktor diam; koordinat dunia aktor/benda tetap.
+4. Dua shot berurutan dengan narasi, musik, dan efek suara; semua cue tetap sinkron dengan timebase dan durasi total.
+5. Perubahan durasi shot; validator menemukan cue/keyframe yang keluar rentang atau jadwal yang perlu disusun ulang.
+
+Urutan prioritas kerja ditetapkan: **kontrak data dan kepemilikan koordinat/timeline terlebih dahulu; setelah itu urutan migrasi komponen berdasarkan dependensi dan hasil baseline.** Migrasi kode tidak dimulai sebelum kontrak dan baseline disetujui.
