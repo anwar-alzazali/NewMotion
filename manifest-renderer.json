@@ -1,0 +1,1219 @@
+{
+  "jumlah_benda": 142,
+  "benda": [
+    {
+      "jenis": "amplop",
+      "parameter_animasi": null,
+      "nilai": null,
+      "ukuran_tercatat": true,
+      "skala": 1.25
+    },
+    {
+      "jenis": "api",
+      "parameter_animasi": null,
+      "nilai": null,
+      "ukuran_tercatat": true,
+      "skala": 1.1439
+    },
+    {
+      "jenis": "api_unggun",
+      "parameter_animasi": "nyala",
+      "nilai": [
+        0.0,
+        1.0
+      ],
+      "ukuran_tercatat": true,
+      "skala": 1.25
+    },
+    {
+      "jenis": "arus",
+      "parameter_animasi": "maju",
+      "nilai": [
+        0.0,
+        1.0
+      ],
+      "ukuran_tercatat": true,
+      "skala": 0.4637
+    },
+    {
+      "jenis": "awan",
+      "parameter_animasi": null,
+      "nilai": null,
+      "ukuran_tercatat": true,
+      "skala": 1.25
+    },
+    {
+      "jenis": "awan_badai",
+      "parameter_animasi": "hujan",
+      "nilai": [
+        0.0,
+        1.0
+      ],
+      "ukuran_tercatat": true,
+      "skala": 0.9323
+    },
+    {
+      "jenis": "awan_gelap",
+      "parameter_animasi": "kilat",
+      "nilai": [
+        0.0,
+        1.0
+      ],
+      "ukuran_tercatat": true,
+      "skala": 0.8683
+    },
+    {
+      "jenis": "bahtera",
+      "parameter_animasi": "jadi",
+      "nilai": [
+        0.0,
+        1.0
+      ],
+      "ukuran_tercatat": true,
+      "skala": 0.5714
+    },
+    {
+      "jenis": "bambu",
+      "parameter_animasi": null,
+      "nilai": null,
+      "ukuran_tercatat": true,
+      "skala": 0.6821
+    },
+    {
+      "jenis": "batu",
+      "parameter_animasi": null,
+      "nilai": null,
+      "ukuran_tercatat": true,
+      "skala": 0.8986
+    },
+    {
+      "jenis": "bawah_laut",
+      "parameter_animasi": "terang",
+      "nilai": [
+        0.0,
+        1.0
+      ],
+      "ukuran_tercatat": true,
+      "skala": 0.2696
+    },
+    {
+      "jenis": "bayang_misteri",
+      "parameter_animasi": "besar",
+      "nilai": [
+        0.35,
+        1.0
+      ],
+      "ukuran_tercatat": true,
+      "skala": 1.1439
+    },
+    {
+      "jenis": "belah",
+      "parameter_animasi": "buka",
+      "nilai": [
+        0.0,
+        1.0
+      ],
+      "ukuran_tercatat": true,
+      "skala": 0.1722
+    },
+    {
+      "jenis": "bingkai",
+      "parameter_animasi": null,
+      "nilai": null,
+      "ukuran_tercatat": true,
+      "skala": 1.25
+    },
+    {
+      "jenis": "bintang",
+      "parameter_animasi": null,
+      "nilai": null,
+      "ukuran_tercatat": true,
+      "skala": 0.6288
+    },
+    {
+      "jenis": "buku",
+      "parameter_animasi": "buka",
+      "nilai": [
+        0.0,
+        1.0
+      ],
+      "ukuran_tercatat": true,
+      "skala": 0.9394
+    },
+    {
+      "jenis": "bulan",
+      "parameter_animasi": null,
+      "nilai": null,
+      "ukuran_tercatat": true,
+      "skala": 1.25
+    },
+    {
+      "jenis": "burung_kawanan",
+      "parameter_animasi": "terbang",
+      "nilai": [
+        0.0,
+        1.0
+      ],
+      "ukuran_tercatat": true,
+      "skala": 0.8659
+    },
+    {
+      "jenis": "cahaya",
+      "parameter_animasi": null,
+      "nilai": null,
+      "ukuran_tercatat": true,
+      "skala": 0.4429
+    },
+    {
+      "jenis": "cawan",
+      "parameter_animasi": "didih",
+      "nilai": [
+        0.0,
+        1.0
+      ],
+      "ukuran_tercatat": true,
+      "skala": 1.0131
+    },
+    {
+      "jenis": "chat",
+      "parameter_animasi": null,
+      "nilai": null,
+      "ukuran_tercatat": true,
+      "skala": 0.5741
+    },
+    {
+      "jenis": "danau",
+      "parameter_animasi": "isi",
+      "nilai": [
+        0.0,
+        1.0
+      ],
+      "ukuran_tercatat": true,
+      "skala": 0.6458
+    },
+    {
+      "jenis": "domba",
+      "parameter_animasi": "jalan",
+      "nilai": [
+        0.0,
+        1.0
+      ],
+      "ukuran_tercatat": true,
+      "skala": 1.1654
+    },
+    {
+      "jenis": "dompet",
+      "parameter_animasi": "isi",
+      "nilai": [
+        0.0,
+        1.0
+      ],
+      "ukuran_tercatat": true,
+      "skala": 1.25
+    },
+    {
+      "jenis": "gapura",
+      "parameter_animasi": "cahaya",
+      "nilai": [
+        0.0,
+        1.0
+      ],
+      "ukuran_tercatat": true,
+      "skala": 0.5082
+    },
+    {
+      "jenis": "gedung",
+      "parameter_animasi": "tumbuh",
+      "nilai": [
+        0.0,
+        1.0
+      ],
+      "ukuran_tercatat": true,
+      "skala": 0.4802
+    },
+    {
+      "jenis": "gelap",
+      "parameter_animasi": "r",
+      "nilai": [
+        0,
+        3000
+      ],
+      "ukuran_tercatat": true,
+      "skala": 0.1033
+    },
+    {
+      "jenis": "genangan_tubuh",
+      "parameter_animasi": "tinggi",
+      "nilai": [
+        35,
+        440
+      ],
+      "ukuran_tercatat": true,
+      "skala": 1.0368
+    },
+    {
+      "jenis": "gerbang",
+      "parameter_animasi": "buka",
+      "nilai": [
+        0.0,
+        1.0
+      ],
+      "ukuran_tercatat": true,
+      "skala": 0.6739
+    },
+    {
+      "jenis": "gua",
+      "parameter_animasi": null,
+      "nilai": null,
+      "ukuran_tercatat": true,
+      "skala": 0.1722
+    },
+    {
+      "jenis": "gunung",
+      "parameter_animasi": null,
+      "nilai": null,
+      "ukuran_tercatat": true,
+      "skala": 0.4247
+    },
+    {
+      "jenis": "hati",
+      "parameter_animasi": null,
+      "nilai": null,
+      "ukuran_tercatat": true,
+      "skala": 1.25
+    },
+    {
+      "jenis": "hewan",
+      "parameter_animasi": "jalan",
+      "nilai": [
+        0.0,
+        1.0
+      ],
+      "ukuran_tercatat": true,
+      "skala": 1.25
+    },
+    {
+      "jenis": "hp",
+      "parameter_animasi": null,
+      "nilai": null,
+      "ukuran_tercatat": true,
+      "skala": 1.25
+    },
+    {
+      "jenis": "ikan",
+      "parameter_animasi": null,
+      "nilai": null,
+      "ukuran_tercatat": true,
+      "skala": 0.5429
+    },
+    {
+      "jenis": "infus",
+      "parameter_animasi": null,
+      "nilai": null,
+      "ukuran_tercatat": true,
+      "skala": 1.0954
+    },
+    {
+      "jenis": "jalan",
+      "parameter_animasi": null,
+      "nilai": null,
+      "ukuran_tercatat": true,
+      "skala": 0.2583
+    },
+    {
+      "jenis": "jam_pasir",
+      "parameter_animasi": "sisa",
+      "nilai": [
+        0.0,
+        1.0
+      ],
+      "ukuran_tercatat": true,
+      "skala": 0.8986
+    },
+    {
+      "jenis": "jembatan",
+      "parameter_animasi": null,
+      "nilai": null,
+      "ukuran_tercatat": true,
+      "skala": 0.4079
+    },
+    {
+      "jenis": "jembatan_desa",
+      "parameter_animasi": null,
+      "nilai": null,
+      "ukuran_tercatat": true,
+      "skala": 0.4806
+    },
+    {
+      "jenis": "jenazah",
+      "parameter_animasi": null,
+      "nilai": null,
+      "ukuran_tercatat": true,
+      "skala": 0.6596
+    },
+    {
+      "jenis": "jendela",
+      "parameter_animasi": "terang",
+      "nilai": [
+        0.0,
+        1.0
+      ],
+      "ukuran_tercatat": true,
+      "skala": 0.155
+    },
+    {
+      "jenis": "jurang",
+      "parameter_animasi": "jatuh",
+      "nilai": [
+        0.0,
+        1.0
+      ],
+      "ukuran_tercatat": true,
+      "skala": 0.3239
+    },
+    {
+      "jenis": "kalender",
+      "parameter_animasi": "lingkar",
+      "nilai": [
+        0.0,
+        1.0
+      ],
+      "ukuran_tercatat": true,
+      "skala": 0.6889
+    },
+    {
+      "jenis": "kambing",
+      "parameter_animasi": "jalan",
+      "nilai": [
+        0.0,
+        1.0
+      ],
+      "ukuran_tercatat": true,
+      "skala": 1.0727
+    },
+    {
+      "jenis": "kamboja",
+      "parameter_animasi": null,
+      "nilai": null,
+      "ukuran_tercatat": true,
+      "skala": 1.25
+    },
+    {
+      "jenis": "kantong",
+      "parameter_animasi": null,
+      "nilai": null,
+      "ukuran_tercatat": true,
+      "skala": 1.25
+    },
+    {
+      "jenis": "kantor_gedung",
+      "parameter_animasi": null,
+      "nilai": null,
+      "ukuran_tercatat": true,
+      "skala": 0.5506
+    },
+    {
+      "jenis": "kapal_dagang",
+      "parameter_animasi": "muatan",
+      "nilai": [
+        0.0,
+        1.0
+      ],
+      "ukuran_tercatat": true,
+      "skala": 0.6169
+    },
+    {
+      "jenis": "kartu_dalil",
+      "parameter_animasi": null,
+      "nilai": null,
+      "ukuran_tercatat": true,
+      "skala": 0.7598
+    },
+    {
+      "jenis": "karung",
+      "parameter_animasi": "penuh",
+      "nilai": [
+        0.0,
+        1.0
+      ],
+      "ukuran_tercatat": true,
+      "skala": 1.25
+    },
+    {
+      "jenis": "kasur",
+      "parameter_animasi": null,
+      "nilai": null,
+      "ukuran_tercatat": true,
+      "skala": 1.0265
+    },
+    {
+      "jenis": "kebun_kurma",
+      "parameter_animasi": "buah",
+      "nilai": [
+        0.0,
+        1.0
+      ],
+      "ukuran_tercatat": true,
+      "skala": 0.632
+    },
+    {
+      "jenis": "kelapa",
+      "parameter_animasi": null,
+      "nilai": null,
+      "ukuran_tercatat": true,
+      "skala": 0.7168
+    },
+    {
+      "jenis": "keranjang",
+      "parameter_animasi": "penuh",
+      "nilai": [
+        0.0,
+        1.0
+      ],
+      "ukuran_tercatat": true,
+      "skala": 1.25
+    },
+    {
+      "jenis": "kerumunan",
+      "parameter_animasi": "api",
+      "nilai": [
+        0.0,
+        1.0
+      ],
+      "ukuran_tercatat": true,
+      "skala": 0.7399
+    },
+    {
+      "jenis": "kios_pasar",
+      "parameter_animasi": "dagangan",
+      "nilai": [
+        0.0,
+        1.0
+      ],
+      "ukuran_tercatat": true,
+      "skala": 0.9118
+    },
+    {
+      "jenis": "kipas",
+      "parameter_animasi": "putar",
+      "nilai": [
+        0.0,
+        1.0
+      ],
+      "ukuran_tercatat": true,
+      "skala": 1.1877
+    },
+    {
+      "jenis": "koin",
+      "parameter_animasi": "jatuh",
+      "nilai": [
+        0.0,
+        1.0
+      ],
+      "ukuran_tercatat": true,
+      "skala": 1.1273
+    },
+    {
+      "jenis": "kompor",
+      "parameter_animasi": "nyala",
+      "nilai": [
+        0.0,
+        1.0
+      ],
+      "ukuran_tercatat": true,
+      "skala": 1.25
+    },
+    {
+      "jenis": "kota",
+      "parameter_animasi": null,
+      "nilai": null,
+      "ukuran_tercatat": true,
+      "skala": 0.3959
+    },
+    {
+      "jenis": "kue",
+      "parameter_animasi": "nyala",
+      "nilai": [
+        0.0,
+        1.0
+      ],
+      "ukuran_tercatat": true,
+      "skala": 1.25
+    },
+    {
+      "jenis": "kulkas",
+      "parameter_animasi": null,
+      "nilai": null,
+      "ukuran_tercatat": true,
+      "skala": 1.069
+    },
+    {
+      "jenis": "kursi",
+      "parameter_animasi": null,
+      "nilai": null,
+      "ukuran_tercatat": true,
+      "skala": 1.25
+    },
+    {
+      "jenis": "ladang_gandum",
+      "parameter_animasi": "angin",
+      "nilai": [
+        0.0,
+        1.0
+      ],
+      "ukuran_tercatat": true,
+      "skala": 0.6096
+    },
+    {
+      "jenis": "lahar",
+      "parameter_animasi": "kuat",
+      "nilai": [
+        0.0,
+        1.0
+      ],
+      "ukuran_tercatat": true,
+      "skala": 0.1722
+    },
+    {
+      "jenis": "lapak",
+      "parameter_animasi": null,
+      "nilai": null,
+      "ukuran_tercatat": true,
+      "skala": 1.0653
+    },
+    {
+      "jenis": "laut",
+      "parameter_animasi": null,
+      "nilai": null,
+      "ukuran_tercatat": true,
+      "skala": 0.3444
+    },
+    {
+      "jenis": "laut_terbelah",
+      "parameter_animasi": "belah",
+      "nilai": [
+        0.0,
+        1.0
+      ],
+      "ukuran_tercatat": true,
+      "skala": 0.2067
+    },
+    {
+      "jenis": "lemari",
+      "parameter_animasi": "buka",
+      "nilai": [
+        0.0,
+        1.0
+      ],
+      "ukuran_tercatat": true,
+      "skala": 0.8857
+    },
+    {
+      "jenis": "lentera",
+      "parameter_animasi": "nyala",
+      "nilai": [
+        0.0,
+        1.0
+      ],
+      "ukuran_tercatat": true,
+      "skala": 1.1923
+    },
+    {
+      "jenis": "logo_app",
+      "parameter_animasi": null,
+      "nilai": null,
+      "ukuran_tercatat": true,
+      "skala": 1.25
+    },
+    {
+      "jenis": "makam",
+      "parameter_animasi": null,
+      "nilai": null,
+      "ukuran_tercatat": true,
+      "skala": 1.25
+    },
+    {
+      "jenis": "mangga",
+      "parameter_animasi": null,
+      "nilai": null,
+      "ukuran_tercatat": true,
+      "skala": 0.7868
+    },
+    {
+      "jenis": "masjid",
+      "parameter_animasi": null,
+      "nilai": null,
+      "ukuran_tercatat": true,
+      "skala": 0.8516
+    },
+    {
+      "jenis": "masjid_kampung",
+      "parameter_animasi": null,
+      "nilai": null,
+      "ukuran_tercatat": true,
+      "skala": 0.5699
+    },
+    {
+      "jenis": "massa_api",
+      "parameter_animasi": "kuat",
+      "nilai": [
+        0.0,
+        1.0
+      ],
+      "ukuran_tercatat": true,
+      "skala": 0.3974
+    },
+    {
+      "jenis": "meja",
+      "parameter_animasi": null,
+      "nilai": null,
+      "ukuran_tercatat": true,
+      "skala": 0.9688
+    },
+    {
+      "jenis": "meja_belajar",
+      "parameter_animasi": "lampu",
+      "nilai": [
+        0.0,
+        1.0
+      ],
+      "ukuran_tercatat": true,
+      "skala": 1.1273
+    },
+    {
+      "jenis": "meja_kantor",
+      "parameter_animasi": null,
+      "nilai": null,
+      "ukuran_tercatat": true,
+      "skala": 1.1923
+    },
+    {
+      "jenis": "menara",
+      "parameter_animasi": "cahaya",
+      "nilai": [
+        0.0,
+        1.0
+      ],
+      "ukuran_tercatat": true,
+      "skala": 0.4079
+    },
+    {
+      "jenis": "menara_pengawas",
+      "parameter_animasi": "penjaga",
+      "nilai": [
+        0.0,
+        1.0
+      ],
+      "ukuran_tercatat": true,
+      "skala": 0.7294
+    },
+    {
+      "jenis": "mik",
+      "parameter_animasi": null,
+      "nilai": null,
+      "ukuran_tercatat": true,
+      "skala": 1.25
+    },
+    {
+      "jenis": "mobil_luar",
+      "parameter_animasi": "jalan",
+      "nilai": [
+        0,
+        120
+      ],
+      "ukuran_tercatat": true,
+      "skala": 0.6596
+    },
+    {
+      "jenis": "monitor",
+      "parameter_animasi": null,
+      "nilai": null,
+      "ukuran_tercatat": true,
+      "skala": 0.8757
+    },
+    {
+      "jenis": "motor",
+      "parameter_animasi": null,
+      "nilai": null,
+      "ukuran_tercatat": true,
+      "skala": 1.25
+    },
+    {
+      "jenis": "naungan_kelompok",
+      "parameter_animasi": "luas",
+      "nilai": [
+        0.2,
+        1.0
+      ],
+      "ukuran_tercatat": true,
+      "skala": 0.4913
+    },
+    {
+      "jenis": "ngarai",
+      "parameter_animasi": "lubang",
+      "nilai": [
+        0.0,
+        1.0
+      ],
+      "ukuran_tercatat": true,
+      "skala": 0.2067
+    },
+    {
+      "jenis": "nur",
+      "parameter_animasi": null,
+      "nilai": null,
+      "ukuran_tercatat": true,
+      "skala": 0.4579
+    },
+    {
+      "jenis": "obat",
+      "parameter_animasi": null,
+      "nilai": null,
+      "ukuran_tercatat": true,
+      "skala": 1.25
+    },
+    {
+      "jenis": "ombak",
+      "parameter_animasi": "tinggi",
+      "nilai": [
+        80,
+        500
+      ],
+      "ukuran_tercatat": true,
+      "skala": 0.2214
+    },
+    {
+      "jenis": "pagar",
+      "parameter_animasi": null,
+      "nilai": null,
+      "ukuran_tercatat": true,
+      "skala": 0.6783
+    },
+    {
+      "jenis": "pancar",
+      "parameter_animasi": "kuat",
+      "nilai": [
+        0.0,
+        1.0
+      ],
+      "ukuran_tercatat": true,
+      "skala": 1.25
+    },
+    {
+      "jenis": "pantai",
+      "parameter_animasi": null,
+      "nilai": null,
+      "ukuran_tercatat": true,
+      "skala": 0.189
+    },
+    {
+      "jenis": "pedang_tersarung",
+      "parameter_animasi": "ornamen",
+      "nilai": [
+        0.0,
+        1.0
+      ],
+      "ukuran_tercatat": true,
+      "skala": 0.9064
+    },
+    {
+      "jenis": "pemimpin",
+      "parameter_animasi": "angkat",
+      "nilai": [
+        0.0,
+        1.0
+      ],
+      "ukuran_tercatat": true,
+      "skala": 1.25
+    },
+    {
+      "jenis": "penggali",
+      "parameter_animasi": "aktif",
+      "nilai": [
+        0.0,
+        1.0
+      ],
+      "ukuran_tercatat": true,
+      "skala": 0.5458
+    },
+    {
+      "jenis": "perahu_kecil",
+      "parameter_animasi": "goyang",
+      "nilai": [
+        0.0,
+        1.0
+      ],
+      "ukuran_tercatat": true,
+      "skala": 0.9281
+    },
+    {
+      "jenis": "petir",
+      "parameter_animasi": null,
+      "nilai": null,
+      "ukuran_tercatat": false,
+      "skala": 0.7
+    },
+    {
+      "jenis": "pintu_kota_kuno",
+      "parameter_animasi": "buka",
+      "nilai": [
+        0.0,
+        1.0
+      ],
+      "ukuran_tercatat": true,
+      "skala": 0.7209
+    },
+    {
+      "jenis": "pisang",
+      "parameter_animasi": null,
+      "nilai": null,
+      "ukuran_tercatat": true,
+      "skala": 0.9172
+    },
+    {
+      "jenis": "pohon",
+      "parameter_animasi": null,
+      "nilai": null,
+      "ukuran_tercatat": true,
+      "skala": 1.0065
+    },
+    {
+      "jenis": "ponsel",
+      "parameter_animasi": "getar",
+      "nilai": [
+        0.0,
+        1.0
+      ],
+      "ukuran_tercatat": true,
+      "skala": 0.5741
+    },
+    {
+      "jenis": "pot",
+      "parameter_animasi": null,
+      "nilai": null,
+      "ukuran_tercatat": true,
+      "skala": 1.25
+    },
+    {
+      "jenis": "rak_buku",
+      "parameter_animasi": null,
+      "nilai": null,
+      "ukuran_tercatat": true,
+      "skala": 0.9841
+    },
+    {
+      "jenis": "rak_kitab",
+      "parameter_animasi": "isi",
+      "nilai": [
+        0.0,
+        1.0
+      ],
+      "ukuran_tercatat": true,
+      "skala": 1.0333
+    },
+    {
+      "jenis": "ranjang_rs",
+      "parameter_animasi": null,
+      "nilai": null,
+      "ukuran_tercatat": true,
+      "skala": 1.0333
+    },
+    {
+      "jenis": "rantai",
+      "parameter_animasi": null,
+      "nilai": null,
+      "ukuran_tercatat": false,
+      "skala": 0.7
+    },
+    {
+      "jenis": "rantai_belenggu",
+      "parameter_animasi": "tegang",
+      "nilai": [
+        0.0,
+        1.0
+      ],
+      "ukuran_tercatat": true,
+      "skala": 0.7598
+    },
+    {
+      "jenis": "rantai_tarik",
+      "parameter_animasi": "tarik",
+      "nilai": [
+        0,
+        420
+      ],
+      "ukuran_tercatat": true,
+      "skala": 0.1894
+    },
+    {
+      "jenis": "resapan_tanah",
+      "parameter_animasi": "kedalaman",
+      "nilai": [
+        0.15,
+        1.0
+      ],
+      "ukuran_tercatat": true,
+      "skala": 0.7552
+    },
+    {
+      "jenis": "retakan",
+      "parameter_animasi": "buka",
+      "nilai": [
+        0.0,
+        1.0
+      ],
+      "ukuran_tercatat": true,
+      "skala": 0.5741
+    },
+    {
+      "jenis": "rincian",
+      "parameter_animasi": null,
+      "nilai": null,
+      "ukuran_tercatat": true,
+      "skala": 0.7654
+    },
+    {
+      "jenis": "rumah",
+      "parameter_animasi": null,
+      "nilai": null,
+      "ukuran_tercatat": true,
+      "skala": 1.25
+    },
+    {
+      "jenis": "rumah_kampung",
+      "parameter_animasi": "buka",
+      "nilai": [
+        0.0,
+        1.0
+      ],
+      "ukuran_tercatat": true,
+      "skala": 0.7209
+    },
+    {
+      "jenis": "rumah_sakit_gedung",
+      "parameter_animasi": null,
+      "nilai": null,
+      "ukuran_tercatat": true,
+      "skala": 0.5536
+    },
+    {
+      "jenis": "rumput",
+      "parameter_animasi": null,
+      "nilai": null,
+      "ukuran_tercatat": true,
+      "skala": 1.25
+    },
+    {
+      "jenis": "saf",
+      "parameter_animasi": null,
+      "nilai": null,
+      "ukuran_tercatat": true,
+      "skala": 0.6596
+    },
+    {
+      "jenis": "sajadah",
+      "parameter_animasi": null,
+      "nilai": null,
+      "ukuran_tercatat": true,
+      "skala": 1.25
+    },
+    {
+      "jenis": "sapu",
+      "parameter_animasi": "rot",
+      "nilai": [
+        -45,
+        45
+      ],
+      "ukuran_tercatat": true,
+      "skala": 1.25
+    },
+    {
+      "jenis": "sawah",
+      "parameter_animasi": "hijau",
+      "nilai": [
+        0.0,
+        1.0
+      ],
+      "ukuran_tercatat": true,
+      "skala": 0.2547
+    },
+    {
+      "jenis": "sekolah",
+      "parameter_animasi": null,
+      "nilai": null,
+      "ukuran_tercatat": true,
+      "skala": 0.4672
+    },
+    {
+      "jenis": "semak",
+      "parameter_animasi": null,
+      "nilai": null,
+      "ukuran_tercatat": true,
+      "skala": 1.25
+    },
+    {
+      "jenis": "setir",
+      "parameter_animasi": "putar",
+      "nilai": [
+        -30,
+        30
+      ],
+      "ukuran_tercatat": true,
+      "skala": 1.25
+    },
+    {
+      "jenis": "sofa",
+      "parameter_animasi": null,
+      "nilai": null,
+      "ukuran_tercatat": true,
+      "skala": 0.9091
+    },
+    {
+      "jenis": "stempel",
+      "parameter_animasi": null,
+      "nilai": null,
+      "ukuran_tercatat": true,
+      "skala": 0.9295
+    },
+    {
+      "jenis": "sumur",
+      "parameter_animasi": "air",
+      "nilai": [
+        0.0,
+        1.0
+      ],
+      "ukuran_tercatat": true,
+      "skala": 1.1698
+    },
+    {
+      "jenis": "sungai",
+      "parameter_animasi": "arus",
+      "nilai": [
+        0.0,
+        1.0
+      ],
+      "ukuran_tercatat": true,
+      "skala": 0.474
+    },
+    {
+      "jenis": "surya",
+      "parameter_animasi": "r",
+      "nilai": [
+        140,
+        620
+      ],
+      "ukuran_tercatat": true,
+      "skala": 0.3039
+    },
+    {
+      "jenis": "tanda",
+      "parameter_animasi": null,
+      "nilai": null,
+      "ukuran_tercatat": true,
+      "skala": 1.25
+    },
+    {
+      "jenis": "tebing",
+      "parameter_animasi": null,
+      "nilai": null,
+      "ukuran_tercatat": true,
+      "skala": 0.62
+    },
+    {
+      "jenis": "telaga",
+      "parameter_animasi": null,
+      "nilai": null,
+      "ukuran_tercatat": true,
+      "skala": 0.4429
+    },
+    {
+      "jenis": "tenda_badui",
+      "parameter_animasi": "buka",
+      "nilai": [
+        0.0,
+        1.0
+      ],
+      "ukuran_tercatat": true,
+      "skala": 0.9394
+    },
+    {
+      "jenis": "tiang_listrik",
+      "parameter_animasi": null,
+      "nilai": null,
+      "ukuran_tercatat": true,
+      "skala": 0.2246
+    },
+    {
+      "jenis": "timbangan",
+      "parameter_animasi": "miring",
+      "nilai": [
+        -18,
+        18
+      ],
+      "ukuran_tercatat": true,
+      "skala": 1.1877
+    },
+    {
+      "jenis": "toko",
+      "parameter_animasi": null,
+      "nilai": null,
+      "ukuran_tercatat": true,
+      "skala": 0.7888
+    },
+    {
+      "jenis": "tv",
+      "parameter_animasi": "nyala",
+      "nilai": [
+        0.0,
+        1.0
+      ],
+      "ukuran_tercatat": true,
+      "skala": 1.1923
+    },
+    {
+      "jenis": "uang",
+      "parameter_animasi": "kipas",
+      "nilai": [
+        0.0,
+        1.0
+      ],
+      "ukuran_tercatat": true,
+      "skala": 1.25
+    },
+    {
+      "jenis": "ular_siluet",
+      "parameter_animasi": "gerak",
+      "nilai": [
+        0.0,
+        1.0
+      ],
+      "ukuran_tercatat": true,
+      "skala": 0.8179
+    },
+    {
+      "jenis": "unta",
+      "parameter_animasi": null,
+      "nilai": null,
+      "ukuran_tercatat": true,
+      "skala": 1.25
+    },
+    {
+      "jenis": "warung",
+      "parameter_animasi": null,
+      "nilai": null,
+      "ukuran_tercatat": true,
+      "skala": 0.8611
+    },
+    {
+      "jenis": "zaqqum",
+      "parameter_animasi": "tumbuh",
+      "nilai": [
+        0.0,
+        1.0
+      ],
+      "ukuran_tercatat": true,
+      "skala": 0.5
+    }
+  ],
+  "galat_javascript": []
+}
