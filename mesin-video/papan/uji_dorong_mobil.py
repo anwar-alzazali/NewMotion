@@ -20,11 +20,11 @@ def buat_spek():
         "warna_rambut": "#2a1c18",
         "pakaian": {"jenis": "kaus", "warna": "#3f7890", "bawah": "celana", "bawah_warna": "#34445a"},
         "hidup": True, "profil": "kiri", "wajah": "marah", "mata": "buka",
-        "pose": "condong", "lengan": "tolak", "keringat": 1,
-        "jalan": 1, "x": 70, "y": 1580, "s": 1.0, "bayangan": True,
+        "pose": "dorong", "aksi": "dorong", "keringat": 1,
+        "jalan": 0, "x": [[0, 320], [4, 260]], "y": 1580, "s": 1.0, "bayangan": True,
     }
     mobil = {
-        "jenis": "mobil_luar", "x": 540, "y": 1580, "s": 1.0,
+        "jenis": "mobil_luar", "x": [[0, 540], [4, 480]], "y": 1580, "s": 1.0,
         "warna": "#e8e4dc", "aksen": "#5a6472", "jalan": 18, "arah": 1,
         "stiker": "UJI", "sub": "DORONG",
     }
@@ -64,11 +64,11 @@ def main():
         "# Uji visual tokoh mendorong mobil", "",
         "- Sudut: tampak samping, menghadap kiri.",
         "- Ekspresi: marah/berusaha keras; keringat aktif.",
-        "- Gerak: parameter jalan aktif; mobil luar memiliki gerak roda.",
+        "- Gerak: aksi dorong RIG aktif; tokoh dan mobil bergeser 60 px ke kiri secara serempak.",
+        "- Roda: berputar mengikuti perpindahan mobil.",
         "- Audio/TTS: tidak digunakan.", "",
-        "Catatan audit: ini uji visual konfigurasi renderer saat ini, bukan bukti simulasi fisika "
-        "atau kontak tangan-bodi yang terukur. Periksa kelima fase PNG untuk memastikan tangan "
-        "benar-benar menyentuh bodi dan gerak tokoh selaras dengan perpindahan mobil.", "",
+        "Catatan audit: uji ini memeriksa pose dorong RIG dan gerak relatif tokoh-mobil. "
+        "Kontak tangan-bodi harus tetap diverifikasi dari kelima fase PNG; ini belum simulasi fisika penuh.", "",
     ]
     (out / "laporan.md").write_text("\n".join(laporan), encoding="utf-8")
     print("\n".join(laporan))
