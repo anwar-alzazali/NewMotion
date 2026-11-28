@@ -1,0 +1,103 @@
+name: Uji visual tokoh dan kirim ke Telegram
+
+on:
+  push:
+    branches:
+      - uji/tokoh-berjalan-profil-samping
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: uji-visual-tokoh-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  render-dan-kirim:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - name: Ambil kode cabang tes
+        uses: actions/checkout@v4
+
+      - name: Siapkan Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Pasang dependensi renderer
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq fonts-dejavu-core
+          python -m pip install --upgrade pip
+          python -m pip install -e '.[render]'
+          python -m playwright install --with-deps chromium
+
+      - name: Render dan uji tokoh (tanpa TTS)
+        run: |
+          python mesin-video/papan/uji_tokoh.py -o hasil/uji_tokoh
+          test -s hasil/uji_tokoh/laporan.md
+          test -n "$(find hasil/uji_tokoh -maxdepth 1 -type f -name '*.png' -print -quit)"
+
+      - name: Simpan bukti render di GitHub
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: hasil-uji-visual-tokoh
+          path: hasil/uji_tokoh/
+          if-no-files-found: warn
+          retention-days: 14
+
+      - name: Kirim gambar dan laporan ke Telegram
+        if: always()
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          HASIL: hasil/uji_tokoh
+          STATUS: ${{ job.status }}
+          CABANG: ${{ github.ref_name }}
+          COMMIT: ${{ github.sha }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          if [[ -z "$TELEGRAM_BOT_TOKEN" || -z "$TELEGRAM_CHAT_ID" ]]; then
+            echo "::warning::Telegram belum dikonfigurasi. Tambahkan secrets TELEGRAM_BOT_TOKEN dan TELEGRAM_CHAT_ID."
+            exit 0
+          fi
+
+          if [[ -f "$HASIL/laporan.md" ]]; then
+            {
+              echo "UJI VISUAL TOKOH"
+              echo "Status: $STATUS"
+              echo "Cabang: $CABANG"
+              echo "Commit: $COMMIT"
+              echo
+              cat "$HASIL/laporan.md"
+              echo
+              echo "Log GitHub Actions: $RUN_URL"
+            } > "$HASIL/pesan-telegram.txt"
+
+            curl --fail --silent --show-error \
+              -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
+              --data-urlencode "chat_id=${TELEGRAM_CHAT_ID}" \
+              --data-urlencode "text@$HASIL/pesan-telegram.txt"
+          else
+            curl --fail --silent --show-error \
+              -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
+              --data-urlencode "chat_id=${TELEGRAM_CHAT_ID}" \
+              --data-urlencode "text=Uji visual tokoh gagal sebelum laporan dibuat. Status: ${STATUS}. Log: ${RUN_URL}"
+          fi
+
+          if [[ -d "$HASIL" ]]; then
+            while IFS= read -r -d '' gambar; do
+              curl --fail --silent --show-error \
+                -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendPhoto" \
+                -F "chat_id=${TELEGRAM_CHAT_ID}" \
+                -F "photo=@${gambar}" \
+                -F "caption=$(basename "${gambar}")"
+            done < <(find "$HASIL" -maxdepth 1 -type f -name '*.png' -print0 | sort -z)
+          fi
