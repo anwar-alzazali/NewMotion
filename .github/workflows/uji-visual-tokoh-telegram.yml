@@ -41,7 +41,7 @@ jobs:
           python mesin-video/papan/uji_dorong_mobil.py -o hasil/uji_tokoh/dorong_mobil
           test -s hasil/uji_tokoh/laporan.md
           test -s hasil/uji_tokoh/dorong_mobil/laporan.md
-          test -n "$(find hasil/uji_tokoh -type f -name '*.png' -print -quit)"
+          test -n "$(find hasil/uji_tokoh/dorong_mobil -type f -name '*.png' -print -quit)"
 
       - name: Simpan bukti render di GitHub
         if: always()
@@ -52,15 +52,13 @@ jobs:
           if-no-files-found: warn
           retention-days: 14
 
-      - name: Kirim hasil visual saja ke Telegram
-        if: always()
+      - name: Kirim hanya PNG khusus uji dorong mobil ke Telegram
+        if: success()
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
-          HASIL: hasil/uji_tokoh
-          STATUS: ${{ job.status }}
+          HASIL: hasil/uji_tokoh/dorong_mobil
           CABANG: ${{ github.ref_name }}
-          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         shell: bash
         run: |
           set -euo pipefail
@@ -70,21 +68,14 @@ jobs:
             exit 0
           fi
 
-          if [[ -d "$HASIL" ]]; then
-            jumlah=0
-            while IFS= read -r -d '' gambar; do
-              curl --fail --silent --show-error \
-                -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendPhoto" \
-                -F "chat_id=${TELEGRAM_CHAT_ID}" \
-                -F "photo=@${gambar}" \
-                -F "caption=Hasil visual: $(basename "${gambar}") | status ${STATUS} | cabang ${CABANG}"
-              jumlah=$((jumlah + 1))
-            done < <(find "$HASIL" -type f -name '*.png' -print0 | sort -z)
+          jumlah=0
+          while IFS= read -r -d '' gambar; do
+            curl --fail --silent --show-error \
+              -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendPhoto" \
+              -F "chat_id=${TELEGRAM_CHAT_ID}" \
+              -F "photo=@${gambar}" \
+              -F "caption=Uji dorong mobil: $(basename "${gambar}") | cabang ${CABANG}"
+            jumlah=$((jumlah + 1))
+          done < <(find "$HASIL" -maxdepth 1 -type f -name 'fase_*.png' -print0 | sort -z)
 
-            if [[ "$jumlah" -eq 0 ]]; then
-              curl --fail --silent --show-error \
-                -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
-                --data-urlencode "chat_id=${TELEGRAM_CHAT_ID}" \
-                --data-urlencode "text=Render tidak menghasilkan gambar. Status: ${STATUS}. Log: ${RUN_URL}"
-            fi
-          fi
+          test "$jumlah" -eq 5
