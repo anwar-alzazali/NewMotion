@@ -1,0 +1,35 @@
+{
+  "genre": "cerita_umum",
+  "konteks_konten": "umum",
+  "judul": "Fixture RND-001 — cue audio terlambat",
+  "latar": "gelap",
+  "durasi": 5,
+  "musik": false,
+  "dekor": false,
+  "efek_suara": [
+    [
+      7,
+      "whoosh",
+      0.5
+    ]
+  ],
+  "rekaman": [
+    {
+      "berkas": "../../hasil/timeline/cue.wav",
+      "at": 7,
+      "vol": 0.5
+    }
+  ],
+  "cerita": {
+    "kilat": false,
+    "shot": [
+      {
+        "at": 0,
+        "langit": 0.12,
+        "horizon": 1250,
+        "tanah": "pasir",
+        "debu": 0
+      }
+    ]
+  }
+}
