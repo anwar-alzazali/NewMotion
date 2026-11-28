@@ -24,6 +24,60 @@ jobs:
           sudo apt-get install -y -qq ffmpeg fonts-dejavu-core
           python -m pip install -e '.[uji,render]'
           python -m playwright install --with-deps chromium
+      - name: Reproduksi baseline timeline shot dan audio
+        run: |
+          set -euo pipefail
+          mkdir -p hasil/timeline
+          # Kasus A: satu-satunya shot lanjutan dimulai pada detik 12.
+          python mesin-video/papan_buat.py tests/data/renderer_timeline_shot_terlambat.json \
+            -o hasil/timeline/shot_terlambat_pratinjau --pratinjau 12
+          python mesin-video/papan_buat.py tests/data/renderer_timeline_shot_terlambat.json \
+            -o hasil/timeline/shot_terlambat.mp4 --tanpa-suara
+          # Kasus B: durasi video 5 detik, tetapi SFX dan rekaman dijadwalkan pada detik 7.
+          ffmpeg -y -loglevel error -f lavfi -i sine=frequency=440:duration=2 \
+            -c:a pcm_s16le hasil/timeline/cue.wav
+          python mesin-video/papan_buat.py tests/data/renderer_timeline_audio_terlambat.json \
+            -o hasil/timeline/audio_terlambat.mp4
+          python - <<'PY'
+          import json
+          import os
+          import subprocess
+          from pathlib import Path
+
+          dasar = Path("hasil/timeline")
+          def durasi(path):
+              nilai = subprocess.check_output([
+                  "ffprobe", "-v", "error", "-show_entries", "format=duration",
+                  "-of", "csv=p=0", str(path)
+              ], text=True).strip()
+              return float(nilai)
+
+          shot = durasi(dasar / "shot_terlambat.mp4")
+          audio = durasi(dasar / "audio_terlambat.mp4")
+          sfx = json.loads((dasar / "audio_terlambat.sfx.json").read_text(encoding="utf-8"))
+          gambar = dasar / "shot_terlambat_pratinjau_12.0.png"
+          assert gambar.is_file(), "Pratinjau shot pada detik 12 tidak dibuat"
+          assert abs(shot - 3.2) <= 0.15, f"Perilaku baseline shot berubah: {shot:.3f} dtk"
+          assert abs(audio - 5.0) <= 0.15, f"Durasi eksplisit 5 dtk berubah: {audio:.3f} dtk"
+          assert any(abs(float(x[0]) - 7.0) < 0.01 for x in sfx), "Cue SFX detik 7 tidak tercatat"
+          laporan = [
+              "# Reproduksi baseline timeline RND-001",
+              "",
+              "- Kasus A: shot terakhir dimulai pada detik 12, tetapi MP4 hanya "
+              f"**{shot:.3f} detik** (durasi turunan saat ini sekitar 3,2 detik).",
+              "- Pratinjau manual pada detik 12: tersedia; ini bukan bukti bahwa shot masuk ke MP4.",
+              "- Kasus B: durasi eksplisit MP4 **"
+              f"{audio:.3f} detik**; SFX tercatat pada detik 7 dan rekaman eksternal juga dijadwalkan pada detik 7.",
+              "- Cue setelah batas video tidak memperpanjang durasi hasil; mixer memotong hasil ke durasi target.",
+              "",
+              "Hasil ini mereproduksi perilaku lama untuk diagnosis; bukan kriteria lulus kualitas produksi."
+          ]
+          isi = "\\n".join(laporan) + "\\n"
+          (dasar / "baseline_timeline.md").write_text(isi, encoding="utf-8")
+          with open(os.environ["GITHUB_STEP_SUMMARY"], "a", encoding="utf-8") as f:
+              f.write(isi)
+          print(isi)
+          PY
       - name: Ukur seluruh benda
         run: python mesin-video/papan/ukur_benda.py
       - name: Uji tokoh lapis A
