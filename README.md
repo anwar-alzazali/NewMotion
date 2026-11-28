@@ -22,6 +22,7 @@ Cara pakai lengkap: **[docs/CARA_PAKAI.md](docs/CARA_PAKAI.md)**.
 | [docs/PROMPT_JSON_LENGKAP.md](docs/PROMPT_JSON_LENGKAP.md) | prompt AI penulis JSON (sesi chat / berakses GitHub) |
 | [docs/BEKAL_PAPAN_MANUAL.md](docs/BEKAL_PAPAN_MANUAL.md) | format + katalog benda, tokoh, suara terbaru (dibuat otomatis) |
 | [docs/ROADMAP.md](docs/ROADMAP.md) | yang sudah jadi, sekarang, berikutnya |
+| [docs/RENDERER_ROADMAP.md](docs/RENDERER_ROADMAP.md) | tahapan pembangunan ulang renderer sampai rilis |
 | [docs/TUGAS_GPT.md](docs/TUGAS_GPT.md) | protokol, batas wajib, dan peta sistem untuk sesi AI pengerja |
 | [docs/ATURAN_KOMPONEN.md](docs/ATURAN_KOMPONEN.md) | aturan membuat komponen renderer dari naskah |
 | [docs/TUGAS_ANTARMUKA.md](docs/TUGAS_ANTARMUKA.md) | rencana halaman web Studio Alur |
