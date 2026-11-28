@@ -1558,6 +1558,9 @@
     tepuk_dahi: { ra: [150, -165], depan: 1, kepala: -6 }, garuk_kepala: { ra: [150, -178], depan: 1, kepala: 8, lambai: 0.35 },
     condong: { badan: 7, la: [14, 10], ra: [14, 10] }, mundur: { badan: -7, la: [26, 40], ra: [26, 40] },
     lemas: { badan: 4, kepala: 10, la: [4, 2], ra: [4, 2] },
+    // Mendorong benda: bahu maju, siku hampir lurus, lutut menekuk untuk tumpuan.
+    dorong: { badan: 16, kepala: 5, turun: 12, la: [78, 84], ra: [78, 84],
+      pp: 0.94, pk: 0.88, lk: [-10, -18], rk: [-10, -18] },
   };
   // ---- TOKOH HIDUP (13 Nov 2026): cerita.hidup:true (atau boneka.hidup) -> pose loncat + tahan, wajah berganti, lip-sync vokal, idle, reaksi ----
   const balik = (u, c = 2.0) => { u = clamp(u); const q = u - 1; return 1 + (c + 1) * q * q * q + c * q * q; }; // kebablasan lalu mengendap
@@ -2080,6 +2083,25 @@
       RIG.turun = 3 + 9 * hantam;
       RIG.lk = [4, 0]; RIG.rk = [-4, 0];
       RIG.pegang = "beliung";
+    }
+    // AKSI DORONG: siklus tenaga berulang; dua lengan menjangkau, lutut bergantian
+    // menahan beban. Posisi tangan dapat dikunci ke titik kontak melalui _kaitDunia.
+    if (RIG && (RIG._aksi === "dorong" || b.aksi === "dorong")) {
+      const faseDorong = ((t * 1.15 + ((b.id || 0) * 0.17)) % 1 + 1) % 1;
+      const tekan = Math.pow(Math.max(0, Math.sin(faseDorong * Math.PI * 2 - 0.55)), 2);
+      const pulih = Math.max(0, Math.sin(faseDorong * Math.PI * 2 + 1.0));
+      RIG.ra = [76 + 5 * pulih, 82 + 4 * pulih];
+      RIG.la = [76 + 5 * pulih, 82 + 4 * pulih];
+      RIG.badan = 14 + 5 * tekan;
+      RIG.kepala = 4 + 2 * tekan;
+      RIG.turun = 12 + 7 * tekan;
+      RIG.pp = 0.92 - 0.08 * tekan;
+      RIG.pk = 0.86;
+      RIG.pp_ki = 0.94 - 0.08 * tekan;
+      RIG.pp_ka = 0.82 + 0.08 * tekan;
+      RIG.lk = [-10 - 5 * tekan, -18];
+      RIG.rk = [-10 + 5 * tekan, -18];
+      RIG.depan = 0;
     }
     if (RIG && HD) { const ph = (b.id || 0) * 1.37, q = ta - RIG._tk; RIG.badan += H.brot; RIG.kepala += H.krot; RIG.la = [RIG.la[0], RIG.la[1] + 2 * Math.sin(t * 1.1 + ph)]; RIG.ra = [RIG.ra[0], RIG.ra[1] - 2 * Math.sin(t * 1.3 + ph)];
       if (q >= 0 && q < 0.6) H.sq += 0.05 * Math.exp(-q * 8) * Math.sin(q * 24 - 0.6); } // squash & stretch kecil tiap ganti pose
