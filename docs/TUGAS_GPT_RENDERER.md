@@ -68,7 +68,7 @@ Status awal seluruh tugas: `MENUNGGU`. Urutan tidak boleh dilompati kecuali ada 
 
 | ID | Tugas | Hasil utama | Gerbang selesai |
 |---|---|---|---|
-| RND-001 | Audit baseline dan peta renderer | Inventaris kode, alur render, kemampuan, bukti, bug, metrik baseline | Semua klaim kemampuan punya lokasi kode + bukti tes/visual; daftar gap disepakati |
+| RND-001 | Audit baseline dan peta renderer | Inventaris kode, alur render, kemampuan, bukti, bug, metrik baseline | **BERJALAN** — audit sumber selesai; artefak render dan metrik baseline masih menunggu Actions |
 | RND-002 | Kontrak data renderer | Skema tokoh, benda, pose, sudut, waktu, kamera, interaksi; validator | Kontrak terdokumentasi; input tidak sah ditolak dengan pesan jelas |
 | RND-003 | Fondasi geometri | Sistem koordinat, skala, transformasi, jangkar, bounding box | Uji geometri lintas sudut dan skala lulus |
 | RND-004 | Rangka dan anatomi tokoh | Skeleton tunggal, panjang tulang, sendi, pose dasar | Tes anatomi tanpa temuan tak terjelaskan; lembar pose terlampir |
@@ -80,7 +80,7 @@ Status awal seluruh tugas: `MENUNGGU`. Urutan tidak boleh dilompati kecuali ada 
 | RND-010 | Uji penerimaan lintas cerita | Paket regresi dan MP4 dari beberapa cerita | Video lintas cerita ditinjau; tidak ada regresi yang belum disetujui |
 | RND-011 | Dokumentasi dan rilis renderer | Panduan penggunaan, batas kemampuan, prosedur rilis | Pengembang baru dapat menjalankan dan menguji tanpa menebak |
 
-Tugas pertama yang boleh diambil sekarang hanya **RND-001**. Tugas berikutnya tetap menunggu hasil dan keputusan Tahap 0.
+Tugas aktif saat ini **RND-001**. Audit sumber telah dicatat di `docs/audit/RENDERER_RND-001.md`; tugas belum ditutup karena artefak render dan metrik baseline dari Actions belum diperiksa. Tugas berikutnya tetap menunggu hasil dan keputusan Tahap 0.
 
 ## 5. Format wajib setiap PR
 
