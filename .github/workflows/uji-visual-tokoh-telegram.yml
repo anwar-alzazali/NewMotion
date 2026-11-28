@@ -38,8 +38,10 @@ jobs:
       - name: Render dan uji tokoh (tanpa TTS)
         run: |
           python mesin-video/papan/uji_tokoh.py -o hasil/uji_tokoh
+          python mesin-video/papan/uji_dorong_mobil.py -o hasil/uji_tokoh/dorong_mobil
           test -s hasil/uji_tokoh/laporan.md
-          test -n "$(find hasil/uji_tokoh -maxdepth 1 -type f -name '*.png' -print -quit)"
+          test -s hasil/uji_tokoh/dorong_mobil/laporan.md
+          test -n "$(find hasil/uji_tokoh -type f -name '*.png' -print -quit)"
 
       - name: Simpan bukti render di GitHub
         if: always()
@@ -77,7 +79,7 @@ jobs:
                 -F "photo=@${gambar}" \
                 -F "caption=Hasil visual: $(basename "${gambar}") | status ${STATUS} | cabang ${CABANG}"
               jumlah=$((jumlah + 1))
-            done < <(find "$HASIL" -maxdepth 1 -type f -name '*.png' -print0 | sort -z)
+            done < <(find "$HASIL" -type f -name '*.png' -print0 | sort -z)
 
             if [[ "$jumlah" -eq 0 ]]; then
               curl --fail --silent --show-error \
