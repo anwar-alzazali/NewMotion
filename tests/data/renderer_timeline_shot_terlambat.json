@@ -1,0 +1,27 @@
+{
+  "genre": "cerita_umum",
+  "konteks_konten": "umum",
+  "judul": "Fixture RND-001 — shot terlambat",
+  "latar": "gelap",
+  "musik": false,
+  "dekor": false,
+  "cerita": {
+    "kilat": false,
+    "shot": [
+      {
+        "at": 0,
+        "langit": 0.08,
+        "horizon": 1300,
+        "tanah": "pasir",
+        "debu": 0
+      },
+      {
+        "at": 12,
+        "langit": 0.82,
+        "horizon": 900,
+        "tanah": "pasir",
+        "debu": 0
+      }
+    ]
+  }
+}
