@@ -72,7 +72,7 @@ jobs:
               "",
               "Hasil ini mereproduksi perilaku lama untuk diagnosis; bukan kriteria lulus kualitas produksi."
           ]
-          isi = "\\n".join(laporan) + "\\n"
+          isi = "\n".join(laporan) + "\n"
           (dasar / "baseline_timeline.md").write_text(isi, encoding="utf-8")
           with open(os.environ["GITHUB_STEP_SUMMARY"], "a", encoding="utf-8") as f:
               f.write(isi)
