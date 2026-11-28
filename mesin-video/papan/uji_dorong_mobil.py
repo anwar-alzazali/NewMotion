@@ -1,17 +1,16 @@
 """Uji visual adegan tokoh mendorong mobil dari tampak samping.
 
-Uji ini sengaja terpisah dari uji pose umum: tidak memakai TTS, audio, atau layanan
-eksternal. Hasil PNG memperlihatkan beberapa fase agar posisi tangan, postur, keringat,
-dan gerak relatif tokoh-mobil dapat diaudit secara visual.
+Uji ini terpisah dari uji pose umum dan tidak memakai TTS/audio.
 """
 from __future__ import annotations
 
 import argparse
-import json
+import sys
 from pathlib import Path
 
 AKAR = Path(__file__).resolve().parents[2]
 PAPAN = AKAR / "mesin-video" / "papan"
+sys.path.insert(0, str(AKAR / "mesin-video"))
 LEBAR, TINGGI = 1080, 1920
 
 
@@ -29,15 +28,9 @@ def buat_spek():
         "warna": "#e8e4dc", "aksen": "#5a6472", "jalan": 18, "arah": 1,
         "stiker": "UJI", "sub": "DORONG",
     }
-    shot = {
-        "at": 0, "horizon": 1740, "palet": "siang",
-        "benda": [mobil], "boneka": [tokoh],
-    }
-    return {
-        "latar": "gelap", "musik": False, "stempel": False, "dekor": False,
-        "durasi": 4,
-        "cerita": {"shot": [shot]},
-    }
+    shot = {"at": 0, "horizon": 1740, "palet": "siang", "benda": [mobil], "boneka": [tokoh]}
+    return {"latar": "gelap", "musik": False, "stempel": False, "dekor": False,
+            "durasi": 4, "cerita": {"shot": [shot]}}
 
 
 def main():
@@ -68,17 +61,14 @@ def main():
         browser.close()
 
     laporan = [
-        "# Uji visual tokoh mendorong mobil",
-        "",
+        "# Uji visual tokoh mendorong mobil", "",
         "- Sudut: tampak samping, menghadap kiri.",
         "- Ekspresi: marah/berusaha keras; keringat aktif.",
         "- Gerak: parameter jalan aktif; mobil luar memiliki gerak roda.",
-        "- Audio/TTS: tidak digunakan.",
-        "",
+        "- Audio/TTS: tidak digunakan.", "",
         "Catatan audit: ini uji visual konfigurasi renderer saat ini, bukan bukti simulasi fisika "
         "atau kontak tangan-bodi yang terukur. Periksa kelima fase PNG untuk memastikan tangan "
-        "benar-benar menyentuh bodi dan gerak tokoh selaras dengan perpindahan mobil.",
-        "",
+        "benar-benar menyentuh bodi dan gerak tokoh selaras dengan perpindahan mobil.", "",
     ]
     (out / "laporan.md").write_text("\n".join(laporan), encoding="utf-8")
     print("\n".join(laporan))
